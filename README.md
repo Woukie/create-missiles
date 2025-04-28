@@ -1,8 +1,11 @@
-# create-missiles
+# Create Missiles
+
 Minecraft missle mod for Forge and Fabric, depends on Create.
 
 ## Features
+
 List is subject to change.
+
 - Launch pad
 - Rocket fuel
 - Tiered 'chassis' that carry greater payloads and larger fuel capacity
@@ -23,10 +26,12 @@ List is subject to change.
   - Any TNT/explosives mod
 
 ## Implementation and Distribution
+
 Implementation details, subject to change
+
 - Built on Architectury, for Fabric and Forge
-- Development stats with 1.20.4, working down after initial release
+- Development starts with 1.20.4, working down after initial release
 - Distributed on GitHub and CurseForge
 - Uses the hybrid versioning style defined [here](https://forge.gemwire.uk/wiki/Semantic_Versioning)
-- A new branch is created for each version
+- A new branch is created for each minecraft version
 - If you see another site distributing the mod, it's not me. Lmk if you want me to consider distributing elsewhere
