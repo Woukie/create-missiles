@@ -30,7 +30,7 @@ List is subject to change.
 Implementation details, subject to change
 
 - Built on Architectury, for Fabric and Forge
-- Development starts with 1.20.4, working down after initial release
+- Development starts with 1.20.1, working down after initial release
 - Distributed on GitHub and CurseForge
 - Uses the hybrid versioning style defined [here](https://forge.gemwire.uk/wiki/Semantic_Versioning)
 - A new branch is created for each minecraft version
