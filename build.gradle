@@ -10,7 +10,9 @@ architectury {
 
 allprojects {
     group = rootProject.maven_group
-    version = rootProject.mod_version
+
+    String buildNumber = System.getenv("GITHUB_RUN_NUMBER")
+    version = "$mod_version+$project.name-$minecraft_version" + (buildNumber != null ? "-build.$buildNumber" : "")
 }
 
 subprojects {
