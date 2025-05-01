@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
+import net.woukie.createmissiles.block.launchpadcontroller.LaunchPadControllerBlock;
 
 public class MissileBlocks {
     private static final CreateRegistrate REGISTRATE = CreateMissiles.registrate();
@@ -18,6 +19,14 @@ public class MissileBlocks {
             .properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY))
             .properties(BlockBehaviour.Properties::noOcclusion)
             .transform(BlockStressDefaults.setImpact(4))
+            .simpleItem()
+            .register();
+
+    public static final BlockEntry<LaunchPadControllerBlock> LAUNCH_PAD_CONTROLLER = REGISTRATE
+            .block("launch_pad_controller", LaunchPadControllerBlock::new)
+            .initialProperties(SharedProperties::softMetal)
+            .properties(p -> p.mapColor(MapColor.COLOR_BROWN))
+            .properties(BlockBehaviour.Properties::noOcclusion)
             .simpleItem()
             .register();
 
