@@ -1,37 +1,27 @@
 package net.woukie.createmissiles;
 
-import dev.architectury.registry.CreativeTabRegistry;
-import dev.architectury.registry.registries.DeferredRegister;
-import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import com.simibubi.create.Create;
+import com.simibubi.create.foundation.data.CreateRegistrate;
+import net.woukie.createmissiles.registry.MissileBlocks;
+import net.woukie.createmissiles.registry.MissileItems;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public final class CreateMissiles {
-    public static final String MOD_ID = "create_missiles";
+public class CreateMissiles {
+    public static final String MOD_ID = "createmissiles";
+    public static final String NAME = "Create Missiles";
+    public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
 
-    public static final DeferredRegister<CreativeModeTab> TABS =
-            DeferredRegister.create(MOD_ID, Registries.CREATIVE_MODE_TAB);
-
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(MOD_ID, Registries.ITEM);
-
-    public static final RegistrySupplier<CreativeModeTab> MY_TAB = TABS.register(
-            "test_tab",
-            () -> CreativeTabRegistry.create(
-                    Component.translatable("category.architectury_test"),
-                    () -> new ItemStack(Items.GLOW_ITEM_FRAME)
-            )
-            );
-
-    public static final RegistrySupplier<Item> EXAMPLE_ITEM = ITEMS.register("example_item", () -> new Item(new Item.Properties().arch$tab(MY_TAB)));
+    private static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
 
     public static void init() {
-        System.out.println("Create Missiles");
+        LOGGER.info("{} initializing! Create version: {} on platform: {}", NAME, Create.VERSION, ExampleExpectPlatform.platformName());
 
-        ITEMS.register();
-        TABS.register();
+        MissileBlocks.init();
+        MissileItems.init();
+    }
+
+    public static CreateRegistrate registrate() {
+        return REGISTRATE;
     }
 }

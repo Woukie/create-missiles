@@ -1,0 +1,26 @@
+{
+  "type": "create:mechanical_crafting",
+  "acceptMirrored": false,
+  "key": {
+    "S": {
+      "item": "create:iron_sheet"
+    },
+    "C": {
+      "item": "create:cogwheel"
+    },
+    "I": {
+      "item": "minecraft:iron_block"
+    }
+  },
+  "pattern": [
+    "S",
+    "I",
+    "C",
+    "I",
+    "I"
+  ],
+  "result": {
+    "count": 1,
+    "item": "createmissiles:launch_pad"
+  }
+}

@@ -1,0 +1,7 @@
+package net.woukie.createmissiles.forge;
+
+public class ExampleExpectPlatformImpl {
+	public static String platformName() {
+		return "Forge";
+	}
+}

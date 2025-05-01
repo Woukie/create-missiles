@@ -1,17 +1,19 @@
 package net.woukie.createmissiles.fabric;
 
+import io.github.fabricators_of_create.porting_lib.util.EnvExecutor;
+import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.registry.MissileBlocks;
 import net.fabricmc.api.ModInitializer;
 
-import net.woukie.createmissiles.CreateMissiles;
-
-public final class CreateMissilesFabric implements ModInitializer {
+public class CreateMissilesFabric implements ModInitializer {
     @Override
     public void onInitialize() {
-        // This code runs as soon as Minecraft is in a mod-load-ready state.
-        // However, some things (like resources) may still be uninitialized.
-        // Proceed with mild caution.
-
-        // Run our common setup.
         CreateMissiles.init();
+        CreateMissiles.LOGGER.info(EnvExecutor.unsafeRunForDist(
+                () -> () -> "{} is accessing Porting Lib on a Fabric client!",
+                () -> () -> "{} is accessing Porting Lib on a Fabric server!"
+                ), CreateMissiles.NAME);
+        // on fabric, Registrates must be explicitly finalized and registered.
+        CreateMissiles.registrate().register();
     }
 }

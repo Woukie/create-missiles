@@ -1,35 +1,35 @@
 modLoader = "javafml"
-loaderVersion = "[47,)"
+loaderVersion = "[${forge_version},)"
 #issueTrackerURL = ""
 license = "Insert License Here"
 
 [[mods]]
-modId = "create_missiles"
+modId = "createmissiles"
 version = "${version}"
 displayName = "Create Missiles"
-authors = "Me!"
+authors = ["Woukie", "ExpertSalad"]
 description = '''
-This is an example description! Tell everyone what your mod is about!
+Create da missile :)
 '''
-#logoFile = ""
+logoFile = "icon.png"
 
-[[dependencies.create_missiles]]
+[[dependencies.createmissiles]]
 modId = "forge"
 mandatory = true
-versionRange = "[47,)"
+versionRange = "[${forge_version},)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.create_missiles]]
+[[dependencies.createmissiles]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.20.1,)"
+versionRange = "${minecraft_version}"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.create_missiles]]
-modId = "architectury"
-mandatory = true
-versionRange = "[9.2.14,)"
-ordering = "AFTER"
-side = "BOTH"
+[[dependencies.createmissiles]]
+modId="create"
+mandatory=true
+versionRange="${create_version}"
+ordering="NONE"
+side="BOTH"

@@ -1,7 +1,6 @@
 name: build
 on: [ pull_request, push ]
 
-# Workflow from -> https://github.com/Fabricators-of-Create/create-multiloader-addon-template
 jobs:
   build:
     strategy:

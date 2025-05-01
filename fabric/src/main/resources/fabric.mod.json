@@ -1,38 +1,33 @@
 {
   "schemaVersion": 1,
-  "id": "create_missiles",
+  "id": "createmissiles",
   "version": "${version}",
   "name": "Create Missiles",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "description": "Create da missiles :)",
   "authors": [
-    "Me!"
+    "Woukie",
+    "ExpertSalad"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
     "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
-  "license": "CC0-1.0",
-  "icon": "assets/create_missiles/icon.png",
+  "license": "Insert License Here",
+  "icon": "assets/createmissiles/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
       "net.woukie.createmissiles.fabric.CreateMissilesFabric"
-    ],
-    "client": [
-      "net.woukie.createmissiles.fabric.client.CreateMissilesFabricClient"
     ]
   },
   "mixins": [
-    "create_missiles.mixins.json"
+    "createmissiles.mixins.json",
+    "createmissiles-common.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.16.14",
-    "minecraft": "~1.20.1",
-    "java": ">=17",
-    "architectury": ">=9.2.14",
-    "fabric-api": "*"
-  },
-  "suggests": {
-    "another-mod": "*"
+    "minecraft": "${minecraft_version}",
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric-api": ">=${fabric_api_version}",
+    "create": "${create_version}"
   }
 }
