@@ -43,7 +43,7 @@ public class LaunchPadBlock extends KineticBlock implements IBE<LaunchPadBlockEn
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        return Shapes.or(Shapes.box(0, 0, 0, 1, 6.0/16.0, 1), Shapes.box(0, 0, 0, 1, 10.0/16.0, 1));
+        return Shapes.or(Shapes.box(0, 0, 0, 1, 6.0/16.0, 1), Shapes.box(0, 10.0/16.0, 0, 1, 13.0/16.0, 1));
     }
 
     @Override
