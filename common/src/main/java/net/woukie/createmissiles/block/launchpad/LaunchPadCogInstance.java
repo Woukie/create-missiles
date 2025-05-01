@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block;
+package net.woukie.createmissiles.block.launchpad;
 
 import net.minecraft.core.Direction;
 import com.jozufozu.flywheel.api.Instancer;

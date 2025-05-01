@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block;
+package net.woukie.createmissiles.block.launchpad;
 
 import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.simpleRelays.ICogWheel;

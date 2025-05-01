@@ -7,7 +7,7 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.block.LaunchPadBlock;
+import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
 
 public class MissileBlocks {
     private static final CreateRegistrate REGISTRATE = CreateMissiles.registrate();

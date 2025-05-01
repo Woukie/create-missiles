@@ -6,7 +6,7 @@ import com.simibubi.create.foundation.render.CachedBufferer;
 import com.simibubi.create.foundation.render.SuperByteBuffer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
-import net.woukie.createmissiles.block.LaunchPadBlockEntity;
+import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
 
 public class LaunchPadRenderer extends KineticBlockEntityRenderer<LaunchPadBlockEntity> {
     public LaunchPadRenderer(BlockEntityRendererProvider.Context context) {
