@@ -11,8 +11,6 @@ import net.woukie.createmissiles.CreateMissiles;
 public class MissileItems {
     private static final CreateRegistrate REGISTRATE = CreateMissiles.registrate();
 
-    public static final ItemEntry<BlockItem> LAUNCH_PAD = REGISTRATE.item("launch_pad", (properties) -> new BlockItem(MissileBlocks.LAUNCH_PAD.get(), properties)).register();
-
     public static void init() {
         CreateMissiles.LOGGER.info("Registering items for " + CreateMissiles.NAME);
     }

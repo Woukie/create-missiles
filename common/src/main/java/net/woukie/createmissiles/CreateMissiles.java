@@ -2,6 +2,7 @@ package net.woukie.createmissiles;
 
 import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import net.woukie.createmissiles.registry.MissileBlockEntities;
 import net.woukie.createmissiles.registry.MissileBlocks;
 import net.woukie.createmissiles.registry.MissileItems;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ public class CreateMissiles {
         LOGGER.info("{} initializing! Create version: {} on platform: {}", NAME, Create.VERSION, ExampleExpectPlatform.platformName());
 
         MissileBlocks.init();
+        MissileBlockEntities.init();
         MissileItems.init();
     }
 
