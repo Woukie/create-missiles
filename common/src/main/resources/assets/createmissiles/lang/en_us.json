@@ -1,5 +1,6 @@
 {
   "category.createmissiles": "Create Missiles",
   "block.createmissiles.launch_pad": "Launch Pad",
-  "block.createmissiles.launch_pad_controller": "Launch Pad Controller"
+  "block.createmissiles.launch_pad_controller": "Launch Pad Controller",
+  "container.createmissiles.launch_pad_controller": "Launch Pad"
 }
