@@ -19,6 +19,7 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
     private static final int mapLeft = 60;
     private static final float mapScale = 0.4375F;
     private static final ResourceLocation BG_LOCATION = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/launch_pad_controller.png");
+    private ItemStack map;
 
     public LaunchPadControllerScreen(LaunchPadControllerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -35,24 +36,35 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
         int left = this.leftPos;
         int top = this.topPos;
         guiGraphics.blit(BG_LOCATION, left, top, 0, 0, this.imageWidth, this.imageHeight);
-        ItemStack map = this.menu.getSlot(0).getItem();
+        map = this.menu.getSlot(0).getItem();
 
         if (map.is(Items.FILLED_MAP)) {
             Integer mapId = MapItem.getMapId(map);
-            MapItemSavedData mapItemSavedData = MapItem.getSavedData(mapId, this.minecraft.level);
+            MapItemSavedData mapData = MapItem.getSavedData(mapId, this.minecraft.level);
 
-            if (mapItemSavedData != null) {
-                this.renderMap(guiGraphics, mapId, mapItemSavedData, left + mapLeft, top + mapTop);
+            if (mapData != null) {
+                guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(left + mapLeft, top + mapTop, 1.0F);
+                guiGraphics.pose().scale(mapScale, mapScale, 1.0F);
+                this.minecraft.gameRenderer.getMapRenderer().render(guiGraphics.pose(), guiGraphics.bufferSource(), mapId, mapData, true, 15728880);
+                guiGraphics.flush();
+                guiGraphics.pose().popPose();
             }
         }
     }
 
-    private void renderMap(GuiGraphics guiGraphics, Integer mapId, MapItemSavedData mapItemSavedData, int left, int top) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate((float)left, (float)top, 1.0F);
-        guiGraphics.pose().scale(mapScale, mapScale, 1.0F);
-        this.minecraft.gameRenderer.getMapRenderer().render(guiGraphics.pose(), guiGraphics.bufferSource(), mapId, mapItemSavedData, true, 15728880);
-        guiGraphics.flush();
-        guiGraphics.pose().popPose();
+    @Override
+    public boolean mouseClicked(double x, double z, int i) {
+        Integer mapId = MapItem.getMapId(map);
+        MapItemSavedData mapData = MapItem.getSavedData(mapId, this.minecraft.level);
+
+        if (mapData != null) {
+            int mapClickX = (int) ((x - this.leftPos - mapLeft) / mapScale);
+            int mapClickZ = (int) ((z - this.topPos - mapTop) / mapScale);
+
+            menu.clickMap(mapClickX, mapClickZ);
+        }
+
+        return super.mouseClicked(x, z, i);
     }
 }

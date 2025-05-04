@@ -12,6 +12,6 @@ public class MissileMenus {
     public static final MenuEntry<LaunchPadControllerMenu> LAUNCH_PAD_CONTROLLER_MENU = REGISTRATE.menu("launch_pad_controller", LaunchPadControllerMenu::new, () -> LaunchPadControllerScreen::new).register();
 
     public static void init() {
-        CreateMissiles.LOGGER.info("Registering items for " + CreateMissiles.NAME);
+        CreateMissiles.LOGGER.info("Registering menus for " + CreateMissiles.NAME);
     }
 }

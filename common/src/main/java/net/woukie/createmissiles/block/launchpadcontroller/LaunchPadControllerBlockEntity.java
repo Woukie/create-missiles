@@ -26,11 +26,42 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity {
     private static final int[] SLOTS_FOR_DOWN = new int[]{1, 0};
     private static final int[] SLOTS_FOR_SIDES = new int[]{1};
 
+    int targetX;
+    int targetY;
+
     private NonNullList<ItemStack> items;
+
+    protected final ContainerData dataAccess;
 
     public LaunchPadControllerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
         this.items = NonNullList.withSize(5, ItemStack.EMPTY);
+        this.dataAccess = new ContainerData() {
+            public int get(int i) {
+                switch (i) {
+                    case 0 -> {
+                        return LaunchPadControllerBlockEntity.this.targetX;
+                    }
+                    case 1 -> {
+                        return LaunchPadControllerBlockEntity.this.targetY;
+                    }
+                    default -> {
+                        return 0;
+                    }
+                }
+            }
+
+            public void set(int i, int j) {
+                switch (i) {
+                    case 0 -> LaunchPadControllerBlockEntity.this.targetX = j;
+                    case 1 -> LaunchPadControllerBlockEntity.this.targetY = j;
+                }
+            }
+
+            public int getCount() {
+                return 2;
+            }
+        };
     }
 
     @Override
@@ -39,8 +70,8 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity {
     }
 
     @Override
-    protected AbstractContainerMenu createMenu(int i, Inventory inventory) {
-        return new LaunchPadControllerMenu(i, inventory, this);
+    protected AbstractContainerMenu createMenu(int id, Inventory inv) {
+        return new LaunchPadControllerMenu(id, inv, this);
     }
 
     @Override
