@@ -37,8 +37,8 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
     public LaunchPadControllerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
 
-        this.targetX = 64;
-        this.targetZ = 64;
+        this.targetX = -1;
+        this.targetZ = -1;
 
         this.items = NonNullList.withSize(2, ItemStack.EMPTY);
         this.dataAccess = new ContainerData() {
@@ -165,7 +165,7 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
     @Override
     public boolean canPlaceItem(int i, ItemStack itemStack) {
         if (i == SLOT_ROCKET) {
-            return PotionBrewing.isIngredient(itemStack);
+            return itemStack.is(Items.FIREWORK_ROCKET);
         } else if (i == SLOT_MAP) {
             return itemStack.is(Items.FILLED_MAP);
         }
