@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "createmissiles:launch_pad"
+          "name": "createmissiles:launch_pad_controller"
         }
       ],
       "rolls": 1.0
