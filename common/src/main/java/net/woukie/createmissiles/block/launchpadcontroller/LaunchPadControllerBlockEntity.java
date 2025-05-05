@@ -125,7 +125,7 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
                     scan--;
                 }
 
-                level.explode(null, impactPos.getX(), impactPos.getY(), impactPos.getZ(), 100, Level.ExplosionInteraction.BLOCK);
+                level.explode(null, impactPos.getX(), impactPos.getY(), impactPos.getZ(), 10, Level.ExplosionInteraction.BLOCK);
             }
         }
     }
