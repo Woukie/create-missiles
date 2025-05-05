@@ -33,6 +33,9 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive = false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
+    // Architectury API
+    modImplementation "dev.architectury:architectury-forge:$architectury_api_version"
+
     // Create and its dependencies
     modImplementation("com.simibubi.create:create-$minecraft_version:$create_forge_version:slim") { transitive = false }
     modImplementation("com.tterrag.registrate:Registrate:$registrate_forge_version")

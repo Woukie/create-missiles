@@ -45,6 +45,10 @@ configurations.configureEach {
 
 dependencies {
     modImplementation("net.fabricmc:fabric-loader:$fabric_loader_version")
+
+    // Architectury API
+    modImplementation "dev.architectury:architectury-fabric:$architectury_api_version"
+
     common(project(path: ":common", configuration: "namedElements")) { transitive = false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive = false }
 
