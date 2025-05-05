@@ -1,5 +1,10 @@
 package net.woukie.createmissiles.block.launchpadcontroller;
 
+import io.netty.buffer.Unpooled;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -7,21 +12,26 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.MapItem;
 import net.woukie.createmissiles.registry.MissileMenus;
+import net.woukie.createmissiles.registry.MissilePackets;
 import org.jetbrains.annotations.NotNull;
 
 public class LaunchPadControllerMenu extends AbstractContainerMenu {
     private final Container container;
+    private final ContainerData containerData;
 
+    @Environment(EnvType.CLIENT)
     public LaunchPadControllerMenu(MenuType<?> type, int i, Inventory inventory) {
-        this(i, inventory, new SimpleContainer(2));
+        this(i, inventory, new SimpleContainer(2), new SimpleContainerData(5));
     }
 
-    public LaunchPadControllerMenu(int i, Inventory playerInventory, Container container) {
+    public LaunchPadControllerMenu(int i, Inventory playerInventory, Container container, ContainerData containerData) {
         super(MissileMenus.LAUNCH_PAD_CONTROLLER_MENU.get(), i);
         checkContainerSize(container, 2);
+        checkContainerDataCount(containerData, 5);
+
         this.container = container;
+        this.containerData = containerData;
 
         this.addSlot(new Slot(container, 1, 14, 21) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
@@ -35,6 +45,8 @@ public class LaunchPadControllerMenu extends AbstractContainerMenu {
             }
         });
 
+        this.addDataSlots(this.containerData);
+
         for(int j = 0; j < 3; ++j) {
             for(int k = 0; k < 9; ++k) {
                 this.addSlot(new Slot(playerInventory, k + j * 9 + 9, 8 + k * 18, 84 + j * 18));
@@ -44,6 +56,14 @@ public class LaunchPadControllerMenu extends AbstractContainerMenu {
         for(int j = 0; j < 9; ++j) {
             this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 142));
         }
+    }
+
+    public int getTargetX() {
+        return containerData.get(0);
+    }
+
+    public int getTargetZ() {
+        return containerData.get(1);
     }
 
     @Override
@@ -68,33 +88,17 @@ public class LaunchPadControllerMenu extends AbstractContainerMenu {
         return this.container.stillValid(player);
     }
 
-//    @Override
-//    public void clicked(int i, int j, ClickType clickType, Player player) {
-//        ItemStack itemstack = this.container.getItem(1);
-//
-//        Integer mapId = MapItem.getMapId(itemstack);
-//        MapItemSavedData mapItemSavedData = MapItem.getSavedData(mapId, player.level());
-//
-//        if (mapItemSavedData != null) {
-//            int centerX = mapItemSavedData.centerX;
-//            System.out.println(centerX);
-//        }
-//
-//
-//        super.clicked(i, j, clickType, player);
-//    }
+    public void clickMap(int targetX, int targetZ) {
+        int x = this.containerData.get(2);
+        int y = this.containerData.get(3);
+        int z = this.containerData.get(4);
+        BlockPos pos = new BlockPos(x, y, z);
 
-    //    Map click positions are from 0 to 128 inclusive
-    public void clickMap(int mapClickX, int mapClickZ) {
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        buf.writeBlockPos(pos);
+        buf.writeInt(targetX);
+        buf.writeInt(targetZ);
 
-        ItemStack itemstack = this.container.getItem(1);
-        Integer mapId = MapItem.getMapId(itemstack);
-
-//        MapItemSavedData mapItemSavedData = MapItem.getSavedData(mapId, level);
-//
-//        if (mapItemSavedData != null) {
-//            int centerX = mapItemSavedData.centerX;
-//            System.out.println(centerX);
-//        }
+        MissilePackets.SET_CONTROLLER_TARGET.sendToServer(new SetControllerTargetMessage(pos, targetX, targetZ));
     }
 }
