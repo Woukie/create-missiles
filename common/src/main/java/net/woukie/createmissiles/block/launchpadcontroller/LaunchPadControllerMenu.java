@@ -58,6 +58,17 @@ public class LaunchPadControllerMenu extends AbstractContainerMenu {
         }
     }
 
+    public boolean armed() {
+        if (getTargetZ() == -1 || getTargetX() == -1)
+            return false;
+
+        if (container.getItem(0).isEmpty())
+            return false;
+
+        ItemStack map = getSlot(0).getItem();
+        return map.is(Items.FILLED_MAP);
+    }
+
     public int getTargetX() {
         return containerData.get(0);
     }
@@ -88,11 +99,19 @@ public class LaunchPadControllerMenu extends AbstractContainerMenu {
         return this.container.stillValid(player);
     }
 
+    public void clickLaunch() {
+        if (armed()) {
+            BlockPos pos = getPosition();
+
+            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+            buf.writeBlockPos(pos);
+
+            MissilePackets.CONTROLLER_LAUNCH.sendToServer(new ControllerLaunchMessage(pos));
+        }
+    }
+
     public void clickMap(int targetX, int targetZ) {
-        int x = this.containerData.get(2);
-        int y = this.containerData.get(3);
-        int z = this.containerData.get(4);
-        BlockPos pos = new BlockPos(x, y, z);
+        BlockPos pos = getPosition();
 
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeBlockPos(pos);
@@ -100,5 +119,12 @@ public class LaunchPadControllerMenu extends AbstractContainerMenu {
         buf.writeInt(targetZ);
 
         MissilePackets.SET_CONTROLLER_TARGET.sendToServer(new SetControllerTargetMessage(pos, targetX, targetZ));
+    }
+
+    private BlockPos getPosition() {
+        int x = this.containerData.get(2);
+        int y = this.containerData.get(3);
+        int z = this.containerData.get(4);
+        return new BlockPos(x, y, z);
     }
 }

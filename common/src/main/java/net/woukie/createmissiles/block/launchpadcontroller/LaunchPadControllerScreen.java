@@ -18,11 +18,14 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
     private static final int mapTop = 17;
     private static final int mapLeft = 60;
     private static final float mapScale = 0.4375F;
-    private static final ResourceLocation BG_LOCATION = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/launch_pad_controller.png");
+    private static final ResourceLocation BG = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/launch_pad_controller.png");
+    private static final ResourceLocation BG_ARMED = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/launch_pad_controller_armed.png");
     private static final ResourceLocation TARGET_MIDDLE = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_marker.png");
     private static final ResourceLocation TARGET_HORIZONTAL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_horizontal.png");
     private static final ResourceLocation TARGET_VERTICAL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_vertical.png");
     private ItemStack map;
+
+    private boolean hoveringButton;
 
     private float displayScale = 0;
     private float displayTargetX = -1;
@@ -34,16 +37,27 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
     }
 
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-
         super.render(guiGraphics, i, j, f);
         this.renderTooltip(guiGraphics, i, j);
+    }
+
+    @Override
+    public void mouseMoved(double d, double e) {
+        hoveringButton = isHovering(141, 37, 19, 19, d, e);
+        super.mouseMoved(d, e);
     }
 
     protected void renderBg(GuiGraphics guiGraphics, float f, int i, int j) {
         this.renderBackground(guiGraphics);
         int left = this.leftPos;
         int top = this.topPos;
-        guiGraphics.blit(BG_LOCATION, left, top, 0, 0, this.imageWidth, this.imageHeight);
+
+        if (this.menu.armed() && hoveringButton) {
+            guiGraphics.blit(BG_ARMED, left, top, 0, 0, this.imageWidth, this.imageHeight);
+        } else {
+            guiGraphics.blit(BG, left, top, 0, 0, this.imageWidth, this.imageHeight);
+        }
+
         map = this.menu.getSlot(0).getItem();
 
         int targetScale = 1;
@@ -113,10 +127,13 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
             int targetX = (int) ((x - this.leftPos - mapLeft) / mapScale);
             int targetZ = (int) ((z - this.topPos - mapTop) / mapScale);
 
-            if (targetX < 0 || targetX > 128 || targetZ < 0 || targetZ > 128)
-                return super.mouseClicked(x, z, i);
+            if (targetX >= 0 && targetX <= 128 && targetZ >= 0 && targetZ <= 128) {
+                menu.clickMap(targetX, targetZ);
+            }
+        }
 
-            menu.clickMap(targetX, targetZ);
+        if (isHovering(141, 37, 19, 19, x, z)) {
+            menu.clickLaunch();
         }
 
         return super.mouseClicked(x, z, i);

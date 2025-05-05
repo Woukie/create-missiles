@@ -8,15 +8,23 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MapItem;
 import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,6 +95,38 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
         if (!initialized && hasLevel()) {
             initialized = true;
             ControllerInstanceManager.add(this);
+        }
+    }
+
+    public void launch() {
+        ItemStack map = items.get(SLOT_MAP);
+
+        if (map.is(Items.FILLED_MAP)) {
+            Integer mapId = MapItem.getMapId(map);
+            MapItemSavedData mapData = MapItem.getSavedData(mapId, this.getLevel());
+
+            if (mapData != null) {
+                items.set(0, new ItemStack(ItemStack.EMPTY.getItem()));
+
+                int multiplier = 1 << mapData.scale;
+
+                int blockX = multiplier * targetX;
+                int blockZ = multiplier * targetZ;
+
+                blockX = mapData.centerX - 64 * multiplier + blockX;
+                blockZ = mapData.centerZ - 64 * multiplier + blockZ;
+
+                int scan = level.getMaxBuildHeight();
+                BlockPos impactPos = new BlockPos(blockX, scan, blockZ);
+                while (scan >= level.getMinBuildHeight()) {
+                    impactPos = new BlockPos(blockX, scan, blockZ);
+                    if (!level.getBlockState(impactPos).isAir())
+                        break;
+                    scan--;
+                }
+
+                level.explode(null, impactPos.getX(), impactPos.getY(), impactPos.getZ(), 100, Level.ExplosionInteraction.BLOCK);
+            }
         }
     }
 
