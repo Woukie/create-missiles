@@ -24,6 +24,9 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
     private static final ResourceLocation TARGET_VERTICAL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_vertical.png");
     private ItemStack map;
 
+    private float displayTargetX = 64;
+    private float displayTargetZ = 64;
+
     public LaunchPadControllerScreen(LaunchPadControllerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
         this.titleLabelY -= 2;
@@ -62,8 +65,11 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
         if (targetX == -1 || targetZ == -1)
             return;
 
-        int clickX = (int) (targetX * mapScale);
-        int clickZ = (int) (targetZ * mapScale);
+        displayTargetX = displayTargetX + (targetX - displayTargetX) * 0.1F;
+        displayTargetZ = displayTargetZ + (targetZ - displayTargetZ) * 0.1F;
+
+        int clickX = (int) (displayTargetX * mapScale);
+        int clickZ = (int) (displayTargetZ * mapScale);
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, 10.0F);

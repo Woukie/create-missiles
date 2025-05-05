@@ -28,8 +28,8 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
     private static final int[] SLOTS_FOR_SIDES = new int[]{1};
 
     protected NonNullList<ItemStack> items;
-    int targetX = -1;
-    int targetZ = -1;
+    int targetX;
+    int targetZ;
     private final ContainerData dataAccess;
 
     boolean initialized;
@@ -37,8 +37,8 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
     public LaunchPadControllerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
 
-        this.targetX = -1;
-        this.targetZ = -1;
+        this.targetX = 64;
+        this.targetZ = 64;
 
         this.items = NonNullList.withSize(2, ItemStack.EMPTY);
         this.dataAccess = new ContainerData() {
