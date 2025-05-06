@@ -57,7 +57,7 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
 
         float targetBackgroundPercentage = this.menu.armed() ? 1F : 0F;
         backgroundPercentage = backgroundPercentage + (targetBackgroundPercentage - backgroundPercentage) * 0.1F;
-        int backgroundFrame = (int) Math.clamp(backgroundPercentage * backgroundFrames, 0, backgroundFrames - 1);
+        int backgroundFrame = (int) Math.min(backgroundPercentage * backgroundFrames, backgroundFrames - 1);
 
         boolean isLastFrame = backgroundFrame == backgroundFrames - 1;
         if (isLastFrame && hoveringButton) {
