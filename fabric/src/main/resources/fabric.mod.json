@@ -16,6 +16,7 @@
   "icon": "assets/createmissiles/icon.png",
   "environment": "*",
   "entrypoints": {
+    "client": ["net.woukie.createmissiles.fabric.CreateMissilesClientFabric"],
     "main": [
       "net.woukie.createmissiles.fabric.CreateMissilesFabric"
     ]

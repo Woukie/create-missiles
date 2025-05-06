@@ -1,10 +1,9 @@
 package net.woukie.createmissiles.block.launchpadcontroller;
 
 import io.netty.buffer.Unpooled;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -13,21 +12,17 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.woukie.createmissiles.registry.MissileItems;
-import net.woukie.createmissiles.registry.MissileMenus;
 import net.woukie.createmissiles.registry.MissilePackets;
 import org.jetbrains.annotations.NotNull;
+
+import static net.woukie.createmissiles.registry.MissileMenus.LAUNCH_PAD_CONTROLLER;
 
 public class LaunchPadControllerMenu extends AbstractContainerMenu {
     private final Container container;
     private final ContainerData containerData;
 
-    @Environment(EnvType.CLIENT)
-    public LaunchPadControllerMenu(MenuType<?> type, int i, Inventory inventory) {
-        this(i, inventory, new SimpleContainer(4), new SimpleContainerData(5));
-    }
-
     public LaunchPadControllerMenu(int i, Inventory playerInventory, Container container, ContainerData containerData) {
-        super(MissileMenus.LAUNCH_PAD_CONTROLLER_MENU.get(), i);
+        super(LAUNCH_PAD_CONTROLLER.get(), i);
         checkContainerSize(container, 4);
         checkContainerDataCount(containerData, 5);
 
@@ -69,6 +64,13 @@ public class LaunchPadControllerMenu extends AbstractContainerMenu {
         for(int j = 0; j < 9; ++j) {
             this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 142));
         }
+    }
+    public LaunchPadControllerMenu(LaunchPadControllerMenu menu, Inventory inventory, Component component) {
+        this(menu.containerId, inventory, new SimpleContainer(4), new SimpleContainerData(5));
+    }
+
+    public LaunchPadControllerMenu(int id, Inventory inventory) {
+        this(id, inventory, new SimpleContainer(4), new SimpleContainerData(5));
     }
 
     public boolean armed() {

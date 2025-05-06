@@ -1,7 +1,10 @@
 package net.woukie.createmissiles;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import dev.architectury.registry.registries.RegistrarManager;
 import net.woukie.createmissiles.registry.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +15,7 @@ public class CreateMissiles {
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
 
     private static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
+    public static final Supplier<RegistrarManager> MANAGER = Suppliers.memoize(() -> RegistrarManager.get(MOD_ID));
 
     public static void init() {
         LOGGER.info("{} initializing! Create version: {} on platform: {}", NAME, Create.VERSION, ExampleExpectPlatform.platformName());

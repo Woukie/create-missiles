@@ -1,7 +1,5 @@
 package net.woukie.createmissiles.block.launchpadcontroller;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -13,7 +11,6 @@ import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.woukie.createmissiles.CreateMissiles;
 
-@Environment(EnvType.CLIENT)
 public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPadControllerMenu> {
     private static final int backgroundFrames = 19;
     private static final int mapTop = 17;
