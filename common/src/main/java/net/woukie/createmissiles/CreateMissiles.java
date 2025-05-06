@@ -18,7 +18,7 @@ public class CreateMissiles {
     public static final Supplier<RegistrarManager> MANAGER = Suppliers.memoize(() -> RegistrarManager.get(MOD_ID));
 
     public static void init() {
-        LOGGER.info("{} initializing! Create version: {} on platform: {}", NAME, Create.VERSION, ExampleExpectPlatform.platformName());
+        LOGGER.info("{} initializing! Create version: {}}", NAME, Create.VERSION);
 
         MissilePackets.init();
         MissileMenus.init();
