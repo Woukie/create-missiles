@@ -15,11 +15,15 @@ import net.woukie.createmissiles.CreateMissiles;
 
 @Environment(EnvType.CLIENT)
 public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPadControllerMenu> {
+    private static final int backgroundFrames = 19;
     private static final int mapTop = 17;
-    private static final int mapLeft = 60;
+    private static final int mapLeft = 108;
+    private static final int buttonTop = 14;
+    private static final int buttonLeft = 88;
+    private static final int buttonWidth = 16;
+    private static final int buttonHeight = 16;
     private static final float mapScale = 0.4375F;
-    private static final ResourceLocation BG = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/launch_pad_controller.png");
-    private static final ResourceLocation BG_ARMED = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/launch_pad_controller_armed.png");
+    private static final ResourceLocation BACKGROUND_HOVERING_BUTTON = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/launch_pad_controller_hover.png");
     private static final ResourceLocation TARGET_MIDDLE = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_marker.png");
     private static final ResourceLocation TARGET_HORIZONTAL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_horizontal.png");
     private static final ResourceLocation TARGET_VERTICAL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_vertical.png");
@@ -30,6 +34,8 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
     private float displayScale = 0;
     private float displayTargetX = -1;
     private float displayTargetZ = -1;
+
+    private float backgroundPercentage = 0F;
 
     public LaunchPadControllerScreen(LaunchPadControllerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -43,7 +49,7 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
 
     @Override
     public void mouseMoved(double d, double e) {
-        hoveringButton = isHovering(141, 37, 19, 19, d, e);
+        hoveringButton = isHovering(buttonLeft, buttonTop, buttonWidth, buttonHeight, d, e);
         super.mouseMoved(d, e);
     }
 
@@ -52,10 +58,16 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
         int left = this.leftPos;
         int top = this.topPos;
 
-        if (this.menu.armed() && hoveringButton) {
-            guiGraphics.blit(BG_ARMED, left, top, 0, 0, this.imageWidth, this.imageHeight);
+        float targetBackgroundPercentage = this.menu.armed() ? 1F : 0F;
+        backgroundPercentage = backgroundPercentage + (targetBackgroundPercentage - backgroundPercentage) * 0.1F;
+        int backgroundFrame = (int) Math.clamp(backgroundPercentage * backgroundFrames, 0, backgroundFrames - 1);
+
+        boolean isLastFrame = backgroundFrame == backgroundFrames - 1;
+        if (isLastFrame && hoveringButton) {
+            guiGraphics.blit(BACKGROUND_HOVERING_BUTTON, left, top, 0, 0, this.imageWidth, this.imageHeight);
         } else {
-            guiGraphics.blit(BG, left, top, 0, 0, this.imageWidth, this.imageHeight);
+            ResourceLocation backgroundLocation = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/launch_pad_controller_" + backgroundFrame + ".png");
+            guiGraphics.blit(backgroundLocation, left, top, 0, 0, this.imageWidth, this.imageHeight);
         }
 
         map = this.menu.getSlot(0).getItem();
@@ -132,7 +144,7 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
             }
         }
 
-        if (isHovering(141, 37, 19, 19, x, z)) {
+        if (hoveringButton) {
             menu.clickLaunch();
         }
 

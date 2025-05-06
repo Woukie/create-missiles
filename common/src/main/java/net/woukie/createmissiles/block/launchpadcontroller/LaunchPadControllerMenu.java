@@ -33,13 +33,25 @@ public class LaunchPadControllerMenu extends AbstractContainerMenu {
         this.container = container;
         this.containerData = containerData;
 
-        this.addSlot(new Slot(container, 1, 14, 21) {
+        this.addSlot(new Slot(container, 1, 88, 61) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
                 return itemStack.is(Items.FILLED_MAP);
             }
         });
 
-        this.addSlot(new Slot(container, 0, 14, 55) {
+        this.addSlot(new Slot(container, 0, 8, 14) {
+            public boolean mayPlace(@NotNull ItemStack itemStack) {
+                return itemStack.is(Items.FIREWORK_ROCKET);
+            }
+        });
+
+        this.addSlot(new Slot(container, 0, 8, 32) {
+            public boolean mayPlace(@NotNull ItemStack itemStack) {
+                return itemStack.is(Items.FIREWORK_ROCKET);
+            }
+        });
+
+        this.addSlot(new Slot(container, 0, 8, 50) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
                 return itemStack.is(Items.FIREWORK_ROCKET);
             }
