@@ -19,15 +19,18 @@ import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.woukie.createmissiles.registry.MissileItems;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer {
-    protected static final int SLOT_ROCKET = 0;
-    protected static final int SLOT_MAP = 1;
+    protected static final int SLOT_MAP = 0;
+    protected static final int SLOT_WARHEAD = 1;
+    protected static final int SLOT_CHASSIS = 2;
+    protected static final int SLOT_THRUSTER = 3;
     private static final int[] SLOTS_FOR_UP = new int[]{0};
-    private static final int[] SLOTS_FOR_DOWN = new int[]{1, 0};
-    private static final int[] SLOTS_FOR_SIDES = new int[]{1};
+    private static final int[] SLOTS_FOR_DOWN = new int[]{0, 1, 2, 3};
+    private static final int[] SLOTS_FOR_SIDES = new int[]{1, 2, 3};
 
     protected NonNullList<ItemStack> items;
     int targetX;
@@ -42,7 +45,7 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
         this.targetX = -1;
         this.targetZ = -1;
 
-        this.items = NonNullList.withSize(2, ItemStack.EMPTY);
+        this.items = NonNullList.withSize(4, ItemStack.EMPTY);
         this.dataAccess = new ContainerData() {
             public int get(int i) {
                 switch (i) {
@@ -100,8 +103,6 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
             MapItemSavedData mapData = MapItem.getSavedData(mapId, this.getLevel());
 
             if (mapData != null) {
-                items.set(0, new ItemStack(ItemStack.EMPTY.getItem()));
-
                 int multiplier = 1 << mapData.scale;
 
                 int blockX = multiplier * targetX;
@@ -198,10 +199,14 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
 
     @Override
     public boolean canPlaceItem(int i, ItemStack itemStack) {
-        if (i == SLOT_ROCKET) {
-            return itemStack.is(Items.FIREWORK_ROCKET);
-        } else if (i == SLOT_MAP) {
+        if (i == SLOT_MAP) {
             return itemStack.is(Items.FILLED_MAP);
+        } else if (i == SLOT_THRUSTER) {
+            return itemStack.is(MissileItems.THRUSTER_SCHEMATIC.get());
+        } else if (i == SLOT_WARHEAD) {
+            return itemStack.is(MissileItems.WARHEAD_SCHEMATIC.get());
+        } else if (i == SLOT_CHASSIS) {
+            return itemStack.is(MissileItems.CHASSIS_SCHEMATIC.get());
         }
 
         return false;

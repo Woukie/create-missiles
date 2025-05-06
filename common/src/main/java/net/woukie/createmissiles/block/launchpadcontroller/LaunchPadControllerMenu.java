@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.woukie.createmissiles.registry.MissileItems;
 import net.woukie.createmissiles.registry.MissileMenus;
 import net.woukie.createmissiles.registry.MissilePackets;
 import org.jetbrains.annotations.NotNull;
@@ -22,38 +23,38 @@ public class LaunchPadControllerMenu extends AbstractContainerMenu {
 
     @Environment(EnvType.CLIENT)
     public LaunchPadControllerMenu(MenuType<?> type, int i, Inventory inventory) {
-        this(i, inventory, new SimpleContainer(2), new SimpleContainerData(5));
+        this(i, inventory, new SimpleContainer(4), new SimpleContainerData(5));
     }
 
     public LaunchPadControllerMenu(int i, Inventory playerInventory, Container container, ContainerData containerData) {
         super(MissileMenus.LAUNCH_PAD_CONTROLLER_MENU.get(), i);
-        checkContainerSize(container, 2);
+        checkContainerSize(container, 4);
         checkContainerDataCount(containerData, 5);
 
         this.container = container;
         this.containerData = containerData;
 
-        this.addSlot(new Slot(container, 1, 88, 61) {
+        this.addSlot(new Slot(container, 0, 88, 61) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
                 return itemStack.is(Items.FILLED_MAP);
             }
         });
 
-        this.addSlot(new Slot(container, 0, 8, 14) {
+        this.addSlot(new Slot(container, 1, 8, 14) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
-                return itemStack.is(Items.FIREWORK_ROCKET);
+                return itemStack.is(MissileItems.WARHEAD_SCHEMATIC.get());
             }
         });
 
-        this.addSlot(new Slot(container, 0, 8, 32) {
+        this.addSlot(new Slot(container, 2, 8, 32) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
-                return itemStack.is(Items.FIREWORK_ROCKET);
+                return itemStack.is(MissileItems.CHASSIS_SCHEMATIC.get());
             }
         });
 
-        this.addSlot(new Slot(container, 0, 8, 50) {
+        this.addSlot(new Slot(container, 3, 8, 50) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
-                return itemStack.is(Items.FIREWORK_ROCKET);
+                return itemStack.is(MissileItems.THRUSTER_SCHEMATIC.get());
             }
         });
 
@@ -71,14 +72,22 @@ public class LaunchPadControllerMenu extends AbstractContainerMenu {
     }
 
     public boolean armed() {
-        if (getTargetZ() == -1 || getTargetX() == -1)
+        int targetX = getTargetZ();
+        int targetZ = getTargetX();
+        if (targetX < 0 || targetZ < 0 || targetX > 128 || targetZ > 128)
             return false;
 
-        if (container.getItem(0).isEmpty())
+        if (container.getItem(0).isEmpty() || container.getItem(1).isEmpty() || container.getItem(2).isEmpty() || container.getItem(3).isEmpty())
             return false;
 
         ItemStack map = getSlot(0).getItem();
-        return map.is(Items.FILLED_MAP);
+        ItemStack warhead = getSlot(1).getItem();
+        ItemStack chassis = getSlot(2).getItem();
+        ItemStack thruster = getSlot(3).getItem();
+        return map.is(Items.FILLED_MAP) &&
+                warhead.is(MissileItems.WARHEAD_SCHEMATIC.get()) &&
+                chassis.is(MissileItems.CHASSIS_SCHEMATIC.get()) &&
+                thruster.is(MissileItems.THRUSTER_SCHEMATIC.get());
     }
 
     public int getTargetX() {
@@ -101,7 +110,7 @@ public class LaunchPadControllerMenu extends AbstractContainerMenu {
         if (index < size) {
             success = !moveItemStackTo(stack, size, slots.size(), false);
         } else
-            success = !moveItemStackTo(stack, 0, size - 1, false);
+            success = !moveItemStackTo(stack, 0, size, false);
 
         return success ? ItemStack.EMPTY : stack;
     }

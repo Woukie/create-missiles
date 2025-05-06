@@ -2,5 +2,8 @@
   "category.createmissiles": "Create Missiles",
   "block.createmissiles.launch_pad": "Launch Pad",
   "block.createmissiles.launch_pad_controller": "Launch Pad Controller",
+  "item.createmissiles.warhead_schematic": "Warhead Schematic",
+  "item.createmissiles.chassis_schematic": "Chassis Schematic",
+  "item.createmissiles.thruster_schematic": "Thruster Schematic",
   "container.createmissiles.launch_pad_controller": "Launch Pad"
 }
