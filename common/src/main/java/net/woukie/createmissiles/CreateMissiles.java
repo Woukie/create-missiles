@@ -4,7 +4,9 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.registry.registries.RegistrarManager;
+import net.woukie.createmissiles.missilemanager.Trajectories;
 import net.woukie.createmissiles.registry.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,10 @@ public class CreateMissiles {
 
     public static void init() {
         LOGGER.info("{} initializing! Create version: {}}", NAME, Create.VERSION);
+
+        LifecycleEvent.SERVER_STARTED.register(instance -> {
+            Trajectories.get().init(instance);
+        });
 
         MissilePackets.init();
         MissileMenus.init();

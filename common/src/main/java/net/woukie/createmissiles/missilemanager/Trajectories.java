@@ -1,0 +1,55 @@
+package net.woukie.createmissiles.missilemanager;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.storage.DimensionDataStorage;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Trajectories extends SavedData {
+    public final List<Trajectory> trajectories = new ArrayList<>();
+
+    private static Trajectories instance;
+    private static boolean initialized = false;
+    private static MinecraftServer server;
+
+    private Trajectories() {}
+
+    public static Trajectories get() {
+        if (instance == null)
+            instance = new Trajectories();
+        return instance;
+    }
+
+    public void init(MinecraftServer server) {
+        if (initialized)
+            return;
+        initialized = true;
+
+        Trajectories.server = server;
+        DimensionDataStorage storage = server.overworld().getDataStorage();
+        storage.computeIfAbsent(this::load, () -> this, "trajectory");
+    }
+
+    public Trajectories load(CompoundTag nbt) {
+        for (int i = 0; i < nbt.size(); i++) {
+            CompoundTag trajectory = nbt.getCompound("" + i);
+            trajectories.add(Trajectory.loadFrom(trajectory, server));
+        }
+
+        return this;
+    }
+
+    @Override
+    public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag) {
+        for (int i = 0; i < trajectories.size(); i++) {
+            Trajectory trajectory = trajectories.get(i);
+            compoundTag.put("" + i, trajectory.saveTo(new CompoundTag()));
+        }
+
+        return compoundTag;
+    }
+}

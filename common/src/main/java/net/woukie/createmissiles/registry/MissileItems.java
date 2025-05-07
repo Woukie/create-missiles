@@ -3,9 +3,9 @@ package net.woukie.createmissiles.registry;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.item.ChassisSchematic;
-import net.woukie.createmissiles.item.ThrusterSchematic;
-import net.woukie.createmissiles.item.WarheadSchematic;
+import net.woukie.createmissiles.item.schematic.ChassisSchematic;
+import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
+import net.woukie.createmissiles.item.schematic.WarheadSchematic;
 
 public class MissileItems {
     private static final CreateRegistrate REGISTRATE = CreateMissiles.registrate();
