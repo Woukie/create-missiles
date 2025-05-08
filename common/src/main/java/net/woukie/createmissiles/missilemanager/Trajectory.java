@@ -69,6 +69,43 @@ public class Trajectory {
         return tag;
     }
 
+    private float calculateAngle(float lowerAngle, float upperAngle, int sections, int iteration, int iterations) {
+        if (iteration > iterations)
+            return (lowerAngle + upperAngle) / 2;
+
+        ArrayList<Float> angles = new ArrayList<>(sections);
+        ArrayList<Float> accuracies = new ArrayList<>(sections);
+
+        for (int i = 0; i < sections; i++) {
+            float angle = ((float)i / sections) * (upperAngle - lowerAngle) + lowerAngle;
+            angles.set(i, angle);
+            accuracies.set(i, getAccuracy(angle));
+        }
+
+        int bestPairId = 0;
+        float bestPair = Float.MAX_VALUE;
+        for (int i = 0; i < sections - 1; i++) {
+            float accuracyLeft = accuracies.get(i);
+            float accuracyRight = accuracies.get(i + 1);
+
+            float averageAccuracy = (accuracyLeft + accuracyRight) / 2;
+            if (averageAccuracy < bestPair) {
+                bestPair = averageAccuracy;
+                bestPairId = i;
+            }
+        }
+
+        if (accuracies.get(bestPairId) < 0.5F)
+            return angles.get(bestPairId);
+
+        return calculateAngle(angles.get(bestPairId), angles.get(bestPairId + 1), sections, iteration, iterations);
+    }
+
+//    Bigger number = how far off
+    private float getAccuracy(float angle) {
+        return 10;
+    }
+
     //    For da expert salad:
 //    Use 'source' and 'target' block positions to calculate the position in the trajectory at time 'ticks' (1 tick = 0.05s)
 //
@@ -80,6 +117,8 @@ public class Trajectory {
         Vec2 targetXZ = new Vec2(this.target.getX(), this.target.getZ());
         Vec2 sourceXZ = new Vec2(this.source.getX(), this.source.getZ());
         Vec2 distanceXZ = targetXZ.add(sourceXZ.scale(-1));
+
+        getBoostTime() *
 
 //        Target such that the source is at 0,0
         Vec2 adjustedTarget = new Vec2(distanceXZ.length(), this.target.getY() - this.source.getY());
