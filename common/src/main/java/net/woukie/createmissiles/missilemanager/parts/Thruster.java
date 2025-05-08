@@ -2,12 +2,12 @@ package net.woukie.createmissiles.missilemanager.parts;
 
 public class Thruster {
     public String name;
-    public float speed;
-    public float fuelEfficiency;
+    public float thrust;
+    public float burnRate;
 
-    public Thruster(String name, float speed, float fuelEfficiency) {
+    public Thruster(String name, float thrust, float burnRate) {
         this.name = name;
-        this.speed = speed;
-        this.fuelEfficiency = fuelEfficiency;
+        this.thrust = thrust;
+        this.burnRate = burnRate;
     }
 }

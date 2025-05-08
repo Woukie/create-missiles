@@ -13,7 +13,7 @@ public class Warhead {
         this.detonatable = detonatable;
     }
 
-    public static class Detonatable {
-        public void detonate(Trajectory trajectory) {}
+    public interface Detonatable {
+        void detonate(Trajectory trajectory);
     }
 }

@@ -5,6 +5,7 @@ import com.google.common.base.Suppliers;
 import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import dev.architectury.event.events.common.LifecycleEvent;
+import dev.architectury.event.events.common.TickEvent;
 import dev.architectury.registry.registries.RegistrarManager;
 import net.woukie.createmissiles.missilemanager.Trajectories;
 import net.woukie.createmissiles.registry.*;
@@ -24,6 +25,10 @@ public class CreateMissiles {
 
         LifecycleEvent.SERVER_STARTED.register(instance -> {
             Trajectories.get().init(instance);
+        });
+
+        TickEvent.SERVER_PRE.register(instance -> {
+            Trajectories.get().serverTick(instance);
         });
 
         MissilePackets.init();

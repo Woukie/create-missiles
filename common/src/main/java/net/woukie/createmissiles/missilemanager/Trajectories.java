@@ -1,16 +1,18 @@
 package net.woukie.createmissiles.missilemanager;
 
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Trajectories extends SavedData {
-    public final List<Trajectory> trajectories = new ArrayList<>();
+    public final List<Trajectory> activeTrajectories = new ArrayList<>();
 
     private static Trajectories instance;
     private static boolean initialized = false;
@@ -34,10 +36,24 @@ public class Trajectories extends SavedData {
         storage.computeIfAbsent(this::load, () -> this, "trajectory");
     }
 
+    public void serverTick(MinecraftServer server) {
+        activeTrajectories.forEach(trajectory -> {
+            trajectory.ticks += 1;
+            Vec3 p = trajectory.getPosition();
+            server.overworld().sendParticles(ParticleTypes.CLOUD, p.x, p.y, p.z, 5, 0, 0, 0, 0);
+            if (trajectory.hit) {
+                trajectory.warhead.detonatable.detonate(trajectory);
+                setDirty();
+            }
+        });
+
+        activeTrajectories.removeIf(trajectory -> trajectory.hit);
+    }
+
     public Trajectories load(CompoundTag nbt) {
         for (int i = 0; i < nbt.size(); i++) {
             CompoundTag trajectory = nbt.getCompound("" + i);
-            trajectories.add(Trajectory.loadFrom(trajectory, server));
+            activeTrajectories.add(Trajectory.loadFrom(trajectory, server));
         }
 
         return this;
@@ -45,8 +61,8 @@ public class Trajectories extends SavedData {
 
     @Override
     public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag) {
-        for (int i = 0; i < trajectories.size(); i++) {
-            Trajectory trajectory = trajectories.get(i);
+        for (int i = 0; i < activeTrajectories.size(); i++) {
+            Trajectory trajectory = activeTrajectories.get(i);
             compoundTag.put("" + i, trajectory.saveTo(new CompoundTag()));
         }
 

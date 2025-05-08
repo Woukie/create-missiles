@@ -14,12 +14,16 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.woukie.createmissiles.missilemanager.Trajectories;
 import net.woukie.createmissiles.missilemanager.Trajectory;
+import net.woukie.createmissiles.missilemanager.parts.Chassis;
+import net.woukie.createmissiles.missilemanager.parts.Thruster;
+import net.woukie.createmissiles.missilemanager.parts.Warhead;
 import net.woukie.createmissiles.registry.MissileItems;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -121,9 +125,9 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
                     scan--;
                 }
 
-                Trajectories trajectories = Trajectories.get();
                 Trajectory trajectory = new Trajectory(level.getServer().getLevel(mapData.dimension), worldPosition, impactPos);
-                trajectories.trajectories.add(trajectory);
+                Trajectories trajectories = Trajectories.get();
+                trajectories.activeTrajectories.add(trajectory);
                 trajectories.setDirty();
             }
         }
