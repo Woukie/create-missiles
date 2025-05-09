@@ -1,6 +1,5 @@
 package net.woukie.createmissiles.missilemanager;
 
-import net.minecraft.client.gui.screens.AccessibilityOnboardingScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -11,13 +10,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.missilemanager.parts.*;
-import oshi.util.tuples.Pair;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Trajectory {
-    private static final float gravity = -9.81F;
+    private static final float gravity = 9.81F;
+
+
+    private float angle = -1;
 
     public boolean hit;
     public Level level;
@@ -42,7 +40,7 @@ public class Trajectory {
                 level.explode(null, target.getX(), target.getY(), target.getZ(), 5, Level.ExplosionInteraction.TNT)
         );
         this.chassis = new Chassis("idakl", 3);
-        this.thruster = new Thruster("thruster", 50, 2);
+        this.thruster = new Thruster("thruster", 5000, 2);
     }
 
     public static Trajectory loadFrom(CompoundTag tag, MinecraftServer server) {
@@ -70,23 +68,24 @@ public class Trajectory {
     }
 
     private float calculateAngle(float lowerAngle, float upperAngle, int sections, int iteration, int iterations) {
+        iteration++;
         if (iteration > iterations)
             return (lowerAngle + upperAngle) / 2;
 
-        ArrayList<Float> angles = new ArrayList<>(sections);
-        ArrayList<Float> accuracies = new ArrayList<>(sections);
+        float[] angles = new float[sections];
+        float[] accuracies = new float[sections];
 
         for (int i = 0; i < sections; i++) {
             float angle = ((float)i / sections) * (upperAngle - lowerAngle) + lowerAngle;
-            angles.set(i, angle);
-            accuracies.set(i, getAccuracy(angle));
+            angles[i] = angle;
+            accuracies[i] = getAccuracy(angle);
         }
 
         int bestPairId = 0;
         float bestPair = Float.MAX_VALUE;
         for (int i = 0; i < sections - 1; i++) {
-            float accuracyLeft = accuracies.get(i);
-            float accuracyRight = accuracies.get(i + 1);
+            float accuracyLeft = Math.abs(accuracies[i]);
+            float accuracyRight = Math.abs(accuracies[i + 1]);
 
             float averageAccuracy = (accuracyLeft + accuracyRight) / 2;
             if (averageAccuracy < bestPair) {
@@ -95,15 +94,28 @@ public class Trajectory {
             }
         }
 
-        if (accuracies.get(bestPairId) < 0.5F)
-            return angles.get(bestPairId);
+        if (Math.abs(accuracies[bestPairId]) < 0.5F)
+            return angles[bestPairId];
 
-        return calculateAngle(angles.get(bestPairId), angles.get(bestPairId + 1), sections, iteration, iterations);
+        return calculateAngle(angles[bestPairId], angles[bestPairId + 1], sections, iteration, iterations);
     }
 
 //    Bigger number = how far off
     private float getAccuracy(float angle) {
-        return 10;
+        float initialVelocity = getIntialVelocity();
+
+        Vec2 targetXZ = new Vec2(this.target.getX(), this.target.getZ());
+        Vec2 sourceXZ = new Vec2(this.source.getX(), this.source.getZ());
+        Vec2 distanceXZ = targetXZ.add(sourceXZ.scale(-1));
+
+        float targetX = distanceXZ.length();
+        float targetY = this.target.getY() - this.source.getY();
+
+        float tan = (float) Math.tan(angle);
+        float cos = (float) Math.cos(angle);
+
+        float y = (targetX * tan) / (1 + (targetX / (2 * initialVelocity * initialVelocity * cos * cos)));
+        return targetY - y;
     }
 
     //    For da expert salad:
@@ -112,31 +124,42 @@ public class Trajectory {
 //    Feel free to define static constants if you want to model atmosphere, pressure or whatever. In the future I'll make a config thingy to fetch dimension-specific values
 //    Feel free to add to the 'loadFrom' and 'saveTo' functions if you want to save calculated data (e.g. launch angle) to speed up future calls
     public Vec3 getPosition() {
-        float seconds = ticks * 0.05F;
+        float second = getSeconds();
+
+        if (angle == -1)
+            angle = calculateAngle(0, (float) Math.PI / 2.0F, 5, 0, 20);
 
         Vec2 targetXZ = new Vec2(this.target.getX(), this.target.getZ());
         Vec2 sourceXZ = new Vec2(this.source.getX(), this.source.getZ());
         Vec2 distanceXZ = targetXZ.add(sourceXZ.scale(-1));
 
-        getBoostTime() *
+        Vec2 localTarget = new Vec2(distanceXZ.length(), this.target.getY() - this.source.getY());
 
-//        Target such that the source is at 0,0
-        Vec2 adjustedTarget = new Vec2(distanceXZ.length(), this.target.getY() - this.source.getY());
-        float boostTime = getBoostTime();
+        float initialVelocity = getIntialVelocity();
+        float v0x = initialVelocity * (float) Math.cos(angle);
+        float v0y = initialVelocity * (float) Math.sin(angle);
 
-//        Vec2 position =
+        float x = v0x * second;
+        float y = v0y * second - 0.5f * gravity * second * second;
 
-//        float horizontalProportionTravelled = position.x / adjustedTarget.x;
-//        return new Vec3(
-//                this.source.getX() + horizontalProportionTravelled * distanceXZ.x,
-//                this.source.getY() + position.y,
-//                this.source.getZ() + horizontalProportionTravelled * distanceXZ.y
-//        );
+        Vec2 position = new Vec2(x, y);
 
-        return Vec3.ZERO;
+        float horizontalProportionTravelled = position.x / localTarget.x;
+        if (horizontalProportionTravelled > 1) {
+            this.hit = true;
+        }
+        return new Vec3(
+                this.source.getX() + horizontalProportionTravelled * distanceXZ.x,
+                this.source.getY() + position.y,
+                this.source.getZ() + horizontalProportionTravelled * distanceXZ.y
+        );
     }
 
-    private float getBoostTime() {
-        return (chassis.fuelCapacity / warhead.weight) / thruster.burnRate;
+    private float getIntialVelocity() {
+        return 20F;
+    }
+
+    private float getSeconds() {
+        return ticks * 0.05F;
     }
 }
