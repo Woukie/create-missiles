@@ -41,13 +41,13 @@ public class Trajectories extends SavedData {
             trajectory.ticks += 1;
             Vec3 p = trajectory.getPosition();
             server.overworld().sendParticles(ParticleTypes.CLOUD, p.x, p.y, p.z, 5, 0, 0, 0, 0);
-            if (trajectory.hit) {
+            if (trajectory.shouldExplode()) {
                 trajectory.warhead.detonatable.detonate(trajectory);
                 setDirty();
             }
         });
 
-        activeTrajectories.removeIf(trajectory -> trajectory.hit);
+        activeTrajectories.removeIf(Trajectory::shouldExplode);
     }
 
     public Trajectories load(CompoundTag nbt) {
