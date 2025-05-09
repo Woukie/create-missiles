@@ -37,9 +37,10 @@ public class Trajectory {
         this.target = destination;
         this.ticks = ticks;
 
-        this.warhead = new Warhead("idk", 1, trajectory1 ->
-                level.explode(null, target.getX(), target.getY(), target.getZ(), 5, Level.ExplosionInteraction.TNT)
-        );
+        this.warhead = new Warhead("idk", 1, trajectory1 -> {
+                Vec3 position = trajectory1.getPosition();
+                level.explode(null, position.x, position.y, position.z, 5, Level.ExplosionInteraction.TNT);
+        });
         this.chassis = new Chassis("idakl", 3);
         this.thruster = new Thruster("thruster", 5000, 2);
 
