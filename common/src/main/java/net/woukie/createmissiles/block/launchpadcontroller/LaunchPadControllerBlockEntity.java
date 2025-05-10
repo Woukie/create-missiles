@@ -125,6 +125,10 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
                     scan--;
                 }
 
+                ItemStack warheadItem = items.get(SLOT_WARHEAD);
+                ItemStack chassisItem = items.get(SLOT_CHASSIS);
+                ItemStack thrusterItem = items.get(SLOT_THRUSTER);
+
                 Trajectory trajectory = new Trajectory(level.getServer().getLevel(mapData.dimension), worldPosition, impactPos);
                 Trajectories trajectories = Trajectories.get();
                 trajectories.activeTrajectories.add(trajectory);

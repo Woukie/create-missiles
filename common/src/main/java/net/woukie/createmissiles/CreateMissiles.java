@@ -31,6 +31,7 @@ public class CreateMissiles {
             Trajectories.get().serverTick(instance);
         });
 
+        MissileParts.init();
         MissilePackets.init();
         MissileMenus.init();
         MissileBlocks.init();

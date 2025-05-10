@@ -42,7 +42,7 @@ public class Trajectories extends SavedData {
             Vec3 p = trajectory.getPosition();
             server.overworld().sendParticles(ParticleTypes.CLOUD, p.x, p.y, p.z, 5, 0, 0, 0, 0);
             if (trajectory.shouldExplode()) {
-                trajectory.warhead.detonatable.detonate(trajectory);
+                trajectory.warhead.getDetonatable().detonate(trajectory);
                 setDirty();
             }
         });

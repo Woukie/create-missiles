@@ -10,6 +10,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.missilemanager.parts.*;
+import net.woukie.createmissiles.missilemanager.parts.chassis.ChassisRegistry;
+import net.woukie.createmissiles.missilemanager.parts.thrusters.ThrusterRegistry;
+import net.woukie.createmissiles.missilemanager.parts.warheads.WarheadRegistry;
 
 public class Trajectory {
     private static final double gravity = 9.81F;
@@ -27,22 +30,19 @@ public class Trajectory {
     public Chassis chassis;
     public Thruster thruster;
 
-    public Trajectory(Level level, BlockPos source, BlockPos destination) {
-        this(level, source, destination, 0);
+    public Trajectory(Level level, BlockPos source, BlockPos destination, Warhead warhead, Chassis chassis, Thruster thruster) {
+        this(level, source, destination, 0, warhead, chassis, thruster);
     }
 
-    private Trajectory(Level level, BlockPos source, BlockPos destination, int ticks) {
+    private Trajectory(Level level, BlockPos source, BlockPos destination, int ticks, Warhead warhead, Chassis chassis, Thruster thruster) {
         this.level = level;
         this.source = source;
         this.target = destination;
         this.ticks = ticks;
 
-        this.warhead = new Warhead("idk", 1, trajectory1 -> {
-                Vec3 position = trajectory1.getPosition();
-                level.explode(null, position.x, position.y, position.z, 5, Level.ExplosionInteraction.TNT);
-        });
-        this.chassis = new Chassis("idakl", 3);
-        this.thruster = new Thruster("thruster", 5000, 2);
+        this.warhead = warhead;
+        this.chassis = chassis;
+        this.thruster = thruster;
 
         preCalculate();
     }
@@ -53,10 +53,19 @@ public class Trajectory {
         BlockPos target = new BlockPos(tag.getInt("TargetX"), tag.getInt("TargetY"), tag.getInt("TargetZ"));
         int ticks = tag.getInt("Ticks");
 
-        ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimension));
+        ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimension));
 
-        Level level = server.getLevel(key);
-        return new Trajectory(level, source, target, ticks);
+        Warhead warhead = WarheadRegistry.get(new ResourceLocation(tag.getString("WarheadType"))).get();
+        warhead.loadData(tag.getCompound("WarheadData"));
+
+        Chassis chassis = ChassisRegistry.get(new ResourceLocation(tag.getString("ChassisType"))).get();
+        chassis.loadData(tag.getCompound("ChassisData"));
+
+        Thruster thruster = ThrusterRegistry.get(new ResourceLocation(tag.getString("ThrusterType"))).get();
+        thruster.loadData(tag.getCompound("ThrusterData"));
+
+        Level level = server.getLevel(dimensionKey);
+        return new Trajectory(level, source, target, ticks, warhead, chassis, thruster);
     }
 
     public CompoundTag saveTo(CompoundTag tag) {
@@ -68,6 +77,16 @@ public class Trajectory {
         tag.putInt("TargetY", this.target.getY());
         tag.putInt("TargetZ", this.target.getZ());
         tag.putInt("Ticks", this.ticks);
+
+        tag.putString("WarheadType",  warhead.getResourceLocation().getPath());
+        tag.put("WarheadData",  warhead.saveData(new CompoundTag()));
+
+        tag.putString("ChassisType",  chassis.getResourceLocation().getPath());
+        tag.put("ChassisData",  chassis.saveData(new CompoundTag()));
+
+        tag.putString("ThrusterType",  thruster.getResourceLocation().getPath());
+        tag.put("ThrusterData",  thruster.saveData(new CompoundTag()));
+
         return tag;
     }
 

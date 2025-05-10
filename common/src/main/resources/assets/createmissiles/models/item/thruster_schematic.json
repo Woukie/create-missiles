@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "createmissiles:item/thruster_schematic"
+    "layer0": "createmissiles:item/thruster_schematic_createstyle"
   }
 }
