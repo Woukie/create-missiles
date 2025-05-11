@@ -12,18 +12,23 @@ import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.woukie.createmissiles.CreateMissiles;
 
 public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPadControllerMenu> {
-    private static final int backgroundFrames = 19;
-    private static final int mapTop = 17;
     private static final int mapLeft = 108;
-    private static final int buttonTop = 14;
+    private static final int mapTop = 17;
     private static final int buttonLeft = 88;
+    private static final int buttonTop = 14;
     private static final int buttonWidth = 16;
     private static final int buttonHeight = 16;
+    private static final int buttonCoverWidth = 17;
+    private static final int buttonCoverHeight = 16;
     private static final float mapScale = 0.4375F;
+    private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/launch_pad_controller.png");
+    private static final ResourceLocation BUTTON_COVER = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/button_cover.png");
     private static final ResourceLocation BACKGROUND_HOVERING_BUTTON = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/launch_pad_controller_hover.png");
     private static final ResourceLocation TARGET_MIDDLE = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_marker.png");
     private static final ResourceLocation TARGET_HORIZONTAL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_horizontal.png");
     private static final ResourceLocation TARGET_VERTICAL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_vertical.png");
+    private static final ResourceLocation FUEL_GLASS = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel_glass.png");
+    private static final ResourceLocation FUEL_GAUGE = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel_gauge.png");
     private ItemStack map;
 
     private boolean hoveringButton;
@@ -32,7 +37,7 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
     private float displayTargetX = -1;
     private float displayTargetZ = -1;
 
-    private float backgroundPercentage = 0F;
+    private float buttonOpenPercentage = 0F;
 
     public LaunchPadControllerScreen(LaunchPadControllerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -56,16 +61,17 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
         int top = this.topPos;
 
         float targetBackgroundPercentage = this.menu.armed() ? 1F : 0F;
-        backgroundPercentage = backgroundPercentage + (targetBackgroundPercentage - backgroundPercentage) * 0.1F;
-        int backgroundFrame = (int) Math.min(backgroundPercentage * backgroundFrames, backgroundFrames - 1);
+        buttonOpenPercentage = buttonOpenPercentage + (targetBackgroundPercentage - buttonOpenPercentage) * 0.1F;
 
-        boolean isLastFrame = backgroundFrame == backgroundFrames - 1;
+        boolean isLastFrame = buttonOpenPercentage > 0.9F;
         if (isLastFrame && hoveringButton) {
             guiGraphics.blit(BACKGROUND_HOVERING_BUTTON, left, top, 0, 0, this.imageWidth, this.imageHeight);
         } else {
-            ResourceLocation backgroundLocation = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/launch_pad_controller_" + backgroundFrame + ".png");
-            guiGraphics.blit(backgroundLocation, left, top, 0, 0, this.imageWidth, this.imageHeight);
+            guiGraphics.blit(BACKGROUND, left, top, 0, 0, this.imageWidth, this.imageHeight);
         }
+
+        int offset = Math.round(buttonOpenPercentage * buttonCoverWidth);
+        guiGraphics.blit(BUTTON_COVER, buttonLeft + left, buttonTop + top, 10, offset, 0, buttonCoverWidth - offset, buttonCoverHeight, buttonCoverWidth, buttonCoverHeight);
 
         map = this.menu.getSlot(0).getItem();
 
