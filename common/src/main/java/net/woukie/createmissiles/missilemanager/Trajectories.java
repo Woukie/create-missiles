@@ -38,11 +38,11 @@ public class Trajectories extends SavedData {
 
     public void serverTick(MinecraftServer server) {
         activeTrajectories.forEach(trajectory -> {
-            trajectory.ticks += 1;
+            trajectory.incrementTick();
             Vec3 p = trajectory.getPosition();
             server.overworld().sendParticles(ParticleTypes.CLOUD, p.x, p.y, p.z, 5, 0, 0, 0, 0);
             if (trajectory.shouldExplode()) {
-                trajectory.warhead.getDetonatable().detonate(trajectory);
+                trajectory.explode();
                 setDirty();
             }
         });
@@ -53,7 +53,7 @@ public class Trajectories extends SavedData {
     public Trajectories load(CompoundTag nbt) {
         for (int i = 0; i < nbt.size(); i++) {
             CompoundTag trajectory = nbt.getCompound("" + i);
-            activeTrajectories.add(Trajectory.loadFrom(trajectory, server));
+            activeTrajectories.add(new Trajectory(new TrajectoryData(trajectory, server)));
         }
 
         return this;
@@ -63,7 +63,7 @@ public class Trajectories extends SavedData {
     public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag) {
         for (int i = 0; i < activeTrajectories.size(); i++) {
             Trajectory trajectory = activeTrajectories.get(i);
-            compoundTag.put("" + i, trajectory.saveTo(new CompoundTag()));
+            compoundTag.put("" + i, trajectory.getData().saveTo(new CompoundTag()));
         }
 
         return compoundTag;

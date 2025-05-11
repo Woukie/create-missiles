@@ -4,7 +4,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
@@ -21,7 +23,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.woukie.createmissiles.missilemanager.Trajectories;
 import net.woukie.createmissiles.missilemanager.Trajectory;
+import net.woukie.createmissiles.missilemanager.TrajectoryData;
 import net.woukie.createmissiles.missilemanager.parts.Chassis;
+import net.woukie.createmissiles.missilemanager.parts.PartRegistry;
 import net.woukie.createmissiles.missilemanager.parts.Thruster;
 import net.woukie.createmissiles.missilemanager.parts.Warhead;
 import net.woukie.createmissiles.registry.MissileItems;
@@ -125,13 +129,30 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
                     scan--;
                 }
 
-                ItemStack warheadItem = items.get(SLOT_WARHEAD);
-                ItemStack chassisItem = items.get(SLOT_CHASSIS);
-                ItemStack thrusterItem = items.get(SLOT_THRUSTER);
+                CompoundTag warheadTag = items.get(SLOT_WARHEAD).getTag();
+                CompoundTag chassisTag = items.get(SLOT_CHASSIS).getTag();
+                CompoundTag thrusterTag = items.get(SLOT_THRUSTER).getTag();
 
-                Trajectory trajectory = new Trajectory(level.getServer().getLevel(mapData.dimension), worldPosition, impactPos);
+                if (warheadTag == null || chassisTag == null || thrusterTag == null)
+                    return;
+
+                Warhead warhead = PartRegistry.getWarhead(new ResourceLocation(warheadTag.getString("Warhead")));
+                Chassis chassis = PartRegistry.getChassis(new ResourceLocation(warheadTag.getString("Chassis")));
+                Thruster thruster = PartRegistry.getThruster(new ResourceLocation(warheadTag.getString("Thruster")));
+
+                Level level = this.level.getServer().getLevel(mapData.dimension);
+                TrajectoryData data = new TrajectoryData(
+                        level,
+                        worldPosition,
+                        impactPos,
+                        0,
+                        warhead,
+                        chassis,
+                        thruster
+                );
+
                 Trajectories trajectories = Trajectories.get();
-                trajectories.activeTrajectories.add(trajectory);
+                trajectories.activeTrajectories.add(new Trajectory(data));
                 trajectories.setDirty();
             }
         }

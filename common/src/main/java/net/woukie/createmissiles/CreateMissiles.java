@@ -32,11 +32,12 @@ public class CreateMissiles {
         });
 
         MissileParts.init();
+        MissileItems.init();
+        MissileCreativeMenu.init();
         MissilePackets.init();
         MissileMenus.init();
         MissileBlocks.init();
         MissileBlockEntities.init();
-        MissileItems.init();
     }
 
     public static CreateRegistrate registrate() {

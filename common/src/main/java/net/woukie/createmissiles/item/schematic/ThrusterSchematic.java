@@ -1,4 +1,33 @@
 package net.woukie.createmissiles.item.schematic;
 
-public class ThrusterSchematic {
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.woukie.createmissiles.missilemanager.parts.PartRegistry;
+import net.woukie.createmissiles.registry.MissileItems;
+import org.jetbrains.annotations.NotNull;
+
+public class ThrusterSchematic extends Item {
+    public ThrusterSchematic(Properties properties) {
+        super(properties);
+    }
+
+    @Override
+    public @NotNull Component getName(ItemStack itemStack) {
+        CompoundTag compoundTag = itemStack.getTag();
+        if (compoundTag != null)
+            return PartRegistry.getThruster(new ResourceLocation(compoundTag.getString("Thruster"))).displayName;
+
+        return super.getName(itemStack);
+    }
+
+    public static ItemStack createWith(ResourceLocation thruster) {
+        ItemStack itemStack = new ItemStack(MissileItems.THRUSTER_SCHEMATIC.get());
+        CompoundTag compoundTag = itemStack.getOrCreateTag();
+        compoundTag.putString("Thruster", thruster.toString());
+        itemStack.setTag(compoundTag);
+        return itemStack;
+    }
 }
