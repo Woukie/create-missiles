@@ -9,22 +9,22 @@ import java.util.function.Supplier;
 
 public class SetControllerTargetMessage {
     public final BlockPos pos;
-    public final int targetX, targetZ;
+    public final double mapCrosshairX, mapCrosshairZ;
 
     public SetControllerTargetMessage(FriendlyByteBuf buf) {
-        this(buf.readBlockPos(), buf.readInt(), buf.readInt());
+        this(buf.readBlockPos(), buf.readDouble(), buf.readDouble());
     }
 
-    public SetControllerTargetMessage(BlockPos pos, int targetX, int targetZ) {
+    public SetControllerTargetMessage(BlockPos pos, double mapCrosshairX, double mapCrosshairZ) {
         this.pos = pos;
-        this.targetX = targetX;
-        this.targetZ = targetZ;
+        this.mapCrosshairX = mapCrosshairX;
+        this.mapCrosshairZ = mapCrosshairZ;
     }
 
     public void encode(FriendlyByteBuf buf) {
         buf.writeBlockPos(pos);
-        buf.writeInt(targetX);
-        buf.writeInt(targetZ);
+        buf.writeDouble(mapCrosshairX);
+        buf.writeDouble(mapCrosshairZ);
     }
 
     public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {
@@ -34,8 +34,8 @@ public class SetControllerTargetMessage {
         if (controller == null)
             return;
 
-        if (targetX >= 0 && targetZ >= 0 && targetX <= 128 && targetZ <= 128) {
-            controller.updateTarget(targetX, targetZ);
+        if (mapCrosshairX >= 0 && mapCrosshairZ >= 0 && mapCrosshairX <= 128 && mapCrosshairZ <= 128) {
+            controller.updateTarget(mapCrosshairX, mapCrosshairZ);
         }
     }
 }

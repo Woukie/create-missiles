@@ -6,6 +6,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.missilemanager.parts.PartRegistry;
+import net.woukie.createmissiles.missilemanager.parts.Thruster;
+import net.woukie.createmissiles.missilemanager.parts.Warhead;
 import net.woukie.createmissiles.registry.MissileItems;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,5 +31,12 @@ public class ThrusterSchematic extends Item {
         compoundTag.putString("Thruster", thruster.toString());
         itemStack.setTag(compoundTag);
         return itemStack;
+    }
+
+    public static Thruster getThruster(ItemStack itemStack) {
+        CompoundTag compoundTag = itemStack.getTag();
+        if (compoundTag == null)
+            return null;
+        return PartRegistry.getThruster(new ResourceLocation(compoundTag.getString("Thruster")));
     }
 }

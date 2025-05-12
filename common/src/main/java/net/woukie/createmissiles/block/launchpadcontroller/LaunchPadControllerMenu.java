@@ -1,20 +1,34 @@
 package net.woukie.createmissiles.block.launchpadcontroller;
 
 import io.netty.buffer.Unpooled;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.woukie.createmissiles.item.schematic.ChassisSchematic;
+import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
+import net.woukie.createmissiles.item.schematic.WarheadSchematic;
+import net.woukie.createmissiles.missilemanager.TrajectoryData;
+import net.woukie.createmissiles.missilemanager.parts.Chassis;
+import net.woukie.createmissiles.missilemanager.parts.PartRegistry;
+import net.woukie.createmissiles.missilemanager.parts.Thruster;
+import net.woukie.createmissiles.missilemanager.parts.Warhead;
 import net.woukie.createmissiles.registry.MissileItems;
 import net.woukie.createmissiles.registry.MissilePackets;
 import org.jetbrains.annotations.NotNull;
 
+import static net.woukie.createmissiles.block.launchpadcontroller.LaunchPadControllerBlockEntity.*;
 import static net.woukie.createmissiles.registry.MissileMenus.LAUNCH_PAD_CONTROLLER;
 
 public class LaunchPadControllerMenu extends AbstractContainerMenu {
@@ -24,7 +38,7 @@ public class LaunchPadControllerMenu extends AbstractContainerMenu {
     public LaunchPadControllerMenu(int i, Inventory playerInventory, Container container, ContainerData containerData) {
         super(LAUNCH_PAD_CONTROLLER.get(), i);
         checkContainerSize(container, 4);
-        checkContainerDataCount(containerData, 5);
+        checkContainerDataCount(containerData, 11);
 
         this.container = container;
         this.containerData = containerData;
@@ -65,39 +79,76 @@ public class LaunchPadControllerMenu extends AbstractContainerMenu {
             this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 142));
         }
     }
+
     public LaunchPadControllerMenu(LaunchPadControllerMenu menu, Inventory inventory, Component component) {
-        this(menu.containerId, inventory, new SimpleContainer(4), new SimpleContainerData(5));
+        this(menu.containerId, inventory, new SimpleContainer(4), new SimpleContainerData(11));
     }
 
     public LaunchPadControllerMenu(int id, Inventory inventory) {
-        this(id, inventory, new SimpleContainer(4), new SimpleContainerData(5));
+        this(id, inventory, new SimpleContainer(4), new SimpleContainerData(11));
     }
 
     public boolean armed() {
-        int targetX = getTargetZ();
-        int targetZ = getTargetX();
-        if (targetX < 0 || targetZ < 0 || targetX > 128 || targetZ > 128)
+        int mapCrosshairX = getMapCrosshairX();
+        int mapCrosshairZ = getMapCrosshairZ();
+        if (mapCrosshairX < 0 || mapCrosshairZ < 0 || mapCrosshairX > 128 || mapCrosshairZ > 128)
             return false;
 
-        if (container.getItem(0).isEmpty() || container.getItem(1).isEmpty() || container.getItem(2).isEmpty() || container.getItem(3).isEmpty())
-            return false;
+        Warhead warhead = getWarhead();
+        Chassis chassis = getChassis();
+        Thruster thruster = getThruster();
+        ItemStack map = container.getItem(SLOT_MAP);
 
-        ItemStack map = getSlot(0).getItem();
-        ItemStack warhead = getSlot(1).getItem();
-        ItemStack chassis = getSlot(2).getItem();
-        ItemStack thruster = getSlot(3).getItem();
-        return map.is(Items.FILLED_MAP) &&
-                warhead.is(MissileItems.WARHEAD_SCHEMATIC.get()) &&
-                chassis.is(MissileItems.CHASSIS_SCHEMATIC.get()) &&
-                thruster.is(MissileItems.THRUSTER_SCHEMATIC.get());
+        return warhead != null && chassis != null && thruster != null && map.is(Items.FILLED_MAP);
     }
 
-    public int getTargetX() {
+    public Warhead getWarhead() {
+        ItemStack warhead = container.getItem(SLOT_WARHEAD);
+        if (!warhead.is(MissileItems.WARHEAD_SCHEMATIC.get()))
+            return null;
+        return WarheadSchematic.getWarhead(warhead);
+    }
+
+    public Chassis getChassis() {
+        ItemStack chassis = container.getItem(SLOT_CHASSIS);
+        if (!chassis.is(MissileItems.CHASSIS_SCHEMATIC.get()))
+            return null;
+        return ChassisSchematic.getChassis(chassis);
+    }
+
+    public Thruster getThruster() {
+        ItemStack thruster = container.getItem(SLOT_THRUSTER);
+        if (!thruster.is(MissileItems.THRUSTER_SCHEMATIC.get()))
+            return null;
+        return ThrusterSchematic.getThruster(thruster);
+    }
+
+    public int getMapCenterX() {
         return containerData.get(0);
     }
 
-    public int getTargetZ() {
+    public int getMapCenterZ() {
         return containerData.get(1);
+    }
+
+    public BlockPos getPos() {
+        return new BlockPos(containerData.get(2), containerData.get(3), containerData.get(4));
+    }
+
+    public BlockPos getImpactPos() {
+        return new BlockPos(containerData.get(5), containerData.get(6), containerData.get(7));
+    }
+
+    public float getFuelPercentage() {
+        return (float)containerData.get(8) / 100F;
+    }
+
+    public int getMapCrosshairX() {
+        return containerData.get(9);
+    }
+
+    public int getMapCrosshairZ() {
+        return containerData.get(10);
     }
 
     @Override
@@ -124,30 +175,11 @@ public class LaunchPadControllerMenu extends AbstractContainerMenu {
 
     public void clickLaunch() {
         if (armed()) {
-            BlockPos pos = getPosition();
-
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-            buf.writeBlockPos(pos);
-
-            MissilePackets.CONTROLLER_LAUNCH.sendToServer(new ControllerLaunchMessage(pos));
+            MissilePackets.CONTROLLER_LAUNCH.sendToServer(new ControllerLaunchMessage(getPos()));
         }
     }
 
-    public void clickMap(int targetX, int targetZ) {
-        BlockPos pos = getPosition();
-
-        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        buf.writeBlockPos(pos);
-        buf.writeInt(targetX);
-        buf.writeInt(targetZ);
-
-        MissilePackets.SET_CONTROLLER_TARGET.sendToServer(new SetControllerTargetMessage(pos, targetX, targetZ));
-    }
-
-    private BlockPos getPosition() {
-        int x = this.containerData.get(2);
-        int y = this.containerData.get(3);
-        int z = this.containerData.get(4);
-        return new BlockPos(x, y, z);
+    public void clickMap(double mapCrosshairX, double mapCrosshairZ) {
+        MissilePackets.SET_CONTROLLER_TARGET.sendToServer(new SetControllerTargetMessage(getPos(), mapCrosshairX, mapCrosshairZ));
     }
 }

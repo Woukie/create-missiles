@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import net.woukie.createmissiles.missilemanager.parts.PartRegistry;
+import net.woukie.createmissiles.missilemanager.parts.Warhead;
 import net.woukie.createmissiles.registry.MissileItems;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,5 +29,12 @@ public class WarheadSchematic extends Item {
         compoundTag.putString("Warhead", warhead.toString());
         itemStack.setTag(compoundTag);
         return itemStack;
+    }
+
+    public static Warhead getWarhead(ItemStack itemStack) {
+        CompoundTag compoundTag = itemStack.getTag();
+        if (compoundTag == null)
+            return null;
+        return PartRegistry.getWarhead(new ResourceLocation(compoundTag.getString("Warhead")));
     }
 }

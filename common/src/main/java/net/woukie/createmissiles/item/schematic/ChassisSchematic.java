@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.woukie.createmissiles.missilemanager.parts.Chassis;
 import net.woukie.createmissiles.missilemanager.parts.PartRegistry;
 import net.woukie.createmissiles.registry.MissileItems;
 import org.jetbrains.annotations.NotNull;
@@ -29,5 +30,12 @@ public class ChassisSchematic extends Item {
         compoundTag.putString("Chassis", chassis.toString());
         itemStack.setTag(compoundTag);
         return itemStack;
+    }
+
+    public static Chassis getChassis(ItemStack itemStack) {
+        CompoundTag compoundTag = itemStack.getTag();
+        if (compoundTag == null)
+            return null;
+        return PartRegistry.getChassis(new ResourceLocation(compoundTag.getString("Chassis")));
     }
 }

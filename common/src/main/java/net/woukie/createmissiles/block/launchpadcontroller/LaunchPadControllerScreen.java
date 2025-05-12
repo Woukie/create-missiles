@@ -9,7 +9,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraft.world.phys.Vec2;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.missilemanager.TrajectoryData;
+
+import static net.woukie.createmissiles.block.launchpadcontroller.LaunchPadControllerBlockEntity.SLOT_MAP;
 
 public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPadControllerMenu> {
     private static final int mapLeft = 108;
@@ -20,6 +24,10 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
     private static final int buttonHeight = 16;
     private static final int buttonCoverWidth = 17;
     private static final int buttonCoverHeight = 16;
+    private static final int fuelLeft = 96;
+    private static final int fuelTop = 33;
+    private static final int fuelWidth = 6;
+    private static final int fuelHeight = 25;
     private static final float mapScale = 0.4375F;
     private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/launch_pad_controller.png");
     private static final ResourceLocation BUTTON_COVER = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/button_cover.png");
@@ -29,7 +37,7 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
     private static final ResourceLocation TARGET_VERTICAL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_vertical.png");
     private static final ResourceLocation FUEL_GLASS = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel_glass.png");
     private static final ResourceLocation FUEL_GAUGE = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel_gauge.png");
-    private ItemStack map;
+    private static final ResourceLocation MAP_ERROR = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/map_error.png");
 
     private boolean hoveringButton;
 
@@ -37,7 +45,7 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
     private float displayTargetX = -1;
     private float displayTargetZ = -1;
 
-    private float buttonOpenPercentage = 0F;
+    private float buttonCoverPercentage = 0F;
 
     public LaunchPadControllerScreen(LaunchPadControllerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -60,56 +68,52 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
         int left = this.leftPos;
         int top = this.topPos;
 
-        float targetBackgroundPercentage = this.menu.armed() ? 1F : 0F;
-        buttonOpenPercentage = buttonOpenPercentage + (targetBackgroundPercentage - buttonOpenPercentage) * 0.1F;
+        float targetButtonCoverPercentage = this.menu.armed() ? 1F : 0F;
+        buttonCoverPercentage = buttonCoverPercentage + (targetButtonCoverPercentage - buttonCoverPercentage) * 0.1F;
 
-        boolean isLastFrame = buttonOpenPercentage > 0.9F;
+        boolean isLastFrame = buttonCoverPercentage > 0.9F;
         if (isLastFrame && hoveringButton) {
             guiGraphics.blit(BACKGROUND_HOVERING_BUTTON, left, top, 0, 0, this.imageWidth, this.imageHeight);
         } else {
             guiGraphics.blit(BACKGROUND, left, top, 0, 0, this.imageWidth, this.imageHeight);
         }
 
-        int offset = Math.round(buttonOpenPercentage * buttonCoverWidth);
+        int offset = Math.round(buttonCoverPercentage * buttonCoverWidth);
         guiGraphics.blit(BUTTON_COVER, buttonLeft + left, buttonTop + top, 10, offset, 0, buttonCoverWidth - offset, buttonCoverHeight, buttonCoverWidth, buttonCoverHeight);
 
-        map = this.menu.getSlot(0).getItem();
+        ItemStack map = this.menu.getSlot(SLOT_MAP).getItem();
 
         int targetScale = 1;
         if (map.is(Items.FILLED_MAP)) {
             Integer mapId = MapItem.getMapId(map);
             MapItemSavedData mapData = MapItem.getSavedData(mapId, this.minecraft.level);
 
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(left + mapLeft, top + mapTop, 1.0F);
+            guiGraphics.pose().scale(mapScale, mapScale, 1.0F);
             if (mapData != null) {
-                guiGraphics.pose().pushPose();
-                guiGraphics.pose().translate(left + mapLeft, top + mapTop, 1.0F);
-                guiGraphics.pose().scale(mapScale, mapScale, 1.0F);
                 this.minecraft.gameRenderer.getMapRenderer().render(guiGraphics.pose(), guiGraphics.bufferSource(), mapId, mapData, true, 15728880);
-                guiGraphics.flush();
-                guiGraphics.pose().popPose();
+            } else {
+                guiGraphics.blit(MAP_ERROR, 0, 0, 0, 0, 0, 128, 128, 128, 128);
             }
+            guiGraphics.flush();
+            guiGraphics.pose().popPose();
         } else {
             targetScale = 0;
         }
 
-//      Target is num from 0 to 128
-//      Map is 56x56 (a number from (0 to 128) * mapScale)
-        int targetX = this.menu.getTargetX();
-        int targetZ = this.menu.getTargetZ();
-
-        if (targetX == -1 || targetZ == -1) {
-            displayTargetX = -1;
-            displayTargetZ = -1;
-            targetScale = 0;
-        }
+//      Map crosshair is num from 0 to 128
+//      Map is 56x56 (128 * mapScale)
+        int mapCrosshairX = this.getMenu().getMapCrosshairX();
+        int mapCrosshairZ = this.getMenu().getMapCrosshairZ();
 
         if (displayTargetX == -1) {
-            displayTargetX = targetX;
-            displayTargetZ = targetZ;
+            displayTargetX = mapCrosshairX;
+            displayTargetZ = mapCrosshairZ;
         }
 
-        displayTargetX = displayTargetX + (targetX - displayTargetX) * 0.1F;
-        displayTargetZ = displayTargetZ + (targetZ - displayTargetZ) * 0.1F;
+        displayTargetX = displayTargetX + (mapCrosshairX - displayTargetX) * 0.1F;
+        displayTargetZ = displayTargetZ + (mapCrosshairZ - displayTargetZ) * 0.1F;
         displayScale = displayScale + (targetScale - displayScale) * 0.1F;
 
         int clickX = (int)(displayTargetX * mapScale);
@@ -135,15 +139,16 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
 
     @Override
     public boolean mouseClicked(double x, double z, int i) {
+        ItemStack map = this.menu.getSlot(SLOT_MAP).getItem();
         Integer mapId = MapItem.getMapId(map);
         MapItemSavedData mapData = MapItem.getSavedData(mapId, this.minecraft.level);
 
         if (mapData != null) {
-            int targetX = (int) ((x - this.leftPos - mapLeft) / mapScale);
-            int targetZ = (int) ((z - this.topPos - mapTop) / mapScale);
+            double mapCrosshairX = ((x - this.leftPos - mapLeft) / mapScale);
+            double mapCrosshairZ = ((z - this.topPos - mapTop) / mapScale);
 
-            if (targetX >= 0 && targetX <= 128 && targetZ >= 0 && targetZ <= 128) {
-                menu.clickMap(targetX, targetZ);
+            if (mapCrosshairX >= 0 && mapCrosshairX <= 128 && mapCrosshairZ >= 0 && mapCrosshairZ <= 128) {
+                menu.clickMap(mapCrosshairX, mapCrosshairZ);
             }
         }
 

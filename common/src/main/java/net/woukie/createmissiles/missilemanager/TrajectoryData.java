@@ -19,7 +19,7 @@ public class TrajectoryData {
     public final BlockPos source, target;
     private int tick; // Ticks incremented since launch
 
-    public final float fuel = 100F;
+    public final float fuel_percent = 100F;
 
     public final Warhead warhead;
     public final Chassis chassis;

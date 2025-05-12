@@ -1,10 +1,10 @@
 package net.woukie.createmissiles.block.launchpadcontroller;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -16,7 +16,6 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,17 +32,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer {
-    protected static final int SLOT_MAP = 0;
-    protected static final int SLOT_WARHEAD = 1;
-    protected static final int SLOT_CHASSIS = 2;
-    protected static final int SLOT_THRUSTER = 3;
+    public static final int SLOT_MAP = 0;
+    public static final int SLOT_WARHEAD = 1;
+    public static final int SLOT_CHASSIS = 2;
+    public static final int SLOT_THRUSTER = 3;
     private static final int[] SLOTS_FOR_UP = new int[]{0};
     private static final int[] SLOTS_FOR_DOWN = new int[]{0, 1, 2, 3};
     private static final int[] SLOTS_FOR_SIDES = new int[]{1, 2, 3};
 
     protected NonNullList<ItemStack> items;
-    int targetX;
-    int targetZ;
+
+    private double mapCrosshairX, mapCrosshairZ, fuelPercent;
+    // Can only calculate this on the server
+    private BlockPos impactPos;
+
     private final ContainerData dataAccess;
 
     boolean initialized;
@@ -51,27 +53,61 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
     public LaunchPadControllerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
 
-        this.targetX = -1;
-        this.targetZ = -1;
+        mapCrosshairX = 64;
+        mapCrosshairZ = 64;
+        impactPos = blockPos;
 
         this.items = NonNullList.withSize(4, ItemStack.EMPTY);
         this.dataAccess = new ContainerData() {
             public int get(int i) {
                 switch (i) {
                     case 0 -> {
-                        return LaunchPadControllerBlockEntity.this.targetX;
+                        MapItemSavedData mapData = getMapData();
+                        if (mapData == null)
+                            return 0;
+                        return mapData.centerX;
                     }
                     case 1 -> {
-                        return LaunchPadControllerBlockEntity.this.targetZ;
+                        MapItemSavedData mapData = getMapData();
+                        if (mapData == null)
+                            return 0;
+                        return mapData.centerZ;
                     }
                     case 2 -> {
-                        return blockPos.getX();
+                        return LaunchPadControllerBlockEntity.this.getBlockPos().getX();
                     }
                     case 3 -> {
-                        return blockPos.getY();
+                        return LaunchPadControllerBlockEntity.this.getBlockPos().getY();
                     }
                     case 4 -> {
-                        return blockPos.getZ();
+                        return LaunchPadControllerBlockEntity.this.getBlockPos().getZ();
+                    }
+                    case 5 -> {
+                        BlockPos impact = LaunchPadControllerBlockEntity.this.impactPos;
+                        if (impact == null)
+                            return 0;
+                        return impact.getX();
+                    }
+                    case 6 -> {
+                        BlockPos impact = LaunchPadControllerBlockEntity.this.impactPos;
+                        if (impact == null)
+                            return 0;
+                        return impact.getY();
+                    }
+                    case 7 -> {
+                        BlockPos impact = LaunchPadControllerBlockEntity.this.impactPos;
+                        if (impact == null)
+                            return 0;
+                        return impact.getZ();
+                    }
+                    case 8 -> {
+                        return (int)(fuelPercent * 100);
+                    }
+                    case 9 -> {
+                        return (int)LaunchPadControllerBlockEntity.this.mapCrosshairX;
+                    }
+                    case 10 -> {
+                        return (int)LaunchPadControllerBlockEntity.this.mapCrosshairZ;
                     }
                     default -> {
                         return 0;
@@ -79,22 +115,29 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
                 }
             }
 
-            public void set(int i, int j) {
-                switch (i) {
-                    case 0 -> LaunchPadControllerBlockEntity.this.targetX = j;
-                    case 1 -> LaunchPadControllerBlockEntity.this.targetZ = j;
-                }
-            }
+            public void set(int i, int j) {}
 
             public int getCount() {
-                return 5;
+                return 11;
             }
         };
     }
 
-    public void updateTarget(int targetX, int targetZ) {
-        this.targetX = targetX;
-        this.targetZ = targetZ;
+    private MapItemSavedData getMapData() {
+        ItemStack map = items.get(SLOT_MAP);
+
+        if (map.is(Items.FILLED_MAP)) {
+            Integer mapId = MapItem.getMapId(map);
+            return MapItem.getSavedData(mapId, getLevel());
+        }
+
+        return null;
+    }
+
+    public void updateTarget(double mapCrosshairX, double mapCrosshairZ) {
+        this.mapCrosshairX = mapCrosshairX;
+        this.mapCrosshairZ = mapCrosshairZ;
+        this.impactPos = getImpactFromMapCrosshair(this.mapCrosshairX, this.mapCrosshairZ);
     }
 
     public void tick() {
@@ -105,57 +148,67 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
     }
 
     public void launch() {
-        ItemStack map = items.get(SLOT_MAP);
+        MapItemSavedData mapData = getMapData();
+        Warhead warhead = getWarhead();
+        Chassis chassis = getChassis();
+        Thruster thruster = getThruster();
+        if (mapData == null || warhead == null || chassis == null || thruster == null)
+            return;
 
-        if (map.is(Items.FILLED_MAP)) {
-            Integer mapId = MapItem.getMapId(map);
-            MapItemSavedData mapData = MapItem.getSavedData(mapId, this.getLevel());
+        Trajectories trajectories = Trajectories.get();
+        trajectories.activeTrajectories.add(new Trajectory(new TrajectoryData(
+                this.level.getServer().getLevel(getMapData().dimension),
+                getBlockPos(),
+                getImpactFromMapCrosshair(mapCrosshairX, mapCrosshairZ),
+                0,
+                warhead,
+                chassis,
+                thruster
+        )));
+        trajectories.setDirty();
+    }
 
-            if (mapData != null) {
-                int multiplier = 1 << mapData.scale;
+//    Convert 0-128 map-corner-relative coordinates to global block impact position with valid Y position
+    private BlockPos getImpactFromMapCrosshair(double mapCrosshairX, double mapCrosshairY) {
+        MapItemSavedData mapData = getMapData();
+        if (mapData == null)
+            return null;
 
-                int blockX = multiplier * targetX;
-                int blockZ = multiplier * targetZ;
+        int multiplier = 1 << mapData.scale;
+        int blockX = (int)(mapData.centerX - 64 * multiplier + (multiplier * mapCrosshairX));
+        int blockZ = (int)(mapData.centerZ - 64 * multiplier + (multiplier * mapCrosshairY));
 
-                blockX = mapData.centerX - 64 * multiplier + blockX;
-                blockZ = mapData.centerZ - 64 * multiplier + blockZ;
-
-                int scan = level.getMaxBuildHeight();
-                BlockPos impactPos = new BlockPos(blockX, scan, blockZ);
-                while (scan >= level.getMinBuildHeight()) {
-                    impactPos = new BlockPos(blockX, scan, blockZ);
-                    if (!level.getBlockState(impactPos).isAir())
-                        break;
-                    scan--;
-                }
-
-                CompoundTag warheadTag = items.get(SLOT_WARHEAD).getTag();
-                CompoundTag chassisTag = items.get(SLOT_CHASSIS).getTag();
-                CompoundTag thrusterTag = items.get(SLOT_THRUSTER).getTag();
-
-                if (warheadTag == null || chassisTag == null || thrusterTag == null)
-                    return;
-
-                Warhead warhead = PartRegistry.getWarhead(new ResourceLocation(warheadTag.getString("Warhead")));
-                Chassis chassis = PartRegistry.getChassis(new ResourceLocation(warheadTag.getString("Chassis")));
-                Thruster thruster = PartRegistry.getThruster(new ResourceLocation(warheadTag.getString("Thruster")));
-
-                Level level = this.level.getServer().getLevel(mapData.dimension);
-                TrajectoryData data = new TrajectoryData(
-                        level,
-                        worldPosition,
-                        impactPos,
-                        0,
-                        warhead,
-                        chassis,
-                        thruster
-                );
-
-                Trajectories trajectories = Trajectories.get();
-                trajectories.activeTrajectories.add(new Trajectory(data));
-                trajectories.setDirty();
-            }
+        int scan = level.getMaxBuildHeight();
+        BlockPos impactPos = new BlockPos(blockX, scan, blockZ);
+        while (scan >= level.getMinBuildHeight()) {
+            impactPos = new BlockPos(blockX, scan, blockZ);
+            if (!level.getBlockState(impactPos).isAir())
+                break;
+            scan--;
         }
+
+        return impactPos;
+    }
+
+    private Warhead getWarhead() {
+        CompoundTag warheadTag = items.get(SLOT_WARHEAD).getTag();
+        if (warheadTag == null)
+            return null;
+        return PartRegistry.getWarhead(new ResourceLocation(warheadTag.getString("Warhead")));
+    }
+
+    private Chassis getChassis() {
+        CompoundTag chassisTag = items.get(SLOT_CHASSIS).getTag();
+        if (chassisTag == null)
+            return null;
+        return PartRegistry.getChassis(new ResourceLocation(chassisTag.getString("Chassis")));
+    }
+
+    private Thruster getThruster() {
+        CompoundTag thrusterTag = items.get(SLOT_THRUSTER).getTag();
+        if (thrusterTag == null)
+            return null;
+        return PartRegistry.getThruster(new ResourceLocation(thrusterTag.getString("Thruster")));
     }
 
     @Override
@@ -196,15 +249,15 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         ContainerHelper.loadAllItems(compoundTag, this.items);
 
-        this.targetX = compoundTag.getInt("TargetX");
-        this.targetZ = compoundTag.getInt("TargetZ");
+        this.mapCrosshairX = compoundTag.getDouble("MapCrosshairX");
+        this.mapCrosshairZ = compoundTag.getDouble("MapCrosshairZ");
     }
 
     @Override
     protected void saveAdditional(CompoundTag compoundTag) {
         super.saveAdditional(compoundTag);
-        compoundTag.putInt("TargetX", this.targetX);
-        compoundTag.putInt("TargetZ", this.targetZ);
+        compoundTag.putDouble("MapCrosshairX", this.mapCrosshairX);
+        compoundTag.putDouble("MapCrosshairZ", this.mapCrosshairZ);
         ContainerHelper.saveAllItems(compoundTag, this.items);
     }
 
