@@ -60,9 +60,9 @@ public class TrajectoryData {
         tag.putInt("TargetZ", this.target.getZ());
         tag.putInt("Tick", this.tick);
 
-        tag.putString("Warhead",  warhead.resourceLocation.getPath());
-        tag.putString("Chassis",  chassis.resourceLocation.getPath());
-        tag.putString("Thruster",  thruster.resourceLocation.getPath());
+        tag.putString("Warhead",  warhead.resourceLocation.toString());
+        tag.putString("Chassis",  chassis.resourceLocation.toString());
+        tag.putString("Thruster",  thruster.resourceLocation.toString());
 
         return tag;
     }

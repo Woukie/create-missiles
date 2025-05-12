@@ -39,7 +39,7 @@ public class Trajectories extends SavedData {
     public void serverTick(MinecraftServer server) {
         activeTrajectories.forEach(trajectory -> {
             trajectory.incrementTick();
-            Vec3 p = trajectory.getPosition();
+            Vec3 p = trajectory.getPosition(trajectory.getData().getTick() * 0.05F);
             server.overworld().sendParticles(ParticleTypes.CLOUD, p.x, p.y, p.z, 5, 0, 0, 0, 0);
             if (trajectory.shouldExplode()) {
                 trajectory.explode();
