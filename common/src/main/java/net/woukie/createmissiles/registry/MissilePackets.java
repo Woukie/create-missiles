@@ -3,8 +3,8 @@ package net.woukie.createmissiles.registry;
 import dev.architectury.networking.NetworkChannel;
 import net.minecraft.resources.ResourceLocation;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.block.launchpadcontroller.ControllerLaunchMessage;
-import net.woukie.createmissiles.block.launchpadcontroller.SetControllerTargetMessage;
+import net.woukie.createmissiles.block.controller.ControllerLaunchMessage;
+import net.woukie.createmissiles.block.controller.SetControllerTargetMessage;
 
 public class MissilePackets {
     public static final NetworkChannel SET_CONTROLLER_TARGET = NetworkChannel.create(new ResourceLocation(CreateMissiles.MOD_ID, "set_controller_target"));

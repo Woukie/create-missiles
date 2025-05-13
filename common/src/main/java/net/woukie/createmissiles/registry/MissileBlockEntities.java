@@ -5,7 +5,7 @@ import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.launchpad.LaunchPadCogInstance;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
-import net.woukie.createmissiles.block.launchpadcontroller.LaunchPadControllerBlockEntity;
+import net.woukie.createmissiles.block.controller.ControllerBlockEntity;
 
 public class MissileBlockEntities {
     private static final CreateRegistrate REGISTRATE = CreateMissiles.registrate();
@@ -16,8 +16,8 @@ public class MissileBlockEntities {
             .validBlock(MissileBlocks.LAUNCH_PAD)
             .register();
 
-    public static final BlockEntityEntry<LaunchPadControllerBlockEntity> LAUNCH_PAD_CONTROLLER = REGISTRATE
-            .blockEntity("launch_pad_controller", LaunchPadControllerBlockEntity::new)
+    public static final BlockEntityEntry<ControllerBlockEntity> LAUNCH_PAD_CONTROLLER = REGISTRATE
+            .blockEntity("launch_pad_controller", ControllerBlockEntity::new)
             .validBlock(MissileBlocks.LAUNCH_PAD_CONTROLLER)
             .register();
 

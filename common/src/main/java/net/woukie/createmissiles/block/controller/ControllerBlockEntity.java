@@ -1,6 +1,5 @@
-package net.woukie.createmissiles.block.launchpadcontroller;
+package net.woukie.createmissiles.block.controller;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -31,7 +30,7 @@ import net.woukie.createmissiles.registry.MissileItems;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer {
+public class ControllerBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer {
     public static final int SLOT_MAP = 0;
     public static final int SLOT_WARHEAD = 1;
     public static final int SLOT_CHASSIS = 2;
@@ -50,7 +49,7 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
 
     boolean initialized;
 
-    public LaunchPadControllerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
+    public ControllerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
 
         mapCrosshairX = 64;
@@ -74,28 +73,28 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
                         return mapData.centerZ;
                     }
                     case 2 -> {
-                        return LaunchPadControllerBlockEntity.this.getBlockPos().getX();
+                        return ControllerBlockEntity.this.getBlockPos().getX();
                     }
                     case 3 -> {
-                        return LaunchPadControllerBlockEntity.this.getBlockPos().getY();
+                        return ControllerBlockEntity.this.getBlockPos().getY();
                     }
                     case 4 -> {
-                        return LaunchPadControllerBlockEntity.this.getBlockPos().getZ();
+                        return ControllerBlockEntity.this.getBlockPos().getZ();
                     }
                     case 5 -> {
-                        BlockPos impact = LaunchPadControllerBlockEntity.this.impactPos;
+                        BlockPos impact = ControllerBlockEntity.this.impactPos;
                         if (impact == null)
                             return 0;
                         return impact.getX();
                     }
                     case 6 -> {
-                        BlockPos impact = LaunchPadControllerBlockEntity.this.impactPos;
+                        BlockPos impact = ControllerBlockEntity.this.impactPos;
                         if (impact == null)
                             return 0;
                         return impact.getY();
                     }
                     case 7 -> {
-                        BlockPos impact = LaunchPadControllerBlockEntity.this.impactPos;
+                        BlockPos impact = ControllerBlockEntity.this.impactPos;
                         if (impact == null)
                             return 0;
                         return impact.getZ();
@@ -104,10 +103,10 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
                         return (int)(fuelPercent * 100);
                     }
                     case 9 -> {
-                        return (int)LaunchPadControllerBlockEntity.this.mapCrosshairX;
+                        return (int) ControllerBlockEntity.this.mapCrosshairX;
                     }
                     case 10 -> {
-                        return (int)LaunchPadControllerBlockEntity.this.mapCrosshairZ;
+                        return (int) ControllerBlockEntity.this.mapCrosshairZ;
                     }
                     default -> {
                         return 0;
@@ -223,7 +222,7 @@ public class LaunchPadControllerBlockEntity extends BaseContainerBlockEntity imp
 
     @Override
     protected @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory inv) {
-        return new LaunchPadControllerMenu(id, inv, this, this.dataAccess);
+        return new ControllerMenu(id, inv, this, this.dataAccess);
     }
 
     @Override

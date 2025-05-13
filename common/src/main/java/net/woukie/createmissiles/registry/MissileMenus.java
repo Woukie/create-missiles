@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.block.launchpadcontroller.LaunchPadControllerMenu;
+import net.woukie.createmissiles.block.controller.ControllerMenu;
 
 import static net.woukie.createmissiles.CreateMissiles.MANAGER;
 import static net.woukie.createmissiles.CreateMissiles.MOD_ID;
@@ -15,9 +15,9 @@ import static net.woukie.createmissiles.CreateMissiles.MOD_ID;
 public class MissileMenus {
     public static final Registrar<MenuType<?>> MENUS = MANAGER.get().get(Registries.MENU);
 
-    public static final RegistrySupplier<MenuType<LaunchPadControllerMenu>> LAUNCH_PAD_CONTROLLER = MENUS.register(
+    public static final RegistrySupplier<MenuType<ControllerMenu>> LAUNCH_PAD_CONTROLLER = MENUS.register(
             new ResourceLocation(MOD_ID, "launch_pad_controller"),
-            () -> new MenuType<>(LaunchPadControllerMenu::new, FeatureFlags.VANILLA_SET)
+            () -> new MenuType<>(ControllerMenu::new, FeatureFlags.VANILLA_SET)
     );
 
     public static void init() {

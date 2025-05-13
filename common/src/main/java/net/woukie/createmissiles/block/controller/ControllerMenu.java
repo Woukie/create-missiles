@@ -1,41 +1,32 @@
-package net.woukie.createmissiles.block.launchpadcontroller;
+package net.woukie.createmissiles.block.controller;
 
-import io.netty.buffer.Unpooled;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.woukie.createmissiles.item.schematic.ChassisSchematic;
 import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
 import net.woukie.createmissiles.item.schematic.WarheadSchematic;
-import net.woukie.createmissiles.missilemanager.TrajectoryData;
 import net.woukie.createmissiles.missilemanager.parts.Chassis;
-import net.woukie.createmissiles.missilemanager.parts.PartRegistry;
 import net.woukie.createmissiles.missilemanager.parts.Thruster;
 import net.woukie.createmissiles.missilemanager.parts.Warhead;
 import net.woukie.createmissiles.registry.MissileItems;
 import net.woukie.createmissiles.registry.MissilePackets;
 import org.jetbrains.annotations.NotNull;
 
-import static net.woukie.createmissiles.block.launchpadcontroller.LaunchPadControllerBlockEntity.*;
+import static net.woukie.createmissiles.block.controller.ControllerBlockEntity.*;
 import static net.woukie.createmissiles.registry.MissileMenus.LAUNCH_PAD_CONTROLLER;
 
-public class LaunchPadControllerMenu extends AbstractContainerMenu {
+public class ControllerMenu extends AbstractContainerMenu {
     private final Container container;
     private final ContainerData containerData;
 
-    public LaunchPadControllerMenu(int i, Inventory playerInventory, Container container, ContainerData containerData) {
+    public ControllerMenu(int i, Inventory playerInventory, Container container, ContainerData containerData) {
         super(LAUNCH_PAD_CONTROLLER.get(), i);
         checkContainerSize(container, 4);
         checkContainerDataCount(containerData, 11);
@@ -80,11 +71,11 @@ public class LaunchPadControllerMenu extends AbstractContainerMenu {
         }
     }
 
-    public LaunchPadControllerMenu(LaunchPadControllerMenu menu, Inventory inventory, Component component) {
+    public ControllerMenu(ControllerMenu menu, Inventory inventory, Component component) {
         this(menu.containerId, inventory, new SimpleContainer(4), new SimpleContainerData(11));
     }
 
-    public LaunchPadControllerMenu(int id, Inventory inventory) {
+    public ControllerMenu(int id, Inventory inventory) {
         this(id, inventory, new SimpleContainer(4), new SimpleContainerData(11));
     }
 

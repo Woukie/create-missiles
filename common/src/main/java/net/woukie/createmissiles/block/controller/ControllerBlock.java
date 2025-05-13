@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.launchpadcontroller;
+package net.woukie.createmissiles.block.controller;
 
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.utility.VoxelShaper;
@@ -24,14 +24,14 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.woukie.createmissiles.registry.MissileBlockEntities;
 
-public class LaunchPadControllerBlock extends HorizontalDirectionalBlock implements IBE<LaunchPadControllerBlockEntity> {
+public class ControllerBlock extends HorizontalDirectionalBlock implements IBE<ControllerBlockEntity> {
     private static final VoxelShape leftPillarNorth = Shapes.box(12/16.0, 0/16.0, 15/16.0, 14/16.0, 15/16.0, 16/16.0);
     private static final VoxelShape rightPillarNorth = Shapes.box(2/16.0, 0/16.0, 15/16.0, 4/16.0, 15/16.0, 16/16.0);
     private static final VoxelShape displayNorth = Shapes.box(1/16.0, 9.325/16.0, 12.05/16.0, 15/16.0, 17.075/16.0, 1);
     private static final VoxelShape baseBoxNorth = Shapes.box(3/16.0, 1/16.0, 13/16.0, 13/16.0, 5/16.0, 15/16.0);
     private static final VoxelShape voxelShape = Shapes.or(leftPillarNorth, rightPillarNorth, displayNorth, baseBoxNorth);
 
-    public LaunchPadControllerBlock(Properties properties) {
+    public ControllerBlock(Properties properties) {
         super(properties);
     }
 
@@ -47,7 +47,7 @@ public class LaunchPadControllerBlock extends HorizontalDirectionalBlock impleme
     public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         if (!blockState.is(blockState2.getBlock())) {
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
-            if (blockEntity instanceof LaunchPadControllerBlockEntity controller) {
+            if (blockEntity instanceof ControllerBlockEntity controller) {
                 Containers.dropContents(level, blockPos, controller);
             }
 
@@ -79,24 +79,24 @@ public class LaunchPadControllerBlock extends HorizontalDirectionalBlock impleme
     @Override
     public <S extends BlockEntity> BlockEntityTicker<S> getTicker(Level level, BlockState blockState, BlockEntityType<S> type) {
         return (level1, blockPos, blockState1, blockEntity) -> {
-            if (blockEntity instanceof LaunchPadControllerBlockEntity controller)
+            if (blockEntity instanceof ControllerBlockEntity controller)
                 controller.tick();
         };
     }
 
     @Override
-    public Class<LaunchPadControllerBlockEntity> getBlockEntityClass() {
-        return LaunchPadControllerBlockEntity.class;
+    public Class<ControllerBlockEntity> getBlockEntityClass() {
+        return ControllerBlockEntity.class;
     }
 
     @Override
-    public BlockEntityType<? extends LaunchPadControllerBlockEntity> getBlockEntityType() {
+    public BlockEntityType<? extends ControllerBlockEntity> getBlockEntityType() {
         return MissileBlockEntities.LAUNCH_PAD_CONTROLLER.get();
     }
 
     protected void openContainer(Level level, BlockPos blockPos, Player player) {
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
-        if (blockEntity instanceof LaunchPadControllerBlockEntity) {
+        if (blockEntity instanceof ControllerBlockEntity) {
             player.openMenu((MenuProvider)blockEntity);
         }
     }

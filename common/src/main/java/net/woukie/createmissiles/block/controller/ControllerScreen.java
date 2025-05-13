@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.launchpadcontroller;
+package net.woukie.createmissiles.block.controller;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -16,9 +16,9 @@ import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.TrajectoryData;
 
-import static net.woukie.createmissiles.block.launchpadcontroller.LaunchPadControllerBlockEntity.SLOT_MAP;
+import static net.woukie.createmissiles.block.controller.ControllerBlockEntity.SLOT_MAP;
 
-public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPadControllerMenu> {
+public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
     private static final int mapLeft = 108;
     private static final int mapTop = 17;
     private static final int buttonLeft = 88;
@@ -59,7 +59,7 @@ public class LaunchPadControllerScreen extends AbstractContainerScreen<LaunchPad
 
     private float buttonCoverPercentage = 0F;
 
-    public LaunchPadControllerScreen(LaunchPadControllerMenu menu, Inventory inventory, Component title) {
+    public ControllerScreen(ControllerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
         this.titleLabelY -= 2;
     }

@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.launchpadcontroller;
+package net.woukie.createmissiles.block.controller;
 
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.core.BlockPos;
@@ -24,7 +24,7 @@ public class ControllerLaunchMessage {
 
     public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {
         Player player = contextSupplier.get().getPlayer();
-        LaunchPadControllerBlockEntity controller = ControllerInstanceManager.get(player.level(), pos);
+        ControllerBlockEntity controller = ControllerInstanceManager.get(player.level(), pos);
 
         if (controller == null)
             return;
