@@ -17,18 +17,18 @@ public class TrajectoryData {
 
     public final Level level;
     public final BlockPos source, target;
+    public final double fuelPercentage;
     private int tick; // Ticks incremented since launch
-
-    public final float fuel_percent = 100F;
 
     public final Warhead warhead;
     public final Chassis chassis;
     public final Thruster thruster;
 
-    public TrajectoryData(Level level, BlockPos source, BlockPos target, int tick, Warhead warhead, Chassis chassis, Thruster thruster) {
+    public TrajectoryData(Level level, BlockPos source, BlockPos target, double fuelPercentage, int tick, Warhead warhead, Chassis chassis, Thruster thruster) {
         this.level = level;
         this.source = source;
         this.target = target;
+        this.fuelPercentage = fuelPercentage;
         this.tick = tick;
 
         this.warhead = warhead;
@@ -37,12 +37,13 @@ public class TrajectoryData {
     }
 
     public TrajectoryData(CompoundTag savedData, MinecraftServer server) {
-        String dimension = savedData.getString("dimension");
+        String dimension = savedData.getString("Dimension");
         ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimension));
         this.level = server.getLevel(dimensionKey);
 
         this.source = new BlockPos(savedData.getInt("SourceX"), savedData.getInt("SourceY"), savedData.getInt("SourceZ"));
         this.target = new BlockPos(savedData.getInt("TargetX"), savedData.getInt("TargetY"), savedData.getInt("TargetZ"));
+        this.fuelPercentage = savedData.getDouble("FuelPercentage");
         this.tick = savedData.getInt("Tick");
 
         this.warhead = PartRegistry.getWarhead(new ResourceLocation(savedData.getString("Warhead")));
@@ -51,13 +52,14 @@ public class TrajectoryData {
     }
 
     public CompoundTag saveTo(CompoundTag tag) {
-        tag.putString("dimension", this.level.dimension().location().getPath());
+        tag.putString("Dimension", this.level.dimension().location().getPath());
         tag.putInt("SourceX", this.source.getX());
         tag.putInt("SourceY", this.source.getY());
         tag.putInt("SourceZ", this.source.getZ());
         tag.putInt("TargetX", this.target.getX());
         tag.putInt("TargetY", this.target.getY());
         tag.putInt("TargetZ", this.target.getZ());
+        tag.putDouble("FuelPercentage", this.fuelPercentage);
         tag.putInt("Tick", this.tick);
 
         tag.putString("Warhead",  warhead.resourceLocation.toString());

@@ -8,6 +8,7 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.controller.ControllerMenu;
+import net.woukie.createmissiles.block.schematicator.SchematicatorMenu;
 
 import static net.woukie.createmissiles.CreateMissiles.MANAGER;
 import static net.woukie.createmissiles.CreateMissiles.MOD_ID;
@@ -18,6 +19,11 @@ public class MissileMenus {
     public static final RegistrySupplier<MenuType<ControllerMenu>> LAUNCH_PAD_CONTROLLER = MENUS.register(
             new ResourceLocation(MOD_ID, "launch_pad_controller"),
             () -> new MenuType<>(ControllerMenu::new, FeatureFlags.VANILLA_SET)
+    );
+
+    public static final RegistrySupplier<MenuType<SchematicatorMenu>> SCHEMATICATOR = MENUS.register(
+            new ResourceLocation(MOD_ID, "schematicator"),
+            () -> new MenuType<>(SchematicatorMenu::new, FeatureFlags.VANILLA_SET)
     );
 
     public static void init() {
