@@ -36,28 +36,28 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
     public NavigatorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
         this.items = NonNullList.withSize(1, ItemStack.EMPTY);
+        this.mapCrosshairX = -1;
+        this.mapCrosshairZ = -1;
+        this.fuelPercent = 0;
         this.dataAccess = new ContainerData() {
-            @Override
             public int get(int i) {
                 return switch (i) {
                     case 0 -> (int) mapCrosshairX;
                     case 1 -> (int) mapCrosshairZ;
-                    case 2 -> target != null ? 1 : 0;
-                    case 3 -> target.getX();
-                    case 4 -> target.getY();
-                    case 5 -> target.getZ();
+                    case 2 -> target == null ? 0 : 1;
+                    case 3 -> target == null ? 0 : target.getX();
+                    case 4 -> target == null ? 0 : target.getY();
+                    case 5 -> target == null ? 0 : target.getZ();
                     case 6 -> getBlockPos().getX();
                     case 7 -> getBlockPos().getY();
                     case 8 -> getBlockPos().getZ();
-                    case 9 -> (int) (fuelPercent * 100);
+                    case 9 -> (int) (fuelPercent * 100D);
                     default -> 0;
                 };
             }
 
-            @Override
             public void set(int i, int j) {}
 
-            @Override
             public int getCount() {
                 return 10;
             }
@@ -68,6 +68,7 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
         if (!initialized && hasLevel()) {
             initialized = true;
             NavigatorInstanceTracker.add(this);
+            recalculateTarget();
         }
     }
 
@@ -84,6 +85,11 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
     private void recalculateTarget() {
         ItemStack mapItem = getItem(SLOT_MAP);
         if (!mapItem.is(Items.FILLED_MAP) || level == null) {
+            target = null;
+            return;
+        }
+
+        if (mapCrosshairX == -1) {
             target = null;
             return;
         }
@@ -196,7 +202,8 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
 
     @Override
     protected @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory) {
-        return new NavigatorMenu(id, playerInventory, this, dataAccess, findSchematicator());
+        recalculateTarget();
+        return new NavigatorMenu(id, playerInventory, this, this.dataAccess, findSchematicator());
     }
 
     @Override

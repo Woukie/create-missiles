@@ -18,7 +18,11 @@ public class ControllerMenu extends MissileAbstractMenu {
 
     protected ControllerMenu(int id, Inventory playerInventory, Container container, ContainerData containerData) {
         super(CONTROLLER.get(), id, container);
+        checkContainerDataCount(containerData, 3);
+        checkContainerSize(container, 128);
+
         this.containerData = containerData;
+        this.addDataSlots(containerData);
 
         for(int j = 0; j < 3; ++j) {
             for(int k = 0; k < 9; ++k) {
@@ -29,9 +33,6 @@ public class ControllerMenu extends MissileAbstractMenu {
         for(int j = 0; j < 9; ++j) {
             this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 142));
         }
-
-        checkContainerDataCount(containerData, 3);
-        checkContainerSize(container, 128);
     }
 
     public ControllerMenu(int id, Inventory inventory) {

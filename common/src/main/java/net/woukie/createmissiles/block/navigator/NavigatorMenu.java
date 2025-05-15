@@ -22,8 +22,13 @@ public class NavigatorMenu extends MissileAbstractMenu {
     private final ContainerData containerData;
     private final Container schematicatorContainer;
 
-    protected NavigatorMenu(int id, Inventory playerInventory, Container container, ContainerData containerData, Container schematicatorContainer) {
+    public NavigatorMenu(int id, Inventory playerInventory, Container container, ContainerData containerData, Container schematicatorContainer) {
         super(NAVIGATOR.get(), id, container);
+        checkContainerSize(container, 1);
+        checkContainerDataCount(containerData, 10);
+        if (schematicatorContainer != null)
+            checkContainerSize(schematicatorContainer, 3);
+
         this.schematicatorContainer = schematicatorContainer;
         this.containerData = containerData;
 
@@ -43,10 +48,7 @@ public class NavigatorMenu extends MissileAbstractMenu {
             this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 142));
         }
 
-        checkContainerSize(container, 1);
-        checkContainerDataCount(containerData, 10);
-        if (schematicatorContainer != null)
-            checkContainerSize(schematicatorContainer, 3);
+        this.addDataSlots(containerData);
     }
 
     public NavigatorMenu(int id, Inventory inventory) {
@@ -82,7 +84,7 @@ public class NavigatorMenu extends MissileAbstractMenu {
     }
 
     public double getFuelPercent() {
-        return ((double) containerData.get(9)) / 100.0D;
+        return containerData.get(9) / 100.0;
     }
 
     public ItemStack getMap() {
@@ -102,5 +104,9 @@ public class NavigatorMenu extends MissileAbstractMenu {
 
     public void clickFuel(double fuelClickZ) {
         MissilePackets.NAVIGATOR_CLICK_FUEL.sendToServer(new ClickFuelMessage(getSource(), fuelClickZ));
+    }
+
+    public boolean isLaunchPadValid() {
+        return true;
     }
 }
