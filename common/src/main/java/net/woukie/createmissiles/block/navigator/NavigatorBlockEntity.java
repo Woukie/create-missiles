@@ -161,6 +161,12 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
     }
 
     @Override
+    public void setRemoved() {
+        super.setRemoved();
+        NavigatorInstanceTracker.remove(this);
+    }
+
+    @Override
     public void load(@NotNull CompoundTag compoundTag) {
         super.load(compoundTag);
 

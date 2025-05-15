@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
+import net.woukie.createmissiles.block.navigator.NavigatorInstanceTracker;
 import org.jetbrains.annotations.NotNull;
 
 public class ControllerBlockEntity extends MissileAbstractBlockEntity {
@@ -52,6 +53,12 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
     public void clickLaunch() {
         System.out.println("clickLaunch triggered on server!");
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        ControllerInstanceTracker.remove(this);
     }
 
     @Override
