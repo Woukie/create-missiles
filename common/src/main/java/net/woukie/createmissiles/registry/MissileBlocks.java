@@ -13,9 +13,6 @@ import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
 import net.woukie.createmissiles.block.controller.ControllerBlock;
 import net.woukie.createmissiles.block.navigator.NavigatorBlock;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
-import net.woukie.createmissiles.item.schematic.ChassisSchematic;
-import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
-import net.woukie.createmissiles.item.schematic.WarheadSchematic;
 
 public class MissileBlocks {
     private static final CreateRegistrate REGISTRATE = CreateMissiles.registrate();
@@ -29,8 +26,8 @@ public class MissileBlocks {
             .simpleItem()
             .register();
 
-    public static final BlockEntry<ControllerBlock> LAUNCH_PAD_CONTROLLER = REGISTRATE
-            .block("launch_pad_controller", ControllerBlock::new)
+    public static final BlockEntry<ControllerBlock> CONTROLLER = REGISTRATE
+            .block("controller", ControllerBlock::new)
             .initialProperties(SharedProperties::softMetal)
             .properties(p -> p.mapColor(MapColor.COLOR_BROWN))
             .properties(BlockBehaviour.Properties::noOcclusion)
@@ -58,5 +55,7 @@ public class MissileBlocks {
 
         CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> new ItemStack(SCHEMATICATOR));
         CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> new ItemStack(LAUNCH_PAD));
+        CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> new ItemStack(CONTROLLER));
+        CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> new ItemStack(NAVIGATOR));
     }
 }

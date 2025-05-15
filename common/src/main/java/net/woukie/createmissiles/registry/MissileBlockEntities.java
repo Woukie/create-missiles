@@ -20,7 +20,7 @@ public class MissileBlockEntities {
 
     public static final BlockEntityEntry<ControllerBlockEntity> CONTROLLER = REGISTRATE
             .blockEntity("controller", ControllerBlockEntity::new)
-            .validBlock(MissileBlocks.LAUNCH_PAD_CONTROLLER)
+            .validBlock(MissileBlocks.CONTROLLER)
             .register();
 
     public static final BlockEntityEntry<SchematicatorBlockEntity> SCHEMATICATOR = REGISTRATE
