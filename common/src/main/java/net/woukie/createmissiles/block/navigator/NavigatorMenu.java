@@ -86,7 +86,10 @@ public class NavigatorMenu extends MissileAbstractMenu {
     }
 
     public ItemStack getMap() {
-        return getSlot(0).getItem();
+        ItemStack item = getSlot(0).getItem();
+        if (!item.is(Items.FILLED_MAP))
+            return null;
+        return item;
     }
 
     public Container getSchematicatorContainer() {

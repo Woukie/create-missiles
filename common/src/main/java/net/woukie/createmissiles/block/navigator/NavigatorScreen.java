@@ -18,6 +18,7 @@ import net.woukie.createmissiles.item.schematic.WarheadSchematic;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.TrajectoryData;
 import net.woukie.createmissiles.registry.MissileItems;
+import org.jetbrains.annotations.NotNull;
 
 public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
     private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/navigator.png");
@@ -52,7 +53,7 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int i, int j, float f) {
+    public void render(@NotNull GuiGraphics guiGraphics, int i, int j, float f) {
         super.render(guiGraphics, i, j, f);
         this.renderTooltip(guiGraphics, i, j);
     }
@@ -75,8 +76,8 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
     @Override
     public boolean mouseClicked(double x, double z, int i) {
         if (isHovering(mapLeft, mapTop, mapWidth, mapHeight, x, z)) {
-            double mapCrosshairX = x - leftPos - mapLeft;
-            double mapCrosshairZ = z - topPos - mapTop;
+            double mapCrosshairX = (x - leftPos - mapLeft) * (128D / mapWidth);
+            double mapCrosshairZ = (z - topPos - mapTop) * (128D / mapHeight);
             getMenu().clickMap(mapCrosshairX, mapCrosshairZ);
         }
 
@@ -106,23 +107,26 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
             MapItemSavedData mapData = MapItem.getSavedData(mapId, minecraft.level);
 
             if(mapId == null || mapData == null) {
-                gui.blit(MAP_ERROR, mapLeft, mapTop, 0, 0, mapWidth, mapHeight);
+                gui.blit(MAP_ERROR, 0, 0, 5, 0, 0, mapWidth, mapHeight, mapWidth, mapHeight);
             } else {
+                gui.pose().pushPose();
+                gui.pose().scale((float) mapWidth / 128, (float) mapHeight / 128, 1);
                 minecraft.gameRenderer.getMapRenderer().render(gui.pose(), gui.bufferSource(), mapId, mapData, true, 15728880);
+                gui.pose().popPose();
             }
         }
 
         int targetMapCrosshairX = getMenu().getMapCrosshairX();
         int targetMapCrosshairZ = getMenu().getMapCrosshairZ();
 
-        currentMapCrosshairX = currentMapCrosshairX + (targetMapCrosshairX - currentMapCrosshairX) * 0.1F;
-        currentMapCrosshairZ = currentMapCrosshairZ + (targetMapCrosshairZ - currentMapCrosshairZ) * 0.1F;
-        currentMapScale = currentMapScale + (targetMapScale - currentMapScale) * 0.1F;
+        currentMapCrosshairX += (targetMapCrosshairX - currentMapCrosshairX) * 0.1F;
+        currentMapCrosshairZ += (targetMapCrosshairZ - currentMapCrosshairZ) * 0.1F;
+        currentMapScale += (targetMapScale - currentMapScale) * 0.1F;
 
 //        Assuming k is depth
-        gui.blit(MAP_TARGET, (int)currentMapCrosshairX - 4, (int)currentMapCrosshairZ - 4, 2, 0, 0, 9, 9, 9, 9);
-        gui.blit(MAP_TARGET_VERTICAL, (int)currentMapCrosshairX - 2, -4, 1, 0, 0, 5, 64, 5 ,64);
-        gui.blit(MAP_TARGET_HORIZONTAL, -4, (int)currentMapCrosshairZ - 2, 1, 0, 0, 64, 5, 64, 5);
+        gui.blit(MAP_TARGET, (int)currentMapCrosshairX - 4, (int)currentMapCrosshairZ - 4, 20, 0, 0, 9, 9, 9, 9);
+        gui.blit(MAP_TARGET_VERTICAL, (int)currentMapCrosshairX - 2, -4, 10, 0, 0, 5, 64, 5 ,64);
+        gui.blit(MAP_TARGET_HORIZONTAL, -4, (int)currentMapCrosshairZ - 2, 10, 0, 0, 64, 5, 64, 5);
 
         gui.pose().popPose();
         return success;

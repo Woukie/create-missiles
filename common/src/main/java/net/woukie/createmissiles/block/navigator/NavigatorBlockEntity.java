@@ -35,7 +35,7 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
 
     public NavigatorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
-        this.items = NonNullList.withSize(3, ItemStack.EMPTY);
+        this.items = NonNullList.withSize(1, ItemStack.EMPTY);
         this.dataAccess = new ContainerData() {
             @Override
             public int get(int i) {
