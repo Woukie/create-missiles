@@ -4,12 +4,16 @@ import com.simibubi.create.foundation.utility.VoxelShaper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.woukie.createmissiles.block.MissileAbstractBlock;
+import net.woukie.createmissiles.block.controller.ControllerBlockEntity;
 import net.woukie.createmissiles.registry.MissileBlockEntities;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,6 +36,14 @@ public class NavigatorBlock extends MissileAbstractBlock<NavigatorBlockEntity> {
     @Override
     public @NotNull VoxelShape getShape(BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull CollisionContext collisionContext) {
         return VoxelShaper.forDirectional(voxelShape, Direction.NORTH).get(blockState.getValue(FACING));
+    }
+
+    @Override
+    public <S extends BlockEntity> BlockEntityTicker<S> getTicker(Level level, BlockState blockState, BlockEntityType<S> type) {
+        return (level1, blockPos, blockState1, blockEntity) -> {
+            if (blockEntity instanceof NavigatorBlockEntity navigator)
+                navigator.serverTick();
+        };
     }
 
     @Override

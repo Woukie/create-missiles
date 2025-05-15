@@ -6,7 +6,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.WeakHashMap;
 
-public class ControllerInstanceManager {
+public class ControllerInstanceTracker {
     private static final WorldAttached<WeakHashMap<BlockPos, ControllerBlockEntity>> controllers = new WorldAttached<>(world -> new WeakHashMap<>()) {};
 
     public static ControllerBlockEntity get(Level world, BlockPos pos) {

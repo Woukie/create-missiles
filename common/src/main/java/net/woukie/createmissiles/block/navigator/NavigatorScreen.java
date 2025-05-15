@@ -1,18 +1,13 @@
 package net.woukie.createmissiles.block.navigator;
 
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.font.FontSet;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.EnchantmentScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
-import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
@@ -22,10 +17,7 @@ import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
 import net.woukie.createmissiles.item.schematic.WarheadSchematic;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.TrajectoryData;
-import net.woukie.createmissiles.missilemanager.parts.PartRegistry;
-import net.woukie.createmissiles.missilemanager.parts.Warhead;
 import net.woukie.createmissiles.registry.MissileItems;
-import org.apache.logging.log4j.core.layout.HtmlLayout;
 
 public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
     private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/navigator.png");
@@ -33,6 +25,8 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
     private static final ResourceLocation MAP_TARGET_HORIZONTAL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_horizontal.png");
     private static final ResourceLocation MAP_TARGET_VERTICAL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_vertical.png");
     private static final ResourceLocation MAP_TARGET = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_marker.png");
+    private static final ResourceLocation FUEL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel.png");
+    private static final ResourceLocation FUEL_GAUGE = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel_gauge.png");
 
     private static final int mapLeft = 8;
     private static final int mapTop = 16;
@@ -68,6 +62,22 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
             renderTrajectory(gui);
 
         renderFuel(gui);
+    }
+
+    @Override
+    public boolean mouseClicked(double x, double z, int i) {
+        if (isHovering(mapLeft, mapTop, mapWidth, mapHeight, x, z)) {
+            double mapCrosshairX = x - leftPos - mapLeft;
+            double mapCrosshairZ = z - topPos - mapTop;
+            getMenu().clickMap(mapCrosshairX, mapCrosshairZ);
+        }
+
+        if (isHovering(fuelLeft, fuelTop, fuelWidth, fuelHeight, x, z)) {
+            double fuelClickZ = z - topPos - fuelTop;
+            getMenu().clickFuel(fuelClickZ / fuelHeight);
+        }
+
+        return super.mouseClicked(x, z, i);
     }
 
     private boolean renderMap(GuiGraphics gui) {
@@ -164,6 +174,11 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
     private void renderFuel(GuiGraphics gui) {
         gui.pose().pushPose();
         gui.pose().translate(trajectoryLeft, trajectoryTop, 0);
+
+        int barHeight = (int)(getMenu().getFuelPercent() * fuelHeight);
+        gui.blit(FUEL, fuelLeft, fuelTop, 1, 0, 0, fuelWidth, barHeight, fuelWidth, barHeight);
+//        gui.blit(FUEL_GAUGE, fuelLeft, fuelTop, 2, 0, 0, fuelWidth, barHeight, fuelWidth, barHeight);
+
         gui.pose().popPose();
     }
 }

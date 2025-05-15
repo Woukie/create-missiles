@@ -3,17 +3,21 @@ package net.woukie.createmissiles.block.navigator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
@@ -26,6 +30,7 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
     protected NonNullList<ItemStack> items;
 
     private double mapCrosshairX, mapCrosshairZ, fuelPercent;
+    private boolean initialized;
     // Can only calculate this on the server
     private BlockPos target;
 
@@ -60,6 +65,53 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
                 return 10;
             }
         };
+    }
+
+    public void serverTick() {
+        if (!initialized && hasLevel()) {
+            initialized = true;
+            NavigatorInstanceTracker.add(this);
+            recalculateTarget();
+        }
+    }
+
+    public void fuelClicked(double fuelPercent) {
+        this.fuelPercent = fuelPercent;
+    }
+
+    public void mapClicked(double mapCrosshairX, double mapCrosshairZ) {
+        this.mapCrosshairX = mapCrosshairX;
+        this.mapCrosshairZ = mapCrosshairZ;
+        recalculateTarget();
+    }
+
+    private void recalculateTarget() {
+        ItemStack mapItem = getItem(SLOT_MAP);
+        if (!mapItem.is(Items.FILLED_MAP) || level == null) {
+            target = null;
+            return;
+        }
+
+        MapItemSavedData mapData = MapItem.getSavedData(mapItem, level);
+        if (mapData == null) {
+            target = null;
+            return;
+        }
+
+        int multiplier = 1 << mapData.scale;
+        int blockX = (int)(mapData.centerX - 64 * multiplier + (multiplier * mapCrosshairX));
+        int blockZ = (int)(mapData.centerZ - 64 * multiplier + (multiplier * mapCrosshairZ));
+
+        int scan = level.getMaxBuildHeight();
+        BlockPos impactPos = new BlockPos(blockX, scan, blockZ);
+        while (scan >= level.getMinBuildHeight()) {
+            impactPos = new BlockPos(blockX, scan, blockZ);
+            if (!level.getBlockState(impactPos).isAir())
+                break;
+            scan--;
+        }
+
+        target = impactPos;
     }
 
     private Container findSchematicator() {
@@ -110,6 +162,29 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
         }
 
         return true;
+    }
+
+    @Override
+    public void load(@NotNull CompoundTag compoundTag) {
+        super.load(compoundTag);
+
+        this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(compoundTag, this.items);
+
+        this.mapCrosshairX = compoundTag.getDouble("MapCrosshairX");
+        this.mapCrosshairZ = compoundTag.getDouble("MapCrosshairZ");
+        this.fuelPercent = compoundTag.getDouble("FuelPercent");
+    }
+
+    @Override
+    protected void saveAdditional(@NotNull CompoundTag compoundTag) {
+        super.saveAdditional(compoundTag);
+
+        compoundTag.putDouble("MapCrosshairX", this.mapCrosshairX);
+        compoundTag.putDouble("MapCrosshairZ", this.mapCrosshairZ);
+        compoundTag.putDouble("FuelPercent", this.fuelPercent);
+
+        ContainerHelper.saveAllItems(compoundTag, this.items);
     }
 
     @Override

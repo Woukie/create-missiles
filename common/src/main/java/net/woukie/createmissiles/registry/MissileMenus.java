@@ -17,8 +17,8 @@ import static net.woukie.createmissiles.CreateMissiles.MOD_ID;
 public class MissileMenus {
     public static final Registrar<MenuType<?>> MENUS = MANAGER.get().get(Registries.MENU);
 
-    public static final RegistrySupplier<MenuType<ControllerMenu>> LAUNCH_PAD_CONTROLLER = MENUS.register(
-            new ResourceLocation(MOD_ID, "launch_pad_controller"),
+    public static final RegistrySupplier<MenuType<ControllerMenu>> CONTROLLER = MENUS.register(
+            new ResourceLocation(MOD_ID, "controller"),
             () -> new MenuType<>(ControllerMenu::new, FeatureFlags.VANILLA_SET)
     );
 

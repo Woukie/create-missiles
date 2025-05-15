@@ -18,8 +18,8 @@ public class MissileBlockEntities {
             .validBlock(MissileBlocks.LAUNCH_PAD)
             .register();
 
-    public static final BlockEntityEntry<ControllerBlockEntity> LAUNCH_PAD_CONTROLLER = REGISTRATE
-            .blockEntity("launch_pad_controller", ControllerBlockEntity::new)
+    public static final BlockEntityEntry<ControllerBlockEntity> CONTROLLER = REGISTRATE
+            .blockEntity("controller", ControllerBlockEntity::new)
             .validBlock(MissileBlocks.LAUNCH_PAD_CONTROLLER)
             .register();
 

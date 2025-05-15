@@ -9,6 +9,9 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.block.MissileAbstractMenu;
+import net.woukie.createmissiles.block.navigator.messages.ClickFuelMessage;
+import net.woukie.createmissiles.block.navigator.messages.ClickMapMessage;
+import net.woukie.createmissiles.registry.MissilePackets;
 
 import static net.woukie.createmissiles.registry.MissileMenus.NAVIGATOR;
 
@@ -79,5 +82,13 @@ public class NavigatorMenu extends MissileAbstractMenu {
 
     public Container getSchematicatorContainer() {
         return schematicatorContainer;
+    }
+
+    public void clickMap(double x, double z) {
+        MissilePackets.NAVIGATOR_CLICK_MAP.sendToServer(new ClickMapMessage(getSource(), x, z));
+    }
+
+    public void clickFuel(double fuelClickZ) {
+        MissilePackets.NAVIGATOR_CLICK_FUEL.sendToServer(new ClickFuelMessage(getSource(), fuelClickZ));
     }
 }

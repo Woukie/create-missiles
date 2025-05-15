@@ -1,41 +1,43 @@
-package net.woukie.createmissiles.block.controller;
+package net.woukie.createmissiles.block.navigator.messages;
 
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.woukie.createmissiles.block.navigator.NavigatorBlockEntity;
+import net.woukie.createmissiles.block.navigator.NavigatorInstanceTracker;
 
 import java.util.function.Supplier;
 
-public class SetControllerTargetMessage {
-    public final BlockPos pos;
+public class ClickMapMessage {
+    public final BlockPos source;
     public final double mapCrosshairX, mapCrosshairZ;
 
-    public SetControllerTargetMessage(FriendlyByteBuf buf) {
+    public ClickMapMessage(FriendlyByteBuf buf) {
         this(buf.readBlockPos(), buf.readDouble(), buf.readDouble());
     }
 
-    public SetControllerTargetMessage(BlockPos pos, double mapCrosshairX, double mapCrosshairZ) {
-        this.pos = pos;
+    public ClickMapMessage(BlockPos source, double mapCrosshairX, double mapCrosshairZ) {
+        this.source = source;
         this.mapCrosshairX = mapCrosshairX;
         this.mapCrosshairZ = mapCrosshairZ;
     }
 
     public void encode(FriendlyByteBuf buf) {
-        buf.writeBlockPos(pos);
+        buf.writeBlockPos(source);
         buf.writeDouble(mapCrosshairX);
         buf.writeDouble(mapCrosshairZ);
     }
 
     public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {
         Player player = contextSupplier.get().getPlayer();
-        ControllerBlockEntity controller = ControllerInstanceManager.get(player.level(), pos);
+        NavigatorBlockEntity blockEntity = NavigatorInstanceTracker.get(player.level(), source);
 
-        if (controller == null)
+        if (blockEntity == null)
             return;
 
         if (mapCrosshairX >= 0 && mapCrosshairZ >= 0 && mapCrosshairX <= 128 && mapCrosshairZ <= 128) {
-            controller.updateTarget(mapCrosshairX, mapCrosshairZ);
+            blockEntity.mapClicked(mapCrosshairX, mapCrosshairZ);
         }
     }
 }
