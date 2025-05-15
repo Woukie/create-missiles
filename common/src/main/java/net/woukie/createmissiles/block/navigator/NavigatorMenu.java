@@ -2,23 +2,43 @@ package net.woukie.createmissiles.block.navigator;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.block.MissileAbstractMenu;
-import org.jetbrains.annotations.Nullable;
+
+import static net.woukie.createmissiles.registry.MissileMenus.NAVIGATOR;
 
 public class NavigatorMenu extends MissileAbstractMenu {
     private final ContainerData containerData;
     private final Container schematicatorContainer;
 
-    protected NavigatorMenu(@Nullable MenuType<?> menuType, int id, Container container, ContainerData containerData, Container schematicatorContainer) {
-        super(menuType, id, container);
+    protected NavigatorMenu(int id, Inventory playerInventory, Container container, ContainerData containerData, Container schematicatorContainer) {
+        super(NAVIGATOR.get(), id, container);
         this.schematicatorContainer = schematicatorContainer;
         this.containerData = containerData;
 
-        checkContainerSize(schematicatorContainer, 3);
+        for(int j = 0; j < 3; ++j) {
+            for(int k = 0; k < 9; ++k) {
+                this.addSlot(new Slot(playerInventory, k + j * 9 + 9, 8 + k * 18, 84 + j * 18));
+            }
+        }
+
+        for(int j = 0; j < 9; ++j) {
+            this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 142));
+        }
+
+        checkContainerSize(container, 1);
         checkContainerDataCount(containerData, 10);
+        if (schematicatorContainer != null)
+            checkContainerSize(schematicatorContainer, 3);
+    }
+
+    public NavigatorMenu(int id, Inventory inventory) {
+        this(id, inventory, new SimpleContainer(1), new SimpleContainerData(10), new SimpleContainer(3));
     }
 
     public int getMapCrosshairX() {
