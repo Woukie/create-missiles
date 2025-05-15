@@ -2,7 +2,9 @@ package net.woukie.createmissiles.block.schematicator;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -15,12 +17,12 @@ import org.jetbrains.annotations.NotNull;
 public class SchematicatorBlockEntity extends MissileAbstractBlockEntity {
     public SchematicatorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
-        this.items = NonNullList.withSize(3, ItemStack.EMPTY);
+        items = NonNullList.withSize(3, ItemStack.EMPTY);
     }
 
     @Override
     protected @NotNull Component getDefaultName() {
-        return Component.translatable("container.createmissiles.launch_pad_controller");
+        return Component.translatable("container.createmissiles.schematicator");
     }
 
     @Override
@@ -39,5 +41,19 @@ public class SchematicatorBlockEntity extends MissileAbstractBlockEntity {
         }
 
         return false;
+    }
+
+    @Override
+    public void load(@NotNull CompoundTag compoundTag) {
+        super.load(compoundTag);
+
+        this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(compoundTag, this.items);
+    }
+
+    @Override
+    protected void saveAdditional(@NotNull CompoundTag compoundTag) {
+        super.saveAdditional(compoundTag);
+        ContainerHelper.saveAllItems(compoundTag, this.items);
     }
 }

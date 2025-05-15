@@ -6,6 +6,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.inventory.Slot;
 import net.woukie.createmissiles.block.MissileAbstractMenu;
 import net.woukie.createmissiles.block.controller.messages.ClickLaunchMessage;
 import net.woukie.createmissiles.registry.MissilePackets;
@@ -18,6 +19,16 @@ public class ControllerMenu extends MissileAbstractMenu {
     protected ControllerMenu(int id, Inventory playerInventory, Container container, ContainerData containerData) {
         super(CONTROLLER.get(), id, container);
         this.containerData = containerData;
+
+        for(int j = 0; j < 3; ++j) {
+            for(int k = 0; k < 9; ++k) {
+                this.addSlot(new Slot(playerInventory, k + j * 9 + 9, 8 + k * 18, 84 + j * 18));
+            }
+        }
+
+        for(int j = 0; j < 9; ++j) {
+            this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 142));
+        }
 
         checkContainerDataCount(containerData, 3);
         checkContainerSize(container, 128);

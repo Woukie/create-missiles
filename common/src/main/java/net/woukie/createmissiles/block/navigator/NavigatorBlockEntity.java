@@ -27,11 +27,8 @@ import org.jetbrains.annotations.NotNull;
 public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
     public static final int SLOT_MAP = 0;
 
-    protected NonNullList<ItemStack> items;
-
     private double mapCrosshairX, mapCrosshairZ, fuelPercent;
     private boolean initialized;
-    // Can only calculate this on the server
     private BlockPos target;
 
     private final ContainerData dataAccess;
@@ -71,7 +68,6 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
         if (!initialized && hasLevel()) {
             initialized = true;
             NavigatorInstanceTracker.add(this);
-            recalculateTarget();
         }
     }
 
@@ -189,7 +185,7 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
 
     @Override
     protected @NotNull Component getDefaultName() {
-        return Component.translatable("container.createmissiles.launch_pad_controller");
+        return Component.translatable("container.createmissiles.navigator");
     }
 
     @Override

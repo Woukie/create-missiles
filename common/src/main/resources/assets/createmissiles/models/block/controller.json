@@ -97,16 +97,16 @@
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"ground": {
-			"translation": [0, 3, 0],
+			"translation": [0, 3, -1.5],
 			"scale": [0.25, 0.25, 0.25]
 		},
 		"gui": {
 			"rotation": [30, 225, 0],
-			"translation": [2.75, -2, 0],
+			"translation": [3, -1.5, 0],
 			"scale": [0.625, 0.625, 0.625]
 		},
 		"head": {
-			"translation": [0, 1.5, -14.25]
+			"translation": [0, 0, -14.25]
 		},
 		"fixed": {
 			"translation": [0, 0, -3],

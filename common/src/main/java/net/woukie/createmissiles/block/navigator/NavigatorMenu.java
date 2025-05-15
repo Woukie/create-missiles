@@ -8,10 +8,13 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.woukie.createmissiles.block.MissileAbstractMenu;
 import net.woukie.createmissiles.block.navigator.messages.ClickFuelMessage;
 import net.woukie.createmissiles.block.navigator.messages.ClickMapMessage;
+import net.woukie.createmissiles.registry.MissileItems;
 import net.woukie.createmissiles.registry.MissilePackets;
+import org.jetbrains.annotations.NotNull;
 
 import static net.woukie.createmissiles.registry.MissileMenus.NAVIGATOR;
 
@@ -23,6 +26,12 @@ public class NavigatorMenu extends MissileAbstractMenu {
         super(NAVIGATOR.get(), id, container);
         this.schematicatorContainer = schematicatorContainer;
         this.containerData = containerData;
+
+        this.addSlot(new Slot(container, 0, 66, 36) {
+            public boolean mayPlace(@NotNull ItemStack itemStack) {
+                return itemStack.is(Items.FILLED_MAP);
+            }
+        });
 
         for(int j = 0; j < 3; ++j) {
             for(int k = 0; k < 9; ++k) {

@@ -18,7 +18,7 @@ public abstract class MissileAbstractMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public ItemStack quickMoveStack(@NotNull Player player, int i) {
+    public @NotNull ItemStack quickMoveStack(@NotNull Player player, int i) {
         Slot clickedSlot = getSlot(i);
         if (!clickedSlot.hasItem())
             return ItemStack.EMPTY;

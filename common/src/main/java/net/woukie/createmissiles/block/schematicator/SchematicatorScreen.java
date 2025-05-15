@@ -15,6 +15,12 @@ public class SchematicatorScreen extends AbstractContainerScreen<SchematicatorMe
     }
 
     @Override
+    public void render(GuiGraphics guiGraphics, int i, int j, float f) {
+        super.render(guiGraphics, i, j, f);
+        this.renderTooltip(guiGraphics, i, j);
+    }
+
+    @Override
     protected void renderBg(GuiGraphics guiGraphics, float f, int i, int j) {
         guiGraphics.blit(BACKGROUND, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight);
     }

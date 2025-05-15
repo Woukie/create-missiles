@@ -52,6 +52,12 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
     }
 
     @Override
+    public void render(GuiGraphics guiGraphics, int i, int j, float f) {
+        super.render(guiGraphics, i, j, f);
+        this.renderTooltip(guiGraphics, i, j);
+    }
+
+    @Override
     protected void renderBg(GuiGraphics gui, float f, int i, int j) {
         gui.pose().pushPose();
         gui.pose().translate(leftPos, topPos, 0);
@@ -133,12 +139,14 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
         BlockPos target = getMenu().getTarget();
 
         if (schematicatorSlots == null) {
-            gui.drawWordWrap(this.font, FormattedText.of(Component.translatable("gui.createmissiles.navigator.no_schematicator").toString()), 0, 0, trajectoryWidth, trajectoryHeight);
+            gui.drawWordWrap(this.font, FormattedText.of(Component.translatable("gui.createmissiles.navigator.no_schematicator").getString()), 0, 0, trajectoryWidth, trajectoryHeight);
+            gui.pose().popPose();
             return;
         }
 
         if (source == null || target == null) {
-            gui.drawWordWrap(this.font, FormattedText.of(Component.translatable("gui.createmissiles.navigator.no_target").toString()), 0, 0, trajectoryWidth, trajectoryHeight);
+            gui.drawWordWrap(this.font, FormattedText.of(Component.translatable("gui.createmissiles.navigator.no_target").getString()), 0, 0, trajectoryWidth, trajectoryHeight);
+            gui.pose().popPose();
             return;
         }
 
@@ -147,7 +155,8 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
         ItemStack thruster = schematicatorSlots.getItem(2);
 
         if (!(warhead.is(MissileItems.WARHEAD_SCHEMATIC.get()) && warhead.is(MissileItems.CHASSIS_SCHEMATIC.get()) && warhead.is(MissileItems.THRUSTER_SCHEMATIC.get()))) {
-            gui.drawWordWrap(this.font, FormattedText.of(Component.translatable("gui.createmissiles.navigator.no_schematics").toString()), 0, 0, trajectoryWidth, trajectoryHeight);
+            gui.drawWordWrap(this.font, FormattedText.of(Component.translatable("gui.createmissiles.navigator.no_schematics").getString()), 0, 0, trajectoryWidth, trajectoryHeight);
+            gui.pose().popPose();
             return;
         }
 
