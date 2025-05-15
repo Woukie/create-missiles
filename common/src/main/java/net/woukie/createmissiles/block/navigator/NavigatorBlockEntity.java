@@ -3,6 +3,8 @@ package net.woukie.createmissiles.block.navigator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
@@ -121,12 +123,11 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
         if (world == null)
             return null;
 
-        Direction facing = getBlockState().getValue(SchematicatorBlock.FACING);
+        Direction facing = getBlockState().getValue(SchematicatorBlock.FACING).getOpposite();
         Direction right = facing.getClockWise();
 
         for (int offset = 0; offset < 3; offset++) {
-            BlockPos corner = getBlockPos().relative(facing).relative(right, offset);
-
+            BlockPos corner = getBlockPos().relative(facing).relative(right, -offset);
             if (checkForLaunchPad(corner, right, facing)) {
                 for (int i = 0; i < 3; i++) {
                     BlockPos leftEdge = corner.relative(right, -1).relative(facing, i);

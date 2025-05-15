@@ -177,11 +177,6 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
         if (!errors.isEmpty())
             return;
 
-        if (!getMenu().isLaunchPadValid()) {
-            errors.add(Component.translatable("gui.createmissiles.navigator.invalid_launch_pad").getString());
-            return;
-        }
-
         Container schematicatorSlots = getMenu().getSchematicatorContainer();
         BlockPos source = getMenu().getSource();
         BlockPos target = getMenu().getTarget();
@@ -196,11 +191,11 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
             return;
         }
 
-        ItemStack warhead = schematicatorSlots.getItem(0);
-        ItemStack chassis = schematicatorSlots.getItem(1);
-        ItemStack thruster = schematicatorSlots.getItem(2);
+        ItemStack warhead = getMenu().getWarhead();
+        ItemStack chassis = getMenu().getChassis();
+        ItemStack thruster = getMenu().getThruster();
 
-        if (!(warhead.is(MissileItems.WARHEAD_SCHEMATIC.get()) && warhead.is(MissileItems.CHASSIS_SCHEMATIC.get()) && warhead.is(MissileItems.THRUSTER_SCHEMATIC.get()))) {
+        if (warhead == null || chassis == null || thruster == null) {
             errors.add(Component.translatable("gui.createmissiles.navigator.no_schematics").getString());
             return;
         }

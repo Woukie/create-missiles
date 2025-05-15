@@ -15,7 +15,6 @@
   "thrusters.createmissiles.gunpowder_thruster": "Gunpowder Thruster",
   "gui.createmissiles.navigator.no_map": "No map",
   "gui.createmissiles.navigator.no_map_data": "No map data",
-  "gui.createmissiles.navigator.invalid_launch_pad": "Launch pad invalid",
   "gui.createmissiles.navigator.no_schematicator": "No schematicator",
   "gui.createmissiles.navigator.no_schematics": "No schematics",
   "gui.createmissiles.navigator.no_target": "No target"
