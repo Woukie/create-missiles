@@ -56,12 +56,14 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
         gui.pose().pushPose();
         gui.pose().translate(leftPos, topPos, 0);
 
-        gui.blit(BACKGROUND, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight);
+        gui.blit(BACKGROUND, 0, 0, 0, 0, this.imageWidth, this.imageHeight);
 
         if (renderMap(gui))
             renderTrajectory(gui);
 
         renderFuel(gui);
+
+        gui.pose().popPose();
     }
 
     @Override
