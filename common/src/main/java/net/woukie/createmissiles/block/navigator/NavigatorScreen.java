@@ -136,7 +136,11 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
         if (errors.isEmpty())
             return;
         String errorLog = String.join("\n", errors);
-        gui.drawWordWrap(this.font, FormattedText.of(errorLog, Style.EMPTY.withColor(16777215)), trajectoryLeft, trajectoryTop, trajectoryWidth, trajectoryHeight);
+        gui.pose().pushPose();
+        gui.pose().translate(trajectoryLeft, trajectoryTop, 0);
+        gui.pose().scale(0.5F, 0.5F, 1);
+        gui.drawWordWrap(this.font, FormattedText.of(errorLog, Style.EMPTY.withColor(16777215)), 2, 2, trajectoryWidth * 2 - 4, trajectoryHeight * 2 - 4);
+        gui.pose().popPose();
     }
 
     private void renderCrosshair(GuiGraphics gui) {
