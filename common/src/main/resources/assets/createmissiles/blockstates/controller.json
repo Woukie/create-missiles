@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "createmissiles:block/controller"
+    },
+    "facing=east": {
+      "model": "createmissiles:block/controller",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "createmissiles:block/controller",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "createmissiles:block/controller",
+      "y": 270
+    }
+  }
+}

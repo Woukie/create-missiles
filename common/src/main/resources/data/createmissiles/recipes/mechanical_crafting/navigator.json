@@ -15,7 +15,7 @@
       "item": "minecraft:tinted_glass"
     },
     "R": {
-      "item": "minecraft:redstone"
+      "item": "minecraft:cartography_table"
     }
   },
   "pattern": [
@@ -29,6 +29,6 @@
   ],
   "result": {
     "count": 1,
-    "item": "createmissiles:launch_pad_controller"
+    "item": "createmissiles:navigator"
   }
 }

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "createmissiles:block/schematicator"
+    },
+    "facing=east": {
+      "model": "createmissiles:block/schematicator",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "createmissiles:block/schematicator",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "createmissiles:block/schematicator",
+      "y": 270
+    }
+  }
+}

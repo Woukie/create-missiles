@@ -1,6 +1,8 @@
 {
   "values": [
     "createmissiles:launch_pad",
-    "createmissiles:launch_pad_controller"
+    "createmissiles:controller",
+    "createmissiles:schematicator",
+    "createmissiles:navigator"
   ]
 }

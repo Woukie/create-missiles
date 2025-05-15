@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "createmissiles:launch_pad_controller"
+          "name": "createmissiles:controller"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "createmissiles:blocks/launch_pad_controller"
+  "random_sequence": "createmissiles:blocks/controller"
 }
