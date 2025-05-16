@@ -8,7 +8,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.woukie.createmissiles.block.MissileAbstractMenu;
@@ -16,7 +15,6 @@ import net.woukie.createmissiles.block.navigator.messages.ClickFuelMessage;
 import net.woukie.createmissiles.block.navigator.messages.ClickMapMessage;
 import net.woukie.createmissiles.registry.MissileItems;
 import net.woukie.createmissiles.registry.MissilePackets;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
 import static net.woukie.createmissiles.registry.MissileMenus.NAVIGATOR;
@@ -28,9 +26,9 @@ public class NavigatorMenu extends MissileAbstractMenu {
     public NavigatorMenu(int id, Inventory playerInventory, Container container, ContainerData containerData, Container schematicatorContainer) {
         super(NAVIGATOR.get(), id, container);
         checkContainerSize(container, 1);
-        checkContainerDataCount(containerData, 10);
-        this.schematicatorContainer = schematicatorContainer;
+        checkContainerDataCount(containerData, 12);
         this.containerData = containerData;
+        this.schematicatorContainer = schematicatorContainer;
 
         this.addSlot(new Slot(container, 0, 66, 35) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
@@ -38,13 +36,10 @@ public class NavigatorMenu extends MissileAbstractMenu {
             }
         });
 
-        if (schematicatorContainer != null) {
-            checkContainerSize(schematicatorContainer, 3);
-
-            this.addSlot(new InvisibleSlot(schematicatorContainer, 0));
-            this.addSlot(new InvisibleSlot(schematicatorContainer, 1));
-            this.addSlot(new InvisibleSlot(schematicatorContainer, 2));
-        }
+        checkContainerSize(schematicatorContainer, 3);
+        this.addSlot(new InvisibleSlot(schematicatorContainer, 0));
+        this.addSlot(new InvisibleSlot(schematicatorContainer, 1));
+        this.addSlot(new InvisibleSlot(schematicatorContainer, 2));
 
         for(int j = 0; j < 3; ++j) {
             for(int k = 0; k < 9; ++k) {
@@ -60,7 +55,7 @@ public class NavigatorMenu extends MissileAbstractMenu {
     }
 
     public NavigatorMenu(int id, Inventory inventory) {
-        this(id, inventory, new SimpleContainer(1), new SimpleContainerData(10), new SimpleContainer(3));
+        this(id, inventory, new SimpleContainer(1), new SimpleContainerData(12), new SimpleContainer(3));
     }
 
     public int getMapCrosshairX() {
@@ -95,6 +90,14 @@ public class NavigatorMenu extends MissileAbstractMenu {
         return containerData.get(9) / 100.0;
     }
 
+    public boolean launchPadExists() {
+        return containerData.get(10) == 1;
+    }
+
+    public boolean schematicatorExists() {
+        return containerData.get(11) == 1;
+    }
+
     public ItemStack getMap() {
         ItemStack item = getSlot(0).getItem();
         if (!item.is(Items.FILLED_MAP))
@@ -103,28 +106,27 @@ public class NavigatorMenu extends MissileAbstractMenu {
     }
 
     public ItemStack getWarhead() {
-        ItemStack item = getSlot(1).getItem();
+        if (!schematicatorExists()) return null;
+        ItemStack item = schematicatorContainer.getItem(0);
         if (!item.is(MissileItems.WARHEAD_SCHEMATIC.get()))
             return null;
         return item;
     }
 
     public ItemStack getChassis() {
-        ItemStack item = getSlot(2).getItem();
+        if (!schematicatorExists()) return null;
+        ItemStack item = schematicatorContainer.getItem(1);
         if(!item.is(MissileItems.CHASSIS_SCHEMATIC.get()))
             return null;
         return item;
     }
 
     public ItemStack getThruster() {
-        ItemStack item = getSlot(3).getItem();
+        if (!schematicatorExists()) return null;
+        ItemStack item = schematicatorContainer.getItem(2);
         if (!item.is(MissileItems.THRUSTER_SCHEMATIC.get()))
             return null;
         return item;
-    }
-
-    public Container getSchematicatorContainer() {
-        return schematicatorContainer;
     }
 
     public void clickMap(double x, double z) {

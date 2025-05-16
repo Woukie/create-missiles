@@ -7,7 +7,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
@@ -18,7 +17,6 @@ import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
 import net.woukie.createmissiles.item.schematic.WarheadSchematic;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.TrajectoryData;
-import net.woukie.createmissiles.registry.MissileItems;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -177,14 +175,18 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
         if (!errors.isEmpty())
             return;
 
-        Container schematicatorSlots = getMenu().getSchematicatorContainer();
-        BlockPos source = getMenu().getSource();
-        BlockPos target = getMenu().getTarget();
+        if (!getMenu().launchPadExists()){
+            errors.add(Component.translatable("gui.createmissiles.navigator.no_launch_pad").getString());
+            return;
+        }
 
-        if (schematicatorSlots == null) {
+        if (!getMenu().schematicatorExists()) {
             errors.add(Component.translatable("gui.createmissiles.navigator.no_schematicator").getString());
             return;
         }
+
+        BlockPos source = getMenu().getSource();
+        BlockPos target = getMenu().getTarget();
 
         if (source == null || target == null) {
             errors.add(Component.translatable("gui.createmissiles.navigator.no_target").getString());
@@ -218,6 +220,8 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
 //        maxY = max height of trajectory if shot at same angle with full fuel level
 //        minX = 0
 //        maxX = (targetXZ - sourceXZ).length()
+
+        errors.add("Got everything needed to render trajectory here :)");
 
         gui.pose().pushPose();
         gui.pose().translate(trajectoryLeft, trajectoryTop, 0);

@@ -3,27 +3,27 @@ package net.woukie.createmissiles.block.navigator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.woukie.createmissiles.MultiblockHelper;
 import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
-import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlockEntity;
+import net.woukie.createmissiles.registry.MissileBlockEntities;
 import org.jetbrains.annotations.NotNull;
 
 public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
@@ -54,6 +54,20 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
                     case 7 -> getBlockPos().getY();
                     case 8 -> getBlockPos().getZ();
                     case 9 -> (int) (fuelPercent * 100D);
+                    case 10 -> MultiblockHelper.findCorner(
+                            blockPos,
+                            blockState.getValue(SchematicatorBlock.FACING).getOpposite(),
+                            level
+                    ) == null ? 0 : 1;
+                    case 11 -> {
+//                        TODO: Keep track of multiblock instead of searching for it, but this isnt actually expensive avg, very worst case 38 blocks searched
+                        Direction facing = blockState.getValue(SchematicatorBlock.FACING).getOpposite();
+                        BlockPos corner = MultiblockHelper.findCorner(blockPos, facing, level);
+                        if (MultiblockHelper.findEdgeBlock(corner, facing, level, MissileBlockEntities.SCHEMATICATOR.get()) != null)
+                            yield 1;
+
+                        yield 0;
+                    }
                     default -> 0;
                 };
             }
@@ -61,7 +75,7 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
             public void set(int i, int j) {}
 
             public int getCount() {
-                return 10;
+                return 12;
             }
         };
     }
@@ -118,55 +132,6 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
         target = impactPos;
     }
 
-    private Container findSchematicator() {
-        Level world = getLevel();
-        if (world == null)
-            return null;
-
-        Direction facing = getBlockState().getValue(SchematicatorBlock.FACING).getOpposite();
-        Direction right = facing.getClockWise();
-
-        for (int offset = 0; offset < 3; offset++) {
-            BlockPos corner = getBlockPos().relative(facing).relative(right, -offset);
-            if (checkForLaunchPad(corner, right, facing)) {
-                for (int i = 0; i < 3; i++) {
-                    BlockPos leftEdge = corner.relative(right, -1).relative(facing, i);
-                    if (world.getBlockEntity(leftEdge) instanceof SchematicatorBlockEntity schematicator)
-                        return schematicator;
-
-                    BlockPos farEdge = corner.relative(facing, 3).relative(right, i);
-                    if (world.getBlockEntity(farEdge) instanceof SchematicatorBlockEntity schematicator)
-                        return schematicator;
-
-                    BlockPos backEdge = corner.relative(facing, -1).relative(right, i);
-                    if (world.getBlockEntity(backEdge) instanceof SchematicatorBlockEntity schematicator)
-                        return schematicator;
-
-                    BlockPos rightEdge = corner.relative(right, 3).relative(facing, i);
-                    if (world.getBlockEntity(rightEdge) instanceof SchematicatorBlockEntity schematicator)
-                        return schematicator;
-                }
-
-                return null;
-            }
-        }
-
-        return null;
-    }
-
-    private boolean checkForLaunchPad(BlockPos corner, Direction right, Direction facing) {
-        for (int x = 0; x < 3; x++) {
-            for (int z = 0; z < 3; z++) {
-                BlockPos targetBlock = corner.relative(right, x).relative(facing, z);
-                BlockEntity blockEntity = getLevel().getBlockEntity(targetBlock);
-                if (!(blockEntity instanceof LaunchPadBlockEntity))
-                    return false;
-            }
-        }
-
-        return true;
-    }
-
     @Override
     public void setRemoved() {
         super.setRemoved();
@@ -204,7 +169,12 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
     @Override
     protected @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory) {
         recalculateTarget();
-        return new NavigatorMenu(id, playerInventory, this, this.dataAccess, findSchematicator());
+
+        Direction facing = getBlockState().getValue(SchematicatorBlock.FACING).getOpposite();
+        BlockPos corner = MultiblockHelper.findCorner(getBlockPos(), facing, level);
+        BlockEntity schematicator = MultiblockHelper.findEdgeBlock(corner, facing, getLevel(), MissileBlockEntities.SCHEMATICATOR.get());
+
+        return new NavigatorMenu(id, playerInventory, this, this.dataAccess, schematicator == null ? new SimpleContainer(3) : (SchematicatorBlockEntity)schematicator);
     }
 
     @Override

@@ -13,9 +13,10 @@
   "warheads.createmissiles.tnt_warhead": "TNT Warhead",
   "chassis.createmissiles.paper_chassis": "Paper Chassis",
   "thrusters.createmissiles.gunpowder_thruster": "Gunpowder Thruster",
-  "gui.createmissiles.navigator.no_map": "No map",
-  "gui.createmissiles.navigator.no_map_data": "No map data",
-  "gui.createmissiles.navigator.no_schematicator": "No schematicator",
-  "gui.createmissiles.navigator.no_schematics": "No schematics",
+  "gui.createmissiles.navigator.no_map": "No map in navigator",
+  "gui.createmissiles.navigator.no_map_data": "Map has no data",
+  "gui.createmissiles.navigator.no_launch_pad": "Could not find launch pad",
+  "gui.createmissiles.navigator.no_schematicator": "Launch pad has no schematicator",
+  "gui.createmissiles.navigator.no_schematics": "No schematics in schematicator",
   "gui.createmissiles.navigator.no_target": "No target"
 }
