@@ -5,7 +5,9 @@ import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.launchpad.LaunchPadCogInstance;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
-import net.woukie.createmissiles.block.launchpadcontroller.LaunchPadControllerBlockEntity;
+import net.woukie.createmissiles.block.controller.ControllerBlockEntity;
+import net.woukie.createmissiles.block.navigator.NavigatorBlockEntity;
+import net.woukie.createmissiles.block.schematicator.SchematicatorBlockEntity;
 
 public class MissileBlockEntities {
     private static final CreateRegistrate REGISTRATE = CreateMissiles.registrate();
@@ -16,9 +18,19 @@ public class MissileBlockEntities {
             .validBlock(MissileBlocks.LAUNCH_PAD)
             .register();
 
-    public static final BlockEntityEntry<LaunchPadControllerBlockEntity> LAUNCH_PAD_CONTROLLER = REGISTRATE
-            .blockEntity("launch_pad_controller", LaunchPadControllerBlockEntity::new)
-            .validBlock(MissileBlocks.LAUNCH_PAD_CONTROLLER)
+    public static final BlockEntityEntry<ControllerBlockEntity> CONTROLLER = REGISTRATE
+            .blockEntity("controller", ControllerBlockEntity::new)
+            .validBlock(MissileBlocks.CONTROLLER)
+            .register();
+
+    public static final BlockEntityEntry<SchematicatorBlockEntity> SCHEMATICATOR = REGISTRATE
+            .blockEntity("schematicator", SchematicatorBlockEntity::new)
+            .validBlock(MissileBlocks.SCHEMATICATOR)
+            .register();
+
+    public static final BlockEntityEntry<NavigatorBlockEntity> NAVIGATOR = REGISTRATE
+            .blockEntity("navigator", NavigatorBlockEntity::new)
+            .validBlock(MissileBlocks.NAVIGATOR)
             .register();
 
     public static void init() {

@@ -2,9 +2,6 @@ package net.woukie.createmissiles.registry;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.ItemEntry;
-import dev.architectury.registry.registries.DeferredRegister;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.Item;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.item.schematic.ChassisSchematic;
 import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
@@ -12,7 +9,6 @@ import net.woukie.createmissiles.item.schematic.WarheadSchematic;
 
 public class MissileItems {
     private static final CreateRegistrate REGISTRATE = CreateMissiles.registrate();
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(CreateMissiles.MOD_ID, Registries.ITEM);
 
     public static ItemEntry<WarheadSchematic> WARHEAD_SCHEMATIC = REGISTRATE
             .item(CreateMissiles.MOD_ID, "warhead_schematic", WarheadSchematic::new)

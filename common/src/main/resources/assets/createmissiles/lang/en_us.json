@@ -1,12 +1,22 @@
 {
   "category.createmissiles": "Create Missiles",
   "block.createmissiles.launch_pad": "Launch Pad",
-  "block.createmissiles.launch_pad_controller": "Launch Pad Controller",
+  "block.createmissiles.controller": "Controller",
+  "block.createmissiles.schematicator": "Schematicator",
+  "block.createmissiles.navigator": "Navigator",
   "item.createmissiles.warhead_schematic": "Warhead Schematic",
   "item.createmissiles.chassis_schematic": "Chassis Schematic",
   "item.createmissiles.thruster_schematic": "Thruster Schematic",
-  "container.createmissiles.launch_pad_controller": "Launch Pad",
+  "container.createmissiles.controller": "Launch Pad",
+  "container.createmissiles.schematicator": "Schematicator",
+  "container.createmissiles.navigator": "Navigator",
   "warheads.createmissiles.tnt_warhead": "TNT Warhead",
   "chassis.createmissiles.paper_chassis": "Paper Chassis",
-  "thrusters.createmissiles.gunpowder_thruster": "Gunpowder Thruster"
+  "thrusters.createmissiles.gunpowder_thruster": "Gunpowder Thruster",
+  "gui.createmissiles.navigator.no_map": "No map in navigator",
+  "gui.createmissiles.navigator.no_map_data": "Map has no data",
+  "gui.createmissiles.navigator.no_launch_pad": "Could not find launch pad",
+  "gui.createmissiles.navigator.no_schematicator": "Launch pad has no schematicator",
+  "gui.createmissiles.navigator.no_schematics": "No schematics in schematicator",
+  "gui.createmissiles.navigator.no_target": "No target"
 }

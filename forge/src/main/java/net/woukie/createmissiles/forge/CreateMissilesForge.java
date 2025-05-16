@@ -7,7 +7,9 @@ import net.woukie.createmissiles.CreateMissiles;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.woukie.createmissiles.block.launchpadcontroller.LaunchPadControllerScreen;
+import net.woukie.createmissiles.block.controller.ControllerScreen;
+import net.woukie.createmissiles.block.navigator.NavigatorScreen;
+import net.woukie.createmissiles.block.schematicator.SchematicatorScreen;
 import net.woukie.createmissiles.registry.MissileMenus;
 
 @Mod(CreateMissiles.MOD_ID)
@@ -24,6 +26,8 @@ public class CreateMissilesForge {
     }
 
     private void clientSetup (final FMLClientSetupEvent event) {
-        MenuRegistry.registerScreenFactory(MissileMenus.LAUNCH_PAD_CONTROLLER.get(), LaunchPadControllerScreen::new);
+        MenuRegistry.registerScreenFactory(MissileMenus.CONTROLLER.get(), ControllerScreen::new);
+        MenuRegistry.registerScreenFactory(MissileMenus.NAVIGATOR.get(), NavigatorScreen::new);
+        MenuRegistry.registerScreenFactory(MissileMenus.SCHEMATICATOR.get(), SchematicatorScreen::new);
     }
 }

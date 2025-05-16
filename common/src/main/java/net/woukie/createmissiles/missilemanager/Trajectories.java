@@ -43,11 +43,11 @@ public class Trajectories extends SavedData {
             server.overworld().sendParticles(ParticleTypes.CLOUD, p.x, p.y, p.z, 5, 0, 0, 0, 0);
             if (trajectory.shouldExplode()) {
                 trajectory.explode();
-                setDirty();
             }
         });
 
         activeTrajectories.removeIf(Trajectory::shouldExplode);
+        setDirty();
     }
 
     public Trajectories load(CompoundTag nbt) {
