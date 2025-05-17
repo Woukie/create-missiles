@@ -5,7 +5,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,7 +13,6 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -59,15 +57,12 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
                             blockState.getValue(SchematicatorBlock.FACING).getOpposite(),
                             level
                     ) == null ? 0 : 1;
-                    case 11 -> {
-//                        TODO: Keep track of multiblock instead of searching for it, but this isnt actually expensive avg, very worst case 38 blocks searched
-                        Direction facing = blockState.getValue(SchematicatorBlock.FACING).getOpposite();
-                        BlockPos corner = MultiblockHelper.findCorner(blockPos, facing, level);
-                        if (MultiblockHelper.findEdgeBlock(corner, facing, level, MissileBlockEntities.SCHEMATICATOR.get()) != null)
-                            yield 1;
-
-                        yield 0;
-                    }
+//                    TODO: Keep track of multiblock instead of searching for it every tick, but this isnt actually expensive. worst case 38 blocks searched
+                    case 11 -> MultiblockHelper.findEdgeBlock(
+                            NavigatorBlockEntity.this,
+                            getLevel(),
+                            MissileBlockEntities.SCHEMATICATOR.get()
+                    ) == null ? 0 : 1;
                     default -> 0;
                 };
             }

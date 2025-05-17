@@ -4,12 +4,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.woukie.createmissiles.block.InvisibleSlot;
 import net.woukie.createmissiles.block.MissileAbstractMenu;
 import net.woukie.createmissiles.block.navigator.messages.ClickFuelMessage;
 import net.woukie.createmissiles.block.navigator.messages.ClickMapMessage;
@@ -135,27 +135,5 @@ public class NavigatorMenu extends MissileAbstractMenu {
 
     public void clickFuel(double fuelClickZ) {
         MissilePackets.NAVIGATOR_CLICK_FUEL.sendToServer(new ClickFuelMessage(getSource(), fuelClickZ));
-    }
-
-    private static class InvisibleSlot extends Slot {
-        public InvisibleSlot(Container container, int i) {
-            super(container, i, 0, 0);
-        }
-
-        public boolean mayPlace(@NotNull ItemStack itemStack) {
-            return false;
-        }
-
-        public boolean isActive() {
-            return false;
-        }
-
-        public boolean mayPickup(@NotNull Player player) {
-            return false;
-        }
-
-        public boolean isHighlightable() {
-            return false;
-        }
     }
 }

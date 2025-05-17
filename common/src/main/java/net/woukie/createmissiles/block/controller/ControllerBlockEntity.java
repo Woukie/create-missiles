@@ -1,17 +1,25 @@
 package net.woukie.createmissiles.block.controller;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.woukie.createmissiles.MultiblockHelper;
 import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
+import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
+import net.woukie.createmissiles.registry.MissileBlockEntities;
 import org.jetbrains.annotations.NotNull;
 
 public class ControllerBlockEntity extends MissileAbstractBlockEntity {
@@ -29,6 +37,21 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
                     case 0 -> getBlockPos().getX();
                     case 1 -> getBlockPos().getY();
                     case 2 -> getBlockPos().getZ();
+                    case 3 -> MultiblockHelper.findCorner(
+                            blockPos,
+                            blockState.getValue(SchematicatorBlock.FACING).getOpposite(),
+                            level
+                    ) == null ? 0 : 1;
+                    case 4 -> MultiblockHelper.findEdgeBlock(
+                            ControllerBlockEntity.this,
+                            getLevel(),
+                            MissileBlockEntities.SCHEMATICATOR.get()
+                    ) == null ? 0 : 1;
+                    case 5 -> MultiblockHelper.findEdgeBlock(
+                            ControllerBlockEntity.this,
+                            getLevel(),
+                            MissileBlockEntities.NAVIGATOR.get()
+                    ) == null ? 0 : 1;
                     default -> 0;
                 };
             }
@@ -38,7 +61,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
             @Override
             public int getCount() {
-                return 3;
+                return 6;
             }
         };
     }
@@ -80,6 +103,19 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
     @Override
     protected @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory) {
-        return new ControllerMenu(id, playerInventory, this, dataAccess);
+        Direction facing = getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
+        BlockPos corner = MultiblockHelper.findCorner(getBlockPos(), facing, getLevel());
+
+        BlockEntity navigator = MultiblockHelper.findEdgeBlock(corner, facing, getLevel(), MissileBlockEntities.NAVIGATOR.get());
+        BlockEntity schematicator = MultiblockHelper.findEdgeBlock(corner, facing, getLevel(), MissileBlockEntities.SCHEMATICATOR.get());
+
+        return new ControllerMenu(
+                id,
+                playerInventory,
+                this,
+                dataAccess,
+                schematicator == null ? new SimpleContainer(3) : (Container) schematicator,
+                navigator == null ? new SimpleContainer(1) : (Container) navigator
+        );
     }
 }

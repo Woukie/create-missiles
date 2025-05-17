@@ -1,16 +1,12 @@
 package net.woukie.createmissiles;
 
-import net.minecraft.client.particle.PlayerCloudParticle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
-import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
 
 public class MultiblockHelper {
     public static BlockPos findCorner(BlockPos origin, Direction facing, Level level) {
@@ -25,7 +21,12 @@ public class MultiblockHelper {
         return null;
     }
 
-//    Classes are checked
+    public static BlockEntity findEdgeBlock(BlockEntity origin, Level level, BlockEntityType<?> type) {
+        Direction facing = origin.getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
+        BlockPos corner = MultiblockHelper.findCorner(origin.getBlockPos(), facing, level);
+        return MultiblockHelper.findEdgeBlock(corner, facing, level, type);
+    }
+
     public static BlockEntity findEdgeBlock(BlockPos corner, Direction facing, Level level, BlockEntityType<?> type) {
         if (corner == null)
             return null;
