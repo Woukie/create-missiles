@@ -32,6 +32,8 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
     private static final int buttonWidth = 52;
     private static final int buttonHeight = 52;
 
+    private static final int coverLeft = buttonLeft;
+    private static final int coverTop = buttonTop;
     private static final int coverWidth = buttonWidth / 2;
     private static final int coverHeight = buttonHeight;
 
@@ -50,9 +52,54 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         gui.pose().translate(leftPos, topPos, 0);
 
         boolean buttonOpen = renderLogs(gui);
+        renderButton(gui, buttonOpen);
 
-        currentOpenPercent += (buttonOpen ? 1 : 0 - currentOpenPercent) * 0.05F;
         gui.pose().popPose();
+    }
+
+    private void renderButton(@NotNull GuiGraphics gui, boolean buttonOpen) {
+        double speed = 0.01f;
+        double targetOpenPercent = buttonOpen ? 1 : 0;
+        currentOpenPercent += targetOpenPercent > currentOpenPercent ? speed : -speed;
+
+        double adjusted = easeOutBounce(currentOpenPercent);
+
+//        currentOpenPercent += difference * 0.01F;
+//        currentOpenPercent += (buttonOpen ? 1 : 0 - currentOpenPercent) * -0.005F;
+
+        int width = (int) (adjusted * coverWidth + 0.5);
+
+        gui.blit(
+                COVER_LEFT,
+                coverLeft, coverTop,
+                width, 0,
+                coverWidth - width, coverHeight,
+                coverWidth, coverHeight
+        );
+
+        gui.blit(
+                COVER_RIGHT,
+                coverLeft + coverWidth + width, coverTop,
+                0, 0,
+                coverWidth - width, coverHeight,
+                coverWidth, coverHeight
+        );
+    }
+
+//    Sourced from easings.net, licenced under GPL-v3
+    private double easeOutBounce(double x) {
+        double n1 = 7.5625;
+        double d1 = 2.75;
+
+        if (x < 1 / d1) {
+            return n1 * x * x;
+        } else if (x < 2 / d1) {
+            return n1 * (x -= 1.5 / d1) * x + 0.75;
+        } else if (x < 2.5 / d1) {
+            return n1 * (x -= 2.25 / d1) * x + 0.9375;
+        } else {
+            return n1 * (x -= 2.625 / d1) * x + 0.984375;
+        }
     }
 
     private boolean renderLogs(GuiGraphics gui) {
