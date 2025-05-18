@@ -9,18 +9,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.item.schematic.ChassisSchematic;
-import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
-import net.woukie.createmissiles.item.schematic.WarheadSchematic;
-import net.woukie.createmissiles.missilemanager.Trajectory;
-import net.woukie.createmissiles.missilemanager.TrajectoryData;
-import net.woukie.createmissiles.missilemanager.parts.Thruster;
 import org.jetbrains.annotations.NotNull;
 
 public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
     private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/controller.png");
     private static final ResourceLocation COVER_LEFT = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/cover_l.png");
     private static final ResourceLocation COVER_RIGHT = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/cover_r.png");
+    private static final ResourceLocation BUTTON = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/button.png");
+    private static final ResourceLocation BUTTON_HOVER = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/button_hover.png");
 
     private static final int consoleLeft = 8;
     private static final int consoleTop = 18;
@@ -52,23 +48,21 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         gui.pose().translate(leftPos, topPos, 0);
 
         boolean buttonOpen = renderLogs(gui);
-        renderButton(gui, buttonOpen);
+        renderButton(gui, buttonOpen, i, j);
 
         gui.pose().popPose();
     }
 
-    private void renderButton(@NotNull GuiGraphics gui, boolean buttonOpen) {
+    private void renderButton(@NotNull GuiGraphics gui, boolean buttonOpen, double mouseX, double mouseY) {
         double speed = 0.01f;
         double targetOpenPercent = buttonOpen ? 1 : 0;
         currentOpenPercent += targetOpenPercent > currentOpenPercent ? speed : -speed;
 
         double adjusted = easeOutBounce(currentOpenPercent);
-
-//        currentOpenPercent += difference * 0.01F;
-//        currentOpenPercent += (buttonOpen ? 1 : 0 - currentOpenPercent) * -0.005F;
-
         int width = (int) (adjusted * coverWidth + 0.5);
 
+        gui.pose().pushPose();
+        gui.pose().translate(0, 0, 2);
         gui.blit(
                 COVER_LEFT,
                 coverLeft, coverTop,
@@ -84,6 +78,21 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
                 coverWidth - width, coverHeight,
                 coverWidth, coverHeight
         );
+        gui.pose().popPose();
+
+        gui.pose().pushPose();
+        gui.pose().translate(0, 0, 1);
+
+        ResourceLocation resource = buttonOpen && isHovering(buttonLeft, buttonTop, buttonWidth, buttonHeight, mouseX, mouseY) ? BUTTON_HOVER : BUTTON;
+
+        gui.blit(
+                resource,
+                buttonLeft, buttonTop,
+                0, 0,
+                buttonWidth, buttonHeight,
+                buttonWidth, buttonHeight
+        );
+        gui.pose().popPose();
     }
 
 //    Sourced from easings.net, licenced under GPL-v3
