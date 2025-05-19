@@ -124,7 +124,7 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         boolean hasDestination = getMenu().hasDestination();
 
         String logs = "";
-        logs += "Launch pad: " + (launchPad ? " VALID" : "OFFLINE") + "\n";
+        logs += "Launch pad: " + (launchPad ? "VALID" : "OFFLINE") + "\n";
         logs += "Schematicator: " + (!schematicator ? "OFFLINE" : (hasSchematics ? "VALID" : "INCOMPLETE")) + "\n";
         logs += "Navigator: " + (!navigator ? "OFFLINE" : (hasDestination ? "VALID" : "INCOMPLETE")) + "\n";
 
