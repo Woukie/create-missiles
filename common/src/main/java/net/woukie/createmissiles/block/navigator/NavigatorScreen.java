@@ -45,9 +45,8 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
     private static final int trajectoryWidth = 54;
     private static final int trajectoryHeight = 54;
 
-    private double currentMapCrosshairX = 64;
-    private double currentMapCrosshairZ = 64;
-    private double currentMapScale = 0;
+    private double currentMapCrosshairX = 0;
+    private double currentMapCrosshairZ = 0;
     private double currentFuel2 = 0;
     private double currentFuel1 = 0;
 
@@ -145,22 +144,14 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
         int targetMapCrosshairX = getMenu().getMapCrosshairX();
         int targetMapCrosshairZ = getMenu().getMapCrosshairZ();
 
-        if (targetMapCrosshairX == -1) {
-            targetMapCrosshairX = 64;
-            targetMapCrosshairZ = 64;
-        }
-
         currentMapCrosshairX += (targetMapCrosshairX - currentMapCrosshairX) * 0.1F;
         currentMapCrosshairZ += (targetMapCrosshairZ - currentMapCrosshairZ) * 0.1F;
-        currentMapScale += (1 - currentMapScale) * 0.1F;
 
         int scaledX = (int) (currentMapCrosshairX * mapWidth / 128);
         int scaledY = (int) (currentMapCrosshairZ * mapHeight / 128);
 
         gui.pose().pushPose();
         gui.pose().translate(mapLeft + leftPos, mapTop + topPos, 0);
-
-        gui.pose().scale((float)currentMapScale, (float)currentMapScale, 1);
 
         gui.blit(MAP_TARGET, scaledX - 4, scaledY - 4, 2, 0, 0, 9, 9, 9, 9);
         gui.blit(MAP_TARGET_VERTICAL, scaledX - 2, -4, 1, 0, 0, 5, 62, 5 ,62);

@@ -18,7 +18,15 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.woukie.createmissiles.MultiblockHelper;
 import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
+import net.woukie.createmissiles.block.navigator.NavigatorBlockEntity;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
+import net.woukie.createmissiles.block.schematicator.SchematicatorBlockEntity;
+import net.woukie.createmissiles.missilemanager.Trajectories;
+import net.woukie.createmissiles.missilemanager.Trajectory;
+import net.woukie.createmissiles.missilemanager.TrajectoryData;
+import net.woukie.createmissiles.missilemanager.parts.Chassis;
+import net.woukie.createmissiles.missilemanager.parts.Thruster;
+import net.woukie.createmissiles.missilemanager.parts.Warhead;
 import net.woukie.createmissiles.registry.MissileBlockEntities;
 import org.jetbrains.annotations.NotNull;
 
@@ -74,7 +82,45 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     }
 
     public void clickLaunch() {
-        System.out.println("clickLaunch triggered on server!");
+        SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity)MultiblockHelper.findEdgeBlock(
+                ControllerBlockEntity.this,
+                getLevel(),
+                MissileBlockEntities.SCHEMATICATOR.get()
+        );
+        if (schematicator == null) return;
+
+        NavigatorBlockEntity navigator = (NavigatorBlockEntity) MultiblockHelper.findEdgeBlock(
+                ControllerBlockEntity.this,
+                getLevel(),
+                MissileBlockEntities.NAVIGATOR.get()
+        );
+        if (navigator == null) return;
+
+        Direction launchPadDirection = getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
+        if (MultiblockHelper.findCorner(getBlockPos(), launchPadDirection, getLevel()) == null) return;
+
+        BlockPos source = getBlockPos().relative(launchPadDirection, 2);
+
+        Warhead warhead = schematicator.getWarhead();
+        Chassis chassis = schematicator.getChassis();
+        Thruster thruster = schematicator.getThruster();
+
+        if (warhead == null || chassis == null || thruster == null) return;
+
+        Trajectory trajectory = new Trajectory(new TrajectoryData(
+                getLevel(),
+                source,
+                navigator.getTarget(),
+                navigator.getFuelPercent(),
+                0,
+                schematicator.getWarhead(),
+                schematicator.getChassis(),
+                schematicator.getThruster()
+        ));
+
+        Trajectories trajectories = Trajectories.get();
+        trajectories.activeTrajectories.add(trajectory);
+        trajectories.setDirty();
     }
 
     @Override

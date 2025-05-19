@@ -21,6 +21,9 @@ import net.woukie.createmissiles.MultiblockHelper;
 import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlockEntity;
+import net.woukie.createmissiles.missilemanager.parts.Chassis;
+import net.woukie.createmissiles.missilemanager.parts.Thruster;
+import net.woukie.createmissiles.missilemanager.parts.Warhead;
 import net.woukie.createmissiles.registry.MissileBlockEntities;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,8 +39,8 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
     public NavigatorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
         this.items = NonNullList.withSize(1, ItemStack.EMPTY);
-        this.mapCrosshairX = -1;
-        this.mapCrosshairZ = -1;
+        this.mapCrosshairX = 64;
+        this.mapCrosshairZ = 64;
         this.fuelPercent = 0;
         this.dataAccess = new ContainerData() {
             public int get(int i) {
@@ -93,14 +96,18 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
         recalculateTarget();
     }
 
+    public BlockPos getTarget() {
+        recalculateTarget();
+        return this.target;
+    }
+
+    public double getFuelPercent() {
+        return fuelPercent;
+    }
+
     private void recalculateTarget() {
         ItemStack mapItem = getItem(SLOT_MAP);
         if (!mapItem.is(Items.FILLED_MAP) || level == null) {
-            target = null;
-            return;
-        }
-
-        if (mapCrosshairX == -1) {
             target = null;
             return;
         }
