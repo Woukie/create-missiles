@@ -5,7 +5,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,7 +13,6 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,6 +21,9 @@ import net.woukie.createmissiles.MultiblockHelper;
 import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlockEntity;
+import net.woukie.createmissiles.missilemanager.parts.Chassis;
+import net.woukie.createmissiles.missilemanager.parts.Thruster;
+import net.woukie.createmissiles.missilemanager.parts.Warhead;
 import net.woukie.createmissiles.registry.MissileBlockEntities;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,8 +39,8 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
     public NavigatorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
         this.items = NonNullList.withSize(1, ItemStack.EMPTY);
-        this.mapCrosshairX = -1;
-        this.mapCrosshairZ = -1;
+        this.mapCrosshairX = 64;
+        this.mapCrosshairZ = 64;
         this.fuelPercent = 0;
         this.dataAccess = new ContainerData() {
             public int get(int i) {
@@ -59,15 +60,12 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
                             blockState.getValue(SchematicatorBlock.FACING).getOpposite(),
                             level
                     ) == null ? 0 : 1;
-                    case 11 -> {
-//                        TODO: Keep track of multiblock instead of searching for it, but this isnt actually expensive avg, very worst case 38 blocks searched
-                        Direction facing = blockState.getValue(SchematicatorBlock.FACING).getOpposite();
-                        BlockPos corner = MultiblockHelper.findCorner(blockPos, facing, level);
-                        if (MultiblockHelper.findEdgeBlock(corner, facing, level, MissileBlockEntities.SCHEMATICATOR.get()) != null)
-                            yield 1;
-
-                        yield 0;
-                    }
+//                    TODO: Keep track of multiblock instead of searching for it every tick, but this isnt actually expensive. worst case 38 blocks searched
+                    case 11 -> MultiblockHelper.findEdgeBlock(
+                            NavigatorBlockEntity.this,
+                            getLevel(),
+                            MissileBlockEntities.SCHEMATICATOR.get()
+                    ) == null ? 0 : 1;
                     default -> 0;
                 };
             }
@@ -98,14 +96,18 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
         recalculateTarget();
     }
 
+    public BlockPos getTarget() {
+        recalculateTarget();
+        return this.target;
+    }
+
+    public double getFuelPercent() {
+        return fuelPercent;
+    }
+
     private void recalculateTarget() {
         ItemStack mapItem = getItem(SLOT_MAP);
         if (!mapItem.is(Items.FILLED_MAP) || level == null) {
-            target = null;
-            return;
-        }
-
-        if (mapCrosshairX == -1) {
             target = null;
             return;
         }
