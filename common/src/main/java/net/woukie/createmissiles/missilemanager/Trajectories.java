@@ -40,7 +40,7 @@ public class Trajectories extends SavedData {
         activeTrajectories.forEach(trajectory -> {
             trajectory.incrementTick();
             Vec3 p = trajectory.getPosition(trajectory.getData().getTick() * 0.05F);
-            server.overworld().sendParticles(ParticleTypes.CLOUD, p.x, p.y, p.z, 5, 0, 0, 0, 0);
+            server.overworld().sendParticles(ParticleTypes.CLOUD, p.x + 0.5, p.y + 0.5, p.z + 0.5, 5, 0, 0, 0, 0);
             if (trajectory.shouldExplode()) {
                 trajectory.explode();
             }
