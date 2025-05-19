@@ -35,6 +35,8 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
     private final ContainerData dataAccess;
 
+    private boolean launching = false;
+
     public ControllerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
         this.items = NonNullList.withSize(128, ItemStack.EMPTY);
@@ -79,10 +81,32 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
             initialized = true;
             ControllerInstanceTracker.add(this);
         }
+
+        if (launching) launch();
     }
 
-    public void clickLaunch() {
-        SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity)MultiblockHelper.findEdgeBlock(
+    public void launch() {
+//        Initially called on network thread, need to get multiblock structure which requires server thread
+        if(getLevel() == null ||
+                getLevel().getServer() == null ||
+                Thread.currentThread() != getLevel().getServer().getRunningThread()
+        ) {
+            this.launching = true;
+            return;
+        }
+
+        this.launching = false;
+
+        Direction launchPadDirection = this.getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
+
+        BlockPos corner = MultiblockHelper.findCorner(
+                worldPosition,
+                launchPadDirection,
+                getLevel()
+        );
+        if (corner == null) return;
+
+        SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity) MultiblockHelper.findEdgeBlock(
                 ControllerBlockEntity.this,
                 getLevel(),
                 MissileBlockEntities.SCHEMATICATOR.get()
@@ -96,20 +120,18 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         );
         if (navigator == null) return;
 
-        Direction launchPadDirection = getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
-        if (MultiblockHelper.findCorner(getBlockPos(), launchPadDirection, getLevel()) == null) return;
-
-        BlockPos source = getBlockPos().relative(launchPadDirection, 2);
+        System.out.println("Navigator and ");
 
         Warhead warhead = schematicator.getWarhead();
         Chassis chassis = schematicator.getChassis();
         Thruster thruster = schematicator.getThruster();
 
         if (warhead == null || chassis == null || thruster == null) return;
+        System.out.println("Schematics exist");
 
         Trajectory trajectory = new Trajectory(new TrajectoryData(
                 getLevel(),
-                source,
+                getBlockPos().relative(launchPadDirection, 2),
                 navigator.getTarget(),
                 navigator.getFuelPercent(),
                 0,

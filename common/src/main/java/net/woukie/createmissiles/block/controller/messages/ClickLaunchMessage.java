@@ -31,6 +31,6 @@ public class ClickLaunchMessage {
         if (controller == null)
             return;
 
-        controller.clickLaunch();
+        controller.launch();
     }
 }
