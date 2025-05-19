@@ -120,14 +120,11 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         );
         if (navigator == null) return;
 
-        System.out.println("Navigator and ");
-
         Warhead warhead = schematicator.getWarhead();
         Chassis chassis = schematicator.getChassis();
         Thruster thruster = schematicator.getThruster();
 
         if (warhead == null || chassis == null || thruster == null) return;
-        System.out.println("Schematics exist");
 
         Trajectory trajectory = new Trajectory(new TrajectoryData(
                 getLevel(),
