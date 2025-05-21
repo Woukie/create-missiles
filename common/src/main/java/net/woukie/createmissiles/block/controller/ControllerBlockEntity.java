@@ -12,21 +12,23 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.woukie.createmissiles.MultiblockHelper;
 import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
+import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
 import net.woukie.createmissiles.block.navigator.NavigatorBlockEntity;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlockEntity;
 import net.woukie.createmissiles.missilemanager.Trajectories;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.TrajectoryData;
-import net.woukie.createmissiles.missilemanager.parts.Chassis;
-import net.woukie.createmissiles.missilemanager.parts.Thruster;
-import net.woukie.createmissiles.missilemanager.parts.Warhead;
+import net.woukie.createmissiles.missilemanager.parts.ChassisType;
+import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
+import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.registry.MissileBlockEntities;
 import org.jetbrains.annotations.NotNull;
 
@@ -62,6 +64,17 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
                             getLevel(),
                             MissileBlockEntities.NAVIGATOR.get()
                     ) == null ? 0 : 1;
+                    case 6 -> {
+                        Direction launchPadDirection = getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
+                        BlockPos launchPad = getBlockPos().relative(launchPadDirection, 1);
+                        BlockEntity blockEntity = getLevel().getBlockEntity(launchPad);
+
+                        if (blockEntity instanceof LaunchPadBlockEntity launchPadBlockEntity) {
+                            yield (int)launchPadBlockEntity.getSpeed();
+                        }
+
+                        yield 0;
+                    }
                     default -> 0;
                 };
             }
@@ -71,7 +84,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
             @Override
             public int getCount() {
-                return 6;
+                return 7;
             }
         };
     }
@@ -120,11 +133,11 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         );
         if (navigator == null) return;
 
-        Warhead warhead = schematicator.getWarhead();
-        Chassis chassis = schematicator.getChassis();
-        Thruster thruster = schematicator.getThruster();
+        WarheadType warheadType = schematicator.getWarhead();
+        ChassisType chassisType = schematicator.getChassis();
+        ThrusterType thrusterType = schematicator.getThruster();
 
-        if (warhead == null || chassis == null || thruster == null) return;
+        if (warheadType == null || chassisType == null || thrusterType == null) return;
 
         Trajectory trajectory = new Trajectory(new TrajectoryData(
                 getLevel(),

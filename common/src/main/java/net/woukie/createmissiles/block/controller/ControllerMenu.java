@@ -26,7 +26,7 @@ public class ControllerMenu extends MissileAbstractMenu {
     protected ControllerMenu(int id, Inventory playerInventory, Container container, ContainerData controllerData, Container schematicatorContainer, Container navigatorContainer) {
         super(CONTROLLER.get(), id, container);
 
-        checkContainerDataCount(controllerData, 6);
+        checkContainerDataCount(controllerData, 7);
         checkContainerSize(container, 128);
         checkContainerSize(navigatorContainer, 1);
         checkContainerSize(schematicatorContainer, 3);
@@ -53,7 +53,7 @@ public class ControllerMenu extends MissileAbstractMenu {
     }
 
     public ControllerMenu(int id, Inventory inventory) {
-        this(id, inventory, new SimpleContainer(128), new SimpleContainerData(6), new SimpleContainer(3), new SimpleContainer(1));
+        this(id, inventory, new SimpleContainer(128), new SimpleContainerData(7), new SimpleContainer(3), new SimpleContainer(1));
     }
 
     public void clickLaunch() {
@@ -78,6 +78,10 @@ public class ControllerMenu extends MissileAbstractMenu {
 
     public boolean navigatorExists() {
         return controllerData.get(5) == 1;
+    }
+
+    public boolean launchPadPowered() {
+        return controllerData.get(6) != 0;
     }
 
     public ItemStack getWarhead() {

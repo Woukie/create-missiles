@@ -9,7 +9,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.item.schematic.WarheadSchematic;
+import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
     private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/controller.png");
@@ -113,6 +118,7 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
 
     private boolean renderLogs(GuiGraphics gui) {
         boolean launchPad = getMenu().launchPadExists();
+        boolean launchPadPowered = getMenu().launchPadPowered();
         boolean schematicator = getMenu().schematicatorExists();
         boolean navigator = getMenu().navigatorExists();
 
@@ -123,23 +129,33 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         boolean hasSchematics = warhead != null && chassis != null && thruster != null;
         boolean hasDestination = getMenu().hasDestination();
 
-        String logs = "";
-        logs += "Launch pad: " + (launchPad ? "VALID" : "OFFLINE") + "\n";
-        logs += "Schematicator: " + (!schematicator ? "OFFLINE" : (hasSchematics ? "VALID" : "INCOMPLETE")) + "\n";
-        logs += "Navigator: " + (!navigator ? "OFFLINE" : (hasDestination ? "VALID" : "INCOMPLETE")) + "\n";
+        List<FormattedText> text = new ArrayList<>();
 
-        boolean open = launchPad && schematicator && navigator && hasSchematics && hasDestination;
+        text.addAll(formatStatus("Launch pad: ", launchPad, launchPadPowered));
+        text.addAll(formatStatus("Navigator: ", navigator, hasDestination));
+        text.addAll(formatStatus("Schematicator: ", schematicator, hasSchematics));
 
-        logs += "\nStatus: " + (open ? "ARMED" : "INCOMPLETE")+ "\n";
+        if (warhead != null) {
+            WarheadType warheadType = WarheadSchematic.getWarhead(warhead);
+            if (warheadType != null) {
 
+            }
+        }
 
         gui.pose().pushPose();
         gui.pose().translate(consoleLeft, consoleTop, 0);
         gui.pose().scale(0.5F, 0.5F, 1);
-        gui.drawWordWrap(this.font, FormattedText.of(logs, Style.EMPTY.withColor(16777215)), 2, 2, consoleWidth * 2 - 4, consoleHeight * 2 - 4);
+        gui.drawWordWrap(this.font, FormattedText.composite(text), 2, 2, consoleWidth * 2 - 4, consoleHeight * 2 - 4);
         gui.pose().popPose();
 
         return launchPad && schematicator && navigator && hasSchematics && hasDestination;
+    }
+
+    private List<FormattedText> formatStatus(String text, boolean online, boolean valid) {
+        List<FormattedText> result = new ArrayList<>();
+        result.add(FormattedText.of(text, Style.EMPTY.withColor(16777215)));
+        result.add(FormattedText.of((!online ? "OFFLINE" : (valid ? "VALID" : "INCOMPLETE")) + "\n", !online ? Style.EMPTY.withColor(16711680) : (valid ? Style.EMPTY.withColor(65280) : Style.EMPTY.withColor(16776960))));
+        return result;
     }
 
     @Override
