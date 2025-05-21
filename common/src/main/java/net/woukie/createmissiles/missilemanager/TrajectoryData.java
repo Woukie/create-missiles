@@ -7,10 +7,10 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
-import net.woukie.createmissiles.missilemanager.parts.Chassis;
-import net.woukie.createmissiles.missilemanager.parts.PartRegistry;
-import net.woukie.createmissiles.missilemanager.parts.Thruster;
-import net.woukie.createmissiles.missilemanager.parts.Warhead;
+import net.woukie.createmissiles.missilemanager.parts.ChassisType;
+import net.woukie.createmissiles.missilemanager.parts.PartTypeRegistry;
+import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
+import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 
 public class TrajectoryData {
     public final double gravity = 9.81F;
@@ -20,20 +20,20 @@ public class TrajectoryData {
     public final double fuelPercentage;
     private int tick; // Ticks incremented since launch
 
-    public final Warhead warhead;
-    public final Chassis chassis;
-    public final Thruster thruster;
+    public final WarheadType warheadType;
+    public final ChassisType chassisType;
+    public final ThrusterType thrusterType;
 
-    public TrajectoryData(Level level, BlockPos source, BlockPos target, double fuelPercentage, int tick, Warhead warhead, Chassis chassis, Thruster thruster) {
+    public TrajectoryData(Level level, BlockPos source, BlockPos target, double fuelPercentage, int tick, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType) {
         this.level = level;
         this.source = source;
         this.target = target;
         this.fuelPercentage = fuelPercentage;
         this.tick = tick;
 
-        this.warhead = warhead;
-        this.chassis = chassis;
-        this.thruster = thruster;
+        this.warheadType = warheadType;
+        this.chassisType = chassisType;
+        this.thrusterType = thrusterType;
     }
 
     public TrajectoryData(CompoundTag savedData, MinecraftServer server) {
@@ -46,9 +46,9 @@ public class TrajectoryData {
         this.fuelPercentage = savedData.getDouble("FuelPercentage");
         this.tick = savedData.getInt("Tick");
 
-        this.warhead = PartRegistry.getWarhead(new ResourceLocation(savedData.getString("Warhead")));
-        this.chassis = PartRegistry.getChassis(new ResourceLocation(savedData.getString("Chassis")));
-        this.thruster = PartRegistry.getThruster(new ResourceLocation(savedData.getString("Thruster")));
+        this.warheadType = PartTypeRegistry.getWarhead(new ResourceLocation(savedData.getString("Warhead")));
+        this.chassisType = PartTypeRegistry.getChassis(new ResourceLocation(savedData.getString("Chassis")));
+        this.thrusterType = PartTypeRegistry.getThruster(new ResourceLocation(savedData.getString("Thruster")));
     }
 
     public CompoundTag saveTo(CompoundTag tag) {
@@ -62,9 +62,9 @@ public class TrajectoryData {
         tag.putDouble("FuelPercentage", this.fuelPercentage);
         tag.putInt("Tick", this.tick);
 
-        tag.putString("Warhead",  warhead.resourceLocation.toString());
-        tag.putString("Chassis",  chassis.resourceLocation.toString());
-        tag.putString("Thruster",  thruster.resourceLocation.toString());
+        tag.putString("Warhead",  warheadType.resourceLocation.toString());
+        tag.putString("Chassis",  chassisType.resourceLocation.toString());
+        tag.putString("Thruster",  thrusterType.resourceLocation.toString());
 
         return tag;
     }

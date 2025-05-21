@@ -8,7 +8,7 @@ List is subject to change.
 
 - Launch pad
 - Rocket fuel
-- Tiered 'chassis' that carry greater payloads and larger fuel capacity
+- Tiered 'chassisType' that carry greater payloads and larger fuel capacity
 - Tiered 'engines' that travel further
 - Various 'warheads' including novelty, explosive and nuclear
 - Survey drone that takes a coordinate and produces a filled map of the area
