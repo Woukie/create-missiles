@@ -35,7 +35,7 @@ public class MissileParts {
                 null,
                 List.of(
                         new Ingredient(List.of(Items.IRON_INGOT), null, null, 64, Component.literal("Iron Ingot")),
-                        new Ingredient(List.of(Items.PAPER), null, null, 200, Component.literal("Paper")),
+                        new Ingredient(List.of(Items.PAPER), null, null, 64, Component.literal("Paper")),
                         new Ingredient(List.of(Items.COMPASS), null, null, 10, Component.literal("Compass"))
                 ),
                 1
