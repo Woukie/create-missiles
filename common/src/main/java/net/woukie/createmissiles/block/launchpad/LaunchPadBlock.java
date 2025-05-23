@@ -32,7 +32,7 @@ public class LaunchPadBlock extends KineticBlock implements IBE<LaunchPadBlockEn
     }
 
     @Override
-    public @NotNull WorldlyContainer getContainer(BlockState blockState, LevelAccessor levelAccessor, BlockPos blockPos) {
+    public @NotNull WorldlyContainer getContainer(@NotNull BlockState blockState, @NotNull LevelAccessor levelAccessor, @NotNull BlockPos blockPos) {
             return new InputContainer(levelAccessor, blockPos);
     }
 
@@ -57,7 +57,7 @@ public class LaunchPadBlock extends KineticBlock implements IBE<LaunchPadBlockEn
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return Shapes.or(Shapes.box(0, 0, 0, 1, 6.0/16.0, 1), Shapes.box(0, 10.0/16.0, 0, 1, 13.0/16.0, 1));
     }
 
@@ -92,14 +92,14 @@ public class LaunchPadBlock extends KineticBlock implements IBE<LaunchPadBlockEn
         }
 
         @Override
-        public boolean canPlaceItemThroughFace(int i, ItemStack itemStack, @Nullable Direction direction) {
+        public boolean canPlaceItemThroughFace(int i, @NotNull ItemStack itemStack, @Nullable Direction direction) {
             ControllerBlockEntity controllerBlockEntity = MultiblockHelper.findControllerFromLaunchPad((Level) level, pos);
             if (controllerBlockEntity == null) return false;
-            return controllerBlockEntity.canGiveItem(itemStack) == 0;
+            return controllerBlockEntity.canGiveItem(itemStack);
         }
 
         @Override
-        public boolean canTakeItemThroughFace(int i, ItemStack itemStack, Direction direction) {
+        public boolean canTakeItemThroughFace(int i, @NotNull ItemStack itemStack, @NotNull Direction direction) {
             return false;
         }
 

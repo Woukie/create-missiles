@@ -1,7 +1,5 @@
 package net.woukie.createmissiles.block.controller;
 
-import com.simibubi.create.foundation.item.ItemHelper;
-import io.github.fabricators_of_create.porting_lib.transfer.item.ItemHandlerHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -34,7 +32,6 @@ import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.registry.MissileBlockEntities;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 // Inventory divided up into 32-slot areas representing thruster, chassis and warhead
@@ -96,41 +93,54 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     }
 
     public void giveItem(@NotNull ItemStack itemStack) {
-        if (level == null) return;
+        System.out.println(itemStack);
+        if (level == null || itemStack.getCount() != 1) return;
 
         BlockEntity blockEntity = MultiblockHelper.findEdgeBlock(this, level, MissileBlockEntities.SCHEMATICATOR.get());
         if (blockEntity == null) return;
 
         SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity)blockEntity;
+
         WarheadType warhead = schematicator.getWarhead();
-        ChassisType chassis = schematicator.getChassis();
-        ThrusterType thruster = schematicator.getThruster();
-
-        int itemsLeft = itemStack.getCount();
-
         if (warhead != null) {
             var ingredientsLeft = warhead.getIngredientsLeft(items.subList(0, 32));
-            int deposit = itemsLeft - getRemainder(ingredientsLeft, itemStack, itemsLeft);
-            addItemToPartOfInventory(itemStack, deposit, 0, 32);
+            for (var entry : ingredientsLeft.entrySet()) {
+                if (entry.getKey().matches(itemStack) && entry.getValue() > 0) {
+                    addItemToPartOfInventory(itemStack, 0, 32);
+                    return;
+                }
+            }
         }
 
-        if (chassis != null && itemsLeft > 0) {
+        ChassisType chassis = schematicator.getChassis();
+        if (chassis != null) {
             var ingredientsLeft = chassis.getIngredientsLeft(items.subList(32, 64));
-            int deposit = itemsLeft - getRemainder(ingredientsLeft, itemStack, itemsLeft);
-            addItemToPartOfInventory(itemStack, deposit, 32, 64);
+            for (var entry : ingredientsLeft.entrySet()) {
+                if (entry.getKey().matches(itemStack) && entry.getValue() > 0) {
+                    addItemToPartOfInventory(itemStack, 32, 64);
+                    return;
+                }
+            }
         }
 
-        if (thruster != null && itemsLeft > 0) {
+        ThrusterType thruster = schematicator.getThruster();
+        if (thruster != null) {
             var ingredientsLeft = thruster.getIngredientsLeft(items.subList(64, 96));
-            int deposit = itemsLeft - getRemainder(ingredientsLeft, itemStack, itemsLeft);
-            addItemToPartOfInventory(itemStack, deposit, 64, 96);
+            for (var entry : ingredientsLeft.entrySet()) {
+                if (entry.getKey().matches(itemStack) && entry.getValue() > 0) {
+                    addItemToPartOfInventory(itemStack, 64, 96);
+                    return;
+                }
+            }
         }
     }
 
-    private void addItemToPartOfInventory(ItemStack itemStack, int incrementAmmount, int fromIndex, int toIndex) {
-        for(ItemStack stack : items.subList(fromIndex, toIndex)) {
+    private void addItemToPartOfInventory(ItemStack itemStack, int fromIndex, int toIndex) {
+        for (int i = fromIndex; i < toIndex; i++) {
+            ItemStack stack = getItem(i);
             if (ItemStack.isSameItemSameTags(stack, itemStack)) {
-                stack.grow(incrementAmmount);
+                itemStack.setCount(0);
+                stack.grow(1);
                 return;
             }
         }
@@ -138,19 +148,17 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         for (int i = fromIndex; i < toIndex; i++) {
             ItemStack stack = getItem(i);
             if (stack.isEmpty()) {
-                itemStack.setCount(incrementAmmount);
-                setItem(i, itemStack);
+                setItem(i, itemStack.copyAndClear());
+                return;
             }
         }
     }
 
-//    Returns number of items left in the stack after giving the item
-    public int canGiveItem(ItemStack itemStack) {
-        int itemsLeft = itemStack.getCount();
-        if (level == null) return itemsLeft;
+    public boolean canGiveItem(ItemStack itemStack) {
+        if (level == null || itemStack.getCount() != 1) return false;
 
         BlockEntity blockEntity = MultiblockHelper.findEdgeBlock(this, level, MissileBlockEntities.SCHEMATICATOR.get());
-        if (blockEntity == null) return itemsLeft;
+        if (blockEntity == null) return false;
 
         SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity)blockEntity;
         WarheadType warhead = schematicator.getWarhead();
@@ -159,37 +167,27 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
         if (warhead != null) {
             var ingredientsLeft = warhead.getIngredientsLeft(items.subList(0, 32));
-            itemsLeft = getRemainder(ingredientsLeft, itemStack, itemsLeft);
+            if (itemFulfillsIngredients(ingredientsLeft, itemStack))
+                return true;
         }
 
-        if (chassis != null && itemsLeft > 0) {
+        if (chassis != null) {
             var ingredientsLeft = chassis.getIngredientsLeft(items.subList(32, 64));
-            itemsLeft = getRemainder(ingredientsLeft, itemStack, itemsLeft);
+            if (itemFulfillsIngredients(ingredientsLeft, itemStack))
+                return true;
         }
 
-        if (thruster != null && itemsLeft > 0) {
+        if (thruster != null) {
             var ingredientsLeft = thruster.getIngredientsLeft(items.subList(64, 96));
-            itemsLeft = getRemainder(ingredientsLeft, itemStack, itemsLeft);
+            if (itemFulfillsIngredients(ingredientsLeft, itemStack))
+                return true;
         }
 
-        return itemsLeft;
+        return false;
     }
 
-    private int getRemainder(HashMap<Ingredient, Integer> ingredients, ItemStack itemStack, int itemsLeft) {
-        for (var entry : ingredients.entrySet()) {
-            Ingredient ingredient = entry.getKey();
-            Integer quantity = entry.getValue();
-
-            if (ingredient.matches(itemStack)) {
-                int newQuantity = quantity - itemsLeft;
-                itemsLeft = -newQuantity;
-
-                if (newQuantity >= 0)
-                    break;
-            }
-        }
-
-        return itemsLeft;
+    private boolean itemFulfillsIngredients(HashMap<Ingredient, Integer> ingredients, ItemStack itemStack) {
+        return ingredients.entrySet().stream().anyMatch(entry -> entry.getKey().matches(itemStack) && entry.getValue() > 0);
     }
 
     public void serverTick() {
