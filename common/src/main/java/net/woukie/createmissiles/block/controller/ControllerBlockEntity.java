@@ -104,33 +104,26 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         WarheadType warhead = schematicator.getWarhead();
         if (warhead != null) {
             var ingredientsLeft = warhead.getIngredientsLeft(items.subList(0, 32));
-            for (var entry : ingredientsLeft.entrySet()) {
-                if (entry.getKey().matches(itemStack) && entry.getValue() > 0) {
-                    addItemToPartOfInventory(itemStack, 0, 32);
-                    return;
-                }
+            if (itemFulfillsIngredients(ingredientsLeft, itemStack)) {
+                addItemToPartOfInventory(itemStack, 0, 32);
+                return;
             }
         }
 
         ChassisType chassis = schematicator.getChassis();
         if (chassis != null) {
             var ingredientsLeft = chassis.getIngredientsLeft(items.subList(32, 64));
-            for (var entry : ingredientsLeft.entrySet()) {
-                if (entry.getKey().matches(itemStack) && entry.getValue() > 0) {
-                    addItemToPartOfInventory(itemStack, 32, 64);
-                    return;
-                }
+            if (itemFulfillsIngredients(ingredientsLeft, itemStack)) {
+                addItemToPartOfInventory(itemStack, 32, 64);
+                return;
             }
         }
 
         ThrusterType thruster = schematicator.getThruster();
         if (thruster != null) {
             var ingredientsLeft = thruster.getIngredientsLeft(items.subList(64, 96));
-            for (var entry : ingredientsLeft.entrySet()) {
-                if (entry.getKey().matches(itemStack) && entry.getValue() > 0) {
-                    addItemToPartOfInventory(itemStack, 64, 96);
-                    return;
-                }
+            if (itemFulfillsIngredients(ingredientsLeft, itemStack)) {
+                addItemToPartOfInventory(itemStack, 96, 64);
             }
         }
     }
