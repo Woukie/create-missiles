@@ -232,6 +232,15 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
         if (warheadType == null || chassisType == null || thrusterType == null) return;
 
+        for (var entry : warheadType.getIngredientsLeft(items.subList(0, 32)).entrySet())
+            if (entry.getValue() > 0) return;
+
+        for (var entry : chassisType.getIngredientsLeft(items.subList(32, 64)).entrySet())
+            if (entry.getValue() > 0) return;
+
+        for (var entry : thrusterType.getIngredientsLeft(items.subList(64, 96)).entrySet())
+            if (entry.getValue() > 0) return;
+
         Trajectory trajectory = new Trajectory(new TrajectoryData(
                 getLevel(),
                 getBlockPos().relative(launchPadDirection, 2),

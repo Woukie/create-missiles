@@ -165,7 +165,7 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         gui.drawWordWrap(this.font, FormattedText.composite(text), 2, 2, consoleWidth * 2 - 4, consoleHeight * 2 - 4);
         gui.pose().popPose();
 
-        return launchPad && schematicator && navigator && hasSchematics && hasDestination;
+        return launchPad && schematicator && navigator && hasSchematics && hasDestination && warheadPercent == 100 && chassisPercent == 100 && thrusterPercent == 100;
     }
 
     private void writeIngredientStatus(List<FormattedText> text, HashMap<Ingredient, Integer> thrusterIngredients) {
