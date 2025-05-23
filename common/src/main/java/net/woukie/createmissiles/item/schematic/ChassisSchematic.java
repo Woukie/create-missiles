@@ -33,6 +33,7 @@ public class ChassisSchematic extends Item {
     }
 
     public static ChassisType getChassis(ItemStack itemStack) {
+        if (itemStack == null) return null;
         CompoundTag compoundTag = itemStack.getTag();
         if (compoundTag == null)
             return null;

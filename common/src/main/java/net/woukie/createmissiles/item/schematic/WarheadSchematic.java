@@ -33,6 +33,7 @@ public class WarheadSchematic extends Item {
     }
 
     public static WarheadType getWarhead(ItemStack itemStack) {
+        if (itemStack == null) return null;
         CompoundTag compoundTag = itemStack.getTag();
         if (compoundTag == null)
             return null;

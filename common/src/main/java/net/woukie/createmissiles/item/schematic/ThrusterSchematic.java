@@ -33,6 +33,7 @@ public class ThrusterSchematic extends Item {
     }
 
     public static ThrusterType getThruster(ItemStack itemStack) {
+        if (itemStack == null) return null;
         CompoundTag compoundTag = itemStack.getTag();
         if (compoundTag == null)
             return null;

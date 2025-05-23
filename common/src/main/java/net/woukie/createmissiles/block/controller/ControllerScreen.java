@@ -139,35 +139,25 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         text.addAll(formatStatus("Schematicator: ", schematicator, hasSchematics));
 
 //        Recipies
-        if (warheadStack != null) {
-            HashMap<Ingredient, Integer> ingredientsLeft = getMenu().getWarheadIngredientsLeft();
-            text.add(FormattedText.of("Warhead recipe:\n"));
-            ingredientsLeft.forEach((ingredient, left) -> {
-                int required = ingredient.getRequiredCount();
-                int have = required - left;
-                text.add(FormattedText.of("> " + ingredient.name.getString() + " " + have + "/" + required + "\n"));
-            });
-        }
+        HashMap<Ingredient, Integer> chassisIngredients = getMenu().getChassisIngredientsLeft();
+        HashMap<Ingredient, Integer> thrusterIngredients = getMenu().getThrusterIngredientsLeft();
+        HashMap<Ingredient, Integer> warheadIngredients = getMenu().getWarheadIngredientsLeft();
 
-        if (chassisStack != null) {
-            HashMap<Ingredient, Integer> ingredientsLeft = getMenu().getChassisIngredientsLeft();
-            text.add(FormattedText.of("Chassis recipe:\n"));
-            ingredientsLeft.forEach((ingredient, left) -> {
-                int required = ingredient.getRequiredCount();
-                int have = required - left;
-                text.add(FormattedText.of("> " + ingredient.name.getString() + " " + have + "/" + required + "\n"));
-            });
-        }
+        int warheadPercent = getBuildPercentage(warheadIngredients);
+        int chassisPercent = getBuildPercentage(chassisIngredients);
+        int thrusterPercent = getBuildPercentage(thrusterIngredients);
 
-        if (thrusterStack != null) {
-            HashMap<Ingredient, Integer> ingredientsLeft = getMenu().getThrusterIngredientsLeft();
-            text.add(FormattedText.of("Thruster recipe:\n"));
-            ingredientsLeft.forEach((ingredient, left) -> {
-                int required = ingredient.getRequiredCount();
-                int have = required - left;
-                text.add(FormattedText.of("> " + ingredient.name.getString() + " " + have + "/" + required + "\n"));
-            });
-        }
+        text.add(FormattedText.of("\nWarhead: ", Style.EMPTY.withColor(16777215)));
+        text.add(FormattedText.of(warheadPercent + "%\n", Style.EMPTY.withColor(warheadPercent == 0 ? 16711680 : (warheadPercent == 100 ? 65280 : 16776960))));
+        if (warheadIngredients != null) writeIngredientStatus(text, warheadIngredients);
+
+        text.add(FormattedText.of("\nChassis: ", Style.EMPTY.withColor(16777215)));
+        text.add(FormattedText.of(chassisPercent + "%\n", Style.EMPTY.withColor(chassisPercent == 0 ? 16711680 : (chassisPercent == 100 ? 65280 : 16776960))));
+        if (chassisIngredients != null) writeIngredientStatus(text, chassisIngredients);
+
+        text.add(FormattedText.of("\nThruster: ", Style.EMPTY.withColor(16777215)));
+        text.add(FormattedText.of(thrusterPercent + "%\n", Style.EMPTY.withColor(thrusterPercent == 0 ? 16711680 : (thrusterPercent == 100 ? 65280 : 16776960))));
+        if (thrusterIngredients != null) writeIngredientStatus(text, thrusterIngredients);
 
         gui.pose().pushPose();
         gui.pose().translate(consoleLeft, consoleTop, 0);
@@ -176,6 +166,29 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         gui.pose().popPose();
 
         return launchPad && schematicator && navigator && hasSchematics && hasDestination;
+    }
+
+    private void writeIngredientStatus(List<FormattedText> text, HashMap<Ingredient, Integer> thrusterIngredients) {
+        thrusterIngredients.forEach((ingredient, left) -> {
+            int required = ingredient.getRequiredCount();
+            int have = required - left;
+            text.add(FormattedText.of("> " + ingredient.name.getString() + " ", Style.EMPTY.withColor(16777215)));
+            text.add(FormattedText.of(have + "/" + required + "\n", Style.EMPTY.withColor(have == required ? 65280 : (have == 0 ? 16711680 : 16776960))));
+        });
+    }
+
+    private int getBuildPercentage(HashMap<Ingredient, Integer> warheadIngredients) {
+        if (warheadIngredients == null) return 0;
+
+        int warheadIngredientsTotal = 0;
+        int warheadIngredientsFulfilled = 0;
+        for (var entry : warheadIngredients.entrySet()) {
+            int required = entry.getKey().getRequiredCount();
+            warheadIngredientsTotal += entry.getKey().getRequiredCount();
+            warheadIngredientsFulfilled += required - entry.getValue();
+        }
+
+        return (int)(((float)warheadIngredientsFulfilled / (float)warheadIngredientsTotal) * 100);
     }
 
     private List<FormattedText> formatStatus(String text, boolean online, boolean valid) {
