@@ -93,7 +93,6 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     }
 
     public void giveItem(@NotNull ItemStack itemStack) {
-        System.out.println(itemStack);
         if (level == null || itemStack.getCount() != 1) return;
 
         BlockEntity blockEntity = MultiblockHelper.findEdgeBlock(this, level, MissileBlockEntities.SCHEMATICATOR.get());
