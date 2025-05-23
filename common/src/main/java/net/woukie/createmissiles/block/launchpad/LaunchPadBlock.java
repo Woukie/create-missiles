@@ -6,7 +6,13 @@ import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.WorldlyContainerHolder;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -14,12 +20,20 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.woukie.createmissiles.MultiblockHelper;
+import net.woukie.createmissiles.block.controller.ControllerBlockEntity;
 import net.woukie.createmissiles.registry.MissileBlockEntities;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-// TODO: implment WorldlyContainerHolder instead of having logic on blockentity
-public class LaunchPadBlock extends KineticBlock implements IBE<LaunchPadBlockEntity>, ICogWheel {
+public class LaunchPadBlock extends KineticBlock implements IBE<LaunchPadBlockEntity>, ICogWheel, WorldlyContainerHolder {
     public LaunchPadBlock(BlockBehaviour.Properties properties) {
         super(properties);
+    }
+
+    @Override
+    public @NotNull WorldlyContainer getContainer(BlockState blockState, LevelAccessor levelAccessor, BlockPos blockPos) {
+            return new InputContainer(levelAccessor, blockPos);
     }
 
     @Override
@@ -55,5 +69,48 @@ public class LaunchPadBlock extends KineticBlock implements IBE<LaunchPadBlockEn
     @Override
     public boolean isSmallCog() {
         return true;
+    }
+
+    static class InputContainer extends SimpleContainer implements WorldlyContainer {
+        private final LevelAccessor level;
+        private final BlockPos pos;
+
+        public InputContainer(LevelAccessor levelAccessor, BlockPos blockPos) {
+            super(1);
+            this.level = levelAccessor;
+            this.pos = blockPos;
+        }
+
+        @Override
+        public int getMaxStackSize() {
+            return 1;
+        }
+
+        @Override
+        public int @NotNull [] getSlotsForFace(@NotNull Direction direction) {
+            return new int[]{0};
+        }
+
+        @Override
+        public boolean canPlaceItemThroughFace(int i, ItemStack itemStack, @Nullable Direction direction) {
+            ControllerBlockEntity controllerBlockEntity = MultiblockHelper.findControllerFromLaunchPad((Level) level, pos);
+            if (controllerBlockEntity == null) return false;
+            return controllerBlockEntity.canGiveItem(itemStack) == 0;
+        }
+
+        @Override
+        public boolean canTakeItemThroughFace(int i, ItemStack itemStack, Direction direction) {
+            return false;
+        }
+
+        @Override
+        public void setChanged() {
+            ItemStack item = getItem(0);
+            if (item.isEmpty()) return;
+
+            ControllerBlockEntity controllerBlockEntity = MultiblockHelper.findControllerFromLaunchPad((Level) level, pos);
+            if (controllerBlockEntity == null) return;
+            controllerBlockEntity.giveItem(item);
+        }
     }
 }
