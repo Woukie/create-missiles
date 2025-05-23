@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class MissileAbstractMenu extends AbstractContainerMenu {
-    private final Container container;
+    protected final Container container;
 
     protected MissileAbstractMenu(@Nullable MenuType<?> menuType, int id, Container container) {
         super(menuType, id);

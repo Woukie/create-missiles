@@ -21,9 +21,9 @@ public class MissileParts {
                 id("tnt_warhead"),
                 null,
                 List.of(
-                        new Ingredient(List.of(Items.IRON_INGOT), null, null, 32),
-                        new Ingredient(List.of(Items.REDSTONE_BLOCK), null, null, 1),
-                        new Ingredient(List.of(Items.TNT), null, null, 10)
+                        new Ingredient(List.of(Items.IRON_INGOT), null, null, 32, Component.literal("Iron Ingot")),
+                        new Ingredient(List.of(Items.REDSTONE_BLOCK), null, null, 1, Component.literal("Redstone Block")),
+                        new Ingredient(List.of(Items.TNT), null, null, 10, Component.literal("TNT"))
                 ),
                 10,
                 null
@@ -34,9 +34,9 @@ public class MissileParts {
                 id("paper_chassis"),
                 null,
                 List.of(
-                        new Ingredient(List.of(Items.IRON_INGOT), null, null, 64),
-                        new Ingredient(List.of(Items.PAPER), null, null, 200),
-                        new Ingredient(List.of(Items.COMPASS), null, null, 10)
+                        new Ingredient(List.of(Items.IRON_INGOT), null, null, 64, Component.literal("Iron Ingot")),
+                        new Ingredient(List.of(Items.PAPER), null, null, 200, Component.literal("Paper")),
+                        new Ingredient(List.of(Items.COMPASS), null, null, 10, Component.literal("Compass"))
                 ),
                 1
         ));
@@ -46,7 +46,7 @@ public class MissileParts {
                 id("gunpowder_thruster"),
                 null,
                 List.of(
-                        new Ingredient(List.of(Items.BLAZE_ROD), null, null, 1)
+                        new Ingredient(List.of(Items.BLAZE_ROD), null, null, 1, Component.literal("Blaze Rod"))
                 ),
                 1,
                 10

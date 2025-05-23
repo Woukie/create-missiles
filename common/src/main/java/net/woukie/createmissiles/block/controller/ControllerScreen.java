@@ -10,10 +10,12 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.item.schematic.WarheadSchematic;
+import net.woukie.createmissiles.missilemanager.parts.Ingredient;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
@@ -122,24 +124,49 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         boolean schematicator = getMenu().schematicatorExists();
         boolean navigator = getMenu().navigatorExists();
 
-        ItemStack warhead = getMenu().getWarhead();
-        ItemStack chassis = getMenu().getChassis();
-        ItemStack thruster = getMenu().getThruster();
+        ItemStack warheadStack = getMenu().getWarhead();
+        ItemStack chassisStack = getMenu().getChassis();
+        ItemStack thrusterStack = getMenu().getThruster();
 
-        boolean hasSchematics = warhead != null && chassis != null && thruster != null;
+        boolean hasSchematics = warheadStack != null && chassisStack != null && thrusterStack != null;
         boolean hasDestination = getMenu().hasDestination();
 
         List<FormattedText> text = new ArrayList<>();
 
+//        Statuses
         text.addAll(formatStatus("Launch pad: ", launchPad, launchPadPowered));
         text.addAll(formatStatus("Navigator: ", navigator, hasDestination));
         text.addAll(formatStatus("Schematicator: ", schematicator, hasSchematics));
 
-        if (warhead != null) {
-            WarheadType warheadType = WarheadSchematic.getWarhead(warhead);
-            if (warheadType != null) {
+//        Recipies
+        if (warheadStack != null) {
+            HashMap<Ingredient, Integer> ingredientsLeft = getMenu().getWarheadIngredientsLeft();
+            text.add(FormattedText.of("Warhead recipe:\n"));
+            ingredientsLeft.forEach((ingredient, left) -> {
+                int required = ingredient.getRequiredCount();
+                int have = required - left;
+                text.add(FormattedText.of("> " + ingredient.name.getString() + " " + have + "/" + required + "\n"));
+            });
+        }
 
-            }
+        if (chassisStack != null) {
+            HashMap<Ingredient, Integer> ingredientsLeft = getMenu().getChassisIngredientsLeft();
+            text.add(FormattedText.of("Chassis recipe:\n"));
+            ingredientsLeft.forEach((ingredient, left) -> {
+                int required = ingredient.getRequiredCount();
+                int have = required - left;
+                text.add(FormattedText.of("> " + ingredient.name.getString() + " " + have + "/" + required + "\n"));
+            });
+        }
+
+        if (thrusterStack != null) {
+            HashMap<Ingredient, Integer> ingredientsLeft = getMenu().getThrusterIngredientsLeft();
+            text.add(FormattedText.of("Thruster recipe:\n"));
+            ingredientsLeft.forEach((ingredient, left) -> {
+                int required = ingredient.getRequiredCount();
+                int have = required - left;
+                text.add(FormattedText.of("> " + ingredient.name.getString() + " " + have + "/" + required + "\n"));
+            });
         }
 
         gui.pose().pushPose();

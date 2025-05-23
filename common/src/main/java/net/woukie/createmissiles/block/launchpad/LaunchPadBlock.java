@@ -16,6 +16,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.woukie.createmissiles.registry.MissileBlockEntities;
 
+// TODO: implment WorldlyContainerHolder instead of having logic on blockentity
 public class LaunchPadBlock extends KineticBlock implements IBE<LaunchPadBlockEntity>, ICogWheel {
     public LaunchPadBlock(BlockBehaviour.Properties properties) {
         super(properties);

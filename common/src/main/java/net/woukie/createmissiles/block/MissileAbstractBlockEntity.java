@@ -61,7 +61,7 @@ public abstract class MissileAbstractBlockEntity extends BaseContainerBlockEntit
 
     @Override
     public int @NotNull [] getSlotsForFace(@NotNull Direction direction) {
-        return new int[] {0, 1, 2};
+        return new int[] {};
     }
 
     @Override
