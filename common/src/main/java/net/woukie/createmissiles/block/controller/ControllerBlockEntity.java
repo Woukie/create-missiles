@@ -123,7 +123,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         if (thruster != null) {
             var ingredientsLeft = thruster.getIngredientsLeft(items.subList(64, 96));
             if (itemFulfillsIngredients(ingredientsLeft, itemStack)) {
-                addItemToPartOfInventory(itemStack, 96, 64);
+                addItemToPartOfInventory(itemStack, 64, 96);
             }
         }
     }
