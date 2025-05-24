@@ -12,8 +12,19 @@ import net.minecraft.world.item.Items;
 import net.woukie.createmissiles.block.InvisibleSlot;
 import net.woukie.createmissiles.block.MissileAbstractMenu;
 import net.woukie.createmissiles.block.controller.messages.ClickLaunchMessage;
+import net.woukie.createmissiles.item.schematic.ChassisSchematic;
+import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
+import net.woukie.createmissiles.item.schematic.WarheadSchematic;
+import net.woukie.createmissiles.missilemanager.parts.ChassisType;
+import net.woukie.createmissiles.missilemanager.parts.Ingredient;
+import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
+import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.registry.MissileItems;
 import net.woukie.createmissiles.registry.MissilePackets;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import static net.woukie.createmissiles.registry.MissileMenus.CONTROLLER;
 
@@ -26,8 +37,8 @@ public class ControllerMenu extends MissileAbstractMenu {
     protected ControllerMenu(int id, Inventory playerInventory, Container container, ContainerData controllerData, Container schematicatorContainer, Container navigatorContainer) {
         super(CONTROLLER.get(), id, container);
 
-        checkContainerDataCount(controllerData, 6);
-        checkContainerSize(container, 128);
+        checkContainerDataCount(controllerData, 7);
+        checkContainerSize(container, 96);
         checkContainerSize(navigatorContainer, 1);
         checkContainerSize(schematicatorContainer, 3);
 
@@ -41,7 +52,7 @@ public class ControllerMenu extends MissileAbstractMenu {
         this.addSlot(new InvisibleSlot(schematicatorContainer, 1));
         this.addSlot(new InvisibleSlot(schematicatorContainer, 2));
 
-        for (int i = 0; i < 128; i++)
+        for (int i = 0; i < 96; i++)
             this.addSlot(new InvisibleSlot(container, i));
 
         for(int j = 0; j < 3; ++j)
@@ -53,7 +64,7 @@ public class ControllerMenu extends MissileAbstractMenu {
     }
 
     public ControllerMenu(int id, Inventory inventory) {
-        this(id, inventory, new SimpleContainer(128), new SimpleContainerData(6), new SimpleContainer(3), new SimpleContainer(1));
+        this(id, inventory, new SimpleContainer(96), new SimpleContainerData(7), new SimpleContainer(3), new SimpleContainer(1));
     }
 
     public void clickLaunch() {
@@ -78,6 +89,10 @@ public class ControllerMenu extends MissileAbstractMenu {
 
     public boolean navigatorExists() {
         return controllerData.get(5) == 1;
+    }
+
+    public boolean launchPadPowered() {
+        return controllerData.get(6) != 0;
     }
 
     public ItemStack getWarhead() {
@@ -109,5 +124,32 @@ public class ControllerMenu extends MissileAbstractMenu {
         ItemStack item = navigatorContainer.getItem(0);
 //        Has mapCrosshair positions by default, and map data is null in rare situations (need the level to get map data anyway which is annoying to get here, don't want to offload this method to block entity)
         return item.is(Items.FILLED_MAP);
+    }
+
+    public HashMap<Ingredient, Integer> getWarheadIngredientsLeft() {
+        WarheadType warhead = WarheadSchematic.getWarhead(getWarhead());
+        if (warhead == null) return null;
+        List<ItemStack> items = new ArrayList<>();
+        for (int i = 0; i < 32; i++)
+            items.add(container.getItem(i));
+        return warhead.getIngredientsLeft(items);
+    }
+
+    public HashMap<Ingredient, Integer> getChassisIngredientsLeft() {
+        ChassisType chassis = ChassisSchematic.getChassis(getChassis());
+        if (chassis == null) return null;
+        List<ItemStack> items = new ArrayList<>();
+        for (int i = 32; i < 64; i++)
+            items.add(container.getItem(i));
+        return chassis.getIngredientsLeft(items);
+    }
+
+    public HashMap<Ingredient, Integer> getThrusterIngredientsLeft() {
+        ThrusterType thruster = ThrusterSchematic.getThruster(getThruster());
+        if (thruster == null) return null;
+        List<ItemStack> items = new ArrayList<>();
+        for (int i = 64; i < 96; i++)
+            items.add(container.getItem(i));
+        return thruster.getIngredientsLeft(items);
     }
 }

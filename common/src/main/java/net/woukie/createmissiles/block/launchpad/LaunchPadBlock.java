@@ -6,7 +6,13 @@ import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.WorldlyContainerHolder;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -14,11 +20,20 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.woukie.createmissiles.MultiblockHelper;
+import net.woukie.createmissiles.block.controller.ControllerBlockEntity;
 import net.woukie.createmissiles.registry.MissileBlockEntities;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class LaunchPadBlock extends KineticBlock implements IBE<LaunchPadBlockEntity>, ICogWheel {
+public class LaunchPadBlock extends KineticBlock implements IBE<LaunchPadBlockEntity>, ICogWheel, WorldlyContainerHolder {
     public LaunchPadBlock(BlockBehaviour.Properties properties) {
         super(properties);
+    }
+
+    @Override
+    public @NotNull WorldlyContainer getContainer(@NotNull BlockState blockState, @NotNull LevelAccessor levelAccessor, @NotNull BlockPos blockPos) {
+            return new InputContainer(levelAccessor, blockPos);
     }
 
     @Override
@@ -42,7 +57,7 @@ public class LaunchPadBlock extends KineticBlock implements IBE<LaunchPadBlockEn
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return Shapes.or(Shapes.box(0, 0, 0, 1, 6.0/16.0, 1), Shapes.box(0, 10.0/16.0, 0, 1, 13.0/16.0, 1));
     }
 
@@ -54,5 +69,48 @@ public class LaunchPadBlock extends KineticBlock implements IBE<LaunchPadBlockEn
     @Override
     public boolean isSmallCog() {
         return true;
+    }
+
+    static class InputContainer extends SimpleContainer implements WorldlyContainer {
+        private final LevelAccessor level;
+        private final BlockPos pos;
+
+        public InputContainer(LevelAccessor levelAccessor, BlockPos blockPos) {
+            super(1);
+            this.level = levelAccessor;
+            this.pos = blockPos;
+        }
+
+        @Override
+        public int getMaxStackSize() {
+            return 1;
+        }
+
+        @Override
+        public int @NotNull [] getSlotsForFace(@NotNull Direction direction) {
+            return new int[]{0};
+        }
+
+        @Override
+        public boolean canPlaceItemThroughFace(int i, @NotNull ItemStack itemStack, @Nullable Direction direction) {
+            ControllerBlockEntity controllerBlockEntity = MultiblockHelper.findControllerFromLaunchPad((Level) level, pos);
+            if (controllerBlockEntity == null) return false;
+            return controllerBlockEntity.canGiveItem(itemStack);
+        }
+
+        @Override
+        public boolean canTakeItemThroughFace(int i, @NotNull ItemStack itemStack, @NotNull Direction direction) {
+            return false;
+        }
+
+        @Override
+        public void setChanged() {
+            ItemStack item = getItem(0);
+            if (item.isEmpty()) return;
+
+            ControllerBlockEntity controllerBlockEntity = MultiblockHelper.findControllerFromLaunchPad((Level) level, pos);
+            if (controllerBlockEntity == null) return;
+            controllerBlockEntity.giveItem(item);
+        }
     }
 }

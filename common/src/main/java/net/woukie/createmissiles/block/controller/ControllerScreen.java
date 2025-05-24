@@ -2,14 +2,23 @@ package net.woukie.createmissiles.block.controller;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.LoomScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.item.schematic.WarheadSchematic;
+import net.woukie.createmissiles.missilemanager.parts.Ingredient;
+import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
     private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/controller.png");
@@ -34,6 +43,7 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
     private static final int coverHeight = buttonHeight;
 
     private double currentOpenPercent = 0;
+    private double currentScrollPosition = 0;
 
     public ControllerScreen(ControllerMenu abstractContainerMenu, Inventory inventory, Component component) {
         super(abstractContainerMenu, inventory, component);
@@ -113,33 +123,94 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
 
     private boolean renderLogs(GuiGraphics gui) {
         boolean launchPad = getMenu().launchPadExists();
+        boolean launchPadPowered = getMenu().launchPadPowered();
         boolean schematicator = getMenu().schematicatorExists();
         boolean navigator = getMenu().navigatorExists();
 
-        ItemStack warhead = getMenu().getWarhead();
-        ItemStack chassis = getMenu().getChassis();
-        ItemStack thruster = getMenu().getThruster();
+        ItemStack warheadStack = getMenu().getWarhead();
+        ItemStack chassisStack = getMenu().getChassis();
+        ItemStack thrusterStack = getMenu().getThruster();
 
-        boolean hasSchematics = warhead != null && chassis != null && thruster != null;
+        boolean hasSchematics = warheadStack != null && chassisStack != null && thrusterStack != null;
         boolean hasDestination = getMenu().hasDestination();
 
-        String logs = "";
-        logs += "Launch pad: " + (launchPad ? "VALID" : "OFFLINE") + "\n";
-        logs += "Schematicator: " + (!schematicator ? "OFFLINE" : (hasSchematics ? "VALID" : "INCOMPLETE")) + "\n";
-        logs += "Navigator: " + (!navigator ? "OFFLINE" : (hasDestination ? "VALID" : "INCOMPLETE")) + "\n";
+        List<FormattedText> text = new ArrayList<>();
 
-        boolean open = launchPad && schematicator && navigator && hasSchematics && hasDestination;
+//        Statuses
+        text.addAll(formatStatus("Launch pad: ", launchPad, launchPadPowered));
+        text.addAll(formatStatus("Navigator: ", navigator, hasDestination));
+        text.addAll(formatStatus("Schematicator: ", schematicator, hasSchematics));
 
-        logs += "\nStatus: " + (open ? "ARMED" : "INCOMPLETE")+ "\n";
+//        Recipies
+        HashMap<Ingredient, Integer> chassisIngredients = getMenu().getChassisIngredientsLeft();
+        HashMap<Ingredient, Integer> thrusterIngredients = getMenu().getThrusterIngredientsLeft();
+        HashMap<Ingredient, Integer> warheadIngredients = getMenu().getWarheadIngredientsLeft();
+
+        int warheadPercent = getBuildPercentage(warheadIngredients);
+        int chassisPercent = getBuildPercentage(chassisIngredients);
+        int thrusterPercent = getBuildPercentage(thrusterIngredients);
+
+        text.add(FormattedText.of("\nWarhead: ", Style.EMPTY.withColor(16777215)));
+        text.add(FormattedText.of(warheadPercent + "%\n", Style.EMPTY.withColor(warheadPercent == 0 ? 16711680 : (warheadPercent == 100 ? 65280 : 16776960))));
+        if (warheadIngredients != null) writeIngredientStatus(text, warheadIngredients);
+
+        text.add(FormattedText.of("\nChassis: ", Style.EMPTY.withColor(16777215)));
+        text.add(FormattedText.of(chassisPercent + "%\n", Style.EMPTY.withColor(chassisPercent == 0 ? 16711680 : (chassisPercent == 100 ? 65280 : 16776960))));
+        if (chassisIngredients != null) writeIngredientStatus(text, chassisIngredients);
+
+        text.add(FormattedText.of("\nThruster: ", Style.EMPTY.withColor(16777215)));
+        text.add(FormattedText.of(thrusterPercent + "%\n", Style.EMPTY.withColor(thrusterPercent == 0 ? 16711680 : (thrusterPercent == 100 ? 65280 : 16776960))));
+        if (thrusterIngredients != null) writeIngredientStatus(text, thrusterIngredients);
 
 
         gui.pose().pushPose();
         gui.pose().translate(consoleLeft, consoleTop, 0);
+        gui.pose().translate(0, currentScrollPosition * 4, 0);
         gui.pose().scale(0.5F, 0.5F, 1);
-        gui.drawWordWrap(this.font, FormattedText.of(logs, Style.EMPTY.withColor(16777215)), 2, 2, consoleWidth * 2 - 4, consoleHeight * 2 - 4);
+//        Scissor ignores pose transforms
+        gui.enableScissor(consoleLeft + leftPos, consoleTop + topPos, consoleLeft + leftPos + consoleWidth, consoleTop + topPos + consoleHeight);
+        gui.drawWordWrap(this.font, FormattedText.composite(text), 2, 2, consoleWidth * 2 - 4, consoleHeight * 2 - 4);
+        gui.disableScissor();
         gui.pose().popPose();
 
-        return launchPad && schematicator && navigator && hasSchematics && hasDestination;
+
+        return launchPad && schematicator && navigator && hasSchematics && hasDestination && warheadPercent == 100 && chassisPercent == 100 && thrusterPercent == 100;
+    }
+
+    private void writeIngredientStatus(List<FormattedText> text, HashMap<Ingredient, Integer> thrusterIngredients) {
+        thrusterIngredients.forEach((ingredient, left) -> {
+            int required = ingredient.getRequiredCount();
+            int have = required - left;
+            text.add(FormattedText.of("> " + ingredient.name.getString() + " ", Style.EMPTY.withColor(16777215)));
+            text.add(FormattedText.of(have + "/" + required + "\n", Style.EMPTY.withColor(have == required ? 65280 : (have == 0 ? 16711680 : 16776960))));
+        });
+    }
+
+    private int getBuildPercentage(HashMap<Ingredient, Integer> warheadIngredients) {
+        if (warheadIngredients == null) return 0;
+
+        int warheadIngredientsTotal = 0;
+        int warheadIngredientsFulfilled = 0;
+        for (var entry : warheadIngredients.entrySet()) {
+            int required = entry.getKey().getRequiredCount();
+            warheadIngredientsTotal += entry.getKey().getRequiredCount();
+            warheadIngredientsFulfilled += required - entry.getValue();
+        }
+
+        return (int)(((float)warheadIngredientsFulfilled / (float)warheadIngredientsTotal) * 100);
+    }
+
+    private List<FormattedText> formatStatus(String text, boolean online, boolean valid) {
+        List<FormattedText> result = new ArrayList<>();
+        result.add(FormattedText.of(text, Style.EMPTY.withColor(16777215)));
+        result.add(FormattedText.of((!online ? "OFFLINE" : (valid ? "VALID" : "INCOMPLETE")) + "\n", !online ? Style.EMPTY.withColor(16711680) : (valid ? Style.EMPTY.withColor(65280) : Style.EMPTY.withColor(16776960))));
+        return result;
+    }
+
+    @Override
+    public boolean mouseScrolled(double d, double e, double f) {
+        this.currentScrollPosition += f;
+        return true;
     }
 
     @Override

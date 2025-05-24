@@ -2,6 +2,7 @@ package net.woukie.createmissiles.missilemanager;
 
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 
 public class Trajectory {
 //    Data computed at controller
@@ -33,7 +34,9 @@ public class Trajectory {
     }
 
     public void explode() {
-        this.data.warhead.detonatable.detonate(this);
+        WarheadType.Detonatable detonatable = this.data.warheadType.detonatable;
+        if (detonatable != null)
+            detonatable.detonate(this);
     }
 
     private void reCalculate() {

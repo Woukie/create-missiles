@@ -9,6 +9,7 @@ public class CreateMissilesFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         CreateMissiles.init();
+        ArmInteractionPointsFabric.init();
         CreateMissiles.LOGGER.info(EnvExecutor.unsafeRunForDist(
                 () -> () -> "{} is accessing Porting Lib on a Fabric client!",
                 () -> () -> "{} is accessing Porting Lib on a Fabric server!"

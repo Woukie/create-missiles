@@ -14,9 +14,9 @@ import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
 import net.woukie.createmissiles.item.schematic.ChassisSchematic;
 import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
 import net.woukie.createmissiles.item.schematic.WarheadSchematic;
-import net.woukie.createmissiles.missilemanager.parts.Chassis;
-import net.woukie.createmissiles.missilemanager.parts.Thruster;
-import net.woukie.createmissiles.missilemanager.parts.Warhead;
+import net.woukie.createmissiles.missilemanager.parts.ChassisType;
+import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
+import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.registry.MissileItems;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,21 +26,21 @@ public class SchematicatorBlockEntity extends MissileAbstractBlockEntity {
         items = NonNullList.withSize(3, ItemStack.EMPTY);
     }
 
-    public Warhead getWarhead() {
+    public WarheadType getWarhead() {
         ItemStack item = getItem(0);
         if (!item.is(MissileItems.WARHEAD_SCHEMATIC.get()))
             return null;
         return WarheadSchematic.getWarhead(item);
     }
 
-    public Chassis getChassis() {
+    public ChassisType getChassis() {
         ItemStack item = getItem(1);
         if (!item.is(MissileItems.CHASSIS_SCHEMATIC.get()))
             return null;
         return ChassisSchematic.getChassis(item);
     }
 
-    public Thruster getThruster() {
+    public ThrusterType getThruster() {
         ItemStack item = getItem(2);
         if (!item.is(MissileItems.THRUSTER_SCHEMATIC.get()))
             return null;

@@ -3,12 +3,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 
-public class Warhead extends MissilePart {
+import javax.annotation.Nullable;
+import java.util.List;
+
+public class WarheadType extends MissilePartType {
     public final float weight;
     public final Detonatable detonatable;
 
-    public Warhead(Component displayName, ResourceLocation resourceLocation, float weight, Detonatable detonatable) {
-        super(displayName, resourceLocation);
+    public WarheadType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, List<Ingredient> ingredients, float weight, @Nullable Detonatable detonatable) {
+        super(displayName, resourceLocation, writeData, ingredients);
         this.weight = weight;
         this.detonatable = detonatable;
     }

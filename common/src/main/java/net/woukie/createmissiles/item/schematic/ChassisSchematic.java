@@ -5,8 +5,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.woukie.createmissiles.missilemanager.parts.Chassis;
-import net.woukie.createmissiles.missilemanager.parts.PartRegistry;
+import net.woukie.createmissiles.missilemanager.parts.ChassisType;
+import net.woukie.createmissiles.missilemanager.parts.PartTypeRegistry;
 import net.woukie.createmissiles.registry.MissileItems;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +19,7 @@ public class ChassisSchematic extends Item {
     public @NotNull Component getName(ItemStack itemStack) {
         CompoundTag compoundTag = itemStack.getTag();
         if (compoundTag != null)
-            return PartRegistry.getChassis(new ResourceLocation(compoundTag.getString("Chassis"))).displayName;
+            return PartTypeRegistry.getChassis(new ResourceLocation(compoundTag.getString("Chassis"))).displayName;
 
         return super.getName(itemStack);
     }
@@ -32,10 +32,11 @@ public class ChassisSchematic extends Item {
         return itemStack;
     }
 
-    public static Chassis getChassis(ItemStack itemStack) {
+    public static ChassisType getChassis(ItemStack itemStack) {
+        if (itemStack == null) return null;
         CompoundTag compoundTag = itemStack.getTag();
         if (compoundTag == null)
             return null;
-        return PartRegistry.getChassis(new ResourceLocation(compoundTag.getString("Chassis")));
+        return PartTypeRegistry.getChassis(new ResourceLocation(compoundTag.getString("Chassis")));
     }
 }
