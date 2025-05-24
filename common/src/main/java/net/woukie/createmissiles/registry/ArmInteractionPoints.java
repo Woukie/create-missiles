@@ -1,15 +1,12 @@
 package net.woukie.createmissiles.registry;
 
-import com.simibubi.create.content.kinetics.mechanicalArm.AllArmInteractionPointTypes;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPoint;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPointType;
-import dev.architectury.platform.Mod;
 import io.github.fabricators_of_create.porting_lib.transfer.callbacks.TransactionCallback;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
