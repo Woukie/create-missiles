@@ -38,6 +38,7 @@ public class CreateMissiles {
         MissileMenus.init();
         MissileBlocks.init();
         MissileBlockEntities.init();
+        ArmInteractionPoints.init();
     }
 
     public static CreateRegistrate registrate() {
