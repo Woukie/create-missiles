@@ -1,5 +1,6 @@
 package net.woukie.createmissiles.fabric;
 
+import com.simibubi.create.content.kinetics.mechanicalArm.AllArmInteractionPointTypes;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPoint;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPointType;
 import io.github.fabricators_of_create.porting_lib.transfer.callbacks.TransactionCallback;
@@ -42,7 +43,7 @@ public class ArmInteractionPointsFabric {
         }
     }
 
-    public static class LaunchPadPoint extends ArmInteractionPoint {
+    public static class LaunchPadPoint extends AllArmInteractionPointTypes.DepositOnlyArmInteractionPoint {
         public LaunchPadPoint(ArmInteractionPointType type, Level level, BlockPos pos, BlockState state) {
             super(type, level, pos, state);
         }
