@@ -2,10 +2,12 @@ package net.woukie.createmissiles.block.controller;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.LoomScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.CreateMissiles;
@@ -41,6 +43,7 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
     private static final int coverHeight = buttonHeight;
 
     private double currentOpenPercent = 0;
+    private double currentScrollPosition = 0;
 
     public ControllerScreen(ControllerMenu abstractContainerMenu, Inventory inventory, Component component) {
         super(abstractContainerMenu, inventory, component);
@@ -159,11 +162,17 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         text.add(FormattedText.of(thrusterPercent + "%\n", Style.EMPTY.withColor(thrusterPercent == 0 ? 16711680 : (thrusterPercent == 100 ? 65280 : 16776960))));
         if (thrusterIngredients != null) writeIngredientStatus(text, thrusterIngredients);
 
+
         gui.pose().pushPose();
         gui.pose().translate(consoleLeft, consoleTop, 0);
+        gui.pose().translate(0, currentScrollPosition * 2, 0);
         gui.pose().scale(0.5F, 0.5F, 1);
+//        Scissor ignores pose transforms
+        gui.enableScissor(consoleLeft + leftPos, consoleTop + topPos, consoleLeft + leftPos + consoleWidth, consoleTop + topPos + consoleHeight);
         gui.drawWordWrap(this.font, FormattedText.composite(text), 2, 2, consoleWidth * 2 - 4, consoleHeight * 2 - 4);
+        gui.disableScissor();
         gui.pose().popPose();
+
 
         return launchPad && schematicator && navigator && hasSchematics && hasDestination && warheadPercent == 100 && chassisPercent == 100 && thrusterPercent == 100;
     }
@@ -196,6 +205,12 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         result.add(FormattedText.of(text, Style.EMPTY.withColor(16777215)));
         result.add(FormattedText.of((!online ? "OFFLINE" : (valid ? "VALID" : "INCOMPLETE")) + "\n", !online ? Style.EMPTY.withColor(16711680) : (valid ? Style.EMPTY.withColor(65280) : Style.EMPTY.withColor(16776960))));
         return result;
+    }
+
+    @Override
+    public boolean mouseScrolled(double d, double e, double f) {
+        this.currentScrollPosition += f;
+        return true;
     }
 
     @Override
