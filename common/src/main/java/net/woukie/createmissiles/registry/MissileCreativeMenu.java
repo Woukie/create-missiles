@@ -17,7 +17,7 @@ public class MissileCreativeMenu {
             "createmissiles",
             () -> CreativeTabRegistry.create(
                     Component.translatable("category.createmissiles"),
-                    () -> new ItemStack(MissileItems.WARHEAD_SCHEMATIC.get())
+                    () -> new ItemStack(MissileBlocks.CONTROLLER.get())
             )
     );
 

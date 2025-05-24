@@ -53,8 +53,8 @@ public class MissileBlocks {
     public static void init() {
         CreateMissiles.LOGGER.info("Registering blocks for " + CreateMissiles.NAME);
 
-        CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> new ItemStack(SCHEMATICATOR));
         CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> new ItemStack(LAUNCH_PAD));
+        CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> new ItemStack(SCHEMATICATOR));
         CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> new ItemStack(CONTROLLER));
         CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> new ItemStack(NAVIGATOR));
     }

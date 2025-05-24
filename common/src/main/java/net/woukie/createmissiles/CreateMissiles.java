@@ -31,13 +31,13 @@ public class CreateMissiles {
             Trajectories.get().serverTick(instance);
         });
 
+        MissileBlocks.init();
+        MissileBlockEntities.init();
         MissileParts.init();
         MissileItems.init();
         MissileCreativeMenu.init();
         MissilePackets.init();
         MissileMenus.init();
-        MissileBlocks.init();
-        MissileBlockEntities.init();
     }
 
     public static CreateRegistrate registrate() {
