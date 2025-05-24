@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.registry;
+package net.woukie.createmissiles.fabric;
 
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPoint;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPointType;
@@ -13,10 +13,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
+import net.woukie.createmissiles.registry.MissileBlocks;
 
 import java.util.function.Function;
 
-public class ArmInteractionPoints {
+public class ArmInteractionPointsFabric {
     public static final LaunchPadType LAUNCH_PAD = register(LaunchPadType::new);
 
     private static <T extends ArmInteractionPointType> T register(Function<ResourceLocation, T> factory) {
@@ -37,7 +38,7 @@ public class ArmInteractionPoints {
 
         @Override
         public ArmInteractionPoint createPoint(Level level, BlockPos pos, BlockState state) {
-            return new ArmInteractionPoints.LaunchPadPoint(this, level, pos, state);
+            return new LaunchPadPoint(this, level, pos, state);
         }
     }
 

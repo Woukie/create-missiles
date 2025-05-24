@@ -23,6 +23,7 @@ public class CreateMissilesForge {
 
         CreateMissiles.registrate().registerEventListeners(eventBus);
         CreateMissiles.init();
+        ArmInteractionPointsForge.init();
     }
 
     private void clientSetup (final FMLClientSetupEvent event) {
