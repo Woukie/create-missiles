@@ -31,6 +31,7 @@ import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.registry.MissileBlockEntities;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
@@ -255,6 +256,8 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         Trajectories trajectories = Trajectories.get();
         trajectories.activeTrajectories.add(trajectory);
         trajectories.setDirty();
+
+        clearContent();
     }
 
     @Override
@@ -297,5 +300,15 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
                 schematicator == null ? new SimpleContainer(3) : (Container) schematicator,
                 navigator == null ? new SimpleContainer(1) : (Container) navigator
         );
+    }
+
+    @Override
+    public boolean canPlaceItemThroughFace(int i, @NotNull ItemStack itemStack, @Nullable Direction direction) {
+        return false;
+    }
+
+    @Override
+    public boolean canTakeItemThroughFace(int i, @NotNull ItemStack itemStack, @NotNull Direction direction) {
+        return false;
     }
 }
