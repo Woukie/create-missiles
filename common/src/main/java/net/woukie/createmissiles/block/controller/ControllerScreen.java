@@ -165,7 +165,7 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
 
         gui.pose().pushPose();
         gui.pose().translate(consoleLeft, consoleTop, 0);
-        gui.pose().translate(0, currentScrollPosition * 2, 0);
+        gui.pose().translate(0, currentScrollPosition * 4, 0);
         gui.pose().scale(0.5F, 0.5F, 1);
 //        Scissor ignores pose transforms
         gui.enableScissor(consoleLeft + leftPos, consoleTop + topPos, consoleLeft + leftPos + consoleWidth, consoleTop + topPos + consoleHeight);
