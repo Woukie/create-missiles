@@ -38,6 +38,7 @@ public class CreateMissiles {
         MissileCreativeMenu.init();
         MissilePackets.init();
         MissileMenus.init();
+        MissileRecipes.init();
     }
 
     public static CreateRegistrate registrate() {
