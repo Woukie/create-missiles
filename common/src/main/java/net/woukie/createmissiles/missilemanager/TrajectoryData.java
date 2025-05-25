@@ -3,9 +3,12 @@ package net.woukie.createmissiles.missilemanager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.Container;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.level.Level;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
 import net.woukie.createmissiles.missilemanager.parts.PartTypeRegistry;
@@ -24,6 +27,28 @@ public class TrajectoryData {
     public final ChassisType chassisType;
     public final ThrusterType thrusterType;
 
+    public final Tag warheadData;
+    public final Tag chassisData;
+    public final Tag thrusterData;
+
+//    Construct with data from container (intended for warhead with custom payload derrived from recipe ingredient, but we also support data from thruster and chassis)
+    public TrajectoryData(Level level, BlockPos source, BlockPos target, double fuelPercentage, int tick, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
+        this.level = level;
+        this.source = source;
+        this.target = target;
+        this.fuelPercentage = fuelPercentage;
+        this.tick = tick;
+
+        this.warheadType = warheadType;
+        this.chassisType = chassisType;
+        this.thrusterType = thrusterType;
+
+        this.warheadData = warheadType.writeData.write(container, new CompoundTag());
+        this.chassisData = chassisType.writeData.write(container, new CompoundTag());
+        this.thrusterData = thrusterType.writeData.write(container, new CompoundTag());
+    }
+
+//    Construct without data from container
     public TrajectoryData(Level level, BlockPos source, BlockPos target, double fuelPercentage, int tick, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType) {
         this.level = level;
         this.source = source;
@@ -34,8 +59,13 @@ public class TrajectoryData {
         this.warheadType = warheadType;
         this.chassisType = chassisType;
         this.thrusterType = thrusterType;
+
+        this.warheadData = new CompoundTag();
+        this.chassisData = new CompoundTag();
+        this.thrusterData = new CompoundTag();
     }
 
+//    Construct by loading from disk
     public TrajectoryData(CompoundTag savedData, MinecraftServer server) {
         String dimension = savedData.getString("Dimension");
         ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimension));
@@ -49,6 +79,10 @@ public class TrajectoryData {
         this.warheadType = PartTypeRegistry.getWarhead(new ResourceLocation(savedData.getString("Warhead")));
         this.chassisType = PartTypeRegistry.getChassis(new ResourceLocation(savedData.getString("Chassis")));
         this.thrusterType = PartTypeRegistry.getThruster(new ResourceLocation(savedData.getString("Thruster")));
+
+        this.warheadData = savedData.get("WarheadData");
+        this.chassisData = savedData.get("ChassisData");
+        this.thrusterData = savedData.get("ThrusterData");
     }
 
     public CompoundTag saveTo(CompoundTag tag) {
@@ -62,9 +96,13 @@ public class TrajectoryData {
         tag.putDouble("FuelPercentage", this.fuelPercentage);
         tag.putInt("Tick", this.tick);
 
-        tag.putString("Warhead",  warheadType.resourceLocation.toString());
-        tag.putString("Chassis",  chassisType.resourceLocation.toString());
-        tag.putString("Thruster",  thrusterType.resourceLocation.toString());
+        tag.putString("Warhead", warheadType.resourceLocation.toString());
+        tag.putString("Chassis", chassisType.resourceLocation.toString());
+        tag.putString("Thruster", thrusterType.resourceLocation.toString());
+
+        tag.put("WarheadData", warheadData);
+        tag.put("ChassisData", chassisData);
+        tag.put("ThrusterData", thrusterData);
 
         return tag;
     }

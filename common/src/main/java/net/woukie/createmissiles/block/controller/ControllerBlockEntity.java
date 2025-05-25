@@ -250,7 +250,8 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
                 0,
                 schematicator.getWarhead(),
                 schematicator.getChassis(),
-                schematicator.getThruster()
+                schematicator.getThruster(),
+                this
         ));
 
         Trajectories trajectories = Trajectories.get();
