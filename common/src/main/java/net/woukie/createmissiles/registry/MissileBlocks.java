@@ -5,12 +5,14 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import dev.architectury.registry.CreativeTabRegistry;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
 import net.woukie.createmissiles.block.controller.ControllerBlock;
+import net.woukie.createmissiles.block.launchpad.LaunchPadCTBehaviour;
 import net.woukie.createmissiles.block.navigator.NavigatorBlock;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
 
@@ -23,6 +25,8 @@ public class MissileBlocks {
             .properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY))
             .properties(BlockBehaviour.Properties::noOcclusion)
             .transform(BlockStressDefaults.setImpact(4))
+            .onRegister(CreateRegistrate.connectedTextures(LaunchPadCTBehaviour::new))
+            .addLayer(() -> RenderType::cutoutMipped)
             .simpleItem()
             .register();
 
