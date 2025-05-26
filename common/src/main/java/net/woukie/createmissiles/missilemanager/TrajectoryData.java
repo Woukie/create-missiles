@@ -43,12 +43,9 @@ public class TrajectoryData {
         this.chassisType = chassisType;
         this.thrusterType = thrusterType;
 
-        if (warheadType.writeData != null)
-            this.warheadData = warheadType.writeData.write(container, new CompoundTag());
-        if (chassisType.writeData != null)
-            this.chassisData = chassisType.writeData.write(container, new CompoundTag());
-        if (thrusterType.writeData != null)
-            this.thrusterData = thrusterType.writeData.write(container, new CompoundTag());
+        this.warheadData = warheadType.writeData != null ? warheadType.writeData.write(container, new CompoundTag()) : null;
+        this.chassisData = chassisType.writeData != null ? chassisType.writeData.write(container, new CompoundTag()) : null;
+        this.thrusterData = thrusterType.writeData != null ? thrusterType.writeData.write(container, new CompoundTag()) : null;
     }
 
 //    Construct without data from container
