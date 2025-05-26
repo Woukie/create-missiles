@@ -18,5 +18,14 @@
   "gui.createmissiles.navigator.no_launch_pad": "Could not find launch pad",
   "gui.createmissiles.navigator.no_schematicator": "Launch pad has no schematicator",
   "gui.createmissiles.navigator.no_schematics": "No schematics in schematicator",
-  "gui.createmissiles.navigator.no_target": "No target"
+  "gui.createmissiles.navigator.no_target": "No target",
+  "gui.createmissiles.navigator.offline": "OFFLINE",
+  "gui.createmissiles.navigator.valid": "VALID",
+  "gui.createmissiles.navigator.incomplete": "INCOMPLETE",
+  "gui.createmissiles.navigator.launch_pad_title": "Launch pad",
+  "gui.createmissiles.navigator.navigator_title": "Navigator",
+  "gui.createmissiles.navigator.schematicator_title": "Schematicator",
+  "gui.createmissiles.navigator.warhead_title": "Warhead",
+  "gui.createmissiles.navigator.chassis_title": "Chassis",
+  "gui.createmissiles.navigator.thruster_title": "Thruster"
 }

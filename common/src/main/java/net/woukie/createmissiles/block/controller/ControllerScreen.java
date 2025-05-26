@@ -5,6 +5,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.LoomScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -137,9 +138,9 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         List<FormattedText> text = new ArrayList<>();
 
 //        Statuses
-        text.addAll(formatStatus("Launch pad: ", launchPad, launchPadPowered));
-        text.addAll(formatStatus("Navigator: ", navigator, hasDestination));
-        text.addAll(formatStatus("Schematicator: ", schematicator, hasSchematics));
+        text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigator.launch_pad_title").getString() + ": ", launchPad, launchPadPowered));
+        text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigator.navigator_title").getString() + ": ", navigator, hasDestination));
+        text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigator.schematicator_title").getString() + ": ", schematicator, hasSchematics));
 
 //        Recipies
         HashMap<Ingredient, Integer> chassisIngredients = getMenu().getChassisIngredientsLeft();
@@ -150,15 +151,15 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         int chassisPercent = getBuildPercentage(chassisIngredients);
         int thrusterPercent = getBuildPercentage(thrusterIngredients);
 
-        text.add(FormattedText.of("\nWarhead: ", Style.EMPTY.withColor(16777215)));
+        text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigator.warhead_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
         text.add(FormattedText.of(warheadPercent + "%\n", Style.EMPTY.withColor(warheadPercent == 0 ? 16711680 : (warheadPercent == 100 ? 65280 : 16776960))));
         if (warheadIngredients != null) writeIngredientStatus(text, warheadIngredients);
 
-        text.add(FormattedText.of("\nChassis: ", Style.EMPTY.withColor(16777215)));
+        text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigator.chassis_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
         text.add(FormattedText.of(chassisPercent + "%\n", Style.EMPTY.withColor(chassisPercent == 0 ? 16711680 : (chassisPercent == 100 ? 65280 : 16776960))));
         if (chassisIngredients != null) writeIngredientStatus(text, chassisIngredients);
 
-        text.add(FormattedText.of("\nThruster: ", Style.EMPTY.withColor(16777215)));
+        text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigator.thruster_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
         text.add(FormattedText.of(thrusterPercent + "%\n", Style.EMPTY.withColor(thrusterPercent == 0 ? 16711680 : (thrusterPercent == 100 ? 65280 : 16776960))));
         if (thrusterIngredients != null) writeIngredientStatus(text, thrusterIngredients);
 
@@ -203,7 +204,8 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
     private List<FormattedText> formatStatus(String text, boolean online, boolean valid) {
         List<FormattedText> result = new ArrayList<>();
         result.add(FormattedText.of(text, Style.EMPTY.withColor(16777215)));
-        result.add(FormattedText.of((!online ? "OFFLINE" : (valid ? "VALID" : "INCOMPLETE")) + "\n", !online ? Style.EMPTY.withColor(16711680) : (valid ? Style.EMPTY.withColor(65280) : Style.EMPTY.withColor(16776960))));
+        MutableComponent status = !online ? Component.translatable("gui.createmissiles.navigator.offline") : (valid ? Component.translatable("gui.createmissiles.navigator.valid") : Component.translatable("gui.createmissiles.navigator.incomplete"));
+        result.add(FormattedText.of(status.getString() + "\n", !online ? Style.EMPTY.withColor(16711680) : (valid ? Style.EMPTY.withColor(65280) : Style.EMPTY.withColor(16776960))));
         return result;
     }
 
