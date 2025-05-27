@@ -11,6 +11,7 @@ import net.woukie.createmissiles.block.controller.ControllerScreen;
 import net.woukie.createmissiles.block.navigator.NavigatorScreen;
 import net.woukie.createmissiles.block.schematicator.SchematicatorScreen;
 import net.woukie.createmissiles.registry.MissileMenus;
+import net.woukie.createmissiles.registry.MissilesEntityRenderers;
 
 @Mod(CreateMissiles.MOD_ID)
 public class CreateMissilesForge {
@@ -30,5 +31,6 @@ public class CreateMissilesForge {
         MenuRegistry.registerScreenFactory(MissileMenus.CONTROLLER.get(), ControllerScreen::new);
         MenuRegistry.registerScreenFactory(MissileMenus.NAVIGATOR.get(), NavigatorScreen::new);
         MenuRegistry.registerScreenFactory(MissileMenus.SCHEMATICATOR.get(), SchematicatorScreen::new);
+        MissilesEntityRenderers.initClient();
     }
 }

@@ -6,6 +6,7 @@ import net.woukie.createmissiles.block.controller.ControllerScreen;
 import net.woukie.createmissiles.block.navigator.NavigatorScreen;
 import net.woukie.createmissiles.block.schematicator.SchematicatorScreen;
 import net.woukie.createmissiles.registry.MissileMenus;
+import net.woukie.createmissiles.registry.MissilesEntityRenderers;
 
 public class CreateMissilesClientFabric implements ClientModInitializer {
     @Override
@@ -13,5 +14,6 @@ public class CreateMissilesClientFabric implements ClientModInitializer {
         MenuRegistry.registerScreenFactory(MissileMenus.CONTROLLER.get(), ControllerScreen::new);
         MenuRegistry.registerScreenFactory(MissileMenus.SCHEMATICATOR.get(), SchematicatorScreen::new);
         MenuRegistry.registerScreenFactory(MissileMenus.NAVIGATOR.get(), NavigatorScreen::new);
+        MissilesEntityRenderers.initClient();
     }
 }
