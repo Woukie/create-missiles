@@ -20,7 +20,7 @@ public class DroneModel<T extends Entity> extends EntityModel<T> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("modid", "drone"), "main");
     private final ModelPart bb_main;
 
-    public DroneModel() {
+    public DroneModel(ModelPart root) {
         this.bb_main = root.getChild("bb_main");
     }
 
