@@ -8,6 +8,9 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.registry.MissileRecipeTypes;
+import org.jetbrains.annotations.NotNull;
 
 public class MissilePartRecipe implements Recipe<Container> {
     @Override
@@ -41,8 +44,8 @@ public class MissilePartRecipe implements Recipe<Container> {
     }
 
     @Override
-    public RecipeType<?> getType() {
-        return null;
+    public @NotNull RecipeType<?> getType() {
+        return MissileRecipeTypes.MISSILE_PART.get();
     }
 
     public static class Serializer implements RecipeSerializer<MissilePartRecipe> {

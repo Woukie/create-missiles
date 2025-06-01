@@ -38,7 +38,7 @@ public class CreateMissiles {
         MissileCreativeMenu.init();
         MissilePackets.init();
         MissileMenus.init();
-        MissileRecipes.init();
+        MissileRecipeSerializers.init();
         MissileSpriteShifts.init();
     }
 
