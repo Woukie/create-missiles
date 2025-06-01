@@ -1,10 +1,12 @@
 package net.woukie.createmissiles.recipe;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
@@ -38,6 +40,7 @@ public class MissilePartRecipe implements Recipe<Container> {
     @Override
     public boolean matches(@NotNull Container container, @NotNull Level level) {
         List<ItemStack> containerStacks = new ArrayList<>();
+
         for (int i = slotStart; i < slotEnd; i++)
             if (!container.getItem(i).isEmpty())
                 containerStacks.add(container.getItem(i));
@@ -91,8 +94,27 @@ public class MissilePartRecipe implements Recipe<Container> {
 
     public static class Serializer implements RecipeSerializer<MissilePartRecipe> {
         @Override
-        public MissilePartRecipe fromJson(ResourceLocation resourceLocation, JsonObject jsonObject) {
-            return null;
+        public @NotNull MissilePartRecipe fromJson(@NotNull ResourceLocation resourceLocation, @NotNull JsonObject jsonObject) {
+            NonNullList<Ingredient> ingredients = itemsFromJson(GsonHelper.getAsJsonArray(jsonObject, "ingredients"));
+            Ingredient schematic = Ingredient.fromJson(GsonHelper.getAsJsonObject(jsonObject, "schematic"), false);
+
+            int slotStart = GsonHelper.getAsInt(jsonObject, "slotStart");
+            int slotEnd = GsonHelper.getAsInt(jsonObject, "slotEnd");
+
+            return new MissilePartRecipe(resourceLocation, ingredients, schematic, slotStart, slotEnd);
+        }
+
+        private static NonNullList<Ingredient> itemsFromJson(JsonArray jsonArray) {
+            NonNullList<Ingredient> nonNullList = NonNullList.create();
+
+            for(int i = 0; i < jsonArray.size(); ++i) {
+                Ingredient ingredient = Ingredient.fromJson(jsonArray.get(i), false);
+                if (!ingredient.isEmpty()) {
+                    nonNullList.add(ingredient);
+                }
+            }
+
+            return nonNullList;
         }
 
         @Override
