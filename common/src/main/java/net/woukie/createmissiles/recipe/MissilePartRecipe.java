@@ -14,7 +14,6 @@ import net.woukie.createmissiles.registry.MissileRecipeTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MissilePartRecipe implements Recipe<Container> {
@@ -97,13 +96,26 @@ public class MissilePartRecipe implements Recipe<Container> {
         }
 
         @Override
-        public MissilePartRecipe fromNetwork(ResourceLocation resourceLocation, FriendlyByteBuf friendlyByteBuf) {
-            return null;
+        public @NotNull MissilePartRecipe fromNetwork(@NotNull ResourceLocation resourceLocation, FriendlyByteBuf friendlyByteBuf) {
+            int ingredientCount = friendlyByteBuf.readVarInt();
+            NonNullList<Ingredient> ingredients = NonNullList.withSize(ingredientCount, Ingredient.EMPTY);
+            ingredients.replaceAll(ignored -> Ingredient.fromNetwork(friendlyByteBuf));
+            Ingredient schematic = Ingredient.fromNetwork(friendlyByteBuf);
+            int slotStart = friendlyByteBuf.readInt();
+            int slotEnd = friendlyByteBuf.readInt();
+            return new MissilePartRecipe(resourceLocation, ingredients, schematic, slotStart, slotEnd);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, MissilePartRecipe recipe) {
+            friendlyByteBuf.writeVarInt(recipe.ingredients.size());
 
+            for(Ingredient ingredient : recipe.ingredients)
+                ingredient.toNetwork(friendlyByteBuf);
+
+            recipe.schematic.toNetwork(friendlyByteBuf);
+            friendlyByteBuf.writeInt(recipe.slotStart);
+            friendlyByteBuf.writeInt(recipe.slotEnd);
         }
     }
 }
