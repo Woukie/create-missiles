@@ -123,7 +123,6 @@ public class MissilePartRecipe implements Recipe<Container> {
     public static class Serializer implements RecipeSerializer<MissilePartRecipe> {
         @Override
         public @NotNull MissilePartRecipe fromJson(@NotNull ResourceLocation resourceLocation, @NotNull JsonObject jsonObject) {
-            System.out.println(GsonHelper.getAsJsonArray(jsonObject, "ingredients"));
             NonNullList<Ingredient> ingredients = itemsFromJson(GsonHelper.getAsJsonArray(jsonObject, "ingredients"));
             ResourceLocation schematic = new ResourceLocation(GsonHelper.getAsString(jsonObject, "schematic"));
 
