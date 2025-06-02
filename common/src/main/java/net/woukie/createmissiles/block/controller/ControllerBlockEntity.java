@@ -29,6 +29,7 @@ import net.woukie.createmissiles.missilemanager.Trajectories;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.TrajectoryData;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
+import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.recipe.MissilePartRecipe;
@@ -130,9 +131,9 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
         SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity) blockEntity;
 
-        WarheadType warheadType = WarheadSchematic.getWarhead(schematicator.getItem(0));
-        ChassisType chassisType = ChassisSchematic.getChassis(schematicator.getItem(1));
-        ThrusterType thrusterType = ThrusterSchematic.getThruster(schematicator.getItem(2));
+        MissilePartType warheadType = MissilePartTypes.get(schematicator.getItem(0));
+        MissilePartType chassisType = MissilePartTypes.get(schematicator.getItem(1));
+        MissilePartType thrusterType = MissilePartTypes.get(schematicator.getItem(2));
 
         var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(MissileRecipeTypes.MISSILE_PART.get());
         for (var recipe : missilePartRecipes) {
@@ -195,9 +196,9 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         MissilePartRecipe chassisRecipe = null;
         MissilePartRecipe thrusterRecipe = null;
 
-        WarheadType warheadType = WarheadSchematic.getWarhead(schematicator.getItem(0));
-        ChassisType chassisType = ChassisSchematic.getChassis(schematicator.getItem(1));
-        ThrusterType thrusterType = ThrusterSchematic.getThruster(schematicator.getItem(2));
+        MissilePartType warheadType = MissilePartTypes.get(schematicator.getItem(0));
+        MissilePartType chassisType = MissilePartTypes.get(schematicator.getItem(1));
+        MissilePartType thrusterType = MissilePartTypes.get(schematicator.getItem(2));
 
         if (warheadType == null || chassisType == null || thrusterType == null) return;
 
@@ -226,15 +227,15 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         if (!thrusterRecipe.matches(this, getLevel())) return;
 
         Trajectory trajectory = new Trajectory(new TrajectoryData(
-            getLevel(),
-            getBlockPos().relative(launchPadDirection, 2),
-            navigator.getTarget(),
-            navigator.getFuelPercent(),
-            0,
-            schematicator.getWarhead(),
-            schematicator.getChassis(),
-            schematicator.getThruster(),
-            this
+                getLevel(),
+                getBlockPos().relative(launchPadDirection, 2),
+                navigator.getTarget(),
+                navigator.getFuelPercent(),
+                0,
+                (WarheadType) warheadType,
+                (ChassisType) chassisType,
+                (ThrusterType) thrusterType,
+                this
         ));
 
         Trajectories trajectories = Trajectories.get();

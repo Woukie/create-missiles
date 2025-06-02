@@ -19,7 +19,7 @@ public class WarheadSchematic extends Item {
     public @NotNull Component getName(ItemStack itemStack) {
         CompoundTag compoundTag = itemStack.getTag();
         if (compoundTag != null)
-            return MissilePartTypes.get(new ResourceLocation(compoundTag.getString("Warhead"))).displayName;
+            return MissilePartTypes.get(new ResourceLocation(compoundTag.getString("PartType"))).displayName;
 
         return super.getName(itemStack);
     }
@@ -27,16 +27,8 @@ public class WarheadSchematic extends Item {
     public static ItemStack createWith(ResourceLocation warhead) {
         ItemStack itemStack = new ItemStack(MissileItems.WARHEAD_SCHEMATIC.get());
         CompoundTag compoundTag = itemStack.getOrCreateTag();
-        compoundTag.putString("Warhead", warhead.toString());
+        compoundTag.putString("PartType", warhead.toString());
         itemStack.setTag(compoundTag);
         return itemStack;
-    }
-
-    public static WarheadType getWarhead(ItemStack itemStack) {
-        if (itemStack == null) return null;
-        CompoundTag compoundTag = itemStack.getTag();
-        if (compoundTag == null)
-            return null;
-        return (WarheadType) MissilePartTypes.get(new ResourceLocation(compoundTag.getString("Warhead")));
     }
 }

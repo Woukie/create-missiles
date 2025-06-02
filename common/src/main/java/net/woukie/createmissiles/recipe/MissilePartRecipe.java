@@ -2,6 +2,7 @@ package net.woukie.createmissiles.recipe;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
@@ -11,6 +12,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
 import net.woukie.createmissiles.registry.MissilePartTypes;
 import net.woukie.createmissiles.registry.MissileRecipeSerializers;
 import net.woukie.createmissiles.registry.MissileRecipeTypes;
@@ -18,6 +20,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class MissilePartRecipe implements Recipe<Container> {
     private final ResourceLocation id;
@@ -61,6 +66,38 @@ public class MissilePartRecipe implements Recipe<Container> {
         }
 
         return false;
+    }
+
+    public NonNullList<MissileIngredient> getMissileIngredients() {
+        return this.ingredients;
+    }
+
+    public static Map<MissileIngredient, Integer> getRemainingItems(MissilePartType partType, Level level, NonNullList<ItemStack> items) {
+        if (partType == null) return null;
+
+        var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(MissileRecipeTypes.MISSILE_PART.get());
+        Optional<MissilePartRecipe> recipe = missilePartRecipes.stream().filter(r -> r.getSchematic().equals(partType.resourceLocation)).findFirst();
+
+        if (recipe.isEmpty()) return null;
+
+        Map<MissileIngredient, Integer> ingredientStatus = recipe.get().getMissileIngredients().stream().collect(Collectors.toMap(a -> a, MissileIngredient::getCount));
+
+        for (int i = partType.startSlot; i < partType.endSlot; i++) {
+            var item = items.get(i);
+            var itemsRemaining = item.getCount();
+            for (var ingredient : ingredientStatus.keySet()) {
+                var count = ingredientStatus.get(ingredient);
+                if (ingredient.test(item)) {
+                    var reducedTo = Math.max(count - itemsRemaining, 0);
+                    ingredientStatus.put(ingredient, reducedTo);
+                    itemsRemaining -= count - reducedTo;
+                }
+
+                if (itemsRemaining == 0) break;
+            }
+        }
+
+        return ingredientStatus;
     }
 
     @Override
@@ -130,16 +167,16 @@ public class MissilePartRecipe implements Recipe<Container> {
         }
 
         private static NonNullList<MissileIngredient> itemsFromJson(JsonArray jsonArray) {
-            NonNullList<MissileIngredient> nonNullList = NonNullList.create();
+            NonNullList<MissileIngredient> items = NonNullList.create();
 
             for(int i = 0; i < jsonArray.size(); ++i) {
                 MissileIngredient ingredient = MissileIngredient.fromJson(jsonArray.get(i), false);
                 if (!ingredient.isEmpty()) {
-                    nonNullList.add(ingredient);
+                    items.add(ingredient);
                 }
             }
 
-            return nonNullList;
+            return items;
         }
 
         @Override

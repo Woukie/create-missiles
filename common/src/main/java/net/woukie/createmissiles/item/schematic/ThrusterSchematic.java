@@ -19,7 +19,7 @@ public class ThrusterSchematic extends Item {
     public @NotNull Component getName(ItemStack itemStack) {
         CompoundTag compoundTag = itemStack.getTag();
         if (compoundTag != null)
-            return MissilePartTypes.get(new ResourceLocation(compoundTag.getString("Thruster"))).displayName;
+            return MissilePartTypes.get(new ResourceLocation(compoundTag.getString("PartType"))).displayName;
 
         return super.getName(itemStack);
     }
@@ -27,16 +27,8 @@ public class ThrusterSchematic extends Item {
     public static ItemStack createWith(ResourceLocation thruster) {
         ItemStack itemStack = new ItemStack(MissileItems.THRUSTER_SCHEMATIC.get());
         CompoundTag compoundTag = itemStack.getOrCreateTag();
-        compoundTag.putString("Thruster", thruster.toString());
+        compoundTag.putString("PartType", thruster.toString());
         itemStack.setTag(compoundTag);
         return itemStack;
-    }
-
-    public static ThrusterType getThruster(ItemStack itemStack) {
-        if (itemStack == null) return null;
-        CompoundTag compoundTag = itemStack.getTag();
-        if (compoundTag == null)
-            return null;
-        return (ThrusterType) MissilePartTypes.get(new ResourceLocation(compoundTag.getString("Thruster")));
     }
 }

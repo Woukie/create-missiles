@@ -2,11 +2,13 @@
   "type": "createmissiles:missile_part",
   "ingredients": [
     {
-      "item": "minecraft:iron_ingot"
+      "items": ["minecraft:iron_ingot"],
+      "count": 1
     },
     {
-      "item": "minecraft:blaze_rod"
+      "items": ["minecraft:paper"],
+      "count": 3
     }
   ],
-  "schematic": "createmissiles:paper_chhassis"
+  "schematic": "createmissiles:paper_chassis"
 }

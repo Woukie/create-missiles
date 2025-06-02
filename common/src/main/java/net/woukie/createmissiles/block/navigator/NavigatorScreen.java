@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.item.schematic.ChassisSchematic;
@@ -17,6 +18,10 @@ import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
 import net.woukie.createmissiles.item.schematic.WarheadSchematic;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.TrajectoryData;
+import net.woukie.createmissiles.missilemanager.parts.ChassisType;
+import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
+import net.woukie.createmissiles.missilemanager.parts.WarheadType;
+import net.woukie.createmissiles.registry.MissilePartTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -199,9 +204,9 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
                 target,
                 getMenu().getFuelPercent(),
                 0,
-                WarheadSchematic.getWarhead(warhead),
-                ChassisSchematic.getChassis(chassis),
-                ThrusterSchematic.getThruster(thruster)
+                (WarheadType) MissilePartTypes.get(warhead),
+                (ChassisType) MissilePartTypes.get(chassis),
+                (ThrusterType) MissilePartTypes.get(thruster)
         );
 
         Trajectory trajectory = new Trajectory(trajectoryData);

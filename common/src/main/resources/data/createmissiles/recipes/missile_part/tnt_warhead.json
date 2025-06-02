@@ -2,13 +2,16 @@
   "type": "createmissiles:missile_part",
   "ingredients": [
     {
-      "item": "minecraft:paper"
+      "items": ["minecraft:paper"],
+      "count": 1
     },
     {
-      "item": "minecraft:leather"
+      "items": ["minecraft:gunpowder"],
+      "count": 2
     },
     {
-      "item": "minecraft:dirt"
+      "items": ["minecraft:tnt"],
+      "count": 16
     }
   ],
   "schematic": "createmissiles:tnt_warhead"

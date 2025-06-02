@@ -18,6 +18,7 @@ import net.woukie.createmissiles.missilemanager.parts.ChassisType;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.registry.MissileItems;
+import net.woukie.createmissiles.registry.MissilePartTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class SchematicatorBlockEntity extends MissileAbstractBlockEntity {
@@ -30,21 +31,21 @@ public class SchematicatorBlockEntity extends MissileAbstractBlockEntity {
         ItemStack item = getItem(0);
         if (!item.is(MissileItems.WARHEAD_SCHEMATIC.get()))
             return null;
-        return WarheadSchematic.getWarhead(item);
+        return (WarheadType) MissilePartTypes.get(item);
     }
 
     public ChassisType getChassis() {
         ItemStack item = getItem(1);
         if (!item.is(MissileItems.CHASSIS_SCHEMATIC.get()))
             return null;
-        return ChassisSchematic.getChassis(item);
+        return (ChassisType) MissilePartTypes.get(item);
     }
 
     public ThrusterType getThruster() {
         ItemStack item = getItem(2);
         if (!item.is(MissileItems.THRUSTER_SCHEMATIC.get()))
             return null;
-        return ThrusterSchematic.getThruster(item);
+        return (ThrusterType) MissilePartTypes.get(item);
     }
 
     @Override
