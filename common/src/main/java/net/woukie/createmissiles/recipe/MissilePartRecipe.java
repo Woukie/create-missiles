@@ -21,10 +21,10 @@ import java.util.List;
 
 public class MissilePartRecipe implements Recipe<Container> {
     private final ResourceLocation id;
-    private final NonNullList<Ingredient> ingredients;
+    private final NonNullList<MissileIngredient> ingredients;
     private final ResourceLocation schematic;
 
-    public MissilePartRecipe(ResourceLocation id, NonNullList<Ingredient> ingredients, ResourceLocation schematic) {
+    public MissilePartRecipe(ResourceLocation id, NonNullList<MissileIngredient> ingredients, ResourceLocation schematic) {
         this.id = id;
         this.ingredients = ingredients;
         this.schematic = schematic;
@@ -73,7 +73,7 @@ public class MissilePartRecipe implements Recipe<Container> {
             if (!container.getItem(i).isEmpty())
                 containerStacks.add(container.getItem(i));
 
-        for (Ingredient ingredient : ingredients) {
+        for (MissileIngredient ingredient : ingredients) {
             boolean fulfilled = false;
 
             for (int i = 0; i < containerStacks.size(); i++)
@@ -123,17 +123,17 @@ public class MissilePartRecipe implements Recipe<Container> {
     public static class Serializer implements RecipeSerializer<MissilePartRecipe> {
         @Override
         public @NotNull MissilePartRecipe fromJson(@NotNull ResourceLocation resourceLocation, @NotNull JsonObject jsonObject) {
-            NonNullList<Ingredient> ingredients = itemsFromJson(GsonHelper.getAsJsonArray(jsonObject, "ingredients"));
+            NonNullList<MissileIngredient> ingredients = itemsFromJson(GsonHelper.getAsJsonArray(jsonObject, "ingredients"));
             ResourceLocation schematic = new ResourceLocation(GsonHelper.getAsString(jsonObject, "schematic"));
 
             return new MissilePartRecipe(resourceLocation, ingredients, schematic);
         }
 
-        private static NonNullList<Ingredient> itemsFromJson(JsonArray jsonArray) {
-            NonNullList<Ingredient> nonNullList = NonNullList.create();
+        private static NonNullList<MissileIngredient> itemsFromJson(JsonArray jsonArray) {
+            NonNullList<MissileIngredient> nonNullList = NonNullList.create();
 
             for(int i = 0; i < jsonArray.size(); ++i) {
-                Ingredient ingredient = Ingredient.fromJson(jsonArray.get(i), false);
+                MissileIngredient ingredient = MissileIngredient.fromJson(jsonArray.get(i), false);
                 if (!ingredient.isEmpty()) {
                     nonNullList.add(ingredient);
                 }
@@ -145,9 +145,10 @@ public class MissilePartRecipe implements Recipe<Container> {
         @Override
         public @NotNull MissilePartRecipe fromNetwork(@NotNull ResourceLocation resourceLocation, FriendlyByteBuf friendlyByteBuf) {
             int ingredientCount = friendlyByteBuf.readVarInt();
-            NonNullList<Ingredient> ingredients = NonNullList.withSize(ingredientCount, Ingredient.EMPTY);
-            ingredients.replaceAll(ignored -> Ingredient.fromNetwork(friendlyByteBuf));
+            NonNullList<MissileIngredient> ingredients = NonNullList.withSize(ingredientCount, MissileIngredient.EMPTY);
+            ingredients.replaceAll(ignored -> MissileIngredient.fromNetwork(friendlyByteBuf));
             ResourceLocation schematic = friendlyByteBuf.readResourceLocation();
+
             return new MissilePartRecipe(resourceLocation, ingredients, schematic);
         }
 
@@ -155,7 +156,7 @@ public class MissilePartRecipe implements Recipe<Container> {
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, MissilePartRecipe recipe) {
             friendlyByteBuf.writeVarInt(recipe.ingredients.size());
 
-            for(Ingredient ingredient : recipe.ingredients)
+            for(MissileIngredient ingredient : recipe.ingredients)
                 ingredient.toNetwork(friendlyByteBuf);
 
             friendlyByteBuf.writeResourceLocation(recipe.schematic);
