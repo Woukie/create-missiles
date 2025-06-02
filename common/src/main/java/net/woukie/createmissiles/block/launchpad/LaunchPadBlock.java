@@ -95,7 +95,7 @@ public class LaunchPadBlock extends KineticBlock implements IBE<LaunchPadBlockEn
         public boolean canPlaceItemThroughFace(int i, @NotNull ItemStack itemStack, @Nullable Direction direction) {
             ControllerBlockEntity controllerBlockEntity = MultiblockHelper.findControllerFromLaunchPad((Level) level, pos);
             if (controllerBlockEntity == null) return false;
-            return controllerBlockEntity.canGiveItem(itemStack);
+            return controllerBlockEntity.findAcceptingRecipe(itemStack) != null;
         }
 
         @Override

@@ -11,6 +11,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.woukie.createmissiles.registry.MissilePartTypes;
 import net.woukie.createmissiles.registry.MissileRecipeSerializers;
 import net.woukie.createmissiles.registry.MissileRecipeTypes;
 import org.jetbrains.annotations.NotNull;
@@ -21,27 +22,54 @@ import java.util.List;
 public class MissilePartRecipe implements Recipe<Container> {
     private final ResourceLocation id;
     private final NonNullList<Ingredient> ingredients;
-    private final Ingredient schematic;
-    private final int slotStart;
-    private final int slotEnd;
+    private final ResourceLocation schematic;
 
-    public MissilePartRecipe(ResourceLocation id, NonNullList<Ingredient> ingredients, Ingredient schematic, int slotStart, int slotEnd) {
+    public MissilePartRecipe(ResourceLocation id, NonNullList<Ingredient> ingredients, ResourceLocation schematic) {
         this.id = id;
         this.ingredients = ingredients;
         this.schematic = schematic;
-        this.slotStart = slotStart;
-        this.slotEnd = slotEnd;
     }
 
-    public Ingredient getSchematic() {
+    public ResourceLocation getSchematic() {
         return this.schematic;
+    }
+
+    public boolean itemComplements(ItemStack itemStack, Container container) {
+        List<ItemStack> stacksLeft = new ArrayList<>();
+
+        var partType = MissilePartTypes.get(schematic);
+
+        for (int i = partType.startSlot; i < partType.endSlot; i++)
+            if (!container.getItem(i).isEmpty())
+                stacksLeft.add(container.getItem(i));
+
+        var ingredientsLeft = new ArrayList<>(ingredients);
+
+        for (int i = 0; i < ingredientsLeft.size(); i++)
+            for (var stack : stacksLeft)
+                if (ingredientsLeft.get(i).test(stack)) {
+                    ingredientsLeft.remove(i);
+                    stacksLeft.remove(stack);
+                    i--;
+                    break;
+                }
+
+        for (var ingredient : ingredientsLeft) {
+            if (ingredient.test(itemStack)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
     public boolean matches(@NotNull Container container, @NotNull Level level) {
         List<ItemStack> containerStacks = new ArrayList<>();
 
-        for (int i = slotStart; i < slotEnd; i++)
+        var partType = MissilePartTypes.get(schematic);
+
+        for (int i = partType.startSlot; i < partType.endSlot; i++)
             if (!container.getItem(i).isEmpty())
                 containerStacks.add(container.getItem(i));
 
@@ -95,13 +123,11 @@ public class MissilePartRecipe implements Recipe<Container> {
     public static class Serializer implements RecipeSerializer<MissilePartRecipe> {
         @Override
         public @NotNull MissilePartRecipe fromJson(@NotNull ResourceLocation resourceLocation, @NotNull JsonObject jsonObject) {
+            System.out.println(GsonHelper.getAsJsonArray(jsonObject, "ingredients"));
             NonNullList<Ingredient> ingredients = itemsFromJson(GsonHelper.getAsJsonArray(jsonObject, "ingredients"));
-            Ingredient schematic = Ingredient.fromJson(GsonHelper.getAsJsonObject(jsonObject, "schematic"), false);
+            ResourceLocation schematic = new ResourceLocation(GsonHelper.getAsString(jsonObject, "schematic"));
 
-            int slotStart = GsonHelper.getAsInt(jsonObject, "slotStart");
-            int slotEnd = GsonHelper.getAsInt(jsonObject, "slotEnd");
-
-            return new MissilePartRecipe(resourceLocation, ingredients, schematic, slotStart, slotEnd);
+            return new MissilePartRecipe(resourceLocation, ingredients, schematic);
         }
 
         private static NonNullList<Ingredient> itemsFromJson(JsonArray jsonArray) {
@@ -122,10 +148,8 @@ public class MissilePartRecipe implements Recipe<Container> {
             int ingredientCount = friendlyByteBuf.readVarInt();
             NonNullList<Ingredient> ingredients = NonNullList.withSize(ingredientCount, Ingredient.EMPTY);
             ingredients.replaceAll(ignored -> Ingredient.fromNetwork(friendlyByteBuf));
-            Ingredient schematic = Ingredient.fromNetwork(friendlyByteBuf);
-            int slotStart = friendlyByteBuf.readInt();
-            int slotEnd = friendlyByteBuf.readInt();
-            return new MissilePartRecipe(resourceLocation, ingredients, schematic, slotStart, slotEnd);
+            ResourceLocation schematic = friendlyByteBuf.readResourceLocation();
+            return new MissilePartRecipe(resourceLocation, ingredients, schematic);
         }
 
         @Override
@@ -135,9 +159,7 @@ public class MissilePartRecipe implements Recipe<Container> {
             for(Ingredient ingredient : recipe.ingredients)
                 ingredient.toNetwork(friendlyByteBuf);
 
-            recipe.schematic.toNetwork(friendlyByteBuf);
-            friendlyByteBuf.writeInt(recipe.slotStart);
-            friendlyByteBuf.writeInt(recipe.slotEnd);
+            friendlyByteBuf.writeResourceLocation(recipe.schematic);
         }
     }
 }

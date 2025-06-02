@@ -8,10 +8,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.Container;
-import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.level.Level;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
-import net.woukie.createmissiles.missilemanager.parts.PartTypeRegistry;
+import net.woukie.createmissiles.registry.MissilePartTypes;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 
@@ -76,9 +75,9 @@ public class TrajectoryData {
         this.fuelPercentage = savedData.getDouble("FuelPercentage");
         this.tick = savedData.getInt("Tick");
 
-        this.warheadType = PartTypeRegistry.getWarhead(new ResourceLocation(savedData.getString("Warhead")));
-        this.chassisType = PartTypeRegistry.getChassis(new ResourceLocation(savedData.getString("Chassis")));
-        this.thrusterType = PartTypeRegistry.getThruster(new ResourceLocation(savedData.getString("Thruster")));
+        this.warheadType = (WarheadType) MissilePartTypes.get(new ResourceLocation(savedData.getString("Warhead")));
+        this.chassisType = (ChassisType) MissilePartTypes.get(new ResourceLocation(savedData.getString("Chassis")));
+        this.thrusterType = (ThrusterType) MissilePartTypes.get(new ResourceLocation(savedData.getString("Thruster")));
 
         this.warheadData = savedData.get("WarheadData");
         this.chassisData = savedData.get("ChassisData");

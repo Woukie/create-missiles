@@ -16,7 +16,6 @@ import net.woukie.createmissiles.item.schematic.ChassisSchematic;
 import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
 import net.woukie.createmissiles.item.schematic.WarheadSchematic;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
-import net.woukie.createmissiles.missilemanager.parts.Ingredient;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.registry.MissileItems;
@@ -124,32 +123,5 @@ public class ControllerMenu extends MissileAbstractMenu {
         ItemStack item = navigatorContainer.getItem(0);
 //        Has mapCrosshair positions by default, and map data is null in rare situations (need the level to get map data anyway which is annoying to get here, don't want to offload this method to block entity)
         return item.is(Items.FILLED_MAP);
-    }
-
-    public HashMap<Ingredient, Integer> getWarheadIngredientsLeft() {
-        WarheadType warhead = WarheadSchematic.getWarhead(getWarhead());
-        if (warhead == null) return null;
-        List<ItemStack> items = new ArrayList<>();
-        for (int i = 0; i < 32; i++)
-            items.add(container.getItem(i));
-        return warhead.getIngredientsLeft(items);
-    }
-
-    public HashMap<Ingredient, Integer> getChassisIngredientsLeft() {
-        ChassisType chassis = ChassisSchematic.getChassis(getChassis());
-        if (chassis == null) return null;
-        List<ItemStack> items = new ArrayList<>();
-        for (int i = 32; i < 64; i++)
-            items.add(container.getItem(i));
-        return chassis.getIngredientsLeft(items);
-    }
-
-    public HashMap<Ingredient, Integer> getThrusterIngredientsLeft() {
-        ThrusterType thruster = ThrusterSchematic.getThruster(getThruster());
-        if (thruster == null) return null;
-        List<ItemStack> items = new ArrayList<>();
-        for (int i = 64; i < 96; i++)
-            items.add(container.getItem(i));
-        return thruster.getIngredientsLeft(items);
     }
 }

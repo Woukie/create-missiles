@@ -22,18 +22,21 @@ import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
 import net.woukie.createmissiles.block.navigator.NavigatorBlockEntity;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlockEntity;
+import net.woukie.createmissiles.item.schematic.ChassisSchematic;
+import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
+import net.woukie.createmissiles.item.schematic.WarheadSchematic;
 import net.woukie.createmissiles.missilemanager.Trajectories;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.TrajectoryData;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
-import net.woukie.createmissiles.missilemanager.parts.Ingredient;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
+import net.woukie.createmissiles.recipe.MissilePartRecipe;
 import net.woukie.createmissiles.registry.MissileBlockEntities;
+import net.woukie.createmissiles.registry.MissilePartTypes;
+import net.woukie.createmissiles.registry.MissileRecipeTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
 
 // Inventory divided up into 32-slot areas representing thruster, chassis and warhead
 public class ControllerBlockEntity extends MissileAbstractBlockEntity {
@@ -45,7 +48,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
     public ControllerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
-        this.items = NonNullList.withSize(128, ItemStack.EMPTY);
+        this.items = NonNullList.withSize(96, ItemStack.EMPTY);
         this.dataAccess = new ContainerData() {
             @Override
             public int get(int i) {
@@ -94,38 +97,10 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     }
 
     public void giveItem(@NotNull ItemStack itemStack) {
-        if (level == null || itemStack.getCount() != 1) return;
-
-        BlockEntity blockEntity = MultiblockHelper.findEdgeBlock(this, level, MissileBlockEntities.SCHEMATICATOR.get());
-        if (blockEntity == null) return;
-
-        SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity)blockEntity;
-
-        WarheadType warhead = schematicator.getWarhead();
-        if (warhead != null) {
-            var ingredientsLeft = warhead.getIngredientsLeft(items.subList(0, 32));
-            if (itemFulfillsIngredients(ingredientsLeft, itemStack)) {
-                addItemToPartOfInventory(itemStack, 0, 32);
-                return;
-            }
-        }
-
-        ChassisType chassis = schematicator.getChassis();
-        if (chassis != null) {
-            var ingredientsLeft = chassis.getIngredientsLeft(items.subList(32, 64));
-            if (itemFulfillsIngredients(ingredientsLeft, itemStack)) {
-                addItemToPartOfInventory(itemStack, 32, 64);
-                return;
-            }
-        }
-
-        ThrusterType thruster = schematicator.getThruster();
-        if (thruster != null) {
-            var ingredientsLeft = thruster.getIngredientsLeft(items.subList(64, 96));
-            if (itemFulfillsIngredients(ingredientsLeft, itemStack)) {
-                addItemToPartOfInventory(itemStack, 64, 96);
-            }
-        }
+        MissilePartRecipe recipe = findAcceptingRecipe(itemStack);
+        if (recipe == null) return;
+        var partType = MissilePartTypes.get(recipe.getSchematic());
+        addItemToPartOfInventory(itemStack, partType.startSlot, partType.endSlot);
     }
 
     private void addItemToPartOfInventory(ItemStack itemStack, int fromIndex, int toIndex) {
@@ -147,40 +122,27 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         }
     }
 
-    public boolean canGiveItem(ItemStack itemStack) {
-        if (level == null || itemStack.getCount() != 1) return false;
+    public MissilePartRecipe findAcceptingRecipe(ItemStack itemStack) {
+        if (level == null || itemStack.getCount() != 1) return null;
 
         BlockEntity blockEntity = MultiblockHelper.findEdgeBlock(this, level, MissileBlockEntities.SCHEMATICATOR.get());
-        if (blockEntity == null) return false;
+        if (blockEntity == null) return null;
 
-        SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity)blockEntity;
-        WarheadType warhead = schematicator.getWarhead();
-        ChassisType chassis = schematicator.getChassis();
-        ThrusterType thruster = schematicator.getThruster();
+        SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity) blockEntity;
 
-        if (warhead != null) {
-            var ingredientsLeft = warhead.getIngredientsLeft(items.subList(0, 32));
-            if (itemFulfillsIngredients(ingredientsLeft, itemStack))
-                return true;
+        WarheadType warheadType = WarheadSchematic.getWarhead(schematicator.getItem(0));
+        ChassisType chassisType = ChassisSchematic.getChassis(schematicator.getItem(1));
+        ThrusterType thrusterType = ThrusterSchematic.getThruster(schematicator.getItem(2));
+
+        var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(MissileRecipeTypes.MISSILE_PART.get());
+        for (var recipe : missilePartRecipes) {
+            var schematic = recipe.getSchematic();
+            if (schematic == warheadType.resourceLocation || schematic == chassisType.resourceLocation || schematic == thrusterType.resourceLocation)
+                if (recipe.itemComplements(itemStack, this))
+                    return recipe;
         }
 
-        if (chassis != null) {
-            var ingredientsLeft = chassis.getIngredientsLeft(items.subList(32, 64));
-            if (itemFulfillsIngredients(ingredientsLeft, itemStack))
-                return true;
-        }
-
-        if (thruster != null) {
-            var ingredientsLeft = thruster.getIngredientsLeft(items.subList(64, 96));
-            if (itemFulfillsIngredients(ingredientsLeft, itemStack))
-                return true;
-        }
-
-        return false;
-    }
-
-    private boolean itemFulfillsIngredients(HashMap<Ingredient, Integer> ingredients, ItemStack itemStack) {
-        return ingredients.entrySet().stream().anyMatch(entry -> entry.getKey().matches(itemStack) && entry.getValue() > 0);
+        return null;
     }
 
     public void serverTick() {
@@ -227,31 +189,50 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         );
         if (navigator == null) return;
 
-        WarheadType warheadType = schematicator.getWarhead();
-        ChassisType chassisType = schematicator.getChassis();
-        ThrusterType thrusterType = schematicator.getThruster();
+        MissilePartRecipe warheadRecipe = null;
+        MissilePartRecipe chassisRecipe = null;
+        MissilePartRecipe thrusterRecipe = null;
+
+        WarheadType warheadType = WarheadSchematic.getWarhead(schematicator.getItem(0));
+        ChassisType chassisType = ChassisSchematic.getChassis(schematicator.getItem(1));
+        ThrusterType thrusterType = ThrusterSchematic.getThruster(schematicator.getItem(2));
 
         if (warheadType == null || chassisType == null || thrusterType == null) return;
 
-        for (var entry : warheadType.getIngredientsLeft(items.subList(0, 32)).entrySet())
-            if (entry.getValue() > 0) return;
+        var missilePartRecipes = getLevel().getRecipeManager().getAllRecipesFor(MissileRecipeTypes.MISSILE_PART.get());
+        for (var recipe : missilePartRecipes) {
+            if (!(warheadRecipe == null || chassisRecipe == null || thrusterRecipe == null)) break;
+            var schematic = recipe.getSchematic();
+            if (schematic == warheadType.resourceLocation) {
+                warheadRecipe = recipe;
+                continue;
+            }
 
-        for (var entry : chassisType.getIngredientsLeft(items.subList(32, 64)).entrySet())
-            if (entry.getValue() > 0) return;
+            if (schematic == chassisType.resourceLocation) {
+                chassisRecipe = recipe;
+                continue;
+            }
 
-        for (var entry : thrusterType.getIngredientsLeft(items.subList(64, 96)).entrySet())
-            if (entry.getValue() > 0) return;
+            if (schematic == thrusterType.resourceLocation) {
+                thrusterRecipe = recipe;
+            }
+        }
+
+        if (warheadRecipe == null || chassisRecipe == null || thrusterRecipe == null) return;
+        if (!warheadRecipe.matches(this, getLevel())) return;
+        if (!chassisRecipe.matches(this, getLevel())) return;
+        if (!thrusterRecipe.matches(this, getLevel())) return;
 
         Trajectory trajectory = new Trajectory(new TrajectoryData(
-                getLevel(),
-                getBlockPos().relative(launchPadDirection, 2),
-                navigator.getTarget(),
-                navigator.getFuelPercent(),
-                0,
-                schematicator.getWarhead(),
-                schematicator.getChassis(),
-                schematicator.getThruster(),
-                this
+            getLevel(),
+            getBlockPos().relative(launchPadDirection, 2),
+            navigator.getTarget(),
+            navigator.getFuelPercent(),
+            0,
+            schematicator.getWarhead(),
+            schematicator.getChassis(),
+            schematicator.getThruster(),
+            this
         ));
 
         Trajectories trajectories = Trajectories.get();
@@ -259,6 +240,11 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         trajectories.setDirty();
 
         clearContent();
+    }
+
+    @Override
+    public int getMaxStackSize() {
+        return Integer.MAX_VALUE;
     }
 
     @Override

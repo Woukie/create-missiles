@@ -1,0 +1,15 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "minecraft:lava_bucket"
+    }
+  ],
+  "schematic": "createmissiles:tnt_warhead"
+}
