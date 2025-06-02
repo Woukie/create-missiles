@@ -2,7 +2,7 @@
   "type": "createmissiles:missile_part",
   "ingredients": [
     {
-      "item": "minecraft:iron"
+      "item": "minecraft:iron_ingot"
     },
     {
       "item": "minecraft:blaze_rod"

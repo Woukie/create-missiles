@@ -137,9 +137,11 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(MissileRecipeTypes.MISSILE_PART.get());
         for (var recipe : missilePartRecipes) {
             var schematic = recipe.getSchematic();
-            if (schematic == warheadType.resourceLocation || schematic == chassisType.resourceLocation || schematic == thrusterType.resourceLocation)
-                if (recipe.itemComplements(itemStack, this))
-                    return recipe;
+            if (((warheadType != null && schematic.equals(warheadType.resourceLocation)) ||
+                    (chassisType != null && schematic.equals(chassisType.resourceLocation)) ||
+                    (thrusterType != null && schematic.equals(thrusterType.resourceLocation)))
+                    && recipe.itemComplements(itemStack, this))
+                return recipe;
         }
 
         return null;
@@ -203,17 +205,17 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         for (var recipe : missilePartRecipes) {
             if (!(warheadRecipe == null || chassisRecipe == null || thrusterRecipe == null)) break;
             var schematic = recipe.getSchematic();
-            if (schematic == warheadType.resourceLocation) {
+            if (schematic.equals(warheadType.resourceLocation)) {
                 warheadRecipe = recipe;
                 continue;
             }
 
-            if (schematic == chassisType.resourceLocation) {
+            if (schematic.equals(chassisType.resourceLocation)) {
                 chassisRecipe = recipe;
                 continue;
             }
 
-            if (schematic == thrusterType.resourceLocation) {
+            if (schematic.equals(thrusterType.resourceLocation)) {
                 thrusterRecipe = recipe;
             }
         }

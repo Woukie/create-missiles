@@ -8,7 +8,7 @@
       "item": "minecraft:leather"
     },
     {
-      "item": "minecraft:lava_bucket"
+      "item": "minecraft:dirt"
     }
   ],
   "schematic": "createmissiles:tnt_warhead"
