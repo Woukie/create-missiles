@@ -1,0 +1,15 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "item": "minecraft:tnt"
+    },
+    {
+      "item": "minecraft:iron"
+    },
+    {
+      "item": "minecraft:iron_nugget"
+    }
+  ],
+  "schematic": "createmissiles:gunpowder_thruster"
+}

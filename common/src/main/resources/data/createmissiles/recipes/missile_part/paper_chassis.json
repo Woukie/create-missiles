@@ -1,0 +1,12 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "item": "minecraft:iron"
+    },
+    {
+      "item": "minecraft:blaze_rod"
+    }
+  ],
+  "schematic": "createmissiles:paper_chhassis"
+}
