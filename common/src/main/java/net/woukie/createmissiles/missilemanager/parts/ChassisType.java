@@ -4,12 +4,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class ChassisType extends MissilePartType {
     public final float fuelCapacity;
-    public final int startSlot = 32;
-    public final int endSlot = 64;
+
+    @Override
+    public int getStartSlot() {
+        return 32;
+    }
+
+    @Override
+    public int getEndSlot() {
+        return 64;
+    }
 
     public ChassisType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, float fuelCapacity) {
         super(displayName, resourceLocation, writeData);

@@ -44,26 +44,13 @@ public class MissilePartRecipe implements Recipe<Container> {
 
         var partType = MissilePartTypes.get(schematic);
 
-        for (int i = partType.startSlot; i < partType.endSlot; i++)
+        for (int i = partType.getStartSlot(); i < partType.getEndSlot(); i++)
             if (!container.getItem(i).isEmpty())
                 stacksLeft.add(container.getItem(i));
 
-        var ingredientsLeft = new ArrayList<>(ingredients);
-
-        for (int i = 0; i < ingredientsLeft.size(); i++)
-            for (var stack : stacksLeft)
-                if (ingredientsLeft.get(i).test(stack)) {
-                    ingredientsLeft.remove(i);
-                    stacksLeft.remove(stack);
-                    i--;
-                    break;
-                }
-
-        for (var ingredient : ingredientsLeft) {
-            if (ingredient.test(itemStack)) {
-                return true;
-            }
-        }
+        var remainingItems = this.getRemainingItems(stacksLeft);
+        for (var item : remainingItems.entrySet())
+            if (item.getKey().test(itemStack) && item.getValue() > 0) return true;
 
         return false;
     }
@@ -72,18 +59,10 @@ public class MissilePartRecipe implements Recipe<Container> {
         return this.ingredients;
     }
 
-    public static Map<MissileIngredient, Integer> getRemainingItems(MissilePartType partType, Level level, NonNullList<ItemStack> items) {
-        if (partType == null) return null;
+    public Map<MissileIngredient, Integer> getRemainingItems(List<ItemStack> items) {
+        Map<MissileIngredient, Integer> ingredientStatus = getMissileIngredients().stream().collect(Collectors.toMap(a -> a, MissileIngredient::getCount));
 
-        var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(MissileRecipeTypes.MISSILE_PART.get());
-        Optional<MissilePartRecipe> recipe = missilePartRecipes.stream().filter(r -> r.getSchematic().equals(partType.resourceLocation)).findFirst();
-
-        if (recipe.isEmpty()) return null;
-
-        Map<MissileIngredient, Integer> ingredientStatus = recipe.get().getMissileIngredients().stream().collect(Collectors.toMap(a -> a, MissileIngredient::getCount));
-
-        for (int i = partType.startSlot; i < partType.endSlot; i++) {
-            var item = items.get(i);
+        for (ItemStack item : items) {
             var itemsRemaining = item.getCount();
             for (var ingredient : ingredientStatus.keySet()) {
                 var count = ingredientStatus.get(ingredient);
@@ -100,29 +79,30 @@ public class MissilePartRecipe implements Recipe<Container> {
         return ingredientStatus;
     }
 
+    public static Map<MissileIngredient, Integer> getRemainingItems(MissilePartType partType, Level level, NonNullList<ItemStack> items) {
+        if (partType == null) return null;
+
+        var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(MissileRecipeTypes.MISSILE_PART.get());
+        Optional<MissilePartRecipe> recipe = missilePartRecipes.stream().filter(r -> r.getSchematic().equals(partType.resourceLocation)).findFirst();
+
+        return recipe.map(missilePartRecipe -> missilePartRecipe.getRemainingItems(items.subList(partType.getStartSlot(), partType.getEndSlot()))).orElse(null);
+    }
+
     @Override
     public boolean matches(@NotNull Container container, @NotNull Level level) {
         List<ItemStack> containerStacks = new ArrayList<>();
 
         var partType = MissilePartTypes.get(schematic);
 
-        for (int i = partType.startSlot; i < partType.endSlot; i++)
+        for (int i = partType.getStartSlot(); i < partType.getEndSlot(); i++)
             if (!container.getItem(i).isEmpty())
                 containerStacks.add(container.getItem(i));
 
-        for (MissileIngredient ingredient : ingredients) {
-            boolean fulfilled = false;
+        var remainingItems = getRemainingItems(containerStacks);
 
-            for (int i = 0; i < containerStacks.size(); i++)
-                if (ingredient.test(containerStacks.get(i))) {
-                    containerStacks.remove(i);
-                    fulfilled = true;
-                    break;
-                }
-
-            if (!fulfilled)
+        for (var remainingItem : remainingItems.entrySet())
+            if (remainingItem.getValue() > 0)
                 return false;
-        }
 
         return true;
     }

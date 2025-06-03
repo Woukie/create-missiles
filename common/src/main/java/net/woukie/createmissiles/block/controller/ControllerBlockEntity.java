@@ -101,7 +101,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         MissilePartRecipe recipe = findAcceptingRecipe(itemStack);
         if (recipe == null) return;
         var partType = MissilePartTypes.get(recipe.getSchematic());
-        addItemToPartOfInventory(itemStack, partType.startSlot, partType.endSlot);
+        addItemToPartOfInventory(itemStack, partType.getStartSlot(), partType.getEndSlot());
     }
 
     private void addItemToPartOfInventory(ItemStack itemStack, int fromIndex, int toIndex) {

@@ -15,7 +15,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.missilemanager.parts.ChassisType;
 import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
+import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
+import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.recipe.MissileIngredient;
 import net.woukie.createmissiles.recipe.MissilePartRecipe;
 import net.woukie.createmissiles.registry.MissilePartTypes;
@@ -186,14 +189,15 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         ingredients.forEach((ingredient, left) -> {
             int required = ingredient.getCount();
             int have = required - left;
-            var items = ingredient.getItems();
+            List<ItemStack> items = new ArrayList<>(Arrays.stream(ingredient.getItems()).toList());
 
-//            TODO: Display items from tag (commented code is from Ingredient)
-//            for(Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(this.tag)) {
-//                items.add(new ItemStack(holder));
-//            }
+            for (var tag : ingredient.getTags()) {
+                for(Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
+                    items.add(new ItemStack(holder));
+                }
+            }
 
-            Component[] names = Arrays.stream(items).map(ItemStack::getDisplayName).toList().toArray(new Component[0]);
+            Component[] names = items.stream().map(ItemStack::getDisplayName).toList().toArray(new Component[0]);
             String name = names[(int)(Util.getMillis() / 1000f) % names.length].getString();
 
             text.add(FormattedText.of("> " + name, Style.EMPTY.withColor(16777215)));
