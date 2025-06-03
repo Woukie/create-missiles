@@ -181,8 +181,7 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         gui.disableScissor();
         gui.pose().popPose();
 
-
-        return launchPad && schematicator && navigator && hasSchematics && hasDestination;
+        return launchPad && schematicator && navigator && hasSchematics && hasDestination && chassisPercent == 100 && warheadPercent == 100 && thrusterPercent == 100;
     }
 
     private void writeIngredientStatus(List<FormattedText> text, Map<MissileIngredient, Integer> ingredients) {
