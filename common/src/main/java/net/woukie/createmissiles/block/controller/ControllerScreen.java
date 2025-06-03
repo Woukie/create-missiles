@@ -200,7 +200,7 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
             Component[] names = items.stream().map(ItemStack::getDisplayName).toList().toArray(new Component[0]);
             String name = names[(int)(Util.getMillis() / 1000f) % names.length].getString();
 
-            text.add(FormattedText.of("> " + name, Style.EMPTY.withColor(16777215)));
+            text.add(FormattedText.of("> " + name.substring(1, name.length() - 1) + " ", Style.EMPTY.withColor(16777215)));
             text.add(FormattedText.of(have + "/" + required + "\n", Style.EMPTY.withColor(have == required ? 65280 : (have == 0 ? 16711680 : 16776960))));
         });
     }
