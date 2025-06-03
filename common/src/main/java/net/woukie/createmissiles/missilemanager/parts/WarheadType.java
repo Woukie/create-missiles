@@ -4,14 +4,23 @@ import net.minecraft.resources.ResourceLocation;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class WarheadType extends MissilePartType {
     public final float weight;
     public final Detonatable detonatable;
 
-    public WarheadType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, List<Ingredient> ingredients, float weight, @Nullable Detonatable detonatable) {
-        super(displayName, resourceLocation, writeData, ingredients);
+    @Override
+    public int getStartSlot() {
+        return 0;
+    }
+
+    @Override
+    public int getEndSlot() {
+        return 32;
+    }
+
+    public WarheadType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, float weight, @Nullable Detonatable detonatable) {
+        super(displayName, resourceLocation, writeData);
         this.weight = weight;
         this.detonatable = detonatable;
     }

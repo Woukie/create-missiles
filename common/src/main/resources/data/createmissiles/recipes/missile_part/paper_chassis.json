@@ -1,0 +1,14 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "items": ["minecraft:iron_ingot"],
+      "count": 1
+    },
+    {
+      "items": ["minecraft:paper"],
+      "count": 3
+    }
+  ],
+  "schematic": "createmissiles:paper_chassis"
+}

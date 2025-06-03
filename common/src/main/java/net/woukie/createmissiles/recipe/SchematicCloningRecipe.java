@@ -10,7 +10,7 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.woukie.createmissiles.registry.MissileItems;
-import net.woukie.createmissiles.registry.MissileRecipes;
+import net.woukie.createmissiles.registry.MissileRecipeSerializers;
 import org.jetbrains.annotations.NotNull;
 
 public class SchematicCloningRecipe extends CustomRecipe {
@@ -87,6 +87,6 @@ public class SchematicCloningRecipe extends CustomRecipe {
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
-        return MissileRecipes.SCHEMATIC_CLONING.get();
+        return MissileRecipeSerializers.SCHEMATIC_CLONING.get();
     }
 }

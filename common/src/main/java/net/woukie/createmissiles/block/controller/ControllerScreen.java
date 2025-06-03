@@ -1,25 +1,32 @@
 package net.woukie.createmissiles.block.controller;
 
+import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.LoomScreen;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.item.schematic.WarheadSchematic;
-import net.woukie.createmissiles.missilemanager.parts.Ingredient;
+import net.woukie.createmissiles.missilemanager.parts.ChassisType;
+import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
+import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
+import net.woukie.createmissiles.recipe.MissileIngredient;
+import net.woukie.createmissiles.recipe.MissilePartRecipe;
+import net.woukie.createmissiles.registry.MissilePartTypes;
+import net.woukie.createmissiles.registry.MissileRecipeTypes;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
     private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/controller.png");
@@ -142,28 +149,28 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigator.navigator_title").getString() + ": ", navigator, hasDestination));
         text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigator.schematicator_title").getString() + ": ", schematicator, hasSchematics));
 
-//        Recipies
-        HashMap<Ingredient, Integer> chassisIngredients = getMenu().getChassisIngredientsLeft();
-        HashMap<Ingredient, Integer> thrusterIngredients = getMenu().getThrusterIngredientsLeft();
-        HashMap<Ingredient, Integer> warheadIngredients = getMenu().getWarheadIngredientsLeft();
+//        Recipe
+        var warheadItemsLeft = MissilePartRecipe.getRemainingItems(MissilePartTypes.get(warheadStack), minecraft.level, getMenu().getItems());
+        var chassisItemsLeft = MissilePartRecipe.getRemainingItems(MissilePartTypes.get(chassisStack), minecraft.level, getMenu().getItems());
+        var thrusterItemsLeft = MissilePartRecipe.getRemainingItems(MissilePartTypes.get(thrusterStack), minecraft.level, getMenu().getItems());
 
-        int warheadPercent = getBuildPercentage(warheadIngredients);
-        int chassisPercent = getBuildPercentage(chassisIngredients);
-        int thrusterPercent = getBuildPercentage(thrusterIngredients);
+        int warheadPercent = getBuildPercentage(warheadItemsLeft);
+        int chassisPercent = getBuildPercentage(chassisItemsLeft);
+        int thrusterPercent = getBuildPercentage(thrusterItemsLeft);
 
         text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigator.warhead_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
         text.add(FormattedText.of(warheadPercent + "%\n", Style.EMPTY.withColor(warheadPercent == 0 ? 16711680 : (warheadPercent == 100 ? 65280 : 16776960))));
-        if (warheadIngredients != null) writeIngredientStatus(text, warheadIngredients);
+        if (warheadItemsLeft != null) writeIngredientStatus(text, warheadItemsLeft);
 
         text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigator.chassis_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
         text.add(FormattedText.of(chassisPercent + "%\n", Style.EMPTY.withColor(chassisPercent == 0 ? 16711680 : (chassisPercent == 100 ? 65280 : 16776960))));
-        if (chassisIngredients != null) writeIngredientStatus(text, chassisIngredients);
+        if (chassisItemsLeft != null) writeIngredientStatus(text, chassisItemsLeft);
 
         text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigator.thruster_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
         text.add(FormattedText.of(thrusterPercent + "%\n", Style.EMPTY.withColor(thrusterPercent == 0 ? 16711680 : (thrusterPercent == 100 ? 65280 : 16776960))));
-        if (thrusterIngredients != null) writeIngredientStatus(text, thrusterIngredients);
+        if (thrusterItemsLeft != null) writeIngredientStatus(text, thrusterItemsLeft);
 
-
+//        Render
         gui.pose().pushPose();
         gui.pose().translate(consoleLeft, consoleTop, 0);
         gui.pose().translate(0, currentScrollPosition * 4, 0);
@@ -174,31 +181,41 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         gui.disableScissor();
         gui.pose().popPose();
 
-
-        return launchPad && schematicator && navigator && hasSchematics && hasDestination && warheadPercent == 100 && chassisPercent == 100 && thrusterPercent == 100;
+        return launchPad && schematicator && navigator && hasSchematics && hasDestination && chassisPercent == 100 && warheadPercent == 100 && thrusterPercent == 100;
     }
 
-    private void writeIngredientStatus(List<FormattedText> text, HashMap<Ingredient, Integer> thrusterIngredients) {
-        thrusterIngredients.forEach((ingredient, left) -> {
-            int required = ingredient.getRequiredCount();
+    private void writeIngredientStatus(List<FormattedText> text, Map<MissileIngredient, Integer> ingredients) {
+        ingredients.forEach((ingredient, left) -> {
+            int required = ingredient.getCount();
             int have = required - left;
-            text.add(FormattedText.of("> " + ingredient.name.getString() + " ", Style.EMPTY.withColor(16777215)));
+            List<ItemStack> items = new ArrayList<>(Arrays.stream(ingredient.getItems()).toList());
+
+            for (var tag : ingredient.getTags()) {
+                for(Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
+                    items.add(new ItemStack(holder));
+                }
+            }
+
+            Component[] names = items.stream().map(ItemStack::getDisplayName).toList().toArray(new Component[0]);
+            String name = names[(int)(Util.getMillis() / 1000f) % names.length].getString();
+
+            text.add(FormattedText.of("> " + name.substring(1, name.length() - 1) + " ", Style.EMPTY.withColor(16777215)));
             text.add(FormattedText.of(have + "/" + required + "\n", Style.EMPTY.withColor(have == required ? 65280 : (have == 0 ? 16711680 : 16776960))));
         });
     }
 
-    private int getBuildPercentage(HashMap<Ingredient, Integer> warheadIngredients) {
-        if (warheadIngredients == null) return 0;
+    private int getBuildPercentage(Map<MissileIngredient, Integer> ingredients) {
+        if (ingredients == null) return 0;
 
-        int warheadIngredientsTotal = 0;
-        int warheadIngredientsFulfilled = 0;
-        for (var entry : warheadIngredients.entrySet()) {
-            int required = entry.getKey().getRequiredCount();
-            warheadIngredientsTotal += entry.getKey().getRequiredCount();
-            warheadIngredientsFulfilled += required - entry.getValue();
+        int totalCount = 0;
+        int fulfilled = 0;
+        for (var entry : ingredients.entrySet()) {
+            int required = entry.getKey().getCount();
+            totalCount += entry.getKey().getCount();
+            fulfilled += required - entry.getValue();
         }
 
-        return (int)(((float)warheadIngredientsFulfilled / (float)warheadIngredientsTotal) * 100);
+        return (int)(((float)fulfilled / (float)totalCount) * 100);
     }
 
     private List<FormattedText> formatStatus(String text, boolean online, boolean valid) {

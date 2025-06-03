@@ -1,0 +1,14 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "items": ["minecraft:blaze_rod", "minecraft:magma_cream", "minecraft:red_bed"],
+      "count": 1
+    },
+    {
+      "items": ["minecraft:paper"],
+      "count": 1
+    }
+  ],
+  "schematic": "createmissiles:gunpowder_thruster"
+}
