@@ -4,9 +4,15 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.event.events.common.TickEvent;
 import dev.architectury.registry.registries.RegistrarManager;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.ExperienceOrbRenderer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
+import net.woukie.createmissiles.entity.RocketEntity;
 import net.woukie.createmissiles.missilemanager.Trajectories;
 import net.woukie.createmissiles.registry.*;
 import org.slf4j.Logger;
@@ -31,6 +37,10 @@ public class CreateMissiles {
             Trajectories.get().serverTick(instance);
         });
 
+//        ClientTickEvent.CLIENT_PRE.register(minecraft -> {
+//            minecraft.level.putNonPlayerEntity(1000001, new RocketEntity());
+//        });
+
         MissileBlocks.init();
         MissileBlockEntities.init();
         MissileParts.init();
@@ -41,6 +51,7 @@ public class CreateMissiles {
         MissileRecipeSerializers.init();
         MissileRecipeTypes.init();
         MissileSpriteShifts.init();
+        MissileEntityTypes.init();
     }
 
     public static CreateRegistrate registrate() {
