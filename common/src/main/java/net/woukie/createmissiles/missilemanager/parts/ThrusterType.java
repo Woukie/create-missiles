@@ -2,8 +2,10 @@ package net.woukie.createmissiles.missilemanager.parts;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.woukie.createmissiles.client.MissilePartModel;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class ThrusterType extends MissilePartType {
     public final float thrust;
@@ -19,8 +21,8 @@ public class ThrusterType extends MissilePartType {
         return 96;
     }
 
-    public ThrusterType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, float thrust, float burnRate) {
-        super(displayName, resourceLocation, writeData);
+    public ThrusterType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, float thrust, float burnRate, List<MissilePartModel> models) {
+        super(displayName, resourceLocation, writeData, models);
         this.thrust = thrust;
         this.burnRate = burnRate;
     }

@@ -9,6 +9,8 @@ import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
 import net.woukie.createmissiles.item.schematic.WarheadSchematic;
 import net.woukie.createmissiles.missilemanager.parts.*;
 
+import java.util.ArrayList;
+
 public class MissileParts {
     public static void init() {
         CreateMissiles.LOGGER.info("Registering missile parts for " + CreateMissiles.NAME);
@@ -18,14 +20,16 @@ public class MissileParts {
                 id("tnt_warhead"),
                 null,
                 10,
-                null
+                null,
+                new ArrayList<>()
         ));
 
         MissilePartTypes.register(new ChassisType(
                 Component.translatable("chassis.createmissiles.paper_chassis"),
                 id("paper_chassis"),
                 null,
-                1
+                1,
+                new ArrayList<>()
         ));
 
         MissilePartTypes.register(new ThrusterType(
@@ -33,7 +37,8 @@ public class MissileParts {
                 id("gunpowder_thruster"),
                 null,
                 1,
-                10
+                10,
+                new ArrayList<>()
         ));
 
         CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> WarheadSchematic.createWith(id("tnt_warhead")));

@@ -1,5 +1,6 @@
 package net.woukie.createmissiles.block.controller;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -22,9 +23,8 @@ import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
 import net.woukie.createmissiles.block.navigator.NavigatorBlockEntity;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlockEntity;
-import net.woukie.createmissiles.item.schematic.ChassisSchematic;
-import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
-import net.woukie.createmissiles.item.schematic.WarheadSchematic;
+import net.woukie.createmissiles.entity.MissileEntity;
+import net.woukie.createmissiles.entity.MissileEntityManager;
 import net.woukie.createmissiles.missilemanager.Trajectories;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.TrajectoryData;
@@ -34,14 +34,18 @@ import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.recipe.MissilePartRecipe;
 import net.woukie.createmissiles.registry.MissileBlockEntities;
+import net.woukie.createmissiles.registry.MissileEntityTypes;
 import net.woukie.createmissiles.registry.MissilePartTypes;
 import net.woukie.createmissiles.registry.MissileRecipeTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 // Inventory divided up into 32-slot areas representing thruster, chassis and warhead
 public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     private boolean initialized;
+    private UUID missileEntityTrackingID = UUID.randomUUID();
 
     private final ContainerData dataAccess;
 
@@ -155,6 +159,24 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         }
 
         if (launching) launch();
+
+        var forward = getBlockState().getValue(SchematicatorBlock.FACING).getOpposite();
+        BlockPos entityPosition = MultiblockHelper.findCorner(getBlockPos(), forward, level);
+        if (entityPosition == null) {
+            entityPosition = getBlockPos();
+        } else {
+            entityPosition = entityPosition.relative(forward).relative(forward.getClockWise());
+        }
+
+        MissileEntity entity = MissileEntityManager.get(missileEntityTrackingID);
+        if (entity == null) {
+            entity = new MissileEntity(MissileEntityTypes.MISSILE.get(), getLevel());
+            entity.setControllerID(missileEntityTrackingID);
+            entity.setPos(entityPosition.getX() + 0.5, entityPosition.getY() + 0.5, entityPosition.getZ() + 0.5);
+            getLevel().addFreshEntity(entity);
+        }
+
+        entity.setPos(entityPosition.getX() + 0.5, entityPosition.getY() + 0.5, entityPosition.getZ() + 0.5);
     }
 
     public void launch() {
@@ -254,6 +276,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     public void setRemoved() {
         super.setRemoved();
         ControllerInstanceTracker.remove(this);
+        MissileEntityManager.remove(missileEntityTrackingID);
     }
 
     @Override
@@ -261,12 +284,18 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         super.load(compoundTag);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         ContainerHelper.loadAllItems(compoundTag, this.items);
+        if (compoundTag.hasUUID("TrackingID")) {
+            this.missileEntityTrackingID = compoundTag.getUUID("TrackingID");
+        }
     }
 
     @Override
     protected void saveAdditional(@NotNull CompoundTag compoundTag) {
         super.saveAdditional(compoundTag);
         ContainerHelper.saveAllItems(compoundTag, this.items);
+        if (missileEntityTrackingID != null) {
+            compoundTag.putUUID("TrackingID", missileEntityTrackingID);
+        }
     }
 
     @Override
