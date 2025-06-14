@@ -20,8 +20,8 @@ public class ChassisType extends MissilePartType {
         return 64;
     }
 
-    public ChassisType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, float fuelCapacity, List<MissilePartModel> models) {
-        super(displayName, resourceLocation, writeData, models);
+    public ChassisType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, float fuelCapacity, MissilePartModel model) {
+        super(displayName, resourceLocation, writeData, model);
         this.fuelCapacity = fuelCapacity;
     }
 }

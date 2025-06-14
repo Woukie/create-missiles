@@ -21,8 +21,8 @@ public class ThrusterType extends MissilePartType {
         return 96;
     }
 
-    public ThrusterType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, float thrust, float burnRate, List<MissilePartModel> models) {
-        super(displayName, resourceLocation, writeData, models);
+    public ThrusterType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, float thrust, float burnRate, MissilePartModel model) {
+        super(displayName, resourceLocation, writeData, model);
         this.thrust = thrust;
         this.burnRate = burnRate;
     }

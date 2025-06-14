@@ -33,14 +33,15 @@ import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.recipe.MissilePartRecipe;
-import net.woukie.createmissiles.registry.MissileBlockEntities;
-import net.woukie.createmissiles.registry.MissileEntityTypes;
-import net.woukie.createmissiles.registry.MissilePartTypes;
-import net.woukie.createmissiles.registry.MissileRecipeTypes;
+import net.woukie.createmissiles.registry.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 // Inventory divided up into 32-slot areas representing thruster, chassis and warhead
 public class ControllerBlockEntity extends MissileAbstractBlockEntity {
@@ -50,6 +51,10 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     private final ContainerData dataAccess;
 
     private boolean launching = false;
+
+    private int warheadBuildPercent;
+    private int chassisBuildPercent;
+    private int thrusterBuildPercent;
 
     public ControllerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -101,11 +106,42 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         };
     }
 
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity) MultiblockHelper.findEdgeBlock(
+                ControllerBlockEntity.this,
+                getLevel(),
+                MissileBlockEntities.SCHEMATICATOR.get()
+        );
+
+        warheadBuildPercent = 0;
+        chassisBuildPercent = 0;
+        thrusterBuildPercent = 0;
+
+        if (schematicator == null) return;
+
+        var warheadType = (WarheadType) MissilePartTypes.get(schematicator.getItem(0));
+        var chassisType = (ChassisType) MissilePartTypes.get(schematicator.getItem(1));
+        var thrusterType = (ThrusterType) MissilePartTypes.get(schematicator.getItem(2));
+
+        warheadBuildPercent = MissilePartRecipe.getBuildPercentage(warheadType, level, items);
+        chassisBuildPercent = MissilePartRecipe.getBuildPercentage(chassisType, level, items);
+        thrusterBuildPercent = MissilePartRecipe.getBuildPercentage(thrusterType, level, items);
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        setChanged();
+    }
+
     public void giveItem(@NotNull ItemStack itemStack) {
         MissilePartRecipe recipe = findAcceptingRecipe(itemStack);
         if (recipe == null) return;
         var partType = MissilePartTypes.get(recipe.getSchematic());
         addItemToPartOfInventory(itemStack, partType.getStartSlot(), partType.getEndSlot());
+        setChanged();
     }
 
     private void addItemToPartOfInventory(ItemStack itemStack, int fromIndex, int toIndex) {
@@ -174,6 +210,32 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
             entity.setControllerID(missileEntityTrackingID);
             entity.setPos(entityPosition.getX() + 0.5, entityPosition.getY() + 0.5, entityPosition.getZ() + 0.5);
             getLevel().addFreshEntity(entity);
+        }
+
+        SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity) MultiblockHelper.findEdgeBlock(
+                ControllerBlockEntity.this,
+                getLevel(),
+                MissileBlockEntities.SCHEMATICATOR.get()
+        );
+
+        if (schematicator != null) {
+            var warheadType = (WarheadType) MissilePartTypes.get(schematicator.getItem(0));
+            if (warheadType != null) {
+                entity.setWarheadType(warheadType.resourceLocation);
+                entity.setWarheadBuildPercent(warheadBuildPercent);
+            }
+
+            var chassisType = (ChassisType) MissilePartTypes.get(schematicator.getItem(1));
+            if (chassisType != null) {
+                entity.setChassisType(chassisType.resourceLocation);
+                entity.setChassisBuildPercent(chassisBuildPercent);
+            }
+
+            var thrusterType = (ThrusterType) MissilePartTypes.get(schematicator.getItem(2));
+            if (thrusterType != null) {
+                entity.setThrusterType(thrusterType.resourceLocation);
+                entity.setThrusterBuildPercent(thrusterBuildPercent);
+            }
         }
 
         entity.setPos(entityPosition.getX() + 0.5, entityPosition.getY() + 0.5, entityPosition.getZ() + 0.5);

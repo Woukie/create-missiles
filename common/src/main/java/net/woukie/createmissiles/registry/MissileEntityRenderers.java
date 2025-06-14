@@ -2,7 +2,7 @@ package net.woukie.createmissiles.registry;
 
 import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.client.renderer.MissileRenderer;
+import net.woukie.createmissiles.client.MissileRenderer;
 
 public class MissileEntityRenderers {
     public static void init() {

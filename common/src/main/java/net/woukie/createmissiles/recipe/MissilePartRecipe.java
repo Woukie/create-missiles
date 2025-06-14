@@ -79,13 +79,33 @@ public class MissilePartRecipe implements Recipe<Container> {
         return ingredientStatus;
     }
 
-    public static Map<MissileIngredient, Integer> getRemainingItems(MissilePartType partType, Level level, NonNullList<ItemStack> items) {
+    public static Map<MissileIngredient, Integer> getRemainingItems(MissilePartType partType, Level level, List<ItemStack> items) {
         if (partType == null) return null;
 
         var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(MissileRecipeTypes.MISSILE_PART.get());
         Optional<MissilePartRecipe> recipe = missilePartRecipes.stream().filter(r -> r.getSchematic().equals(partType.resourceLocation)).findFirst();
 
         return recipe.map(missilePartRecipe -> missilePartRecipe.getRemainingItems(items.subList(partType.getStartSlot(), partType.getEndSlot()))).orElse(null);
+    }
+
+    public static int getBuildPercentage(Map<MissileIngredient, Integer> remainingItems) {
+        if (remainingItems == null) return 0;
+
+        int totalCount = 0;
+        int fulfilled = 0;
+        for (var entry : remainingItems.entrySet()) {
+            int required = entry.getKey().getCount();
+            totalCount += entry.getKey().getCount();
+            fulfilled += required - entry.getValue();
+        }
+
+        return (int)(((float)fulfilled / (float)totalCount) * 100);
+    }
+
+    public static int getBuildPercentage(MissilePartType partType, Level level, List<ItemStack> items) {
+        if (partType == null || level == null) return 0;
+        var remainingItems = getRemainingItems(partType, level, items);
+        return getBuildPercentage(remainingItems);
     }
 
     @Override

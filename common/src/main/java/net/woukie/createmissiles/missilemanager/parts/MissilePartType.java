@@ -7,22 +7,21 @@ import net.minecraft.world.Container;
 import net.woukie.createmissiles.client.MissilePartModel;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public abstract class MissilePartType {
     public final Component displayName;
     public final ResourceLocation resourceLocation;
     public final WriteData writeData;
-    public final List<MissilePartModel> models;
+    public final MissilePartModel model;
 
     public abstract int getStartSlot();
     public abstract int getEndSlot();
 
-    protected MissilePartType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, List<MissilePartModel> models) {
+    protected MissilePartType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, MissilePartModel model) {
         this.displayName = displayName;
         this.resourceLocation = resourceLocation;
         this.writeData = writeData;
-        this.models = models;
+        this.model = model;
     }
 
     public interface WriteData {

@@ -1,4 +1,5 @@
 package net.woukie.createmissiles.missilemanager.parts;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.woukie.createmissiles.client.MissilePartModel;
@@ -21,8 +22,8 @@ public class WarheadType extends MissilePartType {
         return 32;
     }
 
-    public WarheadType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, float weight, @Nullable Detonatable detonatable, List<MissilePartModel> models) {
-        super(displayName, resourceLocation, writeData, models);
+    public WarheadType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, float weight, @Nullable Detonatable detonatable, MissilePartModel model) {
+        super(displayName, resourceLocation, writeData, model);
         this.weight = weight;
         this.detonatable = detonatable;
     }

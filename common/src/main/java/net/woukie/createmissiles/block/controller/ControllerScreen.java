@@ -13,20 +13,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.missilemanager.parts.ChassisType;
-import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
-import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
-import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.recipe.MissileIngredient;
 import net.woukie.createmissiles.recipe.MissilePartRecipe;
 import net.woukie.createmissiles.registry.MissilePartTypes;
-import net.woukie.createmissiles.registry.MissileRecipeTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
     private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/controller.png");
@@ -154,9 +147,9 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         var chassisItemsLeft = MissilePartRecipe.getRemainingItems(MissilePartTypes.get(chassisStack), minecraft.level, getMenu().getItems());
         var thrusterItemsLeft = MissilePartRecipe.getRemainingItems(MissilePartTypes.get(thrusterStack), minecraft.level, getMenu().getItems());
 
-        int warheadPercent = getBuildPercentage(warheadItemsLeft);
-        int chassisPercent = getBuildPercentage(chassisItemsLeft);
-        int thrusterPercent = getBuildPercentage(thrusterItemsLeft);
+        int warheadPercent = MissilePartRecipe.getBuildPercentage(warheadItemsLeft);
+        int chassisPercent = MissilePartRecipe.getBuildPercentage(chassisItemsLeft);
+        int thrusterPercent = MissilePartRecipe.getBuildPercentage(thrusterItemsLeft);
 
         text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigator.warhead_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
         text.add(FormattedText.of(warheadPercent + "%\n", Style.EMPTY.withColor(warheadPercent == 0 ? 16711680 : (warheadPercent == 100 ? 65280 : 16776960))));
@@ -202,20 +195,6 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
             text.add(FormattedText.of("> " + name.substring(1, name.length() - 1) + " ", Style.EMPTY.withColor(16777215)));
             text.add(FormattedText.of(have + "/" + required + "\n", Style.EMPTY.withColor(have == required ? 65280 : (have == 0 ? 16711680 : 16776960))));
         });
-    }
-
-    private int getBuildPercentage(Map<MissileIngredient, Integer> ingredients) {
-        if (ingredients == null) return 0;
-
-        int totalCount = 0;
-        int fulfilled = 0;
-        for (var entry : ingredients.entrySet()) {
-            int required = entry.getKey().getCount();
-            totalCount += entry.getKey().getCount();
-            fulfilled += required - entry.getValue();
-        }
-
-        return (int)(((float)fulfilled / (float)totalCount) * 100);
     }
 
     private List<FormattedText> formatStatus(String text, boolean online, boolean valid) {
