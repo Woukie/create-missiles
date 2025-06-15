@@ -2,7 +2,6 @@ package net.woukie.createmissiles.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -11,11 +10,9 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.entity.MissileEntity;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
-import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.registry.MissilePartTypes;
@@ -34,16 +31,17 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
 
         poseStack.pushPose();
 
-        Vector3f offset = new Vector3f(0, 0, 0);
+        Vector3f offset = new Vector3f(0, 5, 0);
 
         if (thrusterType != null) {
             MissilePartModel model = thrusterType.model;
             int stage = (int) ((model.getStageCount() - 1) * (entity.getThrusterBuildPercent() / 100F));
             var attachments = model.getAttachements(stage);
 
-            offset = attachments.get("bottom");
+            offset.add(attachments.get("bottom"));
+            System.out.println(offset);
             renderPart(poseStack, multiBufferSource, i, model, stage, offset);
-            offset = offset.add(attachments.get("top"));
+            offset.add(attachments.get("top"));
         }
 
         if (chassisType != null) {
@@ -51,9 +49,10 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
             int stage = (int) ((model.getStageCount() - 1) * (entity.getChassisBuildPercent() / 100F));
             var attachments = model.getAttachements(stage);
 
-            offset = offset.add(attachments.get("bottom"));
+            offset.add(attachments.get("bottom"));
+            System.out.println(offset);
             renderPart(poseStack, multiBufferSource, i, model, stage, offset);
-            offset = offset.add(attachments.get("top"));
+            offset.add(attachments.get("top"));
         }
 
         if (warheadType != null) {
@@ -61,7 +60,8 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
             int stage = (int) ((model.getStageCount() - 1) * (entity.getWarheadBuildPercent() / 100F));
             var attachments = model.getAttachements(stage);
 
-            offset = offset.add(attachments.get("bottom"));
+            offset.add(attachments.get("bottom"));
+            System.out.println(offset);
             renderPart(poseStack, multiBufferSource, i, model, stage, offset);
         }
 

@@ -192,6 +192,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         if (!initialized && hasLevel()) {
             initialized = true;
             ControllerInstanceTracker.add(this);
+            setChanged();
         }
 
         if (launching) launch();

@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.models.GunpowderThrusterModel;
+import net.woukie.createmissiles.client.models.PaperChassisModel;
 import net.woukie.createmissiles.item.schematic.ChassisSchematic;
 import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
 import net.woukie.createmissiles.item.schematic.WarheadSchematic;
@@ -33,7 +34,7 @@ public class MissileParts {
                 id("paper_chassis"),
                 null,
                 1,
-                new GunpowderThrusterModel()
+                new PaperChassisModel()
         ));
 
         MissilePartTypes.register(new ThrusterType(
