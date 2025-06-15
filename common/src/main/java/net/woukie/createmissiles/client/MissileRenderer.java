@@ -49,7 +49,6 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
             var attachments = model.getAttachements(stage);
 
             offset.add(attachments.get("bottom"));
-            System.out.println(offset);
             renderPart(poseStack, multiBufferSource, i, model, stage, offset);
             offset.add(attachments.get("top"));
         }
@@ -60,7 +59,6 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
             var attachments = model.getAttachements(stage);
 
             offset.add(attachments.get("bottom"));
-            System.out.println(offset);
             renderPart(poseStack, multiBufferSource, i, model, stage, offset);
         }
 
