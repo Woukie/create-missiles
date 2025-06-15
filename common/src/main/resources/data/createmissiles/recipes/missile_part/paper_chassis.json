@@ -3,11 +3,11 @@
   "ingredients": [
     {
       "items": ["minecraft:iron_ingot"],
-      "count": 1
+      "count": 8
     },
     {
       "items": ["minecraft:paper"],
-      "count": 3
+      "count": 16
     }
   ],
   "schematic": "createmissiles:paper_chassis"

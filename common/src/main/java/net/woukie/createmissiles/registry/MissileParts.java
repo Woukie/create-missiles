@@ -1,13 +1,21 @@
 package net.woukie.createmissiles.registry;
 
 import dev.architectury.registry.CreativeTabRegistry;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.client.models.GunpowderThrusterModel;
+import net.woukie.createmissiles.client.models.PaperChassisModel;
+import net.woukie.createmissiles.client.models.TntWarheadModel;
 import net.woukie.createmissiles.item.schematic.ChassisSchematic;
 import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
 import net.woukie.createmissiles.item.schematic.WarheadSchematic;
 import net.woukie.createmissiles.missilemanager.parts.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class MissileParts {
     public static void init() {
@@ -18,14 +26,16 @@ public class MissileParts {
                 id("tnt_warhead"),
                 null,
                 10,
-                null
+                null,
+                new TntWarheadModel()
         ));
 
         MissilePartTypes.register(new ChassisType(
                 Component.translatable("chassis.createmissiles.paper_chassis"),
                 id("paper_chassis"),
                 null,
-                1
+                1,
+                new PaperChassisModel()
         ));
 
         MissilePartTypes.register(new ThrusterType(
@@ -33,7 +43,8 @@ public class MissileParts {
                 id("gunpowder_thruster"),
                 null,
                 1,
-                10
+                10,
+                new GunpowderThrusterModel()
         ));
 
         CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> WarheadSchematic.createWith(id("tnt_warhead")));

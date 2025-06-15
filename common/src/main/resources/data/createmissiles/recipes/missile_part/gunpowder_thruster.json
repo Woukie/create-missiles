@@ -3,11 +3,12 @@
   "ingredients": [
     {
       "items": ["minecraft:blaze_rod", "minecraft:magma_cream", "minecraft:red_bed"],
-      "count": 1
+      "count": 6
     },
     {
       "items": ["minecraft:paper"],
-      "count": 1
+      "tags": ["minecraft:planks"],
+      "count": 4
     }
   ],
   "schematic": "createmissiles:gunpowder_thruster"

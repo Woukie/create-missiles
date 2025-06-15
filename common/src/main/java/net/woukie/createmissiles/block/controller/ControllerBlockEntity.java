@@ -1,5 +1,6 @@
 package net.woukie.createmissiles.block.controller;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -22,9 +23,8 @@ import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
 import net.woukie.createmissiles.block.navigator.NavigatorBlockEntity;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlockEntity;
-import net.woukie.createmissiles.item.schematic.ChassisSchematic;
-import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
-import net.woukie.createmissiles.item.schematic.WarheadSchematic;
+import net.woukie.createmissiles.entity.MissileEntity;
+import net.woukie.createmissiles.entity.MissileEntityManager;
 import net.woukie.createmissiles.missilemanager.Trajectories;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.TrajectoryData;
@@ -33,19 +33,28 @@ import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.recipe.MissilePartRecipe;
-import net.woukie.createmissiles.registry.MissileBlockEntities;
-import net.woukie.createmissiles.registry.MissilePartTypes;
-import net.woukie.createmissiles.registry.MissileRecipeTypes;
+import net.woukie.createmissiles.registry.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 // Inventory divided up into 32-slot areas representing thruster, chassis and warhead
 public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     private boolean initialized;
+    private UUID missileEntityTrackingID = UUID.randomUUID();
 
     private final ContainerData dataAccess;
 
     private boolean launching = false;
+
+    private int warheadBuildPercent;
+    private int chassisBuildPercent;
+    private int thrusterBuildPercent;
 
     public ControllerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -97,11 +106,42 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         };
     }
 
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity) MultiblockHelper.findEdgeBlock(
+                ControllerBlockEntity.this,
+                getLevel(),
+                MissileBlockEntities.SCHEMATICATOR.get()
+        );
+
+        warheadBuildPercent = 0;
+        chassisBuildPercent = 0;
+        thrusterBuildPercent = 0;
+
+        if (schematicator == null) return;
+
+        var warheadType = (WarheadType) MissilePartTypes.get(schematicator.getItem(0));
+        var chassisType = (ChassisType) MissilePartTypes.get(schematicator.getItem(1));
+        var thrusterType = (ThrusterType) MissilePartTypes.get(schematicator.getItem(2));
+
+        warheadBuildPercent = MissilePartRecipe.getBuildPercentage(warheadType, level, items);
+        chassisBuildPercent = MissilePartRecipe.getBuildPercentage(chassisType, level, items);
+        thrusterBuildPercent = MissilePartRecipe.getBuildPercentage(thrusterType, level, items);
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        setChanged();
+    }
+
     public void giveItem(@NotNull ItemStack itemStack) {
         MissilePartRecipe recipe = findAcceptingRecipe(itemStack);
         if (recipe == null) return;
         var partType = MissilePartTypes.get(recipe.getSchematic());
         addItemToPartOfInventory(itemStack, partType.getStartSlot(), partType.getEndSlot());
+        setChanged();
     }
 
     private void addItemToPartOfInventory(ItemStack itemStack, int fromIndex, int toIndex) {
@@ -152,9 +192,54 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         if (!initialized && hasLevel()) {
             initialized = true;
             ControllerInstanceTracker.add(this);
+            setChanged();
         }
 
         if (launching) launch();
+
+        var forward = getBlockState().getValue(SchematicatorBlock.FACING).getOpposite();
+        BlockPos entityPosition = MultiblockHelper.findCorner(getBlockPos(), forward, level);
+        if (entityPosition == null) {
+            entityPosition = getBlockPos();
+        } else {
+            entityPosition = entityPosition.relative(forward).relative(forward.getClockWise());
+        }
+
+        MissileEntity entity = MissileEntityManager.get(missileEntityTrackingID);
+        if (entity == null) {
+            entity = new MissileEntity(MissileEntityTypes.MISSILE.get(), getLevel());
+            entity.setControllerID(missileEntityTrackingID);
+            entity.setPos(entityPosition.getX() + 0.5, entityPosition.getY() + 0.5, entityPosition.getZ() + 0.5);
+            getLevel().addFreshEntity(entity);
+        }
+
+        SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity) MultiblockHelper.findEdgeBlock(
+                ControllerBlockEntity.this,
+                getLevel(),
+                MissileBlockEntities.SCHEMATICATOR.get()
+        );
+
+        if (schematicator != null) {
+            var warheadType = (WarheadType) MissilePartTypes.get(schematicator.getItem(0));
+            if (warheadType != null) {
+                entity.setWarheadType(warheadType.resourceLocation);
+                entity.setWarheadBuildPercent(warheadBuildPercent);
+            }
+
+            var chassisType = (ChassisType) MissilePartTypes.get(schematicator.getItem(1));
+            if (chassisType != null) {
+                entity.setChassisType(chassisType.resourceLocation);
+                entity.setChassisBuildPercent(chassisBuildPercent);
+            }
+
+            var thrusterType = (ThrusterType) MissilePartTypes.get(schematicator.getItem(2));
+            if (thrusterType != null) {
+                entity.setThrusterType(thrusterType.resourceLocation);
+                entity.setThrusterBuildPercent(thrusterBuildPercent);
+            }
+        }
+
+        entity.setPos(entityPosition.getX() + 0.5, entityPosition.getY() + 0.5, entityPosition.getZ() + 0.5);
     }
 
     public void launch() {
@@ -254,6 +339,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     public void setRemoved() {
         super.setRemoved();
         ControllerInstanceTracker.remove(this);
+        MissileEntityManager.remove(missileEntityTrackingID);
     }
 
     @Override
@@ -261,12 +347,18 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         super.load(compoundTag);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         ContainerHelper.loadAllItems(compoundTag, this.items);
+        if (compoundTag.hasUUID("TrackingID")) {
+            this.missileEntityTrackingID = compoundTag.getUUID("TrackingID");
+        }
     }
 
     @Override
     protected void saveAdditional(@NotNull CompoundTag compoundTag) {
         super.saveAdditional(compoundTag);
         ContainerHelper.saveAllItems(compoundTag, this.items);
+        if (missileEntityTrackingID != null) {
+            compoundTag.putUUID("TrackingID", missileEntityTrackingID);
+        }
     }
 
     @Override
