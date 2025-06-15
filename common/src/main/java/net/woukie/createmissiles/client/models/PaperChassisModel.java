@@ -79,7 +79,6 @@ public class PaperChassisModel implements MissilePartModel {
 						.texOffs(5, 0).addBox(6.0F, 2.0F, -8.0F, 2.0F, 22.0F, 2.0F, new CubeDeformation(0.0F))
 						.texOffs(0, 0).addBox(-8.0F, 2.0F, 6.0F, 2.0F, 22.0F, 2.0F, new CubeDeformation(0.0F))
 						.texOffs(8, -8).addBox(6.0F, 2.0F, 6.0F, 2.0F, 22.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
-
 				bb_main.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(1, -7).addBox(-1.0F, -12.0F, -7.0F, 2.0F, 24.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 13.0F, 0.0F, 1.5708F, -1.1781F, -1.5708F));
 				bb_main.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(1, -7).addBox(-1.0F, -12.0F, 6.0F, 2.0F, 24.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 13.0F, 0.0F, 0.0F, 0.0F, 0.3927F));
 				bb_main.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(1, -7).addBox(-1.0F, -12.0F, -7.0F, 2.0F, 24.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 13.0F, 0.0F, 0.0F, 0.0F, -0.3927F));
@@ -88,7 +87,6 @@ public class PaperChassisModel implements MissilePartModel {
 						.texOffs(-10, 0).addBox(-6.0F, 11.0F, 6.0F, 12.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
 						.texOffs(-10, 0).addBox(-6.0F, -13.0F, 6.0F, 12.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
 						.texOffs(-10, 0).addBox(-6.0F, -13.0F, -8.0F, 12.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 13.0F, 0.0F, 0.0F, 1.5708F, 0.0F));
-
 				return partDefinition;
 			},
 			partDefinition -> {
@@ -100,7 +98,6 @@ public class PaperChassisModel implements MissilePartModel {
 						.texOffs(5, 0).addBox(6.0F, 2.0F, -8.0F, 2.0F, 22.0F, 2.0F, new CubeDeformation(0.0F))
 						.texOffs(0, 0).addBox(-8.0F, 2.0F, 6.0F, 2.0F, 22.0F, 2.0F, new CubeDeformation(0.0F))
 						.texOffs(8, -8).addBox(6.0F, 2.0F, 6.0F, 2.0F, 22.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
-
 				bb_main.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(1, -7).addBox(-1.0F, -12.0F, 0.0F, 2.0F, 24.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(7.0F, 13.0F, 0.0F, -1.5708F, -1.1781F, 1.5708F));
 				bb_main.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(1, -7).addBox(-1.0F, -12.0F, 0.0F, 2.0F, 24.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(7.0F, 13.0F, 0.0F, 1.5708F, -1.1781F, -1.5708F));
 				bb_main.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(1, -7).addBox(-1.0F, -12.0F, 0.0F, 2.0F, 24.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-6.0F, 13.0F, 0.0F, -1.5708F, -1.1781F, 1.5708F));
@@ -113,7 +110,6 @@ public class PaperChassisModel implements MissilePartModel {
 						.texOffs(-10, 0).addBox(-6.0F, 11.0F, 6.0F, 12.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
 						.texOffs(-10, 0).addBox(-6.0F, -13.0F, 6.0F, 12.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
 						.texOffs(-10, 0).addBox(-6.0F, -13.0F, -8.0F, 12.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 13.0F, 0.0F, 0.0F, 1.5708F, 0.0F));
-
 				return partDefinition;
 			},
 			partDefinition -> partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create()

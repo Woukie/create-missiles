@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.models.GunpowderThrusterModel;
 import net.woukie.createmissiles.client.models.PaperChassisModel;
+import net.woukie.createmissiles.client.models.TntWarheadModel;
 import net.woukie.createmissiles.item.schematic.ChassisSchematic;
 import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
 import net.woukie.createmissiles.item.schematic.WarheadSchematic;
@@ -26,7 +27,7 @@ public class MissileParts {
                 null,
                 10,
                 null,
-                new GunpowderThrusterModel()
+                new TntWarheadModel()
         ));
 
         MissilePartTypes.register(new ChassisType(
