@@ -24,27 +24,6 @@ public class SchematicatorBlockEntity extends MissileAbstractBlockEntity {
         items = NonNullList.withSize(3, ItemStack.EMPTY);
     }
 
-    public WarheadType getWarhead() {
-        ItemStack item = getItem(0);
-        if (!item.is(Items.WARHEAD_SCHEMATIC.get()))
-            return null;
-        return (WarheadType) PartTypes.get(item);
-    }
-
-    public ChassisType getChassis() {
-        ItemStack item = getItem(1);
-        if (!item.is(Items.CHASSIS_SCHEMATIC.get()))
-            return null;
-        return (ChassisType) PartTypes.get(item);
-    }
-
-    public ThrusterType getThruster() {
-        ItemStack item = getItem(2);
-        if (!item.is(Items.THRUSTER_SCHEMATIC.get()))
-            return null;
-        return (ThrusterType) PartTypes.get(item);
-    }
-
     @Override
     protected @NotNull Component getDefaultName() {
         return Component.translatable("container.createmissiles.schematicator");
