@@ -1,7 +1,6 @@
 package net.woukie.createmissiles.registry;
 
 import dev.architectury.registry.CreativeTabRegistry;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.woukie.createmissiles.CreateMissiles;
@@ -12,10 +11,6 @@ import net.woukie.createmissiles.item.schematic.ChassisSchematic;
 import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
 import net.woukie.createmissiles.item.schematic.WarheadSchematic;
 import net.woukie.createmissiles.missilemanager.parts.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class MissileParts {
     public static void init() {
