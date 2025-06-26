@@ -47,9 +47,12 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
     private boolean launching = false;
 
-    private int warheadBuildPercent;
-    private int chassisBuildPercent;
-    private int thrusterBuildPercent;
+//    Cached variables
+    private SchematicatorBlockEntity schematicator; // tick, can be null
+    private BlockPos cornerLaunchPadPos; // tick, can be null
+    private int warheadBuildPercent; // setChanged
+    private int chassisBuildPercent; // setChanged
+    private int thrusterBuildPercent; // setChanged
 
     public ControllerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -61,16 +64,8 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
                     case 0 -> getBlockPos().getX();
                     case 1 -> getBlockPos().getY();
                     case 2 -> getBlockPos().getZ();
-                    case 3 -> MultiblockHelper.findCorner(
-                            blockPos,
-                            blockState.getValue(SchematicatorBlock.FACING).getOpposite(),
-                            level
-                    ) == null ? 0 : 1;
-                    case 4 -> MultiblockHelper.findEdgeBlock(
-                            ControllerBlockEntity.this,
-                            getLevel(),
-                            BlockEntities.SCHEMATICATOR.get()
-                    ) == null ? 0 : 1;
+                    case 3 -> cornerLaunchPadPos == null ? 0 : 1;
+                    case 4 -> schematicator == null ? 0 : 1;
                     case 5 -> MultiblockHelper.findEdgeBlock(
                             ControllerBlockEntity.this,
                             getLevel(),
@@ -104,11 +99,6 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     @Override
     public void setChanged() {
         super.setChanged();
-        SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity) MultiblockHelper.findEdgeBlock(
-                ControllerBlockEntity.this,
-                getLevel(),
-                BlockEntities.SCHEMATICATOR.get()
-        );
 
         warheadBuildPercent = 0;
         chassisBuildPercent = 0;
@@ -161,10 +151,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     public MissilePartRecipe findAcceptingRecipe(ItemStack itemStack) {
         if (level == null || itemStack.getCount() != 1) return null;
 
-        BlockEntity blockEntity = MultiblockHelper.findEdgeBlock(this, level, BlockEntities.SCHEMATICATOR.get());
-        if (blockEntity == null) return null;
-
-        SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity) blockEntity;
+        if (schematicator == null) return null;
 
         MissilePartType warheadType = PartTypes.get(schematicator.getItem(0));
         MissilePartType chassisType = PartTypes.get(schematicator.getItem(1));
@@ -183,6 +170,22 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         return null;
     }
 
+    public void tick() {
+        Direction facing = getBlockState().getValue(SchematicatorBlock.FACING).getOpposite();
+        cornerLaunchPadPos = MultiblockHelper.findCorner(
+                getBlockPos(),
+                facing,
+                level
+        );
+
+        schematicator = (SchematicatorBlockEntity) MultiblockHelper.findEdgeBlock(
+                cornerLaunchPadPos,
+                facing,
+                getLevel(),
+                BlockEntities.SCHEMATICATOR.get()
+        );
+    }
+
     public void serverTick() {
         if (!initialized && hasLevel()) {
             initialized = true;
@@ -192,11 +195,11 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
         if (launching) launch();
 
-        var forward = getBlockState().getValue(SchematicatorBlock.FACING).getOpposite();
-        BlockPos entityPosition = MultiblockHelper.findCorner(getBlockPos(), forward, level);
-        if (entityPosition == null) {
+        BlockPos entityPosition =  new BlockPos(cornerLaunchPadPos);
+        if (cornerLaunchPadPos == null) {
             entityPosition = getBlockPos();
         } else {
+            var forward = getBlockState().getValue(SchematicatorBlock.FACING).getOpposite();
             entityPosition = entityPosition.relative(forward).relative(forward.getClockWise());
         }
 
@@ -207,12 +210,6 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
             entity.setPos(entityPosition.getX() + 0.5, entityPosition.getY() + 0.5, entityPosition.getZ() + 0.5);
             getLevel().addFreshEntity(entity);
         }
-
-        SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity) MultiblockHelper.findEdgeBlock(
-                ControllerBlockEntity.this,
-                getLevel(),
-                BlockEntities.SCHEMATICATOR.get()
-        );
 
         if (schematicator != null) {
             var warheadType = (WarheadType) PartTypes.get(schematicator.getItem(0));
@@ -251,18 +248,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
         Direction launchPadDirection = this.getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
 
-        BlockPos corner = MultiblockHelper.findCorner(
-                worldPosition,
-                launchPadDirection,
-                getLevel()
-        );
-        if (corner == null) return;
-
-        SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity) MultiblockHelper.findEdgeBlock(
-                ControllerBlockEntity.this,
-                getLevel(),
-                BlockEntities.SCHEMATICATOR.get()
-        );
+        if (cornerLaunchPadPos == null) return;
         if (schematicator == null) return;
 
         NavigatorBlockEntity navigator = (NavigatorBlockEntity) MultiblockHelper.findEdgeBlock(
@@ -364,17 +350,15 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     @Override
     protected @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory) {
         Direction facing = getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
-        BlockPos corner = MultiblockHelper.findCorner(getBlockPos(), facing, getLevel());
 
-        BlockEntity navigator = MultiblockHelper.findEdgeBlock(corner, facing, getLevel(), BlockEntities.NAVIGATOR.get());
-        BlockEntity schematicator = MultiblockHelper.findEdgeBlock(corner, facing, getLevel(), BlockEntities.SCHEMATICATOR.get());
+        BlockEntity navigator = MultiblockHelper.findEdgeBlock(cornerLaunchPadPos, facing, getLevel(), BlockEntities.NAVIGATOR.get());
 
         return new ControllerMenu(
                 id,
                 playerInventory,
                 this,
                 dataAccess,
-                schematicator == null ? new SimpleContainer(3) : (Container) schematicator,
+                schematicator == null ? new SimpleContainer(3) : schematicator,
                 navigator == null ? new SimpleContainer(1) : (Container) navigator
         );
     }
