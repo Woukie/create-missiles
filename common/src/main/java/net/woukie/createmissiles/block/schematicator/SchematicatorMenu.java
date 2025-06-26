@@ -6,10 +6,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.block.MissileAbstractMenu;
-import net.woukie.createmissiles.registry.MissileItems;
+import net.woukie.createmissiles.registry.Items;
 import org.jetbrains.annotations.NotNull;
 
-import static net.woukie.createmissiles.registry.MissileMenus.SCHEMATICATOR;
+import static net.woukie.createmissiles.registry.Menus.SCHEMATICATOR;
 
 public class SchematicatorMenu extends MissileAbstractMenu {
     public SchematicatorMenu(int id, Inventory playerInventory, Container container) {
@@ -18,19 +18,19 @@ public class SchematicatorMenu extends MissileAbstractMenu {
 
         this.addSlot(new Slot(container, 0, 80, 17) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
-                return itemStack.is(MissileItems.WARHEAD_SCHEMATIC.get());
+                return itemStack.is(Items.WARHEAD_SCHEMATIC.get());
             }
         });
 
         this.addSlot(new Slot(container, 1, 61, 53) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
-                return itemStack.is(MissileItems.CHASSIS_SCHEMATIC.get());
+                return itemStack.is(Items.CHASSIS_SCHEMATIC.get());
             }
         });
 
         this.addSlot(new Slot(container, 2, 99, 53) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
-                return itemStack.is(MissileItems.THRUSTER_SCHEMATIC.get());
+                return itemStack.is(Items.THRUSTER_SCHEMATIC.get());
             }
         });
 

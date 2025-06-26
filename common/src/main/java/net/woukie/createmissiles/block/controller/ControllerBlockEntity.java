@@ -1,6 +1,5 @@
 package net.woukie.createmissiles.block.controller;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -37,11 +36,7 @@ import net.woukie.createmissiles.registry.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 // Inventory divided up into 32-slot areas representing thruster, chassis and warhead
 public class ControllerBlockEntity extends MissileAbstractBlockEntity {
@@ -74,12 +69,12 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
                     case 4 -> MultiblockHelper.findEdgeBlock(
                             ControllerBlockEntity.this,
                             getLevel(),
-                            MissileBlockEntities.SCHEMATICATOR.get()
+                            BlockEntities.SCHEMATICATOR.get()
                     ) == null ? 0 : 1;
                     case 5 -> MultiblockHelper.findEdgeBlock(
                             ControllerBlockEntity.this,
                             getLevel(),
-                            MissileBlockEntities.NAVIGATOR.get()
+                            BlockEntities.NAVIGATOR.get()
                     ) == null ? 0 : 1;
                     case 6 -> {
                         Direction launchPadDirection = getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
@@ -112,7 +107,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity) MultiblockHelper.findEdgeBlock(
                 ControllerBlockEntity.this,
                 getLevel(),
-                MissileBlockEntities.SCHEMATICATOR.get()
+                BlockEntities.SCHEMATICATOR.get()
         );
 
         warheadBuildPercent = 0;
@@ -121,9 +116,9 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
         if (schematicator == null) return;
 
-        var warheadType = (WarheadType) MissilePartTypes.get(schematicator.getItem(0));
-        var chassisType = (ChassisType) MissilePartTypes.get(schematicator.getItem(1));
-        var thrusterType = (ThrusterType) MissilePartTypes.get(schematicator.getItem(2));
+        var warheadType = (WarheadType) PartTypes.get(schematicator.getItem(0));
+        var chassisType = (ChassisType) PartTypes.get(schematicator.getItem(1));
+        var thrusterType = (ThrusterType) PartTypes.get(schematicator.getItem(2));
 
         warheadBuildPercent = MissilePartRecipe.getBuildPercentage(warheadType, level, items);
         chassisBuildPercent = MissilePartRecipe.getBuildPercentage(chassisType, level, items);
@@ -139,7 +134,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     public void giveItem(@NotNull ItemStack itemStack) {
         MissilePartRecipe recipe = findAcceptingRecipe(itemStack);
         if (recipe == null) return;
-        var partType = MissilePartTypes.get(recipe.getSchematic());
+        var partType = PartTypes.get(recipe.getSchematic());
         addItemToPartOfInventory(itemStack, partType.getStartSlot(), partType.getEndSlot());
         setChanged();
     }
@@ -166,16 +161,16 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     public MissilePartRecipe findAcceptingRecipe(ItemStack itemStack) {
         if (level == null || itemStack.getCount() != 1) return null;
 
-        BlockEntity blockEntity = MultiblockHelper.findEdgeBlock(this, level, MissileBlockEntities.SCHEMATICATOR.get());
+        BlockEntity blockEntity = MultiblockHelper.findEdgeBlock(this, level, BlockEntities.SCHEMATICATOR.get());
         if (blockEntity == null) return null;
 
         SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity) blockEntity;
 
-        MissilePartType warheadType = MissilePartTypes.get(schematicator.getItem(0));
-        MissilePartType chassisType = MissilePartTypes.get(schematicator.getItem(1));
-        MissilePartType thrusterType = MissilePartTypes.get(schematicator.getItem(2));
+        MissilePartType warheadType = PartTypes.get(schematicator.getItem(0));
+        MissilePartType chassisType = PartTypes.get(schematicator.getItem(1));
+        MissilePartType thrusterType = PartTypes.get(schematicator.getItem(2));
 
-        var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(MissileRecipeTypes.MISSILE_PART.get());
+        var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MISSILE_PART.get());
         for (var recipe : missilePartRecipes) {
             var schematic = recipe.getSchematic();
             if (((warheadType != null && schematic.equals(warheadType.resourceLocation)) ||
@@ -207,7 +202,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
         MissileEntity entity = MissileEntityManager.get(missileEntityTrackingID);
         if (entity == null) {
-            entity = new MissileEntity(MissileEntityTypes.MISSILE.get(), getLevel());
+            entity = new MissileEntity(EntityTypes.MISSILE.get(), getLevel());
             entity.setControllerID(missileEntityTrackingID);
             entity.setPos(entityPosition.getX() + 0.5, entityPosition.getY() + 0.5, entityPosition.getZ() + 0.5);
             getLevel().addFreshEntity(entity);
@@ -216,23 +211,23 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity) MultiblockHelper.findEdgeBlock(
                 ControllerBlockEntity.this,
                 getLevel(),
-                MissileBlockEntities.SCHEMATICATOR.get()
+                BlockEntities.SCHEMATICATOR.get()
         );
 
         if (schematicator != null) {
-            var warheadType = (WarheadType) MissilePartTypes.get(schematicator.getItem(0));
+            var warheadType = (WarheadType) PartTypes.get(schematicator.getItem(0));
             if (warheadType != null) {
                 entity.setWarheadType(warheadType.resourceLocation);
                 entity.setWarheadBuildPercent(warheadBuildPercent);
             }
 
-            var chassisType = (ChassisType) MissilePartTypes.get(schematicator.getItem(1));
+            var chassisType = (ChassisType) PartTypes.get(schematicator.getItem(1));
             if (chassisType != null) {
                 entity.setChassisType(chassisType.resourceLocation);
                 entity.setChassisBuildPercent(chassisBuildPercent);
             }
 
-            var thrusterType = (ThrusterType) MissilePartTypes.get(schematicator.getItem(2));
+            var thrusterType = (ThrusterType) PartTypes.get(schematicator.getItem(2));
             if (thrusterType != null) {
                 entity.setThrusterType(thrusterType.resourceLocation);
                 entity.setThrusterBuildPercent(thrusterBuildPercent);
@@ -266,14 +261,14 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         SchematicatorBlockEntity schematicator = (SchematicatorBlockEntity) MultiblockHelper.findEdgeBlock(
                 ControllerBlockEntity.this,
                 getLevel(),
-                MissileBlockEntities.SCHEMATICATOR.get()
+                BlockEntities.SCHEMATICATOR.get()
         );
         if (schematicator == null) return;
 
         NavigatorBlockEntity navigator = (NavigatorBlockEntity) MultiblockHelper.findEdgeBlock(
                 ControllerBlockEntity.this,
                 getLevel(),
-                MissileBlockEntities.NAVIGATOR.get()
+                BlockEntities.NAVIGATOR.get()
         );
         if (navigator == null) return;
 
@@ -281,13 +276,13 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         MissilePartRecipe chassisRecipe = null;
         MissilePartRecipe thrusterRecipe = null;
 
-        MissilePartType warheadType = MissilePartTypes.get(schematicator.getItem(0));
-        MissilePartType chassisType = MissilePartTypes.get(schematicator.getItem(1));
-        MissilePartType thrusterType = MissilePartTypes.get(schematicator.getItem(2));
+        MissilePartType warheadType = PartTypes.get(schematicator.getItem(0));
+        MissilePartType chassisType = PartTypes.get(schematicator.getItem(1));
+        MissilePartType thrusterType = PartTypes.get(schematicator.getItem(2));
 
         if (warheadType == null || chassisType == null || thrusterType == null) return;
 
-        var missilePartRecipes = getLevel().getRecipeManager().getAllRecipesFor(MissileRecipeTypes.MISSILE_PART.get());
+        var missilePartRecipes = getLevel().getRecipeManager().getAllRecipesFor(RecipeTypes.MISSILE_PART.get());
         for (var recipe : missilePartRecipes) {
             if (!(warheadRecipe == null || chassisRecipe == null || thrusterRecipe == null)) break;
             var schematic = recipe.getSchematic();
@@ -371,8 +366,8 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         Direction facing = getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
         BlockPos corner = MultiblockHelper.findCorner(getBlockPos(), facing, getLevel());
 
-        BlockEntity navigator = MultiblockHelper.findEdgeBlock(corner, facing, getLevel(), MissileBlockEntities.NAVIGATOR.get());
-        BlockEntity schematicator = MultiblockHelper.findEdgeBlock(corner, facing, getLevel(), MissileBlockEntities.SCHEMATICATOR.get());
+        BlockEntity navigator = MultiblockHelper.findEdgeBlock(corner, facing, getLevel(), BlockEntities.NAVIGATOR.get());
+        BlockEntity schematicator = MultiblockHelper.findEdgeBlock(corner, facing, getLevel(), BlockEntities.SCHEMATICATOR.get());
 
         return new ControllerMenu(
                 id,

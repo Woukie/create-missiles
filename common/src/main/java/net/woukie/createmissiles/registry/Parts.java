@@ -12,11 +12,11 @@ import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
 import net.woukie.createmissiles.item.schematic.WarheadSchematic;
 import net.woukie.createmissiles.missilemanager.parts.*;
 
-public class MissileParts {
+public class Parts {
     public static void init() {
         CreateMissiles.LOGGER.info("Registering missile parts for " + CreateMissiles.NAME);
 
-        MissilePartTypes.register(new WarheadType(
+        PartTypes.register(new WarheadType(
                 Component.translatable("warheads.createmissiles.tnt_warhead"),
                 id("tnt_warhead"),
                 null,
@@ -25,7 +25,7 @@ public class MissileParts {
                 new TntWarheadModel()
         ));
 
-        MissilePartTypes.register(new ChassisType(
+        PartTypes.register(new ChassisType(
                 Component.translatable("chassis.createmissiles.paper_chassis"),
                 id("paper_chassis"),
                 null,
@@ -33,7 +33,7 @@ public class MissileParts {
                 new PaperChassisModel()
         ));
 
-        MissilePartTypes.register(new ThrusterType(
+        PartTypes.register(new ThrusterType(
                 Component.translatable("thrusters.createmissiles.gunpowder_thruster"),
                 id("gunpowder_thruster"),
                 null,
@@ -42,9 +42,9 @@ public class MissileParts {
                 new GunpowderThrusterModel()
         ));
 
-        CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> WarheadSchematic.createWith(id("tnt_warhead")));
-        CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> ChassisSchematic.createWith(id("paper_chassis")));
-        CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> ThrusterSchematic.createWith(id("gunpowder_thruster")));
+        CreativeTabRegistry.appendStack(CreativeMenus.SCHEMATICS_TAB, () -> WarheadSchematic.createWith(id("tnt_warhead")));
+        CreativeTabRegistry.appendStack(CreativeMenus.SCHEMATICS_TAB, () -> ChassisSchematic.createWith(id("paper_chassis")));
+        CreativeTabRegistry.appendStack(CreativeMenus.SCHEMATICS_TAB, () -> ThrusterSchematic.createWith(id("gunpowder_thruster")));
     }
 
     private static ResourceLocation id(String id) {

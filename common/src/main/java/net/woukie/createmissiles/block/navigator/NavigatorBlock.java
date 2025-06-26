@@ -13,7 +13,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.woukie.createmissiles.block.MissileAbstractBlock;
-import net.woukie.createmissiles.registry.MissileBlockEntities;
+import net.woukie.createmissiles.registry.BlockEntities;
 import org.jetbrains.annotations.NotNull;
 
 public class NavigatorBlock extends MissileAbstractBlock<NavigatorBlockEntity> {
@@ -29,7 +29,7 @@ public class NavigatorBlock extends MissileAbstractBlock<NavigatorBlockEntity> {
 
     @Override
     public BlockEntityType<? extends NavigatorBlockEntity> getBlockEntityType() {
-        return MissileBlockEntities.NAVIGATOR.get();
+        return BlockEntities.NAVIGATOR.get();
     }
 
     @Override

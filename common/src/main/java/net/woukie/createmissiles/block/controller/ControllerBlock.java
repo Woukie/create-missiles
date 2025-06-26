@@ -3,7 +3,6 @@ package net.woukie.createmissiles.block.controller;
 import com.simibubi.create.foundation.utility.VoxelShaper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.WorldlyContainerHolder;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -14,7 +13,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.woukie.createmissiles.block.MissileAbstractBlock;
-import net.woukie.createmissiles.registry.MissileBlockEntities;
+import net.woukie.createmissiles.registry.BlockEntities;
 import org.jetbrains.annotations.NotNull;
 
 public class ControllerBlock extends MissileAbstractBlock<ControllerBlockEntity> {
@@ -30,7 +29,7 @@ public class ControllerBlock extends MissileAbstractBlock<ControllerBlockEntity>
 
     @Override
     public BlockEntityType<? extends ControllerBlockEntity> getBlockEntityType() {
-        return MissileBlockEntities.CONTROLLER.get();
+        return BlockEntities.CONTROLLER.get();
     }
 
     @Override

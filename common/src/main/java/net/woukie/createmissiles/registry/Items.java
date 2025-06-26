@@ -8,7 +8,7 @@ import net.woukie.createmissiles.item.schematic.ChassisSchematic;
 import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
 import net.woukie.createmissiles.item.schematic.WarheadSchematic;
 
-public class MissileItems {
+public class Items {
     private static final CreateRegistrate REGISTRATE = CreateMissiles.registrate();
 
     public static ItemEntry<WarheadSchematic> WARHEAD_SCHEMATIC = REGISTRATE

@@ -10,7 +10,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.woukie.createmissiles.block.MissileAbstractBlock;
-import net.woukie.createmissiles.registry.MissileBlockEntities;
+import net.woukie.createmissiles.registry.BlockEntities;
 import org.jetbrains.annotations.NotNull;
 
 public class SchematicatorBlock extends MissileAbstractBlock<SchematicatorBlockEntity> {
@@ -26,7 +26,7 @@ public class SchematicatorBlock extends MissileAbstractBlock<SchematicatorBlockE
 
     @Override
     public BlockEntityType<? extends SchematicatorBlockEntity> getBlockEntityType() {
-        return MissileBlockEntities.SCHEMATICATOR.get();
+        return BlockEntities.SCHEMATICATOR.get();
     }
 
     @Override

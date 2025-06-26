@@ -9,7 +9,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.CreateMissiles;
 
-public class MissileCreativeMenu {
+public class CreativeMenus {
     public static final DeferredRegister<CreativeModeTab> TABS =
             DeferredRegister.create(CreateMissiles.MOD_ID, Registries.CREATIVE_MODE_TAB);
 
@@ -17,7 +17,7 @@ public class MissileCreativeMenu {
             "createmissiles",
             () -> CreativeTabRegistry.create(
                     Component.translatable("category.createmissiles"),
-                    () -> new ItemStack(MissileBlocks.CONTROLLER.get())
+                    () -> new ItemStack(Blocks.CONTROLLER.get())
             )
     );
 

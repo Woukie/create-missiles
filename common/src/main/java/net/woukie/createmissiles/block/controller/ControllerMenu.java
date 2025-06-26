@@ -8,24 +8,13 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.woukie.createmissiles.block.InvisibleSlot;
 import net.woukie.createmissiles.block.MissileAbstractMenu;
 import net.woukie.createmissiles.block.controller.messages.ClickLaunchMessage;
-import net.woukie.createmissiles.item.schematic.ChassisSchematic;
-import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
-import net.woukie.createmissiles.item.schematic.WarheadSchematic;
-import net.woukie.createmissiles.missilemanager.parts.ChassisType;
-import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
-import net.woukie.createmissiles.missilemanager.parts.WarheadType;
-import net.woukie.createmissiles.registry.MissileItems;
-import net.woukie.createmissiles.registry.MissilePackets;
+import net.woukie.createmissiles.registry.Items;
+import net.woukie.createmissiles.registry.Packets;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import static net.woukie.createmissiles.registry.MissileMenus.CONTROLLER;
+import static net.woukie.createmissiles.registry.Menus.CONTROLLER;
 
 public class ControllerMenu extends MissileAbstractMenu {
     Container schematicatorContainer;
@@ -67,7 +56,7 @@ public class ControllerMenu extends MissileAbstractMenu {
     }
 
     public void clickLaunch() {
-        MissilePackets.CONTROLLER_CLICK_LAUNCH.sendToServer(new ClickLaunchMessage(getPosition()));
+        Packets.CONTROLLER_CLICK_LAUNCH.sendToServer(new ClickLaunchMessage(getPosition()));
     }
 
     public BlockPos getPosition() {
@@ -97,7 +86,7 @@ public class ControllerMenu extends MissileAbstractMenu {
     public ItemStack getWarhead() {
         if (!schematicatorExists()) return null;
         ItemStack item = schematicatorContainer.getItem(0);
-        if (!item.is(MissileItems.WARHEAD_SCHEMATIC.get()))
+        if (!item.is(Items.WARHEAD_SCHEMATIC.get()))
             return null;
         return item;
     }
@@ -105,7 +94,7 @@ public class ControllerMenu extends MissileAbstractMenu {
     public ItemStack getChassis() {
         if (!schematicatorExists()) return null;
         ItemStack item = schematicatorContainer.getItem(1);
-        if (!item.is(MissileItems.CHASSIS_SCHEMATIC.get()))
+        if (!item.is(Items.CHASSIS_SCHEMATIC.get()))
             return null;
         return item;
     }
@@ -113,7 +102,7 @@ public class ControllerMenu extends MissileAbstractMenu {
     public ItemStack getThruster() {
         if (!schematicatorExists()) return null;
         ItemStack item = schematicatorContainer.getItem(2);
-        if (!item.is(MissileItems.THRUSTER_SCHEMATIC.get()))
+        if (!item.is(Items.THRUSTER_SCHEMATIC.get()))
             return null;
         return item;
     }
@@ -122,6 +111,6 @@ public class ControllerMenu extends MissileAbstractMenu {
         if(!navigatorExists()) return false;
         ItemStack item = navigatorContainer.getItem(0);
 //        Has mapCrosshair positions by default, and map data is null in rare situations (need the level to get map data anyway which is annoying to get here, don't want to offload this method to block entity)
-        return item.is(Items.FILLED_MAP);
+        return item.is(net.minecraft.world.item.Items.FILLED_MAP);
     }
 }

@@ -12,8 +12,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.woukie.createmissiles.block.controller.ControllerScreen;
 import net.woukie.createmissiles.block.navigator.NavigatorScreen;
 import net.woukie.createmissiles.block.schematicator.SchematicatorScreen;
-import net.woukie.createmissiles.registry.MissileEntityRenderers;
-import net.woukie.createmissiles.registry.MissileMenus;
+import net.woukie.createmissiles.registry.EntityRenderers;
+import net.woukie.createmissiles.registry.Menus;
 
 @Mod(CreateMissiles.MOD_ID)
 public class CreateMissilesForge {
@@ -22,7 +22,7 @@ public class CreateMissilesForge {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.addListener(this::clientSetup);
 
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> MissileEntityRenderers::init);
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> EntityRenderers::init);
 
         EventBuses.registerModEventBus(CreateMissiles.MOD_ID, eventBus);
 
@@ -32,8 +32,8 @@ public class CreateMissilesForge {
     }
 
     private void clientSetup (final FMLClientSetupEvent event) {
-        MenuRegistry.registerScreenFactory(MissileMenus.CONTROLLER.get(), ControllerScreen::new);
-        MenuRegistry.registerScreenFactory(MissileMenus.NAVIGATOR.get(), NavigatorScreen::new);
-        MenuRegistry.registerScreenFactory(MissileMenus.SCHEMATICATOR.get(), SchematicatorScreen::new);
+        MenuRegistry.registerScreenFactory(Menus.CONTROLLER.get(), ControllerScreen::new);
+        MenuRegistry.registerScreenFactory(Menus.NAVIGATOR.get(), NavigatorScreen::new);
+        MenuRegistry.registerScreenFactory(Menus.SCHEMATICATOR.get(), SchematicatorScreen::new);
     }
 }

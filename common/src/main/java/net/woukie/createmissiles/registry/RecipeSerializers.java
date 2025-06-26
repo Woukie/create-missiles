@@ -9,7 +9,7 @@ import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.recipe.MissilePartRecipe;
 import net.woukie.createmissiles.recipe.SchematicCloningRecipe;
 
-public class MissileRecipeSerializers {
+public class RecipeSerializers {
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(CreateMissiles.MOD_ID, Registries.RECIPE_SERIALIZER);
 
     public static final RegistrySupplier<SimpleCraftingRecipeSerializer<?>> SCHEMATIC_CLONING = RECIPE_SERIALIZERS.register("schematic_cloning", () -> new SimpleCraftingRecipeSerializer<>(SchematicCloningRecipe::new));

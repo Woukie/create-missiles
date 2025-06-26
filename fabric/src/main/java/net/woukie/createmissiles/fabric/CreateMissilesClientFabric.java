@@ -5,16 +5,16 @@ import net.fabricmc.api.ClientModInitializer;
 import net.woukie.createmissiles.block.controller.ControllerScreen;
 import net.woukie.createmissiles.block.navigator.NavigatorScreen;
 import net.woukie.createmissiles.block.schematicator.SchematicatorScreen;
-import net.woukie.createmissiles.registry.MissileEntityRenderers;
-import net.woukie.createmissiles.registry.MissileMenus;
+import net.woukie.createmissiles.registry.EntityRenderers;
+import net.woukie.createmissiles.registry.Menus;
 
 public class CreateMissilesClientFabric implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        MenuRegistry.registerScreenFactory(MissileMenus.CONTROLLER.get(), ControllerScreen::new);
-        MenuRegistry.registerScreenFactory(MissileMenus.SCHEMATICATOR.get(), SchematicatorScreen::new);
-        MenuRegistry.registerScreenFactory(MissileMenus.NAVIGATOR.get(), NavigatorScreen::new);
+        MenuRegistry.registerScreenFactory(Menus.CONTROLLER.get(), ControllerScreen::new);
+        MenuRegistry.registerScreenFactory(Menus.SCHEMATICATOR.get(), SchematicatorScreen::new);
+        MenuRegistry.registerScreenFactory(Menus.NAVIGATOR.get(), NavigatorScreen::new);
 
-        MissileEntityRenderers.init();
+        EntityRenderers.init();
     }
 }

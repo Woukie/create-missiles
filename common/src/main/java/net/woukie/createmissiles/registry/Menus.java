@@ -14,7 +14,7 @@ import net.woukie.createmissiles.block.schematicator.SchematicatorMenu;
 import static net.woukie.createmissiles.CreateMissiles.MANAGER;
 import static net.woukie.createmissiles.CreateMissiles.MOD_ID;
 
-public class MissileMenus {
+public class Menus {
     public static final Registrar<MenuType<?>> MENUS = MANAGER.get().get(Registries.MENU);
 
     public static final RegistrySupplier<MenuType<ControllerMenu>> CONTROLLER = MENUS.register(

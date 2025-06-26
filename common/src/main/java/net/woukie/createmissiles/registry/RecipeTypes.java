@@ -8,7 +8,7 @@ import net.minecraft.world.item.crafting.*;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.recipe.MissilePartRecipe;
 
-public class MissileRecipeTypes {
+public class RecipeTypes {
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(CreateMissiles.MOD_ID, Registries.RECIPE_TYPE);
 
     public static final RegistrySupplier<RecipeType<MissilePartRecipe>> MISSILE_PART = RECIPE_TYPES.register(

@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.recipe.MissileIngredient;
 import net.woukie.createmissiles.recipe.MissilePartRecipe;
-import net.woukie.createmissiles.registry.MissilePartTypes;
+import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -143,9 +143,9 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigator.schematicator_title").getString() + ": ", schematicator, hasSchematics));
 
 //        Recipe
-        var warheadItemsLeft = MissilePartRecipe.getRemainingItems(MissilePartTypes.get(warheadStack), minecraft.level, getMenu().getItems());
-        var chassisItemsLeft = MissilePartRecipe.getRemainingItems(MissilePartTypes.get(chassisStack), minecraft.level, getMenu().getItems());
-        var thrusterItemsLeft = MissilePartRecipe.getRemainingItems(MissilePartTypes.get(thrusterStack), minecraft.level, getMenu().getItems());
+        var warheadItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(warheadStack), minecraft.level, getMenu().getItems());
+        var chassisItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(chassisStack), minecraft.level, getMenu().getItems());
+        var thrusterItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(thrusterStack), minecraft.level, getMenu().getItems());
 
         int warheadPercent = MissilePartRecipe.getBuildPercentage(warheadItemsLeft);
         int chassisPercent = MissilePartRecipe.getBuildPercentage(chassisItemsLeft);

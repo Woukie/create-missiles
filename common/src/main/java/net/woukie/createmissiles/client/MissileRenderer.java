@@ -15,7 +15,7 @@ import net.woukie.createmissiles.entity.MissileEntity;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
-import net.woukie.createmissiles.registry.MissilePartTypes;
+import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
@@ -25,9 +25,9 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
     }
 
     public void render(@NotNull MissileEntity entity, float f, float g, @NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i) {
-        WarheadType warheadType = (WarheadType) MissilePartTypes.get(entity.getWarheadType());
-        ChassisType chassisType = (ChassisType) MissilePartTypes.get(entity.getChassisType());
-        ThrusterType thrusterType = (ThrusterType) MissilePartTypes.get(entity.getThrusterType());
+        WarheadType warheadType = (WarheadType) PartTypes.get(entity.getWarheadType());
+        ChassisType chassisType = (ChassisType) PartTypes.get(entity.getChassisType());
+        ThrusterType thrusterType = (ThrusterType) PartTypes.get(entity.getThrusterType());
 
         poseStack.pushPose();
 

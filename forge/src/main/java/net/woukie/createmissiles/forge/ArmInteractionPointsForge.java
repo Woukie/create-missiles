@@ -14,7 +14,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
-import net.woukie.createmissiles.registry.MissileBlocks;
+import net.woukie.createmissiles.registry.Blocks;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
@@ -35,7 +35,7 @@ public class ArmInteractionPointsForge {
 
         @Override
         public boolean canCreatePoint(Level level, BlockPos pos, BlockState state) {
-            return state.is(MissileBlocks.LAUNCH_PAD.get());
+            return state.is(Blocks.LAUNCH_PAD.get());
         }
 
         @Override
@@ -64,7 +64,7 @@ public class ArmInteractionPointsForge {
         }
 
         protected WorldlyContainer getContainer() {
-            LaunchPadBlock block = MissileBlocks.LAUNCH_PAD.get();
+            LaunchPadBlock block = Blocks.LAUNCH_PAD.get();
             return block.getContainer(cachedState, level, pos);
         }
 
@@ -72,7 +72,7 @@ public class ArmInteractionPointsForge {
         public ItemStack insert(ItemStack stack, boolean simulate) {
             ItemStack remainder = stack.copy();
             ItemStack toInsert = remainder.split(1);
-            LaunchPadBlock block = MissileBlocks.LAUNCH_PAD.get();
+            LaunchPadBlock block = Blocks.LAUNCH_PAD.get();
             WorldlyContainer container = block.getContainer(cachedState, level, pos);
                 if (!container.canPlaceItemThroughFace(0, toInsert, Direction.UP)) {
                 return stack;

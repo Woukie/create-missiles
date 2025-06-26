@@ -21,7 +21,7 @@ import net.woukie.createmissiles.MultiblockHelper;
 import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlockEntity;
-import net.woukie.createmissiles.registry.MissileBlockEntities;
+import net.woukie.createmissiles.registry.BlockEntities;
 import org.jetbrains.annotations.NotNull;
 
 public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
@@ -61,7 +61,7 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
                     case 11 -> MultiblockHelper.findEdgeBlock(
                             NavigatorBlockEntity.this,
                             getLevel(),
-                            MissileBlockEntities.SCHEMATICATOR.get()
+                            BlockEntities.SCHEMATICATOR.get()
                     ) == null ? 0 : 1;
                     default -> 0;
                 };
@@ -171,7 +171,7 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
 
         Direction facing = getBlockState().getValue(SchematicatorBlock.FACING).getOpposite();
         BlockPos corner = MultiblockHelper.findCorner(getBlockPos(), facing, level);
-        BlockEntity schematicator = MultiblockHelper.findEdgeBlock(corner, facing, getLevel(), MissileBlockEntities.SCHEMATICATOR.get());
+        BlockEntity schematicator = MultiblockHelper.findEdgeBlock(corner, facing, getLevel(), BlockEntities.SCHEMATICATOR.get());
 
         return new NavigatorMenu(id, playerInventory, this, this.dataAccess, schematicator == null ? new SimpleContainer(3) : (SchematicatorBlockEntity)schematicator);
     }

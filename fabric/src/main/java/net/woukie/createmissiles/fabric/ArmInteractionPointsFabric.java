@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
-import net.woukie.createmissiles.registry.MissileBlocks;
+import net.woukie.createmissiles.registry.Blocks;
 
 import java.util.function.Function;
 
@@ -34,7 +34,7 @@ public class ArmInteractionPointsFabric {
 
         @Override
         public boolean canCreatePoint(Level level, BlockPos pos, BlockState state) {
-            return state.is(MissileBlocks.LAUNCH_PAD.get());
+            return state.is(Blocks.LAUNCH_PAD.get());
         }
 
         @Override
@@ -52,7 +52,7 @@ public class ArmInteractionPointsFabric {
         public ItemStack insert(ItemStack stack, TransactionContext ctx) {
             ItemStack remainder = stack.copy();
             ItemStack toInsert = remainder.split(1);
-            LaunchPadBlock block = MissileBlocks.LAUNCH_PAD.get();
+            LaunchPadBlock block = Blocks.LAUNCH_PAD.get();
             WorldlyContainer container = block.getContainer(cachedState, level, pos);
             if (!container.canPlaceItemThroughFace(0, toInsert, Direction.UP)) {
                 return stack;

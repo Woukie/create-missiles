@@ -16,7 +16,7 @@ import net.woukie.createmissiles.block.launchpad.LaunchPadCTBehaviour;
 import net.woukie.createmissiles.block.navigator.NavigatorBlock;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
 
-public class MissileBlocks {
+public class Blocks {
     private static final CreateRegistrate REGISTRATE = CreateMissiles.registrate();
 
     public static final BlockEntry<LaunchPadBlock> LAUNCH_PAD = REGISTRATE
@@ -57,9 +57,9 @@ public class MissileBlocks {
     public static void init() {
         CreateMissiles.LOGGER.info("Registering blocks for " + CreateMissiles.NAME);
 
-        CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> new ItemStack(LAUNCH_PAD));
-        CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> new ItemStack(SCHEMATICATOR));
-        CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> new ItemStack(CONTROLLER));
-        CreativeTabRegistry.appendStack(MissileCreativeMenu.SCHEMATICS_TAB, () -> new ItemStack(NAVIGATOR));
+        CreativeTabRegistry.appendStack(CreativeMenus.SCHEMATICS_TAB, () -> new ItemStack(LAUNCH_PAD));
+        CreativeTabRegistry.appendStack(CreativeMenus.SCHEMATICS_TAB, () -> new ItemStack(SCHEMATICATOR));
+        CreativeTabRegistry.appendStack(CreativeMenus.SCHEMATICS_TAB, () -> new ItemStack(CONTROLLER));
+        CreativeTabRegistry.appendStack(CreativeMenus.SCHEMATICS_TAB, () -> new ItemStack(NAVIGATOR));
     }
 }

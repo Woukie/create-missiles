@@ -9,7 +9,7 @@ import net.minecraft.world.entity.MobCategory;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.entity.MissileEntity;
 
-public class MissileEntityTypes {
+public class EntityTypes {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
             DeferredRegister.create(CreateMissiles.MOD_ID, Registries.ENTITY_TYPE);
 

@@ -7,7 +7,7 @@ import net.woukie.createmissiles.block.controller.messages.ClickLaunchMessage;
 import net.woukie.createmissiles.block.navigator.messages.ClickFuelMessage;
 import net.woukie.createmissiles.block.navigator.messages.ClickMapMessage;
 
-public class MissilePackets {
+public class Packets {
     public static final NetworkChannel NAVIGATOR_CLICK_MAP = NetworkChannel.create(new ResourceLocation(CreateMissiles.MOD_ID, "navigator_click_map"));
     public static final NetworkChannel NAVIGATOR_CLICK_FUEL = NetworkChannel.create(new ResourceLocation(CreateMissiles.MOD_ID, "navigator_click_fuel"));
     public static final NetworkChannel CONTROLLER_CLICK_LAUNCH = NetworkChannel.create(new ResourceLocation(CreateMissiles.MOD_ID, "controller_click_launch"));

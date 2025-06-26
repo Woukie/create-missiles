@@ -11,14 +11,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
-import net.woukie.createmissiles.item.schematic.ChassisSchematic;
-import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
-import net.woukie.createmissiles.item.schematic.WarheadSchematic;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
-import net.woukie.createmissiles.registry.MissileItems;
-import net.woukie.createmissiles.registry.MissilePartTypes;
+import net.woukie.createmissiles.registry.Items;
+import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class SchematicatorBlockEntity extends MissileAbstractBlockEntity {
@@ -29,23 +26,23 @@ public class SchematicatorBlockEntity extends MissileAbstractBlockEntity {
 
     public WarheadType getWarhead() {
         ItemStack item = getItem(0);
-        if (!item.is(MissileItems.WARHEAD_SCHEMATIC.get()))
+        if (!item.is(Items.WARHEAD_SCHEMATIC.get()))
             return null;
-        return (WarheadType) MissilePartTypes.get(item);
+        return (WarheadType) PartTypes.get(item);
     }
 
     public ChassisType getChassis() {
         ItemStack item = getItem(1);
-        if (!item.is(MissileItems.CHASSIS_SCHEMATIC.get()))
+        if (!item.is(Items.CHASSIS_SCHEMATIC.get()))
             return null;
-        return (ChassisType) MissilePartTypes.get(item);
+        return (ChassisType) PartTypes.get(item);
     }
 
     public ThrusterType getThruster() {
         ItemStack item = getItem(2);
-        if (!item.is(MissileItems.THRUSTER_SCHEMATIC.get()))
+        if (!item.is(Items.THRUSTER_SCHEMATIC.get()))
             return null;
-        return (ThrusterType) MissilePartTypes.get(item);
+        return (ThrusterType) PartTypes.get(item);
     }
 
     @Override
@@ -61,11 +58,11 @@ public class SchematicatorBlockEntity extends MissileAbstractBlockEntity {
     @Override
     public boolean canPlaceItem(int i, @NotNull ItemStack itemStack) {
         if (i == 0) {
-            return itemStack.is(MissileItems.WARHEAD_SCHEMATIC.get());
+            return itemStack.is(Items.WARHEAD_SCHEMATIC.get());
         } else if (i == 1) {
-            return itemStack.is(MissileItems.CHASSIS_SCHEMATIC.get());
+            return itemStack.is(Items.CHASSIS_SCHEMATIC.get());
         } else if (i == 2) {
-            return itemStack.is(MissileItems.THRUSTER_SCHEMATIC.get());
+            return itemStack.is(Items.THRUSTER_SCHEMATIC.get());
         }
 
         return false;

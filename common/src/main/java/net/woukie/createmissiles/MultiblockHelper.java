@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.woukie.createmissiles.block.controller.ControllerBlockEntity;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
-import net.woukie.createmissiles.registry.MissileBlockEntities;
+import net.woukie.createmissiles.registry.BlockEntities;
 
 public class MultiblockHelper {
     public static BlockPos findCorner(BlockPos origin, Direction facing, Level level) {
@@ -91,7 +91,7 @@ public class MultiblockHelper {
                 if (!(level.getBlockEntity(corner.relative(forward, -x).relative(right, -z)) instanceof LaunchPadBlockEntity))
                     return null;
 
-        BlockEntity blockEntity = MultiblockHelper.findEdgeBlock(corner, forward.getOpposite(), level, MissileBlockEntities.CONTROLLER.get());
+        BlockEntity blockEntity = MultiblockHelper.findEdgeBlock(corner, forward.getOpposite(), level, BlockEntities.CONTROLLER.get());
         if (blockEntity != null)
             return (ControllerBlockEntity)blockEntity;
 

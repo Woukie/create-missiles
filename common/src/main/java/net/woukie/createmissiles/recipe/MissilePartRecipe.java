@@ -2,7 +2,6 @@ package net.woukie.createmissiles.recipe;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
@@ -13,9 +12,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
-import net.woukie.createmissiles.registry.MissilePartTypes;
-import net.woukie.createmissiles.registry.MissileRecipeSerializers;
-import net.woukie.createmissiles.registry.MissileRecipeTypes;
+import net.woukie.createmissiles.registry.PartTypes;
+import net.woukie.createmissiles.registry.RecipeSerializers;
+import net.woukie.createmissiles.registry.RecipeTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ public class MissilePartRecipe implements Recipe<Container> {
     public boolean itemComplements(ItemStack itemStack, Container container) {
         List<ItemStack> stacksLeft = new ArrayList<>();
 
-        var partType = MissilePartTypes.get(schematic);
+        var partType = PartTypes.get(schematic);
 
         for (int i = partType.getStartSlot(); i < partType.getEndSlot(); i++)
             if (!container.getItem(i).isEmpty())
@@ -82,7 +81,7 @@ public class MissilePartRecipe implements Recipe<Container> {
     public static Map<MissileIngredient, Integer> getRemainingItems(MissilePartType partType, Level level, List<ItemStack> items) {
         if (partType == null) return null;
 
-        var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(MissileRecipeTypes.MISSILE_PART.get());
+        var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MISSILE_PART.get());
         Optional<MissilePartRecipe> recipe = missilePartRecipes.stream().filter(r -> r.getSchematic().equals(partType.resourceLocation)).findFirst();
 
         return recipe.map(missilePartRecipe -> missilePartRecipe.getRemainingItems(items.subList(partType.getStartSlot(), partType.getEndSlot()))).orElse(null);
@@ -112,7 +111,7 @@ public class MissilePartRecipe implements Recipe<Container> {
     public boolean matches(@NotNull Container container, @NotNull Level level) {
         List<ItemStack> containerStacks = new ArrayList<>();
 
-        var partType = MissilePartTypes.get(schematic);
+        var partType = PartTypes.get(schematic);
 
         for (int i = partType.getStartSlot(); i < partType.getEndSlot(); i++)
             if (!container.getItem(i).isEmpty())
@@ -149,12 +148,12 @@ public class MissilePartRecipe implements Recipe<Container> {
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
-        return MissileRecipeSerializers.MISSILE_PART.get();
+        return RecipeSerializers.MISSILE_PART.get();
     }
 
     @Override
     public @NotNull RecipeType<?> getType() {
-        return MissileRecipeTypes.MISSILE_PART.get();
+        return RecipeTypes.MISSILE_PART.get();
     }
 
     public static class Serializer implements RecipeSerializer<MissilePartRecipe> {

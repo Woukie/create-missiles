@@ -35,17 +35,17 @@ public class CreateMissiles {
 //            minecraft.level.putNonPlayerEntity(1000001, new RocketEntity());
 //        });
 
-        MissileBlocks.init();
-        MissileBlockEntities.init();
-        MissileParts.init();
-        MissileItems.init();
-        MissileCreativeMenu.init();
-        MissilePackets.init();
-        MissileMenus.init();
-        MissileRecipeSerializers.init();
-        MissileRecipeTypes.init();
-        MissileSpriteShifts.init();
-        MissileEntityTypes.init();
+        Blocks.init();
+        BlockEntities.init();
+        Parts.init();
+        Items.init();
+        CreativeMenus.init();
+        Packets.init();
+        Menus.init();
+        RecipeSerializers.init();
+        RecipeTypes.init();
+        SpriteShifts.init();
+        EntityTypes.init();
     }
 
     public static CreateRegistrate registrate() {

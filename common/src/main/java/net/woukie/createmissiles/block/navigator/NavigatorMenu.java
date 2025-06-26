@@ -8,16 +8,15 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.woukie.createmissiles.block.InvisibleSlot;
 import net.woukie.createmissiles.block.MissileAbstractMenu;
 import net.woukie.createmissiles.block.navigator.messages.ClickFuelMessage;
 import net.woukie.createmissiles.block.navigator.messages.ClickMapMessage;
-import net.woukie.createmissiles.registry.MissileItems;
-import net.woukie.createmissiles.registry.MissilePackets;
+import net.woukie.createmissiles.registry.Items;
+import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;
 
-import static net.woukie.createmissiles.registry.MissileMenus.NAVIGATOR;
+import static net.woukie.createmissiles.registry.Menus.NAVIGATOR;
 
 public class NavigatorMenu extends MissileAbstractMenu {
     private final ContainerData containerData;
@@ -32,7 +31,7 @@ public class NavigatorMenu extends MissileAbstractMenu {
 
         this.addSlot(new Slot(container, 0, 66, 35) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
-                return itemStack.is(Items.FILLED_MAP);
+                return itemStack.is(net.minecraft.world.item.Items.FILLED_MAP);
             }
         });
 
@@ -100,7 +99,7 @@ public class NavigatorMenu extends MissileAbstractMenu {
 
     public ItemStack getMap() {
         ItemStack item = getSlot(0).getItem();
-        if (!item.is(Items.FILLED_MAP))
+        if (!item.is(net.minecraft.world.item.Items.FILLED_MAP))
             return null;
         return item;
     }
@@ -108,7 +107,7 @@ public class NavigatorMenu extends MissileAbstractMenu {
     public ItemStack getWarhead() {
         if (!schematicatorExists()) return null;
         ItemStack item = schematicatorContainer.getItem(0);
-        if (!item.is(MissileItems.WARHEAD_SCHEMATIC.get()))
+        if (!item.is(Items.WARHEAD_SCHEMATIC.get()))
             return null;
         return item;
     }
@@ -116,7 +115,7 @@ public class NavigatorMenu extends MissileAbstractMenu {
     public ItemStack getChassis() {
         if (!schematicatorExists()) return null;
         ItemStack item = schematicatorContainer.getItem(1);
-        if(!item.is(MissileItems.CHASSIS_SCHEMATIC.get()))
+        if(!item.is(Items.CHASSIS_SCHEMATIC.get()))
             return null;
         return item;
     }
@@ -124,16 +123,16 @@ public class NavigatorMenu extends MissileAbstractMenu {
     public ItemStack getThruster() {
         if (!schematicatorExists()) return null;
         ItemStack item = schematicatorContainer.getItem(2);
-        if (!item.is(MissileItems.THRUSTER_SCHEMATIC.get()))
+        if (!item.is(Items.THRUSTER_SCHEMATIC.get()))
             return null;
         return item;
     }
 
     public void clickMap(double x, double z) {
-        MissilePackets.NAVIGATOR_CLICK_MAP.sendToServer(new ClickMapMessage(getSource(), x, z));
+        Packets.NAVIGATOR_CLICK_MAP.sendToServer(new ClickMapMessage(getSource(), x, z));
     }
 
     public void clickFuel(double fuelClickZ) {
-        MissilePackets.NAVIGATOR_CLICK_FUEL.sendToServer(new ClickFuelMessage(getSource(), fuelClickZ));
+        Packets.NAVIGATOR_CLICK_FUEL.sendToServer(new ClickFuelMessage(getSource(), fuelClickZ));
     }
 }

@@ -22,7 +22,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.woukie.createmissiles.MultiblockHelper;
 import net.woukie.createmissiles.block.controller.ControllerBlockEntity;
-import net.woukie.createmissiles.registry.MissileBlockEntities;
+import net.woukie.createmissiles.registry.BlockEntities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,7 +48,7 @@ public class LaunchPadBlock extends KineticBlock implements IBE<LaunchPadBlockEn
 
     @Override
     public BlockEntityType<? extends LaunchPadBlockEntity> getBlockEntityType() {
-        return MissileBlockEntities.LAUNCH_PAD.get();
+        return BlockEntities.LAUNCH_PAD.get();
     }
 
     @Override
