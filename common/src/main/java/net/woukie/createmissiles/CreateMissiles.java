@@ -31,13 +31,9 @@ public class CreateMissiles {
             Trajectories.get().serverTick(instance);
         });
 
-//        ClientTickEvent.CLIENT_PRE.register(minecraft -> {
-//            minecraft.level.putNonPlayerEntity(1000001, new RocketEntity());
-//        });
-
         Blocks.init();
         BlockEntities.init();
-        Parts.init();
+        PartTypes.init();
         Items.init();
         CreativeMenus.init();
         Packets.init();
