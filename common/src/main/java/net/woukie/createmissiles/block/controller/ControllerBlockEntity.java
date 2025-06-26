@@ -3,6 +3,7 @@ package net.woukie.createmissiles.block.controller;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
@@ -31,12 +32,16 @@ import net.woukie.createmissiles.missilemanager.parts.ChassisType;
 import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
+import net.woukie.createmissiles.recipe.MissileIngredient;
 import net.woukie.createmissiles.recipe.MissilePartRecipe;
 import net.woukie.createmissiles.registry.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 // Inventory divided up into 32-slot areas representing thruster, chassis and warhead
 public class ControllerBlockEntity extends MissileAbstractBlockEntity {
@@ -47,12 +52,12 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
     private boolean launching = false;
 
-//    Cached variables
-    private SchematicatorBlockEntity schematicator; // tick, can be null
-    private BlockPos cornerLaunchPadPos; // tick, can be null
-    private int warheadBuildPercent; // setChanged
-    private int chassisBuildPercent; // setChanged
-    private int thrusterBuildPercent; // setChanged
+//    Cached variables, all updated on tick or serverTick
+    private SchematicatorBlockEntity schematicator;
+    private BlockPos cornerLaunchPadPos;
+    private int warheadBuildPercent;
+    private int chassisBuildPercent;
+    private int thrusterBuildPercent;
 
     public ControllerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -96,37 +101,11 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         };
     }
 
-    @Override
-    public void setChanged() {
-        super.setChanged();
-
-        warheadBuildPercent = 0;
-        chassisBuildPercent = 0;
-        thrusterBuildPercent = 0;
-
-        if (schematicator == null) return;
-
-        var warheadType = (WarheadType) PartTypes.get(schematicator.getItem(0));
-        var chassisType = (ChassisType) PartTypes.get(schematicator.getItem(1));
-        var thrusterType = (ThrusterType) PartTypes.get(schematicator.getItem(2));
-
-        warheadBuildPercent = MissilePartRecipe.getBuildPercentage(warheadType, level, items);
-        chassisBuildPercent = MissilePartRecipe.getBuildPercentage(chassisType, level, items);
-        thrusterBuildPercent = MissilePartRecipe.getBuildPercentage(thrusterType, level, items);
-    }
-
-    @Override
-    public void clearContent() {
-        super.clearContent();
-        setChanged();
-    }
-
     public void giveItem(@NotNull ItemStack itemStack) {
         MissilePartRecipe recipe = findAcceptingRecipe(itemStack);
         if (recipe == null) return;
         var partType = PartTypes.get(recipe.getSchematic());
         addItemToPartOfInventory(itemStack, partType.getStartSlot(), partType.getEndSlot());
-        setChanged();
     }
 
     private void addItemToPartOfInventory(ItemStack itemStack, int fromIndex, int toIndex) {
@@ -184,23 +163,34 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
                 getLevel(),
                 BlockEntities.SCHEMATICATOR.get()
         );
+
+        warheadBuildPercent = 0;
+        chassisBuildPercent = 0;
+        thrusterBuildPercent = 0;
+
+        if (schematicator == null) return;
+
+        var warheadType = PartTypes.get(schematicator.getItem(0));
+        var chassisType = PartTypes.get(schematicator.getItem(1));
+        var thrusterType = PartTypes.get(schematicator.getItem(2));
+
+        warheadBuildPercent = MissilePartRecipe.getBuildPercentage(warheadType, level, items);
+        chassisBuildPercent = MissilePartRecipe.getBuildPercentage(chassisType, level, items);
+        thrusterBuildPercent = MissilePartRecipe.getBuildPercentage(thrusterType, level, items);
     }
 
     public void serverTick() {
         if (!initialized && hasLevel()) {
             initialized = true;
             ControllerInstanceTracker.add(this);
-            setChanged();
         }
 
         if (launching) launch();
 
-        BlockPos entityPosition =  new BlockPos(cornerLaunchPadPos);
-        if (cornerLaunchPadPos == null) {
-            entityPosition = getBlockPos();
-        } else {
+        BlockPos entityPosition = getBlockPos();
+        if (cornerLaunchPadPos != null) {
             var forward = getBlockState().getValue(SchematicatorBlock.FACING).getOpposite();
-            entityPosition = entityPosition.relative(forward).relative(forward.getClockWise());
+            entityPosition = new BlockPos(cornerLaunchPadPos).relative(forward).relative(forward.getClockWise());
         }
 
         MissileEntity entity = MissileEntityManager.get(missileEntityTrackingID);
@@ -213,19 +203,63 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
         if (schematicator != null) {
             ItemStack warheadItem = schematicator.getItem(0);
-            entity.setWarheadBuildPercent(warheadBuildPercent);
-            entity.setWarheadType(warheadItem.isEmpty() ? null : PartTypes.get(warheadItem).resourceLocation);
-
             ItemStack chassisItem = schematicator.getItem(1);
-            entity.setChassisBuildPercent(chassisBuildPercent);
-            entity.setChassisType(chassisItem.isEmpty() ? null : PartTypes.get(chassisItem).resourceLocation);
-
             ItemStack thrusterItem = schematicator.getItem(2);
+
+            MissilePartType warheadType = PartTypes.get(warheadItem);
+            MissilePartType chassisType = PartTypes.get(chassisItem);
+            MissilePartType thrusterType = PartTypes.get(thrusterItem);
+
+            entity.setWarheadBuildPercent(warheadBuildPercent);
+            entity.setWarheadType(warheadType == null ? null : warheadType.resourceLocation);
+
+            entity.setChassisBuildPercent(chassisBuildPercent);
+            entity.setChassisType(chassisType == null ? null : chassisType.resourceLocation);
+
             entity.setThrusterBuildPercent(thrusterBuildPercent);
-            entity.setThrusterType(thrusterItem.isEmpty() ? null : PartTypes.get(thrusterItem).resourceLocation);
+            entity.setThrusterType(thrusterType == null ? null : thrusterType.resourceLocation);
+
+            ejectNotNeededItems(warheadType, 0, 32);
+            ejectNotNeededItems(chassisType, 32, 64);
+            ejectNotNeededItems(thrusterType, 64, 96);
         }
 
         entity.setPos(entityPosition.getX() + 0.5, entityPosition.getY() + 0.5, entityPosition.getZ() + 0.5);
+    }
+
+    private void ejectNotNeededItems(@Nullable MissilePartType partType, int backupStartSlot, int backupEndSlot) {
+        if (level == null) return;
+        var recipe = MissilePartRecipe.fromResourceLocation(level, partType == null ? null : partType.resourceLocation);
+
+        Map<MissileIngredient, Integer> ingredientStatus = recipe.map(a -> a.getMissileIngredients().stream().collect(Collectors.toMap(b -> b, MissileIngredient::getCount))).orElseGet(Map::of);
+
+        int start = partType != null ? partType.getStartSlot() : backupStartSlot;
+        int end = partType != null ? partType.getEndSlot() : backupEndSlot;
+
+        for (int i = start; i < end; i++) {
+            ItemStack item = getItem(i);
+            if (item.isEmpty()) continue;
+
+            Optional<MissileIngredient> matchingIngredient = ingredientStatus.keySet().stream().filter(a -> a.test(item)).findFirst();
+            if (matchingIngredient.isPresent()) {
+                int itemCount = item.getCount();
+                int requiredCount = ingredientStatus.get(matchingIngredient.get());
+
+                if (itemCount < requiredCount) {
+                    ingredientStatus.put(matchingIngredient.get(), requiredCount - itemCount);
+                } else {
+                    if (itemCount != requiredCount) {
+                        ItemStack ejected = item.split(requiredCount - itemCount);
+                        DefaultDispenseItemBehavior.spawnItem(level, ejected, 1, Direction.UP, getBlockPos().getCenter());
+                    }
+
+                    ingredientStatus.remove(matchingIngredient.get());
+                }
+            } else {
+
+                DefaultDispenseItemBehavior.spawnItem(level, item.copyAndClear(), 1, Direction.UP, getBlockPos().getCenter());
+            }
+        }
     }
 
     public void launch() {

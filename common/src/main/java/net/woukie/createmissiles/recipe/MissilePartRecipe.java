@@ -78,12 +78,14 @@ public class MissilePartRecipe implements Recipe<Container> {
         return ingredientStatus;
     }
 
+    public static Optional<MissilePartRecipe> fromResourceLocation(Level level, ResourceLocation resourceLocation) {
+        var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MISSILE_PART.get());
+        return missilePartRecipes.stream().filter(r -> r.getSchematic().equals(resourceLocation)).findFirst();
+    }
+
     public static Map<MissileIngredient, Integer> getRemainingItems(MissilePartType partType, Level level, List<ItemStack> items) {
         if (partType == null) return null;
-
-        var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MISSILE_PART.get());
-        Optional<MissilePartRecipe> recipe = missilePartRecipes.stream().filter(r -> r.getSchematic().equals(partType.resourceLocation)).findFirst();
-
+        Optional<MissilePartRecipe> recipe = fromResourceLocation(level, partType.resourceLocation);
         return recipe.map(missilePartRecipe -> missilePartRecipe.getRemainingItems(items.subList(partType.getStartSlot(), partType.getEndSlot()))).orElse(null);
     }
 
