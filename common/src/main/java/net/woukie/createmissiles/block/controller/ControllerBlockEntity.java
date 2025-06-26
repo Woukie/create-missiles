@@ -212,23 +212,17 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         }
 
         if (schematicator != null) {
-            var warheadType = (WarheadType) PartTypes.get(schematicator.getItem(0));
-            if (warheadType != null) {
-                entity.setWarheadType(warheadType.resourceLocation);
-                entity.setWarheadBuildPercent(warheadBuildPercent);
-            }
+            ItemStack warheadItem = schematicator.getItem(0);
+            entity.setWarheadBuildPercent(warheadBuildPercent);
+            entity.setWarheadType(warheadItem.isEmpty() ? null : PartTypes.get(warheadItem).resourceLocation);
 
-            var chassisType = (ChassisType) PartTypes.get(schematicator.getItem(1));
-            if (chassisType != null) {
-                entity.setChassisType(chassisType.resourceLocation);
-                entity.setChassisBuildPercent(chassisBuildPercent);
-            }
+            ItemStack chassisItem = schematicator.getItem(1);
+            entity.setChassisBuildPercent(chassisBuildPercent);
+            entity.setChassisType(chassisItem.isEmpty() ? null : PartTypes.get(chassisItem).resourceLocation);
 
-            var thrusterType = (ThrusterType) PartTypes.get(schematicator.getItem(2));
-            if (thrusterType != null) {
-                entity.setThrusterType(thrusterType.resourceLocation);
-                entity.setThrusterBuildPercent(thrusterBuildPercent);
-            }
+            ItemStack thrusterItem = schematicator.getItem(2);
+            entity.setThrusterBuildPercent(thrusterBuildPercent);
+            entity.setThrusterType(thrusterItem.isEmpty() ? null : PartTypes.get(thrusterItem).resourceLocation);
         }
 
         entity.setPos(entityPosition.getX() + 0.5, entityPosition.getY() + 0.5, entityPosition.getZ() + 0.5);
