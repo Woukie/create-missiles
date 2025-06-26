@@ -42,7 +42,7 @@ public class ControllerBlock extends MissileAbstractBlock<ControllerBlockEntity>
         return (level1, blockPos, blockState1, blockEntity) -> {
             if (blockEntity instanceof ControllerBlockEntity navigator) {
                 navigator.tick();
-                if (level1.getServer() != null)
+                if (level1.getServer() != null && !level1.isClientSide)
                     navigator.serverTick();
             }
         };

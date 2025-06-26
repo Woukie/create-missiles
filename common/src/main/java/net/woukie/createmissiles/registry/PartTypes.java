@@ -33,8 +33,7 @@ public class PartTypes {
     public static MissilePartType get(ItemStack itemStack) {
         if (itemStack == null) return null;
         CompoundTag compoundTag = itemStack.getTag();
-        if (compoundTag == null)
-            return null;
+        if (compoundTag == null) return null;
         return PartTypes.get(new ResourceLocation(compoundTag.getString("PartType")));
     }
 
