@@ -1,18 +1,23 @@
 package net.woukie.createmissiles.missilemanager;
 
+import net.minecraft.core.Rotations;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.phys.Vec3;
+import net.woukie.createmissiles.entity.MissileEntity;
+import net.woukie.createmissiles.entity.MissileEntityManager;
+import net.woukie.createmissiles.registry.EntityTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Trajectories extends SavedData {
-    public final List<Trajectory> activeTrajectories = new ArrayList<>();
+    private final List<Trajectory> activeTrajectories = new ArrayList<>();
 
     private static Trajectories instance;
     private static boolean initialized = false;
@@ -40,20 +45,51 @@ public class Trajectories extends SavedData {
         activeTrajectories.forEach(trajectory -> {
             trajectory.incrementTick();
             Vec3 p = trajectory.getPosition(trajectory.getData().getTick() * 0.05F);
+
+            UUID id = trajectory.getData().missileEntityTrackingID;
+            MissileEntity entity = MissileEntityManager.getEntity(id);
+            if (entity == null) {
+                entity = new MissileEntity(EntityTypes.MISSILE.get(), server.overworld());
+                entity.setOwnerId(id);
+                entity.setPos(p.x + 0.5, p.y + 0.5, p.z + 0.5);
+                entity.setWarheadBuildPercent(100);
+                entity.setChassisBuildPercent(100);
+                entity.setThrusterBuildPercent(100);
+                entity.setWarheadType(trajectory.getData().warheadType.resourceLocation);
+                entity.setChassisType(trajectory.getData().chassisType.resourceLocation);
+                entity.setThrusterType(trajectory.getData().thrusterType.resourceLocation);
+                server.overworld().addFreshEntity(entity);
+            }
+
+            entity.setPos(p.x + 0.5, p.y + 0.5, p.z + 0.5);
+            var rotation = entity.getRotation();
+            entity.setRotation(new Rotations(rotation.getX() + 0.05f, rotation.getY() + 0.05f, rotation.getZ() + 0.05f));
+
             server.overworld().sendParticles(ParticleTypes.CLOUD, p.x + 0.5, p.y + 0.5, p.z + 0.5, 5, 0, 0, 0, 0);
             if (trajectory.shouldExplode()) {
-                trajectory.explode();
+                trajectory.explode(server);
             }
         });
 
-        activeTrajectories.removeIf(Trajectory::shouldExplode);
+        activeTrajectories.removeIf(trajectory -> {
+            var remove = trajectory.shouldExplode();
+            if (remove) MissileEntityManager.removeOwner(trajectory.getData().missileEntityTrackingID);
+            return remove;
+        });
+
         setDirty();
+    }
+
+    public void launch(Trajectory trajectory) {
+        activeTrajectories.add(trajectory);
+        MissileEntityManager.addOwner(trajectory.getData().missileEntityTrackingID);
+//        start rendering da ting
     }
 
     public Trajectories load(CompoundTag nbt) {
         for (int i = 0; i < nbt.size(); i++) {
             CompoundTag trajectory = nbt.getCompound("" + i);
-            activeTrajectories.add(new Trajectory(new TrajectoryData(trajectory, server)));
+            launch(new Trajectory(new TrajectoryData(trajectory, server)));
         }
 
         return this;

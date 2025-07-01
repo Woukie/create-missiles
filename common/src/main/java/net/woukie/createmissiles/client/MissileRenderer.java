@@ -24,6 +24,9 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
         super(context);
     }
 
+//    private int lastTick = 0;
+//    private long lastTickTime = System.currentTimeMillis();
+
     public void render(@NotNull MissileEntity entity, float f, float g, @NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i) {
         WarheadType warheadType = (WarheadType) PartTypes.get(entity.getWarheadType());
         ChassisType chassisType = (ChassisType) PartTypes.get(entity.getChassisType());
@@ -33,46 +36,41 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
 
         Vector3f offset = new Vector3f(0, 5, 0);
 
-        if (thrusterType != null) {
-            MissilePartModel model = thrusterType.model;
-            int stage = (int) ((model.getStageCount() - 1) * (entity.getThrusterBuildPercent() / 100F));
-            var attachments = model.getAttachements(stage);
+        if (thrusterType != null)
+            renderPart(entity, poseStack, multiBufferSource, i, thrusterType.model, entity.getThrusterBuildPercent(), offset);
 
-            offset.add(attachments.get("bottom"));
-            renderPart(poseStack, multiBufferSource, i, model, stage, offset);
-            offset.add(attachments.get("top"));
-        }
+        if (chassisType != null)
+            renderPart(entity, poseStack, multiBufferSource, i, chassisType.model, entity.getChassisBuildPercent(), offset);
 
-        if (chassisType != null) {
-            MissilePartModel model = chassisType.model;
-            int stage = (int) ((model.getStageCount() - 1) * (entity.getChassisBuildPercent() / 100F));
-            var attachments = model.getAttachements(stage);
+        if (warheadType != null)
+            renderPart(entity, poseStack, multiBufferSource, i, warheadType.model, entity.getWarheadBuildPercent(), offset);
 
-            offset.add(attachments.get("bottom"));
-            renderPart(poseStack, multiBufferSource, i, model, stage, offset);
-            offset.add(attachments.get("top"));
-        }
-
-        if (warheadType != null) {
-            MissilePartModel model = warheadType.model;
-            int stage = (int) ((model.getStageCount() - 1) * (entity.getWarheadBuildPercent() / 100F));
-            var attachments = model.getAttachements(stage);
-
-            offset.add(attachments.get("bottom"));
-            renderPart(poseStack, multiBufferSource, i, model, stage, offset);
-        }
+//        if (lastTick != entity.tickCount) {
+//            lastTick = entity.tickCount;
+//            lastTickTime = System.currentTimeMillis();
+//        }
 
         poseStack.popPose();
 
         super.render(entity, f, g, poseStack, multiBufferSource, i);
     }
 
-    private static void renderPart(@NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i, MissilePartModel model, int stage, Vector3f offset) {
+    private static void renderPart(@NotNull MissileEntity entity, @NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i, MissilePartModel model, int buildPercent, Vector3f offset) {
+        int stage = (int) ((model.getStageCount() - 1) * (buildPercent / 100F));
+
+        var attachments = model.getAttachements(stage);
+        offset.add(attachments.get("bottom"));
+
         LayerDefinition warheadModelLayerDefinition = model.getLayerDefinition(stage);
-        ModelPart warheadPart = warheadModelLayerDefinition.bakeRoot();
-        warheadPart.offsetPos(offset);
+        ModelPart part = warheadModelLayerDefinition.bakeRoot();
+        var rotation = entity.getRotation();
+        part.offsetRotation(new Vector3f(rotation.getX(), rotation.getY(), rotation.getZ()));
+        Vector3f vec = new Vector3f(offset);
+        part.offsetPos(vec.rotateX(rotation.getX()).rotateY(rotation.getY()).rotateZ(rotation.getZ()));
         VertexConsumer warheadVertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(model.getTexture(stage)));
-        warheadPart.render(poseStack, warheadVertexConsumer, i, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        part.render(poseStack, warheadVertexConsumer, i, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+
+        if (attachments.containsKey("top")) offset.add(attachments.get("top"));
     }
 
     public @NotNull ResourceLocation getTextureLocation(@NotNull MissileEntity entity) {

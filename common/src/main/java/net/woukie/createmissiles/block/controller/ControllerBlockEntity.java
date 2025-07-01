@@ -183,6 +183,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         if (!initialized && hasLevel()) {
             initialized = true;
             ControllerInstanceTracker.add(this);
+            MissileEntityManager.addOwner(missileEntityTrackingID);
         }
 
         if (launching) launch();
@@ -193,10 +194,10 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
             entityPosition = new BlockPos(cornerLaunchPadPos).relative(forward).relative(forward.getClockWise());
         }
 
-        MissileEntity entity = MissileEntityManager.get(missileEntityTrackingID);
+        MissileEntity entity = MissileEntityManager.getEntity(missileEntityTrackingID);
         if (entity == null) {
             entity = new MissileEntity(EntityTypes.MISSILE.get(), getLevel());
-            entity.setControllerID(missileEntityTrackingID);
+            entity.setOwnerId(missileEntityTrackingID);
             entity.setPos(entityPosition.getX() + 0.5, entityPosition.getY() + 0.5, entityPosition.getZ() + 0.5);
             getLevel().addFreshEntity(entity);
         }
@@ -333,7 +334,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         ));
 
         Trajectories trajectories = Trajectories.get();
-        trajectories.activeTrajectories.add(trajectory);
+        trajectories.launch(trajectory);
         trajectories.setDirty();
 
         clearContent();
@@ -348,7 +349,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     public void setRemoved() {
         super.setRemoved();
         ControllerInstanceTracker.remove(this);
-        MissileEntityManager.remove(missileEntityTrackingID);
+        MissileEntityManager.removeOwner(missileEntityTrackingID);
     }
 
     @Override

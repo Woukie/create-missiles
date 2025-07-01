@@ -1,5 +1,6 @@
 package net.woukie.createmissiles.entity;
 
+import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -8,12 +9,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import org.joml.Vector3f;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public class MissileEntity extends Entity {
-    private static final EntityDataAccessor<Optional<UUID>> CONTROLLER_ID =
+    private static final EntityDataAccessor<Optional<UUID>> OWNER_ID =
             SynchedEntityData.defineId(MissileEntity.class, EntityDataSerializers.OPTIONAL_UUID);
 
     private static final EntityDataAccessor<String> WARHEAD_TYPE =
@@ -30,6 +32,9 @@ public class MissileEntity extends Entity {
     private static final EntityDataAccessor<Integer> THRUSTER_BUILD_PERCENT =
             SynchedEntityData.defineId(MissileEntity.class, EntityDataSerializers.INT);
 
+    private static final EntityDataAccessor<Rotations> ROTATION =
+            SynchedEntityData.defineId(MissileEntity.class, EntityDataSerializers.ROTATIONS);
+
     private boolean initialized;
 
     public MissileEntity(EntityType<?> entityType, Level level) {
@@ -38,13 +43,14 @@ public class MissileEntity extends Entity {
 
     @Override
     protected void defineSynchedData() {
-        this.entityData.define(CONTROLLER_ID, Optional.empty());
+        this.entityData.define(OWNER_ID, Optional.empty());
         this.entityData.define(WARHEAD_TYPE, "");
         this.entityData.define(CHASSIS_TYPE, "");
         this.entityData.define(THRUSTER_TYPE, "");
         this.entityData.define(WARHEAD_BUILD_PERCENT, 0);
         this.entityData.define(CHASSIS_BUILD_PERCENT, 0);
         this.entityData.define(THRUSTER_BUILD_PERCENT, 0);
+        this.entityData.define(ROTATION, new Rotations(0, 0, 0));
     }
 
     @Override
@@ -57,13 +63,13 @@ public class MissileEntity extends Entity {
             if (level().isClientSide)
                 return;
 
-            var controllerID = entityData.get(CONTROLLER_ID);
-            if (controllerID.isEmpty() || MissileEntityManager.get(controllerID.get()) != null) {
+            var ownerID = entityData.get(OWNER_ID);
+            if (ownerID.isEmpty() || MissileEntityManager.getEntity(ownerID.get()) != null || !MissileEntityManager.hasOwner(ownerID.get())) {
                 remove(RemovalReason.KILLED);
                 return;
             }
 
-            MissileEntityManager.add(this);
+            MissileEntityManager.addEntity(this);
         }
     }
 
@@ -82,12 +88,20 @@ public class MissileEntity extends Entity {
         return false;
     }
 
-    public void setControllerID(UUID controllerID) {
-        entityData.set(CONTROLLER_ID, Optional.ofNullable(controllerID));
+    public void setOwnerId(UUID controllerID) {
+        entityData.set(OWNER_ID, Optional.ofNullable(controllerID));
     }
 
-    public Optional<UUID> getControllerID() {
-        return entityData.get(CONTROLLER_ID);
+    public Optional<UUID> getOwnerId() {
+        return entityData.get(OWNER_ID);
+    }
+
+    public Rotations getRotation() {
+        return entityData.get(ROTATION);
+    }
+
+    public void setRotation(Rotations rotation) {
+        entityData.set(ROTATION, rotation);
     }
 
     public ResourceLocation getWarheadType() {
@@ -127,11 +141,11 @@ public class MissileEntity extends Entity {
     }
 
     public void setWarheadType(ResourceLocation type) {
-        entityData.set(WARHEAD_TYPE, type == null ? "" : type.toString(), true);
+        entityData.set(WARHEAD_TYPE, type == null ? "" : type.toString());
     }
 
     public void setChassisType(ResourceLocation type) {
-        entityData.set(CHASSIS_TYPE, type == null ? "" : type.toString(), true);
+        entityData.set(CHASSIS_TYPE, type == null ? "" : type.toString());
     }
 
     public void setThrusterType(ResourceLocation type) {

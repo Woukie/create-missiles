@@ -1,5 +1,6 @@
 package net.woukie.createmissiles.missilemanager;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
@@ -33,10 +34,10 @@ public class Trajectory {
         this.data.incrementTick();
     }
 
-    public void explode() {
+    public void explode(MinecraftServer server) {
         WarheadType.Detonatable detonatable = this.data.warheadType.detonatable;
         if (detonatable != null)
-            detonatable.detonate(this);
+            detonatable.detonate(this, server);
     }
 
     private void reCalculate() {

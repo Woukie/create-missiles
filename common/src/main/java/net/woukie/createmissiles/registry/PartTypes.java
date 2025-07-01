@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.models.GunpowderThrusterModel;
 import net.woukie.createmissiles.client.models.PaperChassisModel;
@@ -45,7 +46,10 @@ public class PartTypes {
                 id("tnt_warhead"),
                 null,
                 10,
-                null,
+                (trajectory, server) -> {
+                    var impactPos = trajectory.getPosition((float)trajectory.getImpactTime());
+                    trajectory.getData().level.explode(null, impactPos.x, impactPos.y, impactPos.z, 10, Level.ExplosionInteraction.BLOCK);
+                },
                 new TntWarheadModel()
         ));
 

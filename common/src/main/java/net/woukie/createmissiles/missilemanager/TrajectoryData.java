@@ -14,12 +14,15 @@ import net.woukie.createmissiles.registry.PartTypes;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 
+import java.util.UUID;
+
 public class TrajectoryData {
     public final double gravity = 9.81F;
 
     public final Level level;
     public final BlockPos source, target;
     public final double fuelPercentage;
+    public final UUID missileEntityTrackingID;
     private int tick; // Ticks incremented since launch
 
     public final WarheadType warheadType;
@@ -45,6 +48,8 @@ public class TrajectoryData {
         this.warheadData = warheadType.writeData != null ? warheadType.writeData.write(container, new CompoundTag()) : null;
         this.chassisData = chassisType.writeData != null ? chassisType.writeData.write(container, new CompoundTag()) : null;
         this.thrusterData = thrusterType.writeData != null ? thrusterType.writeData.write(container, new CompoundTag()) : null;
+
+        this.missileEntityTrackingID = UUID.randomUUID();
     }
 
 //    Construct without data from container
@@ -62,6 +67,8 @@ public class TrajectoryData {
         this.warheadData = new CompoundTag();
         this.chassisData = new CompoundTag();
         this.thrusterData = new CompoundTag();
+
+        this.missileEntityTrackingID = UUID.randomUUID();
     }
 
 //    Construct by loading from disk
@@ -79,9 +86,11 @@ public class TrajectoryData {
         this.chassisType = (ChassisType) PartTypes.get(new ResourceLocation(savedData.getString("Chassis")));
         this.thrusterType = (ThrusterType) PartTypes.get(new ResourceLocation(savedData.getString("Thruster")));
 
-        this.warheadData = savedData.get("WarheadData");
+        this.warheadData =  savedData.get("WarheadData");
         this.chassisData = savedData.get("ChassisData");
         this.thrusterData = savedData.get("ThrusterData");
+
+        this.missileEntityTrackingID = savedData.getUUID("TrackingID");
     }
 
     public CompoundTag saveTo(CompoundTag tag) {
@@ -99,9 +108,11 @@ public class TrajectoryData {
         tag.putString("Chassis", chassisType.resourceLocation.toString());
         tag.putString("Thruster", thrusterType.resourceLocation.toString());
 
-        tag.put("WarheadData", warheadData);
-        tag.put("ChassisData", chassisData);
-        tag.put("ThrusterData", thrusterData);
+        if (warheadData != null) tag.put("WarheadData", warheadData);
+        if (chassisData != null) tag.put("ChassisData", chassisData);
+        if (thrusterData != null) tag.put("ThrusterData", thrusterData);
+
+        tag.putUUID("TrackingID", missileEntityTrackingID);
 
         return tag;
     }
