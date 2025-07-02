@@ -6,9 +6,11 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
@@ -24,7 +26,6 @@ import net.woukie.createmissiles.block.navigator.NavigatorBlockEntity;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
 import net.woukie.createmissiles.block.schematicator.SchematicatorBlockEntity;
 import net.woukie.createmissiles.entity.MissileEntity;
-import net.woukie.createmissiles.entity.MissileEntityManager;
 import net.woukie.createmissiles.missilemanager.Trajectories;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.TrajectoryData;
@@ -46,7 +47,7 @@ import java.util.stream.Collectors;
 // Inventory divided up into 32-slot areas representing thruster, chassis and warhead
 public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     private boolean initialized;
-    private UUID missileEntityTrackingID = UUID.randomUUID();
+    private UUID entityId = null;
 
     private final ContainerData dataAccess;
 
@@ -183,8 +184,10 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         if (!initialized && hasLevel()) {
             initialized = true;
             ControllerInstanceTracker.add(this);
-            MissileEntityManager.addOwner(missileEntityTrackingID);
         }
+
+        ServerLevel level = (ServerLevel) getLevel();
+        if (level == null) return;
 
         if (launching) launch();
 
@@ -194,15 +197,15 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
             entityPosition = new BlockPos(cornerLaunchPadPos).relative(forward).relative(forward.getClockWise());
         }
 
-        MissileEntity entity = MissileEntityManager.getEntity(missileEntityTrackingID);
-        if (entity == null) {
-            entity = new MissileEntity(EntityTypes.MISSILE.get(), getLevel());
-            entity.setOwnerId(missileEntityTrackingID);
+        Entity entity = level.getEntity(this.entityId);
+        if (entity == null || !entity.getType().equals(EntityTypes.MISSILE.get())) {
+            entity = new MissileEntity(EntityTypes.MISSILE.get(), level);
             entity.setPos(entityPosition.getX() + 0.5, entityPosition.getY() + 0.5, entityPosition.getZ() + 0.5);
-            getLevel().addFreshEntity(entity);
+            level.addFreshEntity(entity);
+            this.entityId = entity.getUUID();
         }
 
-        if (schematicator != null) {
+        if (schematicator != null && entity.getType() != EntityTypes.MISSILE) {
             ItemStack warheadItem = schematicator.getItem(0);
             ItemStack chassisItem = schematicator.getItem(1);
             ItemStack thrusterItem = schematicator.getItem(2);
@@ -211,14 +214,16 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
             MissilePartType chassisType = PartTypes.get(chassisItem);
             MissilePartType thrusterType = PartTypes.get(thrusterItem);
 
-            entity.setWarheadBuildPercent(warheadBuildPercent);
-            entity.setWarheadType(warheadType == null ? null : warheadType.resourceLocation);
+            var missileEntity = (MissileEntity) entity;
 
-            entity.setChassisBuildPercent(chassisBuildPercent);
-            entity.setChassisType(chassisType == null ? null : chassisType.resourceLocation);
+            missileEntity.setWarheadBuildPercent(warheadBuildPercent);
+            missileEntity.setWarheadType(warheadType == null ? null : warheadType.resourceLocation);
 
-            entity.setThrusterBuildPercent(thrusterBuildPercent);
-            entity.setThrusterType(thrusterType == null ? null : thrusterType.resourceLocation);
+            missileEntity.setChassisBuildPercent(chassisBuildPercent);
+            missileEntity.setChassisType(chassisType == null ? null : chassisType.resourceLocation);
+
+            missileEntity.setThrusterBuildPercent(thrusterBuildPercent);
+            missileEntity.setThrusterType(thrusterType == null ? null : thrusterType.resourceLocation);
 
             ejectNotNeededItems(warheadType, 0, 32);
             ejectNotNeededItems(chassisType, 32, 64);
@@ -349,7 +354,13 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     public void setRemoved() {
         super.setRemoved();
         ControllerInstanceTracker.remove(this);
-        MissileEntityManager.removeOwner(missileEntityTrackingID);
+        if (getLevel() != null && !getLevel().isClientSide) {
+            ServerLevel level = (ServerLevel) getLevel();
+            Entity entity = level.getEntity(entityId);
+            if (entity != null && entity.getType().equals(EntityTypes.MISSILE.get())) {
+                entity.remove(Entity.RemovalReason.KILLED);
+            }
+        }
     }
 
     @Override
@@ -357,8 +368,8 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         super.load(compoundTag);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         ContainerHelper.loadAllItems(compoundTag, this.items);
-        if (compoundTag.hasUUID("TrackingID")) {
-            this.missileEntityTrackingID = compoundTag.getUUID("TrackingID");
+        if (compoundTag.contains("EntityID")) {
+            this.entityId = compoundTag.getUUID("EntityID");
         }
     }
 
@@ -366,8 +377,8 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     protected void saveAdditional(@NotNull CompoundTag compoundTag) {
         super.saveAdditional(compoundTag);
         ContainerHelper.saveAllItems(compoundTag, this.items);
-        if (missileEntityTrackingID != null) {
-            compoundTag.putUUID("TrackingID", missileEntityTrackingID);
+        if (this.entityId != null) {
+            compoundTag.putUUID("EntityID", this.entityId);
         }
     }
 

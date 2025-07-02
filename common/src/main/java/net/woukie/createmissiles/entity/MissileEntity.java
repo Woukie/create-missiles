@@ -9,15 +9,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
-import org.joml.Vector3f;
-
-import java.util.Optional;
-import java.util.UUID;
 
 public class MissileEntity extends Entity {
-    private static final EntityDataAccessor<Optional<UUID>> OWNER_ID =
-            SynchedEntityData.defineId(MissileEntity.class, EntityDataSerializers.OPTIONAL_UUID);
-
     private static final EntityDataAccessor<String> WARHEAD_TYPE =
             SynchedEntityData.defineId(MissileEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<String> CHASSIS_TYPE =
@@ -43,7 +36,6 @@ public class MissileEntity extends Entity {
 
     @Override
     protected void defineSynchedData() {
-        this.entityData.define(OWNER_ID, Optional.empty());
         this.entityData.define(WARHEAD_TYPE, "");
         this.entityData.define(CHASSIS_TYPE, "");
         this.entityData.define(THRUSTER_TYPE, "");
@@ -57,20 +49,8 @@ public class MissileEntity extends Entity {
     public void tick() {
         super.tick();
 
-        if (!initialized) {
+        if (!initialized)
             initialized = true;
-
-            if (level().isClientSide)
-                return;
-
-            var ownerID = entityData.get(OWNER_ID);
-            if (ownerID.isEmpty() || MissileEntityManager.getEntity(ownerID.get()) != null || !MissileEntityManager.hasOwner(ownerID.get())) {
-                remove(RemovalReason.KILLED);
-                return;
-            }
-
-            MissileEntityManager.addEntity(this);
-        }
     }
 
     @Override
@@ -86,14 +66,6 @@ public class MissileEntity extends Entity {
     @Override
     public boolean isAttackable() {
         return false;
-    }
-
-    public void setOwnerId(UUID controllerID) {
-        entityData.set(OWNER_ID, Optional.ofNullable(controllerID));
-    }
-
-    public Optional<UUID> getOwnerId() {
-        return entityData.get(OWNER_ID);
     }
 
     public Rotations getRotation() {

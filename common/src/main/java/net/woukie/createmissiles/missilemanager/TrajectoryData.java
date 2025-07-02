@@ -22,7 +22,7 @@ public class TrajectoryData {
     public final Level level;
     public final BlockPos source, target;
     public final double fuelPercentage;
-    public final UUID missileEntityTrackingID;
+    private UUID entityId;
     private int tick; // Ticks incremented since launch
 
     public final WarheadType warheadType;
@@ -48,8 +48,6 @@ public class TrajectoryData {
         this.warheadData = warheadType.writeData != null ? warheadType.writeData.write(container, new CompoundTag()) : null;
         this.chassisData = chassisType.writeData != null ? chassisType.writeData.write(container, new CompoundTag()) : null;
         this.thrusterData = thrusterType.writeData != null ? thrusterType.writeData.write(container, new CompoundTag()) : null;
-
-        this.missileEntityTrackingID = UUID.randomUUID();
     }
 
 //    Construct without data from container
@@ -67,8 +65,14 @@ public class TrajectoryData {
         this.warheadData = new CompoundTag();
         this.chassisData = new CompoundTag();
         this.thrusterData = new CompoundTag();
+    }
 
-        this.missileEntityTrackingID = UUID.randomUUID();
+    public UUID getEntityId() {
+        return this.entityId;
+    }
+
+    public void setEntityId(UUID uuid) {
+        this.entityId = uuid;
     }
 
 //    Construct by loading from disk
@@ -90,7 +94,7 @@ public class TrajectoryData {
         this.chassisData = savedData.get("ChassisData");
         this.thrusterData = savedData.get("ThrusterData");
 
-        this.missileEntityTrackingID = savedData.getUUID("TrackingID");
+        this.entityId = savedData.contains("EntityID") ? savedData.getUUID("EntityID") : null;
     }
 
     public CompoundTag saveTo(CompoundTag tag) {
@@ -112,7 +116,7 @@ public class TrajectoryData {
         if (chassisData != null) tag.put("ChassisData", chassisData);
         if (thrusterData != null) tag.put("ThrusterData", thrusterData);
 
-        tag.putUUID("TrackingID", missileEntityTrackingID);
+        tag.putUUID("EntityID", entityId);
 
         return tag;
     }
