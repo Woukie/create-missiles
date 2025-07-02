@@ -31,6 +31,11 @@ public class SchematicatorBlockEntity extends MissileAbstractBlockEntity {
     }
 
     @Override
+    public int getMaxStackSize() {
+        return 1;
+    }
+
+    @Override
     public boolean canPlaceItem(int i, @NotNull ItemStack itemStack) {
         if (i == 0) {
             return itemStack.is(Items.WARHEAD_SCHEMATIC.get());
