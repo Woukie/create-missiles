@@ -13,16 +13,19 @@ public class Items {
 
     public static ItemEntry<WarheadSchematic> WARHEAD_SCHEMATIC = REGISTRATE
             .item(CreateMissiles.MOD_ID, "warhead_schematic", WarheadSchematic::new)
+            .properties(properties -> properties.stacksTo(16))
             .removeTab(CreativeModeTabs.SEARCH)
             .register();
 
     public static ItemEntry<ChassisSchematic> CHASSIS_SCHEMATIC = REGISTRATE
             .item(CreateMissiles.MOD_ID, "chassis_schematic", ChassisSchematic::new)
+            .properties(properties -> properties.stacksTo(116))
             .removeTab(CreativeModeTabs.SEARCH)
             .register();
 
     public static ItemEntry<ThrusterSchematic> THRUSTER_SCHEMATIC = REGISTRATE
             .item(CreateMissiles.MOD_ID, "thruster_schematic", ThrusterSchematic::new)
+            .properties(properties -> properties.stacksTo(16))
             .removeTab(CreativeModeTabs.SEARCH)
             .register();
 
