@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.woukie.createmissiles.MultiblockHelper;
 import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
-import net.woukie.createmissiles.block.navigator.NavigatorBlockEntity;
+import net.woukie.createmissiles.block.navigation_panel.NavigationPanelBlockEntity;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
 import net.woukie.createmissiles.entity.MissileEntity;
@@ -75,7 +75,7 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
                     case 5 -> MultiblockHelper.findEdgeBlock(
                             ControlPanelBlockEntity.this,
                             getLevel(),
-                            BlockEntities.NAVIGATOR.get()
+                            BlockEntities.NAVIGATION_PANEL.get()
                     ) == null ? 0 : 1;
                     case 6 -> {
                         Direction launchPadDirection = getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
@@ -285,12 +285,12 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
         if (cornerLaunchPadPos == null) return;
         if (assemblyPanel == null) return;
 
-        NavigatorBlockEntity navigator = (NavigatorBlockEntity) MultiblockHelper.findEdgeBlock(
+        NavigationPanelBlockEntity navigationPanel = (NavigationPanelBlockEntity) MultiblockHelper.findEdgeBlock(
                 ControlPanelBlockEntity.this,
                 getLevel(),
-                BlockEntities.NAVIGATOR.get()
+                BlockEntities.NAVIGATION_PANEL.get()
         );
-        if (navigator == null) return;
+        if (navigationPanel == null) return;
 
         MissilePartRecipe warheadRecipe = null;
         MissilePartRecipe chassisRecipe = null;
@@ -329,8 +329,8 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
         Trajectory trajectory = new Trajectory(new TrajectoryData(
                 getLevel(),
                 getBlockPos().relative(launchPadDirection, 2),
-                navigator.getTarget(),
-                navigator.getFuelPercent(),
+                navigationPanel.getTarget(),
+                navigationPanel.getFuelPercent(),
                 0,
                 (WarheadType) warheadType,
                 (ChassisType) chassisType,
@@ -391,7 +391,7 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
     protected @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory) {
         Direction facing = getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
 
-        BlockEntity navigator = MultiblockHelper.findEdgeBlock(cornerLaunchPadPos, facing, getLevel(), BlockEntities.NAVIGATOR.get());
+        BlockEntity navigationPanel = MultiblockHelper.findEdgeBlock(cornerLaunchPadPos, facing, getLevel(), BlockEntities.NAVIGATION_PANEL.get());
 
         return new ControlPanelMenu(
                 id,
@@ -399,7 +399,7 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
                 this,
                 dataAccess,
                 assemblyPanel == null ? new SimpleContainer(3) : assemblyPanel,
-                navigator == null ? new SimpleContainer(1) : (Container) navigator
+                navigationPanel == null ? new SimpleContainer(1) : (Container) navigationPanel
         );
     }
 

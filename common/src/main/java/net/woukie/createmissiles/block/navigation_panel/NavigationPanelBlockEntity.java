@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.navigator;
+package net.woukie.createmissiles.block.navigation_panel;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,7 +24,7 @@ import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
 import net.woukie.createmissiles.registry.BlockEntities;
 import org.jetbrains.annotations.NotNull;
 
-public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
+public class NavigationPanelBlockEntity extends MissileAbstractBlockEntity {
     public static final int SLOT_MAP = 0;
 
     private double mapCrosshairX, mapCrosshairZ, fuelPercent;
@@ -33,7 +33,7 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
 
     private final ContainerData dataAccess;
 
-    public NavigatorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
+    public NavigationPanelBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
         this.items = NonNullList.withSize(1, ItemStack.EMPTY);
         this.mapCrosshairX = 64;
@@ -59,7 +59,7 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
                     ) == null ? 0 : 1;
 //                    TODO: Keep track of multiblock instead of searching for it every tick, but this isnt actually expensive. worst case 38 blocks searched
                     case 11 -> MultiblockHelper.findEdgeBlock(
-                            NavigatorBlockEntity.this,
+                            NavigationPanelBlockEntity.this,
                             getLevel(),
                             BlockEntities.ASSEMBLY_PANEL.get()
                     ) == null ? 0 : 1;
@@ -78,7 +78,7 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
     public void serverTick() {
         if (!initialized && hasLevel()) {
             initialized = true;
-            NavigatorInstanceTracker.add(this);
+            NavigationPanelInstanceTracker.add(this);
             recalculateTarget();
         }
     }
@@ -134,7 +134,7 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
     @Override
     public void setRemoved() {
         super.setRemoved();
-        NavigatorInstanceTracker.remove(this);
+        NavigationPanelInstanceTracker.remove(this);
     }
 
     @Override
@@ -162,7 +162,7 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
 
     @Override
     protected @NotNull Component getDefaultName() {
-        return Component.translatable("container.createmissiles.navigator");
+        return Component.translatable("container.createmissiles.navigation_panel");
     }
 
     @Override
@@ -173,7 +173,7 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
         BlockPos corner = MultiblockHelper.findCorner(getBlockPos(), facing, level);
         BlockEntity assemblyPanel = MultiblockHelper.findEdgeBlock(corner, facing, getLevel(), BlockEntities.ASSEMBLY_PANEL.get());
 
-        return new NavigatorMenu(id, playerInventory, this, this.dataAccess, assemblyPanel == null ? new SimpleContainer(3) : (AssemblyPanelBlockEntity)assemblyPanel);
+        return new NavigationPanelMenu(id, playerInventory, this, this.dataAccess, assemblyPanel == null ? new SimpleContainer(3) : (AssemblyPanelBlockEntity)assemblyPanel);
     }
 
     @Override

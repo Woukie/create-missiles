@@ -1,11 +1,11 @@
-package net.woukie.createmissiles.block.navigator.messages;
+package net.woukie.createmissiles.block.navigation_panel.messages;
 
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
-import net.woukie.createmissiles.block.navigator.NavigatorBlockEntity;
-import net.woukie.createmissiles.block.navigator.NavigatorInstanceTracker;
+import net.woukie.createmissiles.block.navigation_panel.NavigationPanelBlockEntity;
+import net.woukie.createmissiles.block.navigation_panel.NavigationPanelInstanceTracker;
 
 import java.util.function.Supplier;
 
@@ -29,7 +29,7 @@ public class ClickFuelMessage {
 
     public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {
         Player player = contextSupplier.get().getPlayer();
-        NavigatorBlockEntity blockEntity = NavigatorInstanceTracker.get(player.level(), source);
+        NavigationPanelBlockEntity blockEntity = NavigationPanelInstanceTracker.get(player.level(), source);
 
         if (blockEntity == null)
             return;

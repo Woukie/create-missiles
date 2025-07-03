@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.navigator;
+package net.woukie.createmissiles.block.navigation_panel;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -22,8 +22,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
-    private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/navigator.png");
+public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPanelMenu> {
+    private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/navigation_panel.png");
     private static final ResourceLocation MAP_ERROR = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/map_error.png");
     private static final ResourceLocation MAP_TARGET_HORIZONTAL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_horizontal.png");
     private static final ResourceLocation MAP_TARGET_VERTICAL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_vertical.png");
@@ -53,7 +53,7 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
 
     private final ArrayList<String> errors = new ArrayList<>();
 
-    public NavigatorScreen(NavigatorMenu abstractContainerMenu, Inventory inventory, Component component) {
+    public NavigationPanelScreen(NavigationPanelMenu abstractContainerMenu, Inventory inventory, Component component) {
         super(abstractContainerMenu, inventory, component);
     }
 
@@ -111,7 +111,7 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
 
         ItemStack mapItem = getMenu().getMap();
         if (mapItem == null){
-            errors.add(Component.translatable("gui.createmissiles.navigator.no_map").getString());
+            errors.add(Component.translatable("gui.createmissiles.navigation_panel.no_map").getString());
             return;
         }
 
@@ -119,7 +119,7 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
         MapItemSavedData mapData = MapItem.getSavedData(mapId, minecraft.level);
         if(mapId == null || mapData == null) {
             gui.blit(MAP_ERROR, mapLeft, mapTop, 5, 0, 0, mapWidth, mapHeight, mapWidth, mapHeight);
-            errors.add(Component.translatable("gui.createmissiles.navigator.no_map_data").getString());
+            errors.add(Component.translatable("gui.createmissiles.navigation_panel.no_map_data").getString());
             return;
         }
 
@@ -168,12 +168,12 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
             return;
 
         if (!getMenu().launchPadExists()){
-            errors.add(Component.translatable("gui.createmissiles.navigator.no_launch_pad").getString());
+            errors.add(Component.translatable("gui.createmissiles.navigation_panel.no_launch_pad").getString());
             return;
         }
 
         if (!getMenu().assemblyPanelExists()) {
-            errors.add(Component.translatable("gui.createmissiles.navigator.no_assembly_panel").getString());
+            errors.add(Component.translatable("gui.createmissiles.navigation_panel.no_assembly_panel").getString());
             return;
         }
 
@@ -181,7 +181,7 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
         BlockPos target = getMenu().getTarget();
 
         if (source == null || target == null) {
-            errors.add(Component.translatable("gui.createmissiles.navigator.no_target").getString());
+            errors.add(Component.translatable("gui.createmissiles.navigation_panel.no_target").getString());
             return;
         }
 
@@ -190,7 +190,7 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
         ItemStack thruster = getMenu().getThruster();
 
         if (warhead == null || chassis == null || thruster == null) {
-            errors.add(Component.translatable("gui.createmissiles.navigator.no_assemblies").getString());
+            errors.add(Component.translatable("gui.createmissiles.navigation_panel.no_assemblies").getString());
             return;
         }
 

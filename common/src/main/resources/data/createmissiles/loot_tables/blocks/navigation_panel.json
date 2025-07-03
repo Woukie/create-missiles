@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "createmissiles:navigator"
+          "name": "createmissiles:navigation_panel"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "createmissiles:blocks/navigator"
+  "random_sequence": "createmissiles:blocks/navigation_panel"
 }

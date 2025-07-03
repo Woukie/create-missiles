@@ -6,7 +6,7 @@ import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.launchpad.LaunchPadCogInstance;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
 import net.woukie.createmissiles.block.controlpanel.ControlPanelBlockEntity;
-import net.woukie.createmissiles.block.navigator.NavigatorBlockEntity;
+import net.woukie.createmissiles.block.navigation_panel.NavigationPanelBlockEntity;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
 
 public class BlockEntities {
@@ -28,9 +28,9 @@ public class BlockEntities {
             .validBlock(Blocks.ASSEMBLY_PANEL)
             .register();
 
-    public static final BlockEntityEntry<NavigatorBlockEntity> NAVIGATOR = REGISTRATE
-            .blockEntity("navigator", NavigatorBlockEntity::new)
-            .validBlock(Blocks.NAVIGATOR)
+    public static final BlockEntityEntry<NavigationPanelBlockEntity> NAVIGATION_PANEL = REGISTRATE
+            .blockEntity("navigation_panel", NavigationPanelBlockEntity::new)
+            .validBlock(Blocks.NAVIGATION_PANEL)
             .register();
 
     public static void init() {

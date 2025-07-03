@@ -3,8 +3,8 @@
 	"texture_size": [32, 32],
 	"textures": {
 		"0": "createmissiles:block/control_panel",
-		"1": "createmissiles:block/navigator_screen",
-		"particle": "createmissiles:block/navigator_screen"
+		"1": "createmissiles:block/navigation_panel_screen",
+		"particle": "createmissiles:block/navigation_panel_screen"
 	},
 	"elements": [
 		{

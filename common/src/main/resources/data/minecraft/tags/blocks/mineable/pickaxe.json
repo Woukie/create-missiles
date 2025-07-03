@@ -3,6 +3,6 @@
     "createmissiles:launch_pad",
     "createmissiles:control_panel",
     "createmissiles:assembly_panel",
-    "createmissiles:navigator"
+    "createmissiles:navigation_panel"
   ]
 }

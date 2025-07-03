@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.navigator;
+package net.woukie.createmissiles.block.navigation_panel;
 
 import com.simibubi.create.foundation.utility.VoxelShaper;
 import net.minecraft.core.BlockPos;
@@ -16,20 +16,20 @@ import net.woukie.createmissiles.block.MissileAbstractBlock;
 import net.woukie.createmissiles.registry.BlockEntities;
 import org.jetbrains.annotations.NotNull;
 
-public class NavigatorBlock extends MissileAbstractBlock<NavigatorBlockEntity> {
+public class NavigationPanelBlock extends MissileAbstractBlock<NavigationPanelBlockEntity> {
     private static final VoxelShape leftPillarNorth = Shapes.box(12/16.0, 0/16.0, 15/16.0, 14/16.0, 15/16.0, 16/16.0);
     private static final VoxelShape rightPillarNorth = Shapes.box(2/16.0, 0/16.0, 15/16.0, 4/16.0, 15/16.0, 16/16.0);
     private static final VoxelShape displayNorth = Shapes.box(2/16.0, 5.45/16.0, 10.275/16.0, 14/16.0, 16.925/16.0, 15.8/16.0);
     private static final VoxelShape baseBoxNorth = Shapes.box(3/16.0, 1/16.0, 13/16.0, 13/16.0, 5/16.0, 15/16.0);
     private static final VoxelShape voxelShape = Shapes.or(leftPillarNorth, rightPillarNorth, displayNorth, baseBoxNorth);
 
-    public NavigatorBlock(Properties properties) {
+    public NavigationPanelBlock(Properties properties) {
         super(properties);
     }
 
     @Override
-    public BlockEntityType<? extends NavigatorBlockEntity> getBlockEntityType() {
-        return BlockEntities.NAVIGATOR.get();
+    public BlockEntityType<? extends NavigationPanelBlockEntity> getBlockEntityType() {
+        return BlockEntities.NAVIGATION_PANEL.get();
     }
 
     @Override
@@ -40,13 +40,13 @@ public class NavigatorBlock extends MissileAbstractBlock<NavigatorBlockEntity> {
     @Override
     public <S extends BlockEntity> BlockEntityTicker<S> getTicker(Level level, BlockState blockState, BlockEntityType<S> type) {
         return (level1, blockPos, blockState1, blockEntity) -> {
-            if (blockEntity instanceof NavigatorBlockEntity navigator)
-                navigator.serverTick();
+            if (blockEntity instanceof NavigationPanelBlockEntity navigationPanel)
+                navigationPanel.serverTick();
         };
     }
 
     @Override
-    public Class<NavigatorBlockEntity> getBlockEntityClass() {
-        return NavigatorBlockEntity.class;
+    public Class<NavigationPanelBlockEntity> getBlockEntityClass() {
+        return NavigationPanelBlockEntity.class;
     }
 }

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "createmissiles:block/navigation_panel"
+    },
+    "facing=east": {
+      "model": "createmissiles:block/navigation_panel",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "createmissiles:block/navigation_panel",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "createmissiles:block/navigation_panel",
+      "y": 270
+    }
+  }
+}

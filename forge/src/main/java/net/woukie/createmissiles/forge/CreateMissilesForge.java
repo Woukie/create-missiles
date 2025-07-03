@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.woukie.createmissiles.block.controlpanel.ControlPanelScreen;
-import net.woukie.createmissiles.block.navigator.NavigatorScreen;
+import net.woukie.createmissiles.block.navigation_panel.NavigationPanelScreen;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelScreen;
 import net.woukie.createmissiles.registry.EntityRenderers;
 import net.woukie.createmissiles.registry.Menus;
@@ -33,7 +33,7 @@ public class CreateMissilesForge {
 
     private void clientSetup (final FMLClientSetupEvent event) {
         MenuRegistry.registerScreenFactory(Menus.CONTROL_PANEL.get(), ControlPanelScreen::new);
-        MenuRegistry.registerScreenFactory(Menus.NAVIGATOR.get(), NavigatorScreen::new);
+        MenuRegistry.registerScreenFactory(Menus.NAVIGATION_PANEL.get(), NavigationPanelScreen::new);
         MenuRegistry.registerScreenFactory(Menus.ASSEMBLY_PANEL.get(), AssemblyPanelScreen::new);
     }
 }

@@ -8,7 +8,7 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.controlpanel.ControlPanelMenu;
-import net.woukie.createmissiles.block.navigator.NavigatorMenu;
+import net.woukie.createmissiles.block.navigation_panel.NavigationPanelMenu;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelMenu;
 
 import static net.woukie.createmissiles.CreateMissiles.MANAGER;
@@ -27,9 +27,9 @@ public class Menus {
             () -> new MenuType<>(AssemblyPanelMenu::new, FeatureFlags.VANILLA_SET)
     );
 
-    public static final RegistrySupplier<MenuType<NavigatorMenu>> NAVIGATOR = MENUS.register(
-            new ResourceLocation(MOD_ID, "navigator"),
-            () -> new MenuType<>(NavigatorMenu::new, FeatureFlags.VANILLA_SET)
+    public static final RegistrySupplier<MenuType<NavigationPanelMenu>> NAVIGATION_PANEL = MENUS.register(
+            new ResourceLocation(MOD_ID, "navigation_panel"),
+            () -> new MenuType<>(NavigationPanelMenu::new, FeatureFlags.VANILLA_SET)
     );
 
     public static void init() {

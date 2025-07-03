@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.navigator;
+package net.woukie.createmissiles.block.navigation_panel;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
@@ -10,20 +10,20 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.block.InvisibleSlot;
 import net.woukie.createmissiles.block.MissileAbstractMenu;
-import net.woukie.createmissiles.block.navigator.messages.ClickFuelMessage;
-import net.woukie.createmissiles.block.navigator.messages.ClickMapMessage;
+import net.woukie.createmissiles.block.navigation_panel.messages.ClickFuelMessage;
+import net.woukie.createmissiles.block.navigation_panel.messages.ClickMapMessage;
 import net.woukie.createmissiles.registry.Items;
 import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;
 
-import static net.woukie.createmissiles.registry.Menus.NAVIGATOR;
+import static net.woukie.createmissiles.registry.Menus.NAVIGATION_PANEL;
 
-public class NavigatorMenu extends MissileAbstractMenu {
+public class NavigationPanelMenu extends MissileAbstractMenu {
     private final ContainerData containerData;
     private final Container assemblyPanelContainer;
 
-    public NavigatorMenu(int id, Inventory playerInventory, Container container, ContainerData containerData, Container assemblyPanelContainer) {
-        super(NAVIGATOR.get(), id, container);
+    public NavigationPanelMenu(int id, Inventory playerInventory, Container container, ContainerData containerData, Container assemblyPanelContainer) {
+        super(NAVIGATION_PANEL.get(), id, container);
         checkContainerSize(container, 1);
         checkContainerDataCount(containerData, 12);
         this.containerData = containerData;
@@ -53,7 +53,7 @@ public class NavigatorMenu extends MissileAbstractMenu {
         this.addDataSlots(containerData);
     }
 
-    public NavigatorMenu(int id, Inventory inventory) {
+    public NavigationPanelMenu(int id, Inventory inventory) {
         this(id, inventory, new SimpleContainer(1), new SimpleContainerData(12), new SimpleContainer(3));
     }
 
@@ -129,10 +129,10 @@ public class NavigatorMenu extends MissileAbstractMenu {
     }
 
     public void clickMap(double x, double z) {
-        Packets.NAVIGATOR_CLICK_MAP.sendToServer(new ClickMapMessage(getSource(), x, z));
+        Packets.NAVIGATION_PANEL_CLICK_MAP.sendToServer(new ClickMapMessage(getSource(), x, z));
     }
 
     public void clickFuel(double fuelClickZ) {
-        Packets.NAVIGATOR_CLICK_FUEL.sendToServer(new ClickFuelMessage(getSource(), fuelClickZ));
+        Packets.NAVIGATION_PANEL_CLICK_FUEL.sendToServer(new ClickFuelMessage(getSource(), fuelClickZ));
     }
 }

@@ -40,10 +40,10 @@ public class ControlPanelBlock extends MissileAbstractBlock<ControlPanelBlockEnt
     @Override
     public <S extends BlockEntity> BlockEntityTicker<S> getTicker(Level level, BlockState blockState, BlockEntityType<S> type) {
         return (level1, blockPos, blockState1, blockEntity) -> {
-            if (blockEntity instanceof ControlPanelBlockEntity navigator) {
-                navigator.tick();
+            if (blockEntity instanceof ControlPanelBlockEntity navigationPanel) {
+                navigationPanel.tick();
                 if (level1.getServer() != null && !level1.isClientSide)
-                    navigator.serverTick();
+                    navigationPanel.serverTick();
             }
         };
     }

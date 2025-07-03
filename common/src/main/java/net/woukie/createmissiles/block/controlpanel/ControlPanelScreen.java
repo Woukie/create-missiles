@@ -126,7 +126,7 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
         boolean launchPad = getMenu().launchPadExists();
         boolean launchPadPowered = getMenu().launchPadPowered();
         boolean assemblyPanelExists = getMenu().assemblyPanelExists();
-        boolean navigator = getMenu().navigatorExists();
+        boolean navigationPanel = getMenu().navigationPanelExists();
 
         ItemStack warheadStack = getMenu().getWarhead();
         ItemStack chassisStack = getMenu().getChassis();
@@ -138,9 +138,9 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
         List<FormattedText> text = new ArrayList<>();
 
 //        Statuses
-        text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigator.launch_pad_title").getString() + ": ", launchPad, launchPadPowered));
-        text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigator.navigator_title").getString() + ": ", navigator, hasDestination));
-        text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigator.assembly_panel_title").getString() + ": ", assemblyPanelExists, hasAssemblies));
+        text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigation_panel.launch_pad_title").getString() + ": ", launchPad, launchPadPowered));
+        text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigation_panel.navigation_panel_title").getString() + ": ", navigationPanel, hasDestination));
+        text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigation_panel.assembly_panel_title").getString() + ": ", assemblyPanelExists, hasAssemblies));
 
 //        Recipe
         var warheadItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(warheadStack), minecraft.level, getMenu().getItems());
@@ -151,15 +151,15 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
         int chassisPercent = MissilePartRecipe.getBuildPercentage(chassisItemsLeft);
         int thrusterPercent = MissilePartRecipe.getBuildPercentage(thrusterItemsLeft);
 
-        text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigator.warhead_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
+        text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigation_panel.warhead_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
         text.add(FormattedText.of(warheadPercent + "%\n", Style.EMPTY.withColor(warheadPercent == 0 ? 16711680 : (warheadPercent == 100 ? 65280 : 16776960))));
         if (warheadItemsLeft != null) writeIngredientStatus(text, warheadItemsLeft);
 
-        text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigator.chassis_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
+        text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigation_panel.chassis_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
         text.add(FormattedText.of(chassisPercent + "%\n", Style.EMPTY.withColor(chassisPercent == 0 ? 16711680 : (chassisPercent == 100 ? 65280 : 16776960))));
         if (chassisItemsLeft != null) writeIngredientStatus(text, chassisItemsLeft);
 
-        text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigator.thruster_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
+        text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigation_panel.thruster_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
         text.add(FormattedText.of(thrusterPercent + "%\n", Style.EMPTY.withColor(thrusterPercent == 0 ? 16711680 : (thrusterPercent == 100 ? 65280 : 16776960))));
         if (thrusterItemsLeft != null) writeIngredientStatus(text, thrusterItemsLeft);
 
@@ -174,7 +174,7 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
         gui.disableScissor();
         gui.pose().popPose();
 
-        return launchPad && assemblyPanelExists && navigator && hasAssemblies && hasDestination && chassisPercent == 100 && warheadPercent == 100 && thrusterPercent == 100;
+        return launchPad && assemblyPanelExists && navigationPanel && hasAssemblies && hasDestination && chassisPercent == 100 && warheadPercent == 100 && thrusterPercent == 100;
     }
 
     private void writeIngredientStatus(List<FormattedText> text, Map<MissileIngredient, Integer> ingredients) {
@@ -200,7 +200,7 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
     private List<FormattedText> formatStatus(String text, boolean online, boolean valid) {
         List<FormattedText> result = new ArrayList<>();
         result.add(FormattedText.of(text, Style.EMPTY.withColor(16777215)));
-        MutableComponent status = !online ? Component.translatable("gui.createmissiles.navigator.offline") : (valid ? Component.translatable("gui.createmissiles.navigator.valid") : Component.translatable("gui.createmissiles.navigator.incomplete"));
+        MutableComponent status = !online ? Component.translatable("gui.createmissiles.navigation_panel.offline") : (valid ? Component.translatable("gui.createmissiles.navigation_panel.valid") : Component.translatable("gui.createmissiles.navigation_panel.incomplete"));
         result.add(FormattedText.of(status.getString() + "\n", !online ? Style.EMPTY.withColor(16711680) : (valid ? Style.EMPTY.withColor(65280) : Style.EMPTY.withColor(16776960))));
         return result;
     }

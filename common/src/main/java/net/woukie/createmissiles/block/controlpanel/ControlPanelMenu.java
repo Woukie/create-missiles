@@ -18,24 +18,24 @@ import static net.woukie.createmissiles.registry.Menus.CONTROL_PANEL;
 
 public class ControlPanelMenu extends MissileAbstractMenu {
     Container assemblyPanelContainer;
-    Container navigatorContainer;
+    Container navigationPanelContainer;
 
     ContainerData controlPanelData;
 
-    protected ControlPanelMenu(int id, Inventory playerInventory, Container container, ContainerData controlPanelData, Container assemblyPanelContainer, Container navigatorContainer) {
+    protected ControlPanelMenu(int id, Inventory playerInventory, Container container, ContainerData controlPanelData, Container assemblyPanelContainer, Container navigationPanelContainer) {
         super(CONTROL_PANEL.get(), id, container);
 
         checkContainerDataCount(controlPanelData, 7);
         checkContainerSize(container, 96);
-        checkContainerSize(navigatorContainer, 1);
+        checkContainerSize(navigationPanelContainer, 1);
         checkContainerSize(assemblyPanelContainer, 3);
 
         this.controlPanelData = controlPanelData;
         this.addDataSlots(controlPanelData);
 
         this.assemblyPanelContainer = assemblyPanelContainer;
-        this.navigatorContainer = navigatorContainer;
-        this.addSlot(new InvisibleSlot(navigatorContainer, 0));
+        this.navigationPanelContainer = navigationPanelContainer;
+        this.addSlot(new InvisibleSlot(navigationPanelContainer, 0));
         this.addSlot(new InvisibleSlot(assemblyPanelContainer, 0));
         this.addSlot(new InvisibleSlot(assemblyPanelContainer, 1));
         this.addSlot(new InvisibleSlot(assemblyPanelContainer, 2));
@@ -75,7 +75,7 @@ public class ControlPanelMenu extends MissileAbstractMenu {
         return controlPanelData.get(4) == 1;
     }
 
-    public boolean navigatorExists() {
+    public boolean navigationPanelExists() {
         return controlPanelData.get(5) == 1;
     }
 
@@ -108,8 +108,8 @@ public class ControlPanelMenu extends MissileAbstractMenu {
     }
 
     public boolean hasDestination() {
-        if(!navigatorExists()) return false;
-        ItemStack item = navigatorContainer.getItem(0);
+        if(!navigationPanelExists()) return false;
+        ItemStack item = navigationPanelContainer.getItem(0);
 //        Has mapCrosshair positions by default, and map data is null in rare situations (need the level to get map data anyway which is annoying to get here, don't want to offload this method to block entity)
         return item.is(net.minecraft.world.item.Items.FILLED_MAP);
     }
