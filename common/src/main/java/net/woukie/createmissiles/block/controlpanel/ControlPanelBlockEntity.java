@@ -383,6 +383,12 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
     }
 
     @Override
+    public void saveToItem(@NotNull ItemStack itemStack) {
+        super.saveToItem(itemStack);
+        itemStack.removeTagKey("EntityID");
+    }
+
+    @Override
     protected @NotNull Component getDefaultName() {
         return Component.translatable("container.createmissiles.control_panel");
     }
