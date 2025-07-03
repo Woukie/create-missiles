@@ -13,7 +13,7 @@ public class CreativeMenus {
     public static final DeferredRegister<CreativeModeTab> TABS =
             DeferredRegister.create(CreateMissiles.MOD_ID, Registries.CREATIVE_MODE_TAB);
 
-    public static final RegistrySupplier<CreativeModeTab> SCHEMATICS_TAB = TABS.register(
+    public static final RegistrySupplier<CreativeModeTab> ASSEMBLIES_TAB = TABS.register(
             "createmissiles",
             () -> CreativeTabRegistry.create(
                     Component.translatable("category.createmissiles"),

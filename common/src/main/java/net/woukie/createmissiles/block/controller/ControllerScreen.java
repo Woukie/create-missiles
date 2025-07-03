@@ -125,14 +125,14 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
     private boolean renderLogs(GuiGraphics gui) {
         boolean launchPad = getMenu().launchPadExists();
         boolean launchPadPowered = getMenu().launchPadPowered();
-        boolean schematicator = getMenu().schematicatorExists();
+        boolean assemblyPanelExists = getMenu().assemblyPanelExists();
         boolean navigator = getMenu().navigatorExists();
 
         ItemStack warheadStack = getMenu().getWarhead();
         ItemStack chassisStack = getMenu().getChassis();
         ItemStack thrusterStack = getMenu().getThruster();
 
-        boolean hasSchematics = warheadStack != null && chassisStack != null && thrusterStack != null;
+        boolean hasAssemblies = warheadStack != null && chassisStack != null && thrusterStack != null;
         boolean hasDestination = getMenu().hasDestination();
 
         List<FormattedText> text = new ArrayList<>();
@@ -140,7 +140,7 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
 //        Statuses
         text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigator.launch_pad_title").getString() + ": ", launchPad, launchPadPowered));
         text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigator.navigator_title").getString() + ": ", navigator, hasDestination));
-        text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigator.schematicator_title").getString() + ": ", schematicator, hasSchematics));
+        text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigator.assembly_panel_title").getString() + ": ", assemblyPanelExists, hasAssemblies));
 
 //        Recipe
         var warheadItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(warheadStack), minecraft.level, getMenu().getItems());
@@ -174,7 +174,7 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
         gui.disableScissor();
         gui.pose().popPose();
 
-        return launchPad && schematicator && navigator && hasSchematics && hasDestination && chassisPercent == 100 && warheadPercent == 100 && thrusterPercent == 100;
+        return launchPad && assemblyPanelExists && navigator && hasAssemblies && hasDestination && chassisPercent == 100 && warheadPercent == 100 && thrusterPercent == 100;
     }
 
     private void writeIngredientStatus(List<FormattedText> text, Map<MissileIngredient, Integer> ingredients) {

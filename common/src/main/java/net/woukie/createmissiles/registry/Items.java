@@ -4,25 +4,25 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.item.schematic.ChassisSchematic;
-import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
-import net.woukie.createmissiles.item.schematic.WarheadSchematic;
+import net.woukie.createmissiles.item.assembly.ChassisAssembly;
+import net.woukie.createmissiles.item.assembly.ThrusterAssembly;
+import net.woukie.createmissiles.item.assembly.WarheadAssembly;
 
 public class Items {
     private static final CreateRegistrate REGISTRATE = CreateMissiles.registrate();
 
-    public static ItemEntry<WarheadSchematic> WARHEAD_SCHEMATIC = REGISTRATE
-            .item(CreateMissiles.MOD_ID, "warhead_schematic", WarheadSchematic::new)
+    public static ItemEntry<WarheadAssembly> WARHEAD_ASSEMBLY = REGISTRATE
+            .item(CreateMissiles.MOD_ID, "warhead_assembly", WarheadAssembly::new)
             .removeTab(CreativeModeTabs.SEARCH)
             .register();
 
-    public static ItemEntry<ChassisSchematic> CHASSIS_SCHEMATIC = REGISTRATE
-            .item(CreateMissiles.MOD_ID, "chassis_schematic", ChassisSchematic::new)
+    public static ItemEntry<ChassisAssembly> CHASSIS_ASSEMBLY = REGISTRATE
+            .item(CreateMissiles.MOD_ID, "chassis_assembly", ChassisAssembly::new)
             .removeTab(CreativeModeTabs.SEARCH)
             .register();
 
-    public static ItemEntry<ThrusterSchematic> THRUSTER_SCHEMATIC = REGISTRATE
-            .item(CreateMissiles.MOD_ID, "thruster_schematic", ThrusterSchematic::new)
+    public static ItemEntry<ThrusterAssembly> THRUSTER_ASSEMBLY = REGISTRATE
+            .item(CreateMissiles.MOD_ID, "thruster_assembly", ThrusterAssembly::new)
             .removeTab(CreativeModeTabs.SEARCH)
             .register();
 

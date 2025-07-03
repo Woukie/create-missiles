@@ -17,28 +17,28 @@ import net.woukie.createmissiles.registry.Packets;
 import static net.woukie.createmissiles.registry.Menus.CONTROLLER;
 
 public class ControllerMenu extends MissileAbstractMenu {
-    Container schematicatorContainer;
+    Container assemblyPanelContainer;
     Container navigatorContainer;
 
     ContainerData controllerData;
 
-    protected ControllerMenu(int id, Inventory playerInventory, Container container, ContainerData controllerData, Container schematicatorContainer, Container navigatorContainer) {
+    protected ControllerMenu(int id, Inventory playerInventory, Container container, ContainerData controllerData, Container assemblyPanelContainer, Container navigatorContainer) {
         super(CONTROLLER.get(), id, container);
 
         checkContainerDataCount(controllerData, 7);
         checkContainerSize(container, 96);
         checkContainerSize(navigatorContainer, 1);
-        checkContainerSize(schematicatorContainer, 3);
+        checkContainerSize(assemblyPanelContainer, 3);
 
         this.controllerData = controllerData;
         this.addDataSlots(controllerData);
 
-        this.schematicatorContainer = schematicatorContainer;
+        this.assemblyPanelContainer = assemblyPanelContainer;
         this.navigatorContainer = navigatorContainer;
         this.addSlot(new InvisibleSlot(navigatorContainer, 0));
-        this.addSlot(new InvisibleSlot(schematicatorContainer, 0));
-        this.addSlot(new InvisibleSlot(schematicatorContainer, 1));
-        this.addSlot(new InvisibleSlot(schematicatorContainer, 2));
+        this.addSlot(new InvisibleSlot(assemblyPanelContainer, 0));
+        this.addSlot(new InvisibleSlot(assemblyPanelContainer, 1));
+        this.addSlot(new InvisibleSlot(assemblyPanelContainer, 2));
 
         for (int i = 0; i < 96; i++)
             this.addSlot(new InvisibleSlot(container, i));
@@ -71,7 +71,7 @@ public class ControllerMenu extends MissileAbstractMenu {
         return controllerData.get(3) == 1;
     }
 
-    public boolean schematicatorExists() {
+    public boolean assemblyPanelExists() {
         return controllerData.get(4) == 1;
     }
 
@@ -84,25 +84,25 @@ public class ControllerMenu extends MissileAbstractMenu {
     }
 
     public ItemStack getWarhead() {
-        if (!schematicatorExists()) return null;
-        ItemStack item = schematicatorContainer.getItem(0);
-        if (!item.is(Items.WARHEAD_SCHEMATIC.get()))
+        if (!assemblyPanelExists()) return null;
+        ItemStack item = assemblyPanelContainer.getItem(0);
+        if (!item.is(Items.WARHEAD_ASSEMBLY.get()))
             return null;
         return item;
     }
 
     public ItemStack getChassis() {
-        if (!schematicatorExists()) return null;
-        ItemStack item = schematicatorContainer.getItem(1);
-        if (!item.is(Items.CHASSIS_SCHEMATIC.get()))
+        if (!assemblyPanelExists()) return null;
+        ItemStack item = assemblyPanelContainer.getItem(1);
+        if (!item.is(Items.CHASSIS_ASSEMBLY.get()))
             return null;
         return item;
     }
 
     public ItemStack getThruster() {
-        if (!schematicatorExists()) return null;
-        ItemStack item = schematicatorContainer.getItem(2);
-        if (!item.is(Items.THRUSTER_SCHEMATIC.get()))
+        if (!assemblyPanelExists()) return null;
+        ItemStack item = assemblyPanelContainer.getItem(2);
+        if (!item.is(Items.THRUSTER_ASSEMBLY.get()))
             return null;
         return item;
     }

@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.schematicator;
+package net.woukie.createmissiles.block.assemblypanel;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -9,28 +9,28 @@ import net.woukie.createmissiles.block.MissileAbstractMenu;
 import net.woukie.createmissiles.registry.Items;
 import org.jetbrains.annotations.NotNull;
 
-import static net.woukie.createmissiles.registry.Menus.SCHEMATICATOR;
+import static net.woukie.createmissiles.registry.Menus.ASSEMBLY_PANEL;
 
-public class SchematicatorMenu extends MissileAbstractMenu {
-    public SchematicatorMenu(int id, Inventory playerInventory, Container container) {
-        super(SCHEMATICATOR.get(), id, container);
+public class AssemblyPanelMenu extends MissileAbstractMenu {
+    public AssemblyPanelMenu(int id, Inventory playerInventory, Container container) {
+        super(ASSEMBLY_PANEL.get(), id, container);
         checkContainerSize(container, 3);
 
         this.addSlot(new Slot(container, 0, 80, 17) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
-                return itemStack.is(Items.WARHEAD_SCHEMATIC.get());
+                return itemStack.is(Items.WARHEAD_ASSEMBLY.get());
             }
         });
 
         this.addSlot(new Slot(container, 1, 61, 53) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
-                return itemStack.is(Items.CHASSIS_SCHEMATIC.get());
+                return itemStack.is(Items.CHASSIS_ASSEMBLY.get());
             }
         });
 
         this.addSlot(new Slot(container, 2, 99, 53) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
-                return itemStack.is(Items.THRUSTER_SCHEMATIC.get());
+                return itemStack.is(Items.THRUSTER_ASSEMBLY.get());
             }
         });
 
@@ -45,7 +45,7 @@ public class SchematicatorMenu extends MissileAbstractMenu {
         }
     }
 
-    public SchematicatorMenu(int id, Inventory inventory) {
+    public AssemblyPanelMenu(int id, Inventory inventory) {
         this(id, inventory, new SimpleContainer(3));
     }
 }

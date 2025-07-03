@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.schematicator;
+package net.woukie.createmissiles.block.assemblypanel;
 
 import com.simibubi.create.foundation.utility.VoxelShaper;
 import net.minecraft.core.BlockPos;
@@ -13,20 +13,20 @@ import net.woukie.createmissiles.block.MissileAbstractBlock;
 import net.woukie.createmissiles.registry.BlockEntities;
 import org.jetbrains.annotations.NotNull;
 
-public class SchematicatorBlock extends MissileAbstractBlock<SchematicatorBlockEntity> {
+public class AssemblyPanelBlock extends MissileAbstractBlock<AssemblyPanelBlockEntity> {
     private static final VoxelShape leftPillarNorth = Shapes.box(12/16.0, 0/16.0, 15/16.0, 14/16.0, 15/16.0, 16/16.0);
     private static final VoxelShape rightPillarNorth = Shapes.box(2/16.0, 0/16.0, 15/16.0, 4/16.0, 15/16.0, 16/16.0);
     private static final VoxelShape displayNorth = Shapes.box(2/16.0, 5.45/16.0, 10.275/16.0, 14/16.0, 16.925/16.0, 15.8/16.0);
     private static final VoxelShape baseBoxNorth = Shapes.box(3/16.0, 1/16.0, 13/16.0, 13/16.0, 5/16.0, 15/16.0);
     private static final VoxelShape voxelShape = Shapes.or(leftPillarNorth, rightPillarNorth, displayNorth, baseBoxNorth);
 
-    public SchematicatorBlock(Properties properties) {
+    public AssemblyPanelBlock(Properties properties) {
         super(properties);
     }
 
     @Override
-    public BlockEntityType<? extends SchematicatorBlockEntity> getBlockEntityType() {
-        return BlockEntities.SCHEMATICATOR.get();
+    public BlockEntityType<? extends AssemblyPanelBlockEntity> getBlockEntityType() {
+        return BlockEntities.ASSEMBLY_PANEL.get();
     }
 
     @Override
@@ -35,7 +35,7 @@ public class SchematicatorBlock extends MissileAbstractBlock<SchematicatorBlockE
     }
 
     @Override
-    public Class<SchematicatorBlockEntity> getBlockEntityClass() {
-        return SchematicatorBlockEntity.class;
+    public Class<AssemblyPanelBlockEntity> getBlockEntityClass() {
+        return AssemblyPanelBlockEntity.class;
     }
 }

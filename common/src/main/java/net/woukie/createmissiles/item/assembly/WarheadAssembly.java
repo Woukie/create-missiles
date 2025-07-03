@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.item.schematic;
+package net.woukie.createmissiles.item.assembly;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -9,8 +9,8 @@ import net.woukie.createmissiles.registry.PartTypes;
 import net.woukie.createmissiles.registry.Items;
 import org.jetbrains.annotations.NotNull;
 
-public class ChassisSchematic extends Item {
-    public ChassisSchematic(Properties properties) {
+public class WarheadAssembly extends Item {
+    public WarheadAssembly(Properties properties) {
         super(properties);
     }
 
@@ -23,10 +23,10 @@ public class ChassisSchematic extends Item {
         return super.getName(itemStack);
     }
 
-    public static ItemStack createWith(ResourceLocation chassis) {
-        ItemStack itemStack = new ItemStack(Items.CHASSIS_SCHEMATIC.get());
+    public static ItemStack createWith(ResourceLocation warhead) {
+        ItemStack itemStack = new ItemStack(Items.WARHEAD_ASSEMBLY.get());
         CompoundTag compoundTag = itemStack.getOrCreateTag();
-        compoundTag.putString("PartType", chassis.toString());
+        compoundTag.putString("PartType", warhead.toString());
         itemStack.setTag(compoundTag);
         return itemStack;
     }

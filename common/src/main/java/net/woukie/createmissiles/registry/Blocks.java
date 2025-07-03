@@ -14,7 +14,7 @@ import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
 import net.woukie.createmissiles.block.controller.ControllerBlock;
 import net.woukie.createmissiles.block.launchpad.LaunchPadCTBehaviour;
 import net.woukie.createmissiles.block.navigator.NavigatorBlock;
-import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
+import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 
 public class Blocks {
     private static final CreateRegistrate REGISTRATE = CreateMissiles.registrate();
@@ -38,8 +38,8 @@ public class Blocks {
             .simpleItem()
             .register();
 
-    public static final BlockEntry<SchematicatorBlock> SCHEMATICATOR = REGISTRATE
-            .block("schematicator", SchematicatorBlock::new)
+    public static final BlockEntry<AssemblyPanelBlock> ASSEMBLY_PANEL = REGISTRATE
+            .block("assembly_panel", AssemblyPanelBlock::new)
             .initialProperties(SharedProperties::softMetal)
             .properties(p -> p.mapColor(MapColor.COLOR_BROWN))
             .properties(BlockBehaviour.Properties::noOcclusion)
@@ -57,9 +57,9 @@ public class Blocks {
     public static void init() {
         CreateMissiles.LOGGER.info("Registering blocks for " + CreateMissiles.NAME);
 
-        CreativeTabRegistry.appendStack(CreativeMenus.SCHEMATICS_TAB, () -> new ItemStack(LAUNCH_PAD));
-        CreativeTabRegistry.appendStack(CreativeMenus.SCHEMATICS_TAB, () -> new ItemStack(SCHEMATICATOR));
-        CreativeTabRegistry.appendStack(CreativeMenus.SCHEMATICS_TAB, () -> new ItemStack(CONTROLLER));
-        CreativeTabRegistry.appendStack(CreativeMenus.SCHEMATICS_TAB, () -> new ItemStack(NAVIGATOR));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(LAUNCH_PAD));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(ASSEMBLY_PANEL));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(CONTROLLER));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(NAVIGATOR));
     }
 }

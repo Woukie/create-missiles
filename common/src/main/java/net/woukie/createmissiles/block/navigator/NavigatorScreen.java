@@ -172,8 +172,8 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
             return;
         }
 
-        if (!getMenu().schematicatorExists()) {
-            errors.add(Component.translatable("gui.createmissiles.navigator.no_schematicator").getString());
+        if (!getMenu().assemblyPanelExists()) {
+            errors.add(Component.translatable("gui.createmissiles.navigator.no_assembly_panel").getString());
             return;
         }
 
@@ -190,7 +190,7 @@ public class NavigatorScreen extends AbstractContainerScreen<NavigatorMenu> {
         ItemStack thruster = getMenu().getThruster();
 
         if (warhead == null || chassis == null || thruster == null) {
-            errors.add(Component.translatable("gui.createmissiles.navigator.no_schematics").getString());
+            errors.add(Component.translatable("gui.createmissiles.navigator.no_assemblies").getString());
             return;
         }
 

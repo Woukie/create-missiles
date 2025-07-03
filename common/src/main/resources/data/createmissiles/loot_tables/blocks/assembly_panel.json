@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "createmissiles:schematicator"
+          "name": "createmissiles:assembly_panel"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "createmissiles:blocks/schematicator"
+  "random_sequence": "createmissiles:blocks/assembly_panel"
 }

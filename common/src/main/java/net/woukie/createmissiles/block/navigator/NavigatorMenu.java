@@ -20,14 +20,14 @@ import static net.woukie.createmissiles.registry.Menus.NAVIGATOR;
 
 public class NavigatorMenu extends MissileAbstractMenu {
     private final ContainerData containerData;
-    private final Container schematicatorContainer;
+    private final Container assemblyPanelContainer;
 
-    public NavigatorMenu(int id, Inventory playerInventory, Container container, ContainerData containerData, Container schematicatorContainer) {
+    public NavigatorMenu(int id, Inventory playerInventory, Container container, ContainerData containerData, Container assemblyPanelContainer) {
         super(NAVIGATOR.get(), id, container);
         checkContainerSize(container, 1);
         checkContainerDataCount(containerData, 12);
         this.containerData = containerData;
-        this.schematicatorContainer = schematicatorContainer;
+        this.assemblyPanelContainer = assemblyPanelContainer;
 
         this.addSlot(new Slot(container, 0, 66, 35) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
@@ -35,10 +35,10 @@ public class NavigatorMenu extends MissileAbstractMenu {
             }
         });
 
-        checkContainerSize(schematicatorContainer, 3);
-        this.addSlot(new InvisibleSlot(schematicatorContainer, 0));
-        this.addSlot(new InvisibleSlot(schematicatorContainer, 1));
-        this.addSlot(new InvisibleSlot(schematicatorContainer, 2));
+        checkContainerSize(assemblyPanelContainer, 3);
+        this.addSlot(new InvisibleSlot(assemblyPanelContainer, 0));
+        this.addSlot(new InvisibleSlot(assemblyPanelContainer, 1));
+        this.addSlot(new InvisibleSlot(assemblyPanelContainer, 2));
 
         for(int j = 0; j < 3; ++j) {
             for(int k = 0; k < 9; ++k) {
@@ -93,7 +93,7 @@ public class NavigatorMenu extends MissileAbstractMenu {
         return containerData.get(10) == 1;
     }
 
-    public boolean schematicatorExists() {
+    public boolean assemblyPanelExists() {
         return containerData.get(11) == 1;
     }
 
@@ -105,25 +105,25 @@ public class NavigatorMenu extends MissileAbstractMenu {
     }
 
     public ItemStack getWarhead() {
-        if (!schematicatorExists()) return null;
-        ItemStack item = schematicatorContainer.getItem(0);
-        if (!item.is(Items.WARHEAD_SCHEMATIC.get()))
+        if (!assemblyPanelExists()) return null;
+        ItemStack item = assemblyPanelContainer.getItem(0);
+        if (!item.is(Items.WARHEAD_ASSEMBLY.get()))
             return null;
         return item;
     }
 
     public ItemStack getChassis() {
-        if (!schematicatorExists()) return null;
-        ItemStack item = schematicatorContainer.getItem(1);
-        if(!item.is(Items.CHASSIS_SCHEMATIC.get()))
+        if (!assemblyPanelExists()) return null;
+        ItemStack item = assemblyPanelContainer.getItem(1);
+        if(!item.is(Items.CHASSIS_ASSEMBLY.get()))
             return null;
         return item;
     }
 
     public ItemStack getThruster() {
-        if (!schematicatorExists()) return null;
-        ItemStack item = schematicatorContainer.getItem(2);
-        if (!item.is(Items.THRUSTER_SCHEMATIC.get()))
+        if (!assemblyPanelExists()) return null;
+        ItemStack item = assemblyPanelContainer.getItem(2);
+        if (!item.is(Items.THRUSTER_ASSEMBLY.get()))
             return null;
         return item;
     }

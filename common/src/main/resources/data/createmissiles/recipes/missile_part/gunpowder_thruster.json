@@ -11,5 +11,5 @@
       "count": 4
     }
   ],
-  "schematic": "createmissiles:gunpowder_thruster"
+  "assembly": "createmissiles:gunpowder_thruster"
 }

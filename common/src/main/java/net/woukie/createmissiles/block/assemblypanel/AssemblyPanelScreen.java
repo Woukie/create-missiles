@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.schematicator;
+package net.woukie.createmissiles.block.assemblypanel;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -7,10 +7,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.woukie.createmissiles.CreateMissiles;
 
-public class SchematicatorScreen extends AbstractContainerScreen<SchematicatorMenu>  {
-    private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/schematicator.png");
+public class AssemblyPanelScreen extends AbstractContainerScreen<AssemblyPanelMenu>  {
+    private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/assembly_panel.png");
 
-    public SchematicatorScreen(SchematicatorMenu abstractContainerMenu, Inventory inventory, Component component) {
+    public AssemblyPanelScreen(AssemblyPanelMenu abstractContainerMenu, Inventory inventory, Component component) {
         super(abstractContainerMenu, inventory, component);
     }
 

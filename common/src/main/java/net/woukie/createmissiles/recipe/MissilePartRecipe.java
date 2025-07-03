@@ -26,22 +26,22 @@ import java.util.stream.Collectors;
 public class MissilePartRecipe implements Recipe<Container> {
     private final ResourceLocation id;
     private final NonNullList<MissileIngredient> ingredients;
-    private final ResourceLocation schematic;
+    private final ResourceLocation assembly;
 
-    public MissilePartRecipe(ResourceLocation id, NonNullList<MissileIngredient> ingredients, ResourceLocation schematic) {
+    public MissilePartRecipe(ResourceLocation id, NonNullList<MissileIngredient> ingredients, ResourceLocation assembly) {
         this.id = id;
         this.ingredients = ingredients;
-        this.schematic = schematic;
+        this.assembly = assembly;
     }
 
-    public ResourceLocation getSchematic() {
-        return this.schematic;
+    public ResourceLocation getAssembly() {
+        return this.assembly;
     }
 
     public boolean itemComplements(ItemStack itemStack, Container container) {
         List<ItemStack> stacksLeft = new ArrayList<>();
 
-        var partType = PartTypes.get(schematic);
+        var partType = PartTypes.get(assembly);
 
         for (int i = partType.getStartSlot(); i < partType.getEndSlot(); i++)
             if (!container.getItem(i).isEmpty())
@@ -80,7 +80,7 @@ public class MissilePartRecipe implements Recipe<Container> {
 
     public static Optional<MissilePartRecipe> fromResourceLocation(Level level, ResourceLocation resourceLocation) {
         var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MISSILE_PART.get());
-        return missilePartRecipes.stream().filter(r -> r.getSchematic().equals(resourceLocation)).findFirst();
+        return missilePartRecipes.stream().filter(r -> r.getAssembly().equals(resourceLocation)).findFirst();
     }
 
     public static Map<MissileIngredient, Integer> getRemainingItems(MissilePartType partType, Level level, List<ItemStack> items) {
@@ -113,7 +113,7 @@ public class MissilePartRecipe implements Recipe<Container> {
     public boolean matches(@NotNull Container container, @NotNull Level level) {
         List<ItemStack> containerStacks = new ArrayList<>();
 
-        var partType = PartTypes.get(schematic);
+        var partType = PartTypes.get(assembly);
 
         for (int i = partType.getStartSlot(); i < partType.getEndSlot(); i++)
             if (!container.getItem(i).isEmpty())
@@ -162,9 +162,9 @@ public class MissilePartRecipe implements Recipe<Container> {
         @Override
         public @NotNull MissilePartRecipe fromJson(@NotNull ResourceLocation resourceLocation, @NotNull JsonObject jsonObject) {
             NonNullList<MissileIngredient> ingredients = itemsFromJson(GsonHelper.getAsJsonArray(jsonObject, "ingredients"));
-            ResourceLocation schematic = new ResourceLocation(GsonHelper.getAsString(jsonObject, "schematic"));
+            ResourceLocation assembly = new ResourceLocation(GsonHelper.getAsString(jsonObject, "assembly"));
 
-            return new MissilePartRecipe(resourceLocation, ingredients, schematic);
+            return new MissilePartRecipe(resourceLocation, ingredients, assembly);
         }
 
         private static NonNullList<MissileIngredient> itemsFromJson(JsonArray jsonArray) {
@@ -185,9 +185,9 @@ public class MissilePartRecipe implements Recipe<Container> {
             int ingredientCount = friendlyByteBuf.readVarInt();
             NonNullList<MissileIngredient> ingredients = NonNullList.withSize(ingredientCount, MissileIngredient.EMPTY);
             ingredients.replaceAll(ignored -> MissileIngredient.fromNetwork(friendlyByteBuf));
-            ResourceLocation schematic = friendlyByteBuf.readResourceLocation();
+            ResourceLocation assembly = friendlyByteBuf.readResourceLocation();
 
-            return new MissilePartRecipe(resourceLocation, ingredients, schematic);
+            return new MissilePartRecipe(resourceLocation, ingredients, assembly);
         }
 
         @Override
@@ -197,7 +197,7 @@ public class MissilePartRecipe implements Recipe<Container> {
             for(MissileIngredient ingredient : recipe.ingredients)
                 ingredient.toNetwork(friendlyByteBuf);
 
-            friendlyByteBuf.writeResourceLocation(recipe.schematic);
+            friendlyByteBuf.writeResourceLocation(recipe.assembly);
         }
     }
 }

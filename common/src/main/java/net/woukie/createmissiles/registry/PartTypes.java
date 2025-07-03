@@ -10,9 +10,9 @@ import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.models.GunpowderThrusterModel;
 import net.woukie.createmissiles.client.models.PaperChassisModel;
 import net.woukie.createmissiles.client.models.TntWarheadModel;
-import net.woukie.createmissiles.item.schematic.ChassisSchematic;
-import net.woukie.createmissiles.item.schematic.ThrusterSchematic;
-import net.woukie.createmissiles.item.schematic.WarheadSchematic;
+import net.woukie.createmissiles.item.assembly.ChassisAssembly;
+import net.woukie.createmissiles.item.assembly.ThrusterAssembly;
+import net.woukie.createmissiles.item.assembly.WarheadAssembly;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
 import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
@@ -70,9 +70,9 @@ public class PartTypes {
                 new GunpowderThrusterModel()
         ));
 
-        CreativeTabRegistry.appendStack(CreativeMenus.SCHEMATICS_TAB, () -> WarheadSchematic.createWith(id("tnt_warhead")));
-        CreativeTabRegistry.appendStack(CreativeMenus.SCHEMATICS_TAB, () -> ChassisSchematic.createWith(id("paper_chassis")));
-        CreativeTabRegistry.appendStack(CreativeMenus.SCHEMATICS_TAB, () -> ThrusterSchematic.createWith(id("gunpowder_thruster")));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> WarheadAssembly.createWith(id("tnt_warhead")));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> ChassisAssembly.createWith(id("paper_chassis")));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> ThrusterAssembly.createWith(id("gunpowder_thruster")));
     }
 
     private static ResourceLocation id(String id) {

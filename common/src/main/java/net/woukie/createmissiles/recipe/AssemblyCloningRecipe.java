@@ -12,29 +12,29 @@ import net.woukie.createmissiles.registry.Items;
 import net.woukie.createmissiles.registry.RecipeSerializers;
 import org.jetbrains.annotations.NotNull;
 
-public class SchematicCloningRecipe extends CustomRecipe {
-    public SchematicCloningRecipe(ResourceLocation resourceLocation, CraftingBookCategory craftingBookCategory) {
+public class AssemblyCloningRecipe extends CustomRecipe {
+    public AssemblyCloningRecipe(ResourceLocation resourceLocation, CraftingBookCategory craftingBookCategory) {
         super(resourceLocation, craftingBookCategory);
     }
 
-    private boolean isSchematic(ItemStack stack) {
-        return stack.is(Items.WARHEAD_SCHEMATIC.get()) || stack.is(Items.CHASSIS_SCHEMATIC.get()) || stack.is(Items.THRUSTER_SCHEMATIC.get());
+    private boolean isAssembly(ItemStack stack) {
+        return stack.is(Items.WARHEAD_ASSEMBLY.get()) || stack.is(Items.CHASSIS_ASSEMBLY.get()) || stack.is(Items.THRUSTER_ASSEMBLY.get());
     }
 
     @Override
     public boolean matches(CraftingContainer craftingContainer, @NotNull Level level) {
         int paperCount = 0;
-        ItemStack schematic = ItemStack.EMPTY;
+        ItemStack assembly = ItemStack.EMPTY;
 
         for(int j = 0; j < craftingContainer.getContainerSize(); ++j) {
             ItemStack containerItem = craftingContainer.getItem(j);
             if (!containerItem.isEmpty()) {
-                if (isSchematic(containerItem)) {
-                    if (!schematic.isEmpty()) {
+                if (isAssembly(containerItem)) {
+                    if (!assembly.isEmpty()) {
                         return false;
                     }
 
-                    schematic = containerItem;
+                    assembly = containerItem;
                 } else {
                     if (!containerItem.is(net.minecraft.world.item.Items.PAPER)) {
                         return false;
@@ -45,23 +45,23 @@ public class SchematicCloningRecipe extends CustomRecipe {
             }
         }
 
-        return !schematic.isEmpty() && paperCount > 0;
+        return !assembly.isEmpty() && paperCount > 0;
     }
 
     @Override
     public @NotNull ItemStack assemble(CraftingContainer craftingContainer, @NotNull RegistryAccess registryAccess) {
         int paperCount = 0;
-        ItemStack schematic = ItemStack.EMPTY;
+        ItemStack assembly = ItemStack.EMPTY;
 
         for(int j = 0; j < craftingContainer.getContainerSize(); ++j) {
             ItemStack containerItem = craftingContainer.getItem(j);
             if (!containerItem.isEmpty()) {
-                if (isSchematic(containerItem)) {
-                    if (!schematic.isEmpty()) {
+                if (isAssembly(containerItem)) {
+                    if (!assembly.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
 
-                    schematic = containerItem;
+                    assembly = containerItem;
                 } else {
                     if (!containerItem.is(net.minecraft.world.item.Items.PAPER)) {
                         return ItemStack.EMPTY;
@@ -72,8 +72,8 @@ public class SchematicCloningRecipe extends CustomRecipe {
             }
         }
 
-        if (!schematic.isEmpty() && paperCount >= 1) {
-            return schematic.copyWithCount(paperCount + 1);
+        if (!assembly.isEmpty() && paperCount >= 1) {
+            return assembly.copyWithCount(paperCount + 1);
         } else {
             return ItemStack.EMPTY;
         }
@@ -86,6 +86,6 @@ public class SchematicCloningRecipe extends CustomRecipe {
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
-        return RecipeSerializers.SCHEMATIC_CLONING.get();
+        return RecipeSerializers.ASSEMBLY_CLONING.get();
     }
 }

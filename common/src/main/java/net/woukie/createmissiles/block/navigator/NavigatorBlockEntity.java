@@ -19,8 +19,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.woukie.createmissiles.MultiblockHelper;
 import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
-import net.woukie.createmissiles.block.schematicator.SchematicatorBlock;
-import net.woukie.createmissiles.block.schematicator.SchematicatorBlockEntity;
+import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
+import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
 import net.woukie.createmissiles.registry.BlockEntities;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,14 +54,14 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
                     case 9 -> (int) (fuelPercent * 100D);
                     case 10 -> MultiblockHelper.findCorner(
                             blockPos,
-                            blockState.getValue(SchematicatorBlock.FACING).getOpposite(),
+                            blockState.getValue(AssemblyPanelBlock.FACING).getOpposite(),
                             level
                     ) == null ? 0 : 1;
 //                    TODO: Keep track of multiblock instead of searching for it every tick, but this isnt actually expensive. worst case 38 blocks searched
                     case 11 -> MultiblockHelper.findEdgeBlock(
                             NavigatorBlockEntity.this,
                             getLevel(),
-                            BlockEntities.SCHEMATICATOR.get()
+                            BlockEntities.ASSEMBLY_PANEL.get()
                     ) == null ? 0 : 1;
                     default -> 0;
                 };
@@ -169,11 +169,11 @@ public class NavigatorBlockEntity extends MissileAbstractBlockEntity {
     protected @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory) {
         recalculateTarget();
 
-        Direction facing = getBlockState().getValue(SchematicatorBlock.FACING).getOpposite();
+        Direction facing = getBlockState().getValue(AssemblyPanelBlock.FACING).getOpposite();
         BlockPos corner = MultiblockHelper.findCorner(getBlockPos(), facing, level);
-        BlockEntity schematicator = MultiblockHelper.findEdgeBlock(corner, facing, getLevel(), BlockEntities.SCHEMATICATOR.get());
+        BlockEntity assemblyPanel = MultiblockHelper.findEdgeBlock(corner, facing, getLevel(), BlockEntities.ASSEMBLY_PANEL.get());
 
-        return new NavigatorMenu(id, playerInventory, this, this.dataAccess, schematicator == null ? new SimpleContainer(3) : (SchematicatorBlockEntity)schematicator);
+        return new NavigatorMenu(id, playerInventory, this, this.dataAccess, assemblyPanel == null ? new SimpleContainer(3) : (AssemblyPanelBlockEntity)assemblyPanel);
     }
 
     @Override

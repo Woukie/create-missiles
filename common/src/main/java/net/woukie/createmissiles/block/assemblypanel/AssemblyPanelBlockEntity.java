@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.schematicator;
+package net.woukie.createmissiles.block.assemblypanel;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -14,20 +14,20 @@ import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
 import net.woukie.createmissiles.registry.Items;
 import org.jetbrains.annotations.NotNull;
 
-public class SchematicatorBlockEntity extends MissileAbstractBlockEntity {
-    public SchematicatorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
+public class AssemblyPanelBlockEntity extends MissileAbstractBlockEntity {
+    public AssemblyPanelBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
         items = NonNullList.withSize(3, ItemStack.EMPTY);
     }
 
     @Override
     protected @NotNull Component getDefaultName() {
-        return Component.translatable("container.createmissiles.schematicator");
+        return Component.translatable("container.createmissiles.assembly_panel");
     }
 
     @Override
     protected @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory) {
-        return new SchematicatorMenu(id, playerInventory, this);
+        return new AssemblyPanelMenu(id, playerInventory, this);
     }
 
     @Override
@@ -38,11 +38,11 @@ public class SchematicatorBlockEntity extends MissileAbstractBlockEntity {
     @Override
     public boolean canPlaceItem(int i, @NotNull ItemStack itemStack) {
         if (i == 0) {
-            return itemStack.is(Items.WARHEAD_SCHEMATIC.get());
+            return itemStack.is(Items.WARHEAD_ASSEMBLY.get());
         } else if (i == 1) {
-            return itemStack.is(Items.CHASSIS_SCHEMATIC.get());
+            return itemStack.is(Items.CHASSIS_ASSEMBLY.get());
         } else if (i == 2) {
-            return itemStack.is(Items.THRUSTER_SCHEMATIC.get());
+            return itemStack.is(Items.THRUSTER_ASSEMBLY.get());
         }
 
         return false;

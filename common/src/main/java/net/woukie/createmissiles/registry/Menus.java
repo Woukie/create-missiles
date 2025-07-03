@@ -9,7 +9,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.controller.ControllerMenu;
 import net.woukie.createmissiles.block.navigator.NavigatorMenu;
-import net.woukie.createmissiles.block.schematicator.SchematicatorMenu;
+import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelMenu;
 
 import static net.woukie.createmissiles.CreateMissiles.MANAGER;
 import static net.woukie.createmissiles.CreateMissiles.MOD_ID;
@@ -22,9 +22,9 @@ public class Menus {
             () -> new MenuType<>(ControllerMenu::new, FeatureFlags.VANILLA_SET)
     );
 
-    public static final RegistrySupplier<MenuType<SchematicatorMenu>> SCHEMATICATOR = MENUS.register(
-            new ResourceLocation(MOD_ID, "schematicator"),
-            () -> new MenuType<>(SchematicatorMenu::new, FeatureFlags.VANILLA_SET)
+    public static final RegistrySupplier<MenuType<AssemblyPanelMenu>> ASSEMBLY_PANEL = MENUS.register(
+            new ResourceLocation(MOD_ID, "assembly_panel"),
+            () -> new MenuType<>(AssemblyPanelMenu::new, FeatureFlags.VANILLA_SET)
     );
 
     public static final RegistrySupplier<MenuType<NavigatorMenu>> NAVIGATOR = MENUS.register(
