@@ -393,8 +393,10 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
 
     @Override
     public void saveToItem(@NotNull ItemStack itemStack) {
-        super.saveToItem(itemStack);
-        itemStack.removeTagKey("EntityID");
+        var data = this.saveWithoutMetadata();
+        data.remove("EntityID");
+        data.remove("Items");
+        BlockItem.setBlockEntityData(itemStack, this.getType(), data);
     }
 
     @Override
