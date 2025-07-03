@@ -20,6 +20,7 @@ import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu> {
     private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/control_panel.png");
@@ -43,6 +44,7 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
     private static final int coverWidth = buttonWidth / 2;
     private static final int coverHeight = buttonHeight;
 
+    private double lineHeight = 9.0 / 2.0;
     private double currentOpenPercent = 0;
     private double currentScrollPosition = 0;
 
@@ -143,6 +145,8 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
         text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigation_panel.assembly_panel_title").getString() + ": ", assemblyPanelExists, hasAssemblies));
 
 //        Recipe
+        int lineCount = 9;
+
         var warheadItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(warheadStack), minecraft.level, getMenu().getItems());
         var chassisItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(chassisStack), minecraft.level, getMenu().getItems());
         var thrusterItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(thrusterStack), minecraft.level, getMenu().getItems());
@@ -153,20 +157,24 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
 
         text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigation_panel.warhead_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
         text.add(FormattedText.of(warheadPercent + "%\n", Style.EMPTY.withColor(warheadPercent == 0 ? 16711680 : (warheadPercent == 100 ? 65280 : 16776960))));
-        if (warheadItemsLeft != null) writeIngredientStatus(text, warheadItemsLeft);
+        if (warheadItemsLeft != null) lineCount += writeIngredientStatus(text, warheadItemsLeft);
 
         text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigation_panel.chassis_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
         text.add(FormattedText.of(chassisPercent + "%\n", Style.EMPTY.withColor(chassisPercent == 0 ? 16711680 : (chassisPercent == 100 ? 65280 : 16776960))));
-        if (chassisItemsLeft != null) writeIngredientStatus(text, chassisItemsLeft);
+        if (chassisItemsLeft != null) lineCount += writeIngredientStatus(text, chassisItemsLeft);
 
         text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigation_panel.thruster_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
         text.add(FormattedText.of(thrusterPercent + "%\n", Style.EMPTY.withColor(thrusterPercent == 0 ? 16711680 : (thrusterPercent == 100 ? 65280 : 16776960))));
-        if (thrusterItemsLeft != null) writeIngredientStatus(text, thrusterItemsLeft);
+        if (thrusterItemsLeft != null) lineCount += writeIngredientStatus(text, thrusterItemsLeft);
 
 //        Render
         gui.pose().pushPose();
         gui.pose().translate(consoleLeft, consoleTop, 0);
-        gui.pose().translate(0, currentScrollPosition * 4, 0);
+
+        this.currentScrollPosition = Math.max(-lineHeight * lineCount -1 +consoleHeight, this.currentScrollPosition);
+        this.currentScrollPosition = Math.min(0, this.currentScrollPosition);
+
+        gui.pose().translate(0, currentScrollPosition, 0);
         gui.pose().scale(0.5F, 0.5F, 1);
 //        Scissor ignores pose transforms
         gui.enableScissor(consoleLeft + leftPos, consoleTop + topPos, consoleLeft + leftPos + consoleWidth, consoleTop + topPos + consoleHeight);
@@ -177,7 +185,8 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
         return launchPad && assemblyPanelExists && navigationPanel && hasAssemblies && hasDestination && chassisPercent == 100 && warheadPercent == 100 && thrusterPercent == 100;
     }
 
-    private void writeIngredientStatus(List<FormattedText> text, Map<MissileIngredient, Integer> ingredients) {
+    private int writeIngredientStatus(List<FormattedText> text, Map<MissileIngredient, Integer> ingredients) {
+        AtomicInteger increment = new AtomicInteger();
         ingredients.forEach((ingredient, left) -> {
             int required = ingredient.getCount();
             int have = required - left;
@@ -194,7 +203,10 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
 
             text.add(FormattedText.of("> " + name.substring(1, name.length() - 1) + " ", Style.EMPTY.withColor(16777215)));
             text.add(FormattedText.of(have + "/" + required + "\n", Style.EMPTY.withColor(have == required ? 65280 : (have == 0 ? 16711680 : 16776960))));
+            increment.addAndGet(name.length() / 32 + 1); // Good enough fix for long names
         });
+
+        return increment.get();
     }
 
     private List<FormattedText> formatStatus(String text, boolean online, boolean valid) {
@@ -207,7 +219,7 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
 
     @Override
     public boolean mouseScrolled(double d, double e, double f) {
-        this.currentScrollPosition += f;
+        this.currentScrollPosition += f * 4f;
         return true;
     }
 
