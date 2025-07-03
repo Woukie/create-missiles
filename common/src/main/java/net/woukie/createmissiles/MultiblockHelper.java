@@ -6,7 +6,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.woukie.createmissiles.block.controller.ControllerBlockEntity;
+import net.woukie.createmissiles.block.controlpanel.ControlPanelBlockEntity;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
 import net.woukie.createmissiles.registry.BlockEntities;
 
@@ -76,7 +76,7 @@ public class MultiblockHelper {
         return true;
     }
 
-    public static ControllerBlockEntity findControllerFromLaunchPad(Level level, BlockPos pos) {
+    public static ControlPanelBlockEntity findControlPanelFromLaunchPad(Level level, BlockPos pos) {
         Direction forward = Direction.NORTH;
         Direction right = forward.getClockWise();
 
@@ -91,9 +91,9 @@ public class MultiblockHelper {
                 if (!(level.getBlockEntity(corner.relative(forward, -x).relative(right, -z)) instanceof LaunchPadBlockEntity))
                     return null;
 
-        BlockEntity blockEntity = MultiblockHelper.findEdgeBlock(corner, forward.getOpposite(), level, BlockEntities.CONTROLLER.get());
+        BlockEntity blockEntity = MultiblockHelper.findEdgeBlock(corner, forward.getOpposite(), level, BlockEntities.CONTROL_PANEL.get());
         if (blockEntity != null)
-            return (ControllerBlockEntity)blockEntity;
+            return (ControlPanelBlockEntity)blockEntity;
 
         return null;
     }

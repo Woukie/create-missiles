@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
-import net.woukie.createmissiles.block.controller.ControllerBlock;
+import net.woukie.createmissiles.block.controlpanel.ControlPanelBlock;
 import net.woukie.createmissiles.block.launchpad.LaunchPadCTBehaviour;
 import net.woukie.createmissiles.block.navigator.NavigatorBlock;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
@@ -30,8 +30,8 @@ public class Blocks {
             .simpleItem()
             .register();
 
-    public static final BlockEntry<ControllerBlock> CONTROLLER = REGISTRATE
-            .block("controller", ControllerBlock::new)
+    public static final BlockEntry<ControlPanelBlock> CONTROL_PANEL = REGISTRATE
+            .block("control_panel", ControlPanelBlock::new)
             .initialProperties(SharedProperties::softMetal)
             .properties(p -> p.mapColor(MapColor.COLOR_BROWN))
             .properties(BlockBehaviour.Properties::noOcclusion)
@@ -59,7 +59,7 @@ public class Blocks {
 
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(LAUNCH_PAD));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(ASSEMBLY_PANEL));
-        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(CONTROLLER));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(CONTROL_PANEL));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(NAVIGATOR));
     }
 }

@@ -21,7 +21,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.woukie.createmissiles.MultiblockHelper;
-import net.woukie.createmissiles.block.controller.ControllerBlockEntity;
+import net.woukie.createmissiles.block.controlpanel.ControlPanelBlockEntity;
 import net.woukie.createmissiles.registry.BlockEntities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -93,9 +93,9 @@ public class LaunchPadBlock extends KineticBlock implements IBE<LaunchPadBlockEn
 
         @Override
         public boolean canPlaceItemThroughFace(int i, @NotNull ItemStack itemStack, @Nullable Direction direction) {
-            ControllerBlockEntity controllerBlockEntity = MultiblockHelper.findControllerFromLaunchPad((Level) level, pos);
-            if (controllerBlockEntity == null) return false;
-            return controllerBlockEntity.findAcceptingRecipe(itemStack) != null;
+            ControlPanelBlockEntity controlPanelBlockEntity = MultiblockHelper.findControlPanelFromLaunchPad((Level) level, pos);
+            if (controlPanelBlockEntity == null) return false;
+            return controlPanelBlockEntity.findAcceptingRecipe(itemStack) != null;
         }
 
         @Override
@@ -108,9 +108,9 @@ public class LaunchPadBlock extends KineticBlock implements IBE<LaunchPadBlockEn
             ItemStack item = getItem(0);
             if (item.isEmpty()) return;
 
-            ControllerBlockEntity controllerBlockEntity = MultiblockHelper.findControllerFromLaunchPad((Level) level, pos);
-            if (controllerBlockEntity == null) return;
-            controllerBlockEntity.giveItem(item);
+            ControlPanelBlockEntity controlPanelBlockEntity = MultiblockHelper.findControlPanelFromLaunchPad((Level) level, pos);
+            if (controlPanelBlockEntity == null) return;
+            controlPanelBlockEntity.giveItem(item);
         }
     }
 }

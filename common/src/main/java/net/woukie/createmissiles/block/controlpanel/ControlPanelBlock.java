@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.controller;
+package net.woukie.createmissiles.block.controlpanel;
 
 import com.simibubi.create.foundation.utility.VoxelShaper;
 import net.minecraft.core.BlockPos;
@@ -16,20 +16,20 @@ import net.woukie.createmissiles.block.MissileAbstractBlock;
 import net.woukie.createmissiles.registry.BlockEntities;
 import org.jetbrains.annotations.NotNull;
 
-public class ControllerBlock extends MissileAbstractBlock<ControllerBlockEntity> {
+public class ControlPanelBlock extends MissileAbstractBlock<ControlPanelBlockEntity> {
     private static final VoxelShape leftPillarNorth = Shapes.box(12/16.0, 0/16.0, 15/16.0, 14/16.0, 15/16.0, 16/16.0);
     private static final VoxelShape rightPillarNorth = Shapes.box(2/16.0, 0/16.0, 15/16.0, 4/16.0, 15/16.0, 16/16.0);
     private static final VoxelShape displayNorth = Shapes.box(1/16.0, 9.325/16.0, 12.05/16.0, 15/16.0, 17.075/16.0, 1);
     private static final VoxelShape baseBoxNorth = Shapes.box(3/16.0, 1/16.0, 13/16.0, 13/16.0, 5/16.0, 15/16.0);
     private static final VoxelShape voxelShape = Shapes.or(leftPillarNorth, rightPillarNorth, displayNorth, baseBoxNorth);
 
-    public ControllerBlock(Properties properties) {
+    public ControlPanelBlock(Properties properties) {
         super(properties);
     }
 
     @Override
-    public BlockEntityType<? extends ControllerBlockEntity> getBlockEntityType() {
-        return BlockEntities.CONTROLLER.get();
+    public BlockEntityType<? extends ControlPanelBlockEntity> getBlockEntityType() {
+        return BlockEntities.CONTROL_PANEL.get();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ControllerBlock extends MissileAbstractBlock<ControllerBlockEntity>
     @Override
     public <S extends BlockEntity> BlockEntityTicker<S> getTicker(Level level, BlockState blockState, BlockEntityType<S> type) {
         return (level1, blockPos, blockState1, blockEntity) -> {
-            if (blockEntity instanceof ControllerBlockEntity navigator) {
+            if (blockEntity instanceof ControlPanelBlockEntity navigator) {
                 navigator.tick();
                 if (level1.getServer() != null && !level1.isClientSide)
                     navigator.serverTick();
@@ -49,7 +49,7 @@ public class ControllerBlock extends MissileAbstractBlock<ControllerBlockEntity>
     }
 
     @Override
-    public Class<ControllerBlockEntity> getBlockEntityClass() {
-        return ControllerBlockEntity.class;
+    public Class<ControlPanelBlockEntity> getBlockEntityClass() {
+        return ControlPanelBlockEntity.class;
     }
 }

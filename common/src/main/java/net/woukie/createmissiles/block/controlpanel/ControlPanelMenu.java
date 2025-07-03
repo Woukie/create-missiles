@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.controller;
+package net.woukie.createmissiles.block.controlpanel;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
@@ -10,28 +10,28 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.block.InvisibleSlot;
 import net.woukie.createmissiles.block.MissileAbstractMenu;
-import net.woukie.createmissiles.block.controller.messages.ClickLaunchMessage;
+import net.woukie.createmissiles.block.controlpanel.messages.ClickLaunchMessage;
 import net.woukie.createmissiles.registry.Items;
 import net.woukie.createmissiles.registry.Packets;
 
-import static net.woukie.createmissiles.registry.Menus.CONTROLLER;
+import static net.woukie.createmissiles.registry.Menus.CONTROL_PANEL;
 
-public class ControllerMenu extends MissileAbstractMenu {
+public class ControlPanelMenu extends MissileAbstractMenu {
     Container assemblyPanelContainer;
     Container navigatorContainer;
 
-    ContainerData controllerData;
+    ContainerData controlPanelData;
 
-    protected ControllerMenu(int id, Inventory playerInventory, Container container, ContainerData controllerData, Container assemblyPanelContainer, Container navigatorContainer) {
-        super(CONTROLLER.get(), id, container);
+    protected ControlPanelMenu(int id, Inventory playerInventory, Container container, ContainerData controlPanelData, Container assemblyPanelContainer, Container navigatorContainer) {
+        super(CONTROL_PANEL.get(), id, container);
 
-        checkContainerDataCount(controllerData, 7);
+        checkContainerDataCount(controlPanelData, 7);
         checkContainerSize(container, 96);
         checkContainerSize(navigatorContainer, 1);
         checkContainerSize(assemblyPanelContainer, 3);
 
-        this.controllerData = controllerData;
-        this.addDataSlots(controllerData);
+        this.controlPanelData = controlPanelData;
+        this.addDataSlots(controlPanelData);
 
         this.assemblyPanelContainer = assemblyPanelContainer;
         this.navigatorContainer = navigatorContainer;
@@ -51,36 +51,36 @@ public class ControllerMenu extends MissileAbstractMenu {
             this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 142));
     }
 
-    public ControllerMenu(int id, Inventory inventory) {
+    public ControlPanelMenu(int id, Inventory inventory) {
         this(id, inventory, new SimpleContainer(96), new SimpleContainerData(7), new SimpleContainer(3), new SimpleContainer(1));
     }
 
     public void clickLaunch() {
-        Packets.CONTROLLER_CLICK_LAUNCH.sendToServer(new ClickLaunchMessage(getPosition()));
+        Packets.CONTROL_PANEL_CLICK_LAUNCH.sendToServer(new ClickLaunchMessage(getPosition()));
     }
 
     public BlockPos getPosition() {
         return new BlockPos(
-                controllerData.get(0),
-                controllerData.get(1),
-                controllerData.get(2)
+                controlPanelData.get(0),
+                controlPanelData.get(1),
+                controlPanelData.get(2)
         );
     }
 
     public boolean launchPadExists() {
-        return controllerData.get(3) == 1;
+        return controlPanelData.get(3) == 1;
     }
 
     public boolean assemblyPanelExists() {
-        return controllerData.get(4) == 1;
+        return controlPanelData.get(4) == 1;
     }
 
     public boolean navigatorExists() {
-        return controllerData.get(5) == 1;
+        return controlPanelData.get(5) == 1;
     }
 
     public boolean launchPadPowered() {
-        return controllerData.get(6) != 0;
+        return controlPanelData.get(6) != 0;
     }
 
     public ItemStack getWarhead() {

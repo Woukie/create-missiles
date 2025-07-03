@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.controller;
+package net.woukie.createmissiles.block.controlpanel;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,7 +45,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 // Inventory divided up into 32-slot areas representing thruster, chassis and warhead
-public class ControllerBlockEntity extends MissileAbstractBlockEntity {
+public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
     private boolean initialized;
     private UUID entityId = null;
 
@@ -60,7 +60,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     private int chassisBuildPercent;
     private int thrusterBuildPercent;
 
-    public ControllerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
+    public ControlPanelBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
         this.items = NonNullList.withSize(96, ItemStack.EMPTY);
         this.dataAccess = new ContainerData() {
@@ -73,7 +73,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
                     case 3 -> cornerLaunchPadPos == null ? 0 : 1;
                     case 4 -> assemblyPanel == null ? 0 : 1;
                     case 5 -> MultiblockHelper.findEdgeBlock(
-                            ControllerBlockEntity.this,
+                            ControlPanelBlockEntity.this,
                             getLevel(),
                             BlockEntities.NAVIGATOR.get()
                     ) == null ? 0 : 1;
@@ -183,7 +183,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     public void serverTick() {
         if (!initialized && hasLevel()) {
             initialized = true;
-            ControllerInstanceTracker.add(this);
+            ControlPanelInstanceTracker.add(this);
         }
 
         ServerLevel level = (ServerLevel) getLevel();
@@ -286,7 +286,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
         if (assemblyPanel == null) return;
 
         NavigatorBlockEntity navigator = (NavigatorBlockEntity) MultiblockHelper.findEdgeBlock(
-                ControllerBlockEntity.this,
+                ControlPanelBlockEntity.this,
                 getLevel(),
                 BlockEntities.NAVIGATOR.get()
         );
@@ -353,7 +353,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
     @Override
     public void setRemoved() {
         super.setRemoved();
-        ControllerInstanceTracker.remove(this);
+        ControlPanelInstanceTracker.remove(this);
         if (getLevel() != null && !getLevel().isClientSide) {
             ServerLevel level = (ServerLevel) getLevel();
             Entity entity = level.getEntity(entityId);
@@ -384,7 +384,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
     @Override
     protected @NotNull Component getDefaultName() {
-        return Component.translatable("container.createmissiles.controller");
+        return Component.translatable("container.createmissiles.control_panel");
     }
 
     @Override
@@ -393,7 +393,7 @@ public class ControllerBlockEntity extends MissileAbstractBlockEntity {
 
         BlockEntity navigator = MultiblockHelper.findEdgeBlock(cornerLaunchPadPos, facing, getLevel(), BlockEntities.NAVIGATOR.get());
 
-        return new ControllerMenu(
+        return new ControlPanelMenu(
                 id,
                 playerInventory,
                 this,

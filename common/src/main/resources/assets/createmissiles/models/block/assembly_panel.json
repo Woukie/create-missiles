@@ -3,7 +3,7 @@
 	"texture_size": [32, 32],
 	"textures": {
 		"0": "createmissiles:block/assembly_panel_screen",
-		"1": "createmissiles:block/controller",
+		"1": "createmissiles:block/control_panel",
 		"particle": "createmissiles:block/assembly_panel_screen"
 	},
 	"elements": [

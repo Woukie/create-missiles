@@ -1,7 +1,7 @@
 {
   "values": [
     "createmissiles:launch_pad",
-    "createmissiles:controller",
+    "createmissiles:control_panel",
     "createmissiles:assembly_panel",
     "createmissiles:navigator"
   ]

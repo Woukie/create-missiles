@@ -17,7 +17,7 @@ public class CreativeMenus {
             "createmissiles",
             () -> CreativeTabRegistry.create(
                     Component.translatable("category.createmissiles"),
-                    () -> new ItemStack(Blocks.CONTROLLER.get())
+                    () -> new ItemStack(Blocks.CONTROL_PANEL.get())
             )
     );
 

@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "createmissiles:block/controller",
-		"particle": "createmissiles:block/controller"
+		"0": "createmissiles:block/control_panel",
+		"particle": "createmissiles:block/control_panel"
 	},
 	"elements": [
 		{

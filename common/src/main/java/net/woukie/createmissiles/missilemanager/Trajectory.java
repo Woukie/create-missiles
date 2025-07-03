@@ -6,7 +6,7 @@ import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 
 public class Trajectory {
-//    Data computed at controller
+//    Data computed at control panel
     private TrajectoryData data;
 
 //    Data computed at run-time

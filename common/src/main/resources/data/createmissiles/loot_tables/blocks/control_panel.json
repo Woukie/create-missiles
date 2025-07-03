@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "createmissiles:controller"
+          "name": "createmissiles:control_panel"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "createmissiles:blocks/controller"
+  "random_sequence": "createmissiles:blocks/control_panel"
 }

@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "createmissiles:block/controller",
+		"0": "createmissiles:block/control_panel",
 		"1": "createmissiles:block/navigator_screen",
 		"particle": "createmissiles:block/navigator_screen"
 	},

@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.controller;
+package net.woukie.createmissiles.block.controlpanel;
 
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
@@ -21,8 +21,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
-    private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/controller.png");
+public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu> {
+    private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/control_panel.png");
     private static final ResourceLocation COVER_LEFT = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/cover_l.png");
     private static final ResourceLocation COVER_RIGHT = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/cover_r.png");
     private static final ResourceLocation BUTTON = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/button.png");
@@ -46,7 +46,7 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerMenu> {
     private double currentOpenPercent = 0;
     private double currentScrollPosition = 0;
 
-    public ControllerScreen(ControllerMenu abstractContainerMenu, Inventory inventory, Component component) {
+    public ControlPanelScreen(ControlPanelMenu abstractContainerMenu, Inventory inventory, Component component) {
         super(abstractContainerMenu, inventory, component);
     }
 

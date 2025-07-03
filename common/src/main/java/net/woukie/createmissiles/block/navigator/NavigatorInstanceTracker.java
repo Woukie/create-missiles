@@ -7,19 +7,19 @@ import net.minecraft.world.level.Level;
 import java.util.WeakHashMap;
 
 public class NavigatorInstanceTracker {
-    private static final WorldAttached<WeakHashMap<BlockPos, NavigatorBlockEntity>> controllers = new WorldAttached<>(world -> new WeakHashMap<>()) {};
+    private static final WorldAttached<WeakHashMap<BlockPos, NavigatorBlockEntity>> navigators = new WorldAttached<>(world -> new WeakHashMap<>()) {};
 
     public static NavigatorBlockEntity get(Level world, BlockPos pos) {
-        return controllers.get(world).get(pos);
+        return navigators.get(world).get(pos);
     }
 
     public static void add(NavigatorBlockEntity be) {
-        controllers.get(be.getLevel())
+        navigators.get(be.getLevel())
                 .put(be.getBlockPos(), be);
     }
 
     public static void remove(NavigatorBlockEntity be) {
-        controllers.get(be.getLevel())
+        navigators.get(be.getLevel())
                 .remove(be.getBlockPos());
     }
 }

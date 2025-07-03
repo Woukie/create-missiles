@@ -1,11 +1,11 @@
-package net.woukie.createmissiles.block.controller.messages;
+package net.woukie.createmissiles.block.controlpanel.messages;
 
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
-import net.woukie.createmissiles.block.controller.ControllerBlockEntity;
-import net.woukie.createmissiles.block.controller.ControllerInstanceTracker;
+import net.woukie.createmissiles.block.controlpanel.ControlPanelBlockEntity;
+import net.woukie.createmissiles.block.controlpanel.ControlPanelInstanceTracker;
 
 import java.util.function.Supplier;
 
@@ -26,11 +26,11 @@ public class ClickLaunchMessage {
 
     public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {
         Player player = contextSupplier.get().getPlayer();
-        ControllerBlockEntity controller = ControllerInstanceTracker.get(player.level(), pos);
+        ControlPanelBlockEntity controlPanel = ControlPanelInstanceTracker.get(player.level(), pos);
 
-        if (controller == null)
+        if (controlPanel == null)
             return;
 
-        controller.launch();
+        controlPanel.launch();
     }
 }
