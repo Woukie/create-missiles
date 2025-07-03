@@ -14,6 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -203,6 +204,14 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
             entity.setPos(entityPosition.getX() + 0.5, entityPosition.getY() + 0.5, entityPosition.getZ() + 0.5);
             level.addFreshEntity(entity);
             this.entityId = entity.getUUID();
+        }
+
+        if (cornerLaunchPadPos == null) {
+            ejectNotNeededItems(null, 0, 96);
+            var missileEntity = (MissileEntity) entity;
+            missileEntity.setWarheadBuildPercent(0);
+            missileEntity.setChassisBuildPercent(0);
+            missileEntity.setThrusterBuildPercent(0);
         }
 
         if (assemblyPanel != null && entity.getType() != EntityTypes.MISSILE) {
