@@ -32,7 +32,6 @@ repositories {
     }
 
     maven { url = "https://maven.shedaniel.me" } // Cloth Config, REI
-    maven { url = "https://maven.blamejared.com" } // JEI
     maven { url = "https://maven.terraformersmc.com/releases" } // Mod Menu, EMI
 }
 
