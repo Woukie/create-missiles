@@ -7,6 +7,9 @@ import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;
@@ -166,6 +169,8 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
                 BlockEntities.ASSEMBLY_PANEL.get()
         );
 
+        int oldChecksum = warheadBuildPercent + chassisBuildPercent + thrusterBuildPercent;
+
         warheadBuildPercent = 0;
         chassisBuildPercent = 0;
         thrusterBuildPercent = 0;
@@ -179,6 +184,11 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
         warheadBuildPercent = MissilePartRecipe.getBuildPercentage(warheadType, level, items);
         chassisBuildPercent = MissilePartRecipe.getBuildPercentage(chassisType, level, items);
         thrusterBuildPercent = MissilePartRecipe.getBuildPercentage(thrusterType, level, items);
+
+        var soundOrigin = cornerLaunchPadPos.relative(facing).relative(facing.getClockWise());
+        if (oldChecksum != warheadBuildPercent + chassisBuildPercent + thrusterBuildPercent && level != null) {
+            level.playSound(null, soundOrigin, SoundEvents.METAL_PLACE, SoundSource.BLOCKS);
+        }
     }
 
     public void serverTick() {
@@ -212,6 +222,7 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
             missileEntity.setWarheadBuildPercent(0);
             missileEntity.setChassisBuildPercent(0);
             missileEntity.setThrusterBuildPercent(0);
+            level.playSound(null, entityPosition, SoundEvents.CHAIN_BREAK, SoundSource.BLOCKS);
         }
 
         if (assemblyPanel != null && entity.getType() != EntityTypes.MISSILE) {
