@@ -17,18 +17,27 @@ public class AssemblyPanelMenu extends MissileAbstractMenu {
         checkContainerSize(container, 3);
 
         this.addSlot(new Slot(container, 0, 80, 17) {
+            public int getMaxStackSize() {
+                return 1;
+            }
             public boolean mayPlace(@NotNull ItemStack itemStack) {
                 return itemStack.is(Items.WARHEAD_ASSEMBLY.get());
             }
         });
 
         this.addSlot(new Slot(container, 1, 61, 53) {
+            public int getMaxStackSize() {
+                return 1;
+            }
             public boolean mayPlace(@NotNull ItemStack itemStack) {
                 return itemStack.is(Items.CHASSIS_ASSEMBLY.get());
             }
         });
 
         this.addSlot(new Slot(container, 2, 99, 53) {
+            public int getMaxStackSize() {
+                return 1;
+            }
             public boolean mayPlace(@NotNull ItemStack itemStack) {
                 return itemStack.is(Items.THRUSTER_ASSEMBLY.get());
             }
