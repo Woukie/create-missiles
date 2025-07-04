@@ -153,10 +153,20 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         gui.pose().pushPose();
         gui.pose().translate(mapLeft, mapTop, 10);
 
+        // Scissor ignores poses
+        int scissorLeft = leftPos + mapLeft;
+        int scissorTop = topPos + mapTop;
+        gui.enableScissor(scissorLeft - 1, scissorTop - 1, scissorLeft + mapWidth + 1, scissorTop + mapHeight + 1);
+
+        gui.pose().pushPose();
+        gui.pose().translate(0, 0, -1);
         gui.blit(MAP_TARGET, scaledX - 4, scaledY - 4, 2, 0, 0, 9, 9, 9, 9);
+        gui.pose().popPose();
+
         gui.blit(MAP_TARGET_VERTICAL, scaledX - 2, -4, 1, 0, 0, 5, 62, 5 ,62);
         gui.blit(MAP_TARGET_HORIZONTAL, -4, scaledY - 2, 1, 0, 0, 62, 5, 62, 5);
 
+        gui.disableScissor();
         gui.pose().popPose();
     }
 
