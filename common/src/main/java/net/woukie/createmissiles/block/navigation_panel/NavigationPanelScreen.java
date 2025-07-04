@@ -61,8 +61,6 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
     public void render(@NotNull GuiGraphics gui, int i, int j, float f) {
         super.render(gui, i, j, f);
         this.renderTooltip(gui, i, j);
-
-        renderCrosshair(gui);
     }
 
     @Override
@@ -74,6 +72,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         gui.blit(BACKGROUND, 0, 0, 0, 0, this.imageWidth, this.imageHeight);
 
         renderMap(gui);
+        renderCrosshair(gui);
         renderFuel(gui);
         renderTrajectory(gui);
         renderErrors(gui);
@@ -124,9 +123,9 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         }
 
         gui.pose().pushPose();
-        gui.pose().translate(mapLeft, mapTop, 0);
+        gui.pose().translate(mapLeft, mapTop, 1);
         gui.pose().scale((float) mapWidth / 128, (float) mapHeight / 128, 1);
-        minecraft.gameRenderer.getMapRenderer().render(gui.pose(), gui.bufferSource(), mapId, mapData, true, 15728880);
+        this.minecraft.gameRenderer.getMapRenderer().render(gui.pose(), gui.bufferSource(), mapId, mapData, true, 15728880);
         gui.pose().popPose();
     }
 
@@ -152,7 +151,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         int scaledY = (int) (currentMapCrosshairZ * mapHeight / 128);
 
         gui.pose().pushPose();
-        gui.pose().translate(mapLeft + leftPos, mapTop + topPos, 0);
+        gui.pose().translate(mapLeft, mapTop, 10);
 
         gui.blit(MAP_TARGET, scaledX - 4, scaledY - 4, 2, 0, 0, 9, 9, 9, 9);
         gui.blit(MAP_TARGET_VERTICAL, scaledX - 2, -4, 1, 0, 0, 5, 62, 5 ,62);
