@@ -56,14 +56,6 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
     public void render(@NotNull GuiGraphics gui, int i, int j, float f) {
         super.render(gui, i, j, f);
         this.renderTooltip(gui, i, j);
-
-        gui.pose().pushPose();
-        gui.pose().translate(leftPos, topPos, 0);
-
-        boolean buttonOpen = renderLogs(gui);
-        renderButton(gui, buttonOpen, i, j);
-
-        gui.pose().popPose();
     }
 
     private void renderButton(@NotNull GuiGraphics gui, boolean buttonOpen, double mouseX, double mouseY) {
@@ -229,6 +221,9 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
         gui.pose().translate(leftPos, topPos, 0);
 
         gui.blit(BACKGROUND, 0, 0, 0, 0, this.imageWidth, this.imageHeight);
+
+        boolean buttonOpen = renderLogs(gui);
+        renderButton(gui, buttonOpen, i, j);
 
         gui.pose().popPose();
     }
