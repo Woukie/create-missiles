@@ -56,7 +56,7 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
     }
 
     private static void renderPart(@NotNull MissileEntity entity, @NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i, MissilePartModel model, int buildPercent, Vector3f offset) {
-        int stage = (int) ((model.getStageCount() - 1) * (buildPercent / 100F));
+        int stage = model.getStage(buildPercent);
 
         var attachments = model.getAttachements(stage);
         offset.add(attachments.get("bottom"));

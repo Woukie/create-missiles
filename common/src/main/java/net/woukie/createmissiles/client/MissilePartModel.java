@@ -11,4 +11,10 @@ public interface MissilePartModel {
     LayerDefinition getLayerDefinition(int stage);
     ResourceLocation getTexture(int stage);
     int getStageCount();
+
+    default int getStage(int buildPercent) {
+        int stage = (int) ((this.getStageCount() - 2) * (buildPercent / 100F)) + 1;
+        if (buildPercent == 0) stage = 0;
+        return  stage;
+    }
 }
