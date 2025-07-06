@@ -1,5 +1,7 @@
 package net.woukie.createmissiles.missilemanager.parts.warheads;
 
+import me.pepperbell.simplenetworking.SimpleChannel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -7,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -17,8 +20,12 @@ import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.client.models.warheads.FireworkWarheadModel;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
+import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class FireworkWarhead extends WarheadType {
@@ -37,17 +44,22 @@ public class FireworkWarhead extends WarheadType {
 
         level.explode(null, impactPos.x, impactPos.y, impactPos.z, 2, Level.ExplosionInteraction.BLOCK);
 
-        ListTag fireworks = (ListTag) trajectory.getData().warheadData.get("Fireworks");
+        CompoundTag explosions = trajectory.getData().warheadData;
 
-        if (fireworks == null || fireworks.isEmpty()) {
+        if (explosions == null || explosions.isEmpty()) {
             var random = Random.from(new Random());
             level.addParticle(ParticleTypes.POOF, impactPos.x, impactPos.y, impactPos.z, random.nextGaussian() * 0.05, 0.005, random.nextGaussian() * 0.05);
         } else {
-            fireworks.forEach(tag -> {
-                System.out.println(tag);
-                Vec3 vel = Vec3.ZERO; // TODO: Replace with rocket velocity
-                level.createFireworks(impactPos.x, impactPos.y, impactPos.z, vel.x, vel.y, vel.z, (CompoundTag) tag);
+            List<ServerPlayer> players = new ArrayList<>();
+            level.players().forEach(serverPlayer -> {
+                BlockPos blockPos = serverPlayer.blockPosition();
+                if (blockPos.closerToCenterThan(new Vec3(impactPos.x, impactPos.y, impactPos.z), 512.0)) {
+                    players.add(serverPlayer);
+                }
             });
+
+            Vector3f vel = new Vector3f(0, 0, 0); // TODO: Replace with rocket velocity
+            Packets.EXPLODE_FIREWORK.sendToPlayers(players, new ExplodeFireworkMessage(impactPos.toVector3f(), vel, explosions));
         }
     }
 
@@ -58,14 +70,14 @@ public class FireworkWarhead extends WarheadType {
 
     @Override
     public CompoundTag writeData(Container container, CompoundTag data) {
-        ListTag fireworks = new ListTag();
+        ListTag explosions = new ListTag();
 
         for (int i = 0; i < container.getContainerSize(); i++) {
             ItemStack itemStack = container.getItem(i);
             if (itemStack.is(Items.FIREWORK_STAR) && itemStack.getTag() != null)
-                fireworks.add(itemStack.getTag());
+                explosions.add(itemStack.getTagElement("Explosion"));
         }
-        data.put("Fireworks", fireworks);
+        data.put("Explosions", explosions);
         return data;
     }
 

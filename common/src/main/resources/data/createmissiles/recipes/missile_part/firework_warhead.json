@@ -7,7 +7,7 @@
     },
     {
       "items": ["minecraft:firework_star"],
-      "count": 8
+      "count": 2
     }
   ],
   "assembly": "createmissiles:firework_warhead"
