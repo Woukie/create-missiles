@@ -29,9 +29,9 @@ public class TrajectoryData {
     public final ChassisType chassisType;
     public final ThrusterType thrusterType;
 
-    public final Tag warheadData;
-    public final Tag chassisData;
-    public final Tag thrusterData;
+    public final CompoundTag warheadData;
+    public final CompoundTag chassisData;
+    public final CompoundTag thrusterData;
 
 //    Construct with data from container (intended for warhead with custom payload derrived from recipe ingredient, but we also support data from thruster and chassis)
     public TrajectoryData(Level level, BlockPos source, BlockPos target, double fuelPercentage, int tick, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
@@ -90,9 +90,9 @@ public class TrajectoryData {
         this.chassisType = (ChassisType) PartTypes.get(new ResourceLocation(savedData.getString("Chassis")));
         this.thrusterType = (ThrusterType) PartTypes.get(new ResourceLocation(savedData.getString("Thruster")));
 
-        this.warheadData =  savedData.get("WarheadData");
-        this.chassisData = savedData.get("ChassisData");
-        this.thrusterData = savedData.get("ThrusterData");
+        this.warheadData =  savedData.getCompound("WarheadData");
+        this.chassisData = savedData.getCompound("ChassisData");
+        this.thrusterData = savedData.getCompound("ThrusterData");
 
         this.entityId = savedData.contains("EntityID") ? savedData.getUUID("EntityID") : null;
     }
