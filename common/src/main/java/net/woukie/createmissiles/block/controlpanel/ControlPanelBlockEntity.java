@@ -407,6 +407,7 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
 
         Trajectories trajectories = Trajectories.get();
         trajectories.launch(trajectory);
+        trajectory.getData().warheadType.onLaunch(trajectory);
         trajectories.setDirty();
 
         clearContent();

@@ -20,16 +20,12 @@ public abstract class MissilePartType {
     public abstract ResourceLocation getResourceLocation();
     public abstract Component getDisplayName();
 
-    public void onTick(ServerLevel level, Trajectory trajectory) {
+    public void onTick(Trajectory trajectory, MinecraftServer server) {
 
     }
 
-    public void onLaunch(Trajectory trajectory, MinecraftServer server) {
-        var level = (ServerLevel) trajectory.getData().level;
-        if (level != null) {
-            var p = trajectory.getPosition(0);
-            level.playSound(null, p.x, p.y, p.z, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.NEUTRAL, 1, 1);
-        }
+    public void onLaunch(Trajectory trajectory) {
+
     }
 
     public void onDetonate(Trajectory trajectory, MinecraftServer server) {

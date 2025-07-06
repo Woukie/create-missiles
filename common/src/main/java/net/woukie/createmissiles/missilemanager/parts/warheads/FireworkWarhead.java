@@ -1,6 +1,5 @@
 package net.woukie.createmissiles.missilemanager.parts.warheads;
 
-import me.pepperbell.simplenetworking.SimpleChannel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -10,6 +9,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -60,6 +61,15 @@ public class FireworkWarhead extends WarheadType {
 
             Vector3f vel = new Vector3f(0, 0, 0); // TODO: Replace with rocket velocity
             Packets.EXPLODE_FIREWORK.sendToPlayers(players, new ExplodeFireworkMessage(impactPos.toVector3f(), vel, explosions));
+        }
+    }
+
+    @Override
+    public void onLaunch(Trajectory trajectory) {
+        var level = (ServerLevel) trajectory.getData().level;
+        if (level != null) {
+            var p = trajectory.getPosition(0);
+            level.playSound(null, p.x, p.y, p.z, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.NEUTRAL, 1, 1);
         }
     }
 

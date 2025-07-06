@@ -46,11 +46,12 @@ public class Trajectories extends SavedData {
         activeTrajectories.forEach(trajectory -> {
             trajectory.incrementTick();
             Vec3 p = trajectory.getPosition(trajectory.getData().getTick() * 0.05F);
+            var trajectoryData = trajectory.getData();
 
-            ServerLevel level = (ServerLevel) trajectory.getData().level;
+            ServerLevel level = (ServerLevel) trajectoryData.level;
             if (level != null) {
 
-                Entity entity = level.getEntity(trajectory.getData().getEntityId());
+                Entity entity = level.getEntity(trajectoryData.getEntityId());
                 if (entity == null || !entity.getType().equals(EntityTypes.MISSILE.get())) {
                     entity = new MissileEntity(EntityTypes.MISSILE.get(), level);
                     entity.setPos(p.x + 0.5, p.y + 0.5, p.z + 0.5);
@@ -59,13 +60,13 @@ public class Trajectories extends SavedData {
                     missileEntity.setWarheadBuildPercent(100);
                     missileEntity.setChassisBuildPercent(100);
                     missileEntity.setThrusterBuildPercent(100);
-                    missileEntity.setWarheadType(trajectory.getData().warheadType.getResourceLocation());
-                    missileEntity.setChassisType(trajectory.getData().chassisType.getResourceLocation());
-                    missileEntity.setThrusterType(trajectory.getData().thrusterType.getResourceLocation());
+                    missileEntity.setWarheadType(trajectoryData.warheadType.getResourceLocation());
+                    missileEntity.setChassisType(trajectoryData.chassisType.getResourceLocation());
+                    missileEntity.setThrusterType(trajectoryData.thrusterType.getResourceLocation());
 
                     level.addFreshEntity(entity);
 
-                    trajectory.getData().setEntityId(entity.getUUID());
+                    trajectoryData.setEntityId(entity.getUUID());
                     setDirty();
                 }
 
@@ -77,9 +78,13 @@ public class Trajectories extends SavedData {
 
                 level.sendParticles(ParticleTypes.CLOUD, p.x + 0.5, p.y + 0.5, p.z + 0.5, 5, 0, 0, 0, 0);
                 if (trajectory.shouldExplode()) {
-                    trajectory.getData().warheadType.onDetonate(trajectory, server);
+                    trajectoryData.warheadType.onDetonate(trajectory, server);
                 }
             }
+
+            trajectoryData.warheadType.onTick(trajectory, server);
+            trajectoryData.chassisType.onTick(trajectory, server);
+            trajectoryData.thrusterType.onTick(trajectory, server);
         });
 
         activeTrajectories.removeIf(trajectory -> {
