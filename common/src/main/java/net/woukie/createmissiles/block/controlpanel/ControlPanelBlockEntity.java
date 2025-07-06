@@ -156,9 +156,9 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
         var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MISSILE_PART.get());
         for (var recipe : missilePartRecipes) {
             var assembly = recipe.getAssembly();
-            if (((warheadType != null && assembly.equals(warheadType.resourceLocation)) ||
-                    (chassisType != null && assembly.equals(chassisType.resourceLocation)) ||
-                    (thrusterType != null && assembly.equals(thrusterType.resourceLocation)))
+            if (((warheadType != null && assembly.equals(warheadType.getResourceLocation())) ||
+                    (chassisType != null && assembly.equals(chassisType.getResourceLocation())) ||
+                    (thrusterType != null && assembly.equals(thrusterType.getResourceLocation())))
                     && recipe.itemComplements(itemStack, this))
                 return recipe;
         }
@@ -211,9 +211,9 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
                     ((ServerLevel)level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.IRON_BLOCK.defaultBlockState()), p.x, p.y + 0.5, p.z, 20, 0.5, 0, 0.5, 45);
                     ((ServerLevel)level).sendParticles(ParticleTypes.LARGE_SMOKE, p.x, p.y + 0.5, p.z, 1, 0, 0, 0, 0);
 
-                    Map<String, Vector3f> thrusterAttachments = thrusterType == null ? new HashMap<>() : thrusterType.model.getAttachements(thrusterType.model.getStage(thrusterBuildPercent));
-                    Map<String, Vector3f> chassisAttachments = chassisType == null ? new HashMap<>() : chassisType.model.getAttachements(chassisType.model.getStage(chassisBuildPercent));
-                    Map<String, Vector3f> warheadAttachments = warheadType == null ? new HashMap<>() : warheadType.model.getAttachements(warheadType.model.getStage(warheadBuildPercent));
+                    Map<String, Vector3f> thrusterAttachments = thrusterType == null ? new HashMap<>() : thrusterType.getModel().getAttachements(thrusterType.getModel().getStage(thrusterBuildPercent));
+                    Map<String, Vector3f> chassisAttachments = chassisType == null ? new HashMap<>() : chassisType.getModel().getAttachements(chassisType.getModel().getStage(chassisBuildPercent));
+                    Map<String, Vector3f> warheadAttachments = warheadType == null ? new HashMap<>() : warheadType.getModel().getAttachements(warheadType.getModel().getStage(warheadBuildPercent));
 
                     Vector3f top = new Vector3f()
                             .add(thrusterAttachments.getOrDefault("bottom", new Vector3f()))
@@ -284,13 +284,13 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
             var missileEntity = (MissileEntity) entity;
 
             missileEntity.setWarheadBuildPercent(warheadBuildPercent);
-            missileEntity.setWarheadType(warheadType == null ? null : warheadType.resourceLocation);
+            missileEntity.setWarheadType(warheadType == null ? null : warheadType.getResourceLocation());
 
             missileEntity.setChassisBuildPercent(chassisBuildPercent);
-            missileEntity.setChassisType(chassisType == null ? null : chassisType.resourceLocation);
+            missileEntity.setChassisType(chassisType == null ? null : chassisType.getResourceLocation());
 
             missileEntity.setThrusterBuildPercent(thrusterBuildPercent);
-            missileEntity.setThrusterType(thrusterType == null ? null : thrusterType.resourceLocation);
+            missileEntity.setThrusterType(thrusterType == null ? null : thrusterType.getResourceLocation());
 
             ejectNotNeededItems(warheadType, 0, 32);
             ejectNotNeededItems(chassisType, 32, 64);
@@ -302,7 +302,7 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
 
     private void ejectNotNeededItems(@Nullable MissilePartType partType, int backupStartSlot, int backupEndSlot) {
         if (level == null) return;
-        var recipe = MissilePartRecipe.fromResourceLocation(level, partType == null ? null : partType.resourceLocation);
+        var recipe = MissilePartRecipe.fromResourceLocation(level, partType == null ? null : partType.getResourceLocation());
 
         Map<MissileIngredient, Integer> ingredientStatus = recipe.map(a -> a.getMissileIngredients().stream().collect(Collectors.toMap(b -> b, MissileIngredient::getCount))).orElseGet(Map::of);
 
@@ -373,17 +373,17 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
         for (var recipe : missilePartRecipes) {
             if (!(warheadRecipe == null || chassisRecipe == null || thrusterRecipe == null)) break;
             var assembly = recipe.getAssembly();
-            if (assembly.equals(warheadType.resourceLocation)) {
+            if (assembly.equals(warheadType.getResourceLocation())) {
                 warheadRecipe = recipe;
                 continue;
             }
 
-            if (assembly.equals(chassisType.resourceLocation)) {
+            if (assembly.equals(chassisType.getResourceLocation())) {
                 chassisRecipe = recipe;
                 continue;
             }
 
-            if (assembly.equals(thrusterType.resourceLocation)) {
+            if (assembly.equals(thrusterType.getResourceLocation())) {
                 thrusterRecipe = recipe;
             }
         }

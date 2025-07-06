@@ -7,9 +7,7 @@ import net.woukie.createmissiles.client.MissilePartModel;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ChassisType extends MissilePartType {
-    public final float fuelCapacity;
-
+public abstract class ChassisType extends MissilePartType {
     @Override
     public int getStartSlot() {
         return 32;
@@ -20,8 +18,5 @@ public class ChassisType extends MissilePartType {
         return 64;
     }
 
-    public ChassisType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, float fuelCapacity, MissilePartModel model) {
-        super(displayName, resourceLocation, writeData, model);
-        this.fuelCapacity = fuelCapacity;
-    }
+    public abstract float getFuelCapacity();
 }

@@ -6,7 +6,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.woukie.createmissiles.registry.Items;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +20,7 @@ public class AssemblyItem extends Item {
         if (compoundTag != null) {
             var type = PartTypes.get(new ResourceLocation(compoundTag.getString("PartType")));
             if (type == null) return Component.translatable("item.createmissiles.assembly_invalid");
-            return type.displayName;
+            return type.getDisplayName();
         }
 
         return super.getName(itemStack);

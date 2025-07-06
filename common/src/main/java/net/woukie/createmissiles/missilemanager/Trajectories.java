@@ -59,9 +59,9 @@ public class Trajectories extends SavedData {
                     missileEntity.setWarheadBuildPercent(100);
                     missileEntity.setChassisBuildPercent(100);
                     missileEntity.setThrusterBuildPercent(100);
-                    missileEntity.setWarheadType(trajectory.getData().warheadType.resourceLocation);
-                    missileEntity.setChassisType(trajectory.getData().chassisType.resourceLocation);
-                    missileEntity.setThrusterType(trajectory.getData().thrusterType.resourceLocation);
+                    missileEntity.setWarheadType(trajectory.getData().warheadType.getResourceLocation());
+                    missileEntity.setChassisType(trajectory.getData().chassisType.getResourceLocation());
+                    missileEntity.setThrusterType(trajectory.getData().thrusterType.getResourceLocation());
 
                     level.addFreshEntity(entity);
 
@@ -77,7 +77,7 @@ public class Trajectories extends SavedData {
 
                 level.sendParticles(ParticleTypes.CLOUD, p.x + 0.5, p.y + 0.5, p.z + 0.5, 5, 0, 0, 0, 0);
                 if (trajectory.shouldExplode()) {
-                    trajectory.explode(server);
+                    trajectory.getData().warheadType.onDetonate(trajectory, server);
                 }
             }
         });

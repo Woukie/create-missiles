@@ -7,10 +7,7 @@ import net.woukie.createmissiles.missilemanager.Trajectory;
 
 import javax.annotation.Nullable;
 
-public class WarheadType extends MissilePartType {
-    public final float weight;
-    public final Detonatable detonatable;
-
+public abstract class WarheadType extends MissilePartType {
     @Override
     public int getStartSlot() {
         return 0;
@@ -21,13 +18,5 @@ public class WarheadType extends MissilePartType {
         return 32;
     }
 
-    public WarheadType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, float weight, @Nullable Detonatable detonatable, MissilePartModel model) {
-        super(displayName, resourceLocation, writeData, model);
-        this.weight = weight;
-        this.detonatable = detonatable;
-    }
-
-    public interface Detonatable {
-        void detonate(Trajectory trajectory, MinecraftServer server);
-    }
+    public abstract int getWeight();
 }

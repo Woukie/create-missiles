@@ -7,10 +7,7 @@ import net.woukie.createmissiles.client.MissilePartModel;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ThrusterType extends MissilePartType {
-    public final float thrust;
-    public final float burnRate;
-
+public abstract class ThrusterType extends MissilePartType {
     @Override
     public int getStartSlot() {
         return 64;
@@ -21,9 +18,6 @@ public class ThrusterType extends MissilePartType {
         return 96;
     }
 
-    public ThrusterType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, float thrust, float burnRate, MissilePartModel model) {
-        super(displayName, resourceLocation, writeData, model);
-        this.thrust = thrust;
-        this.burnRate = burnRate;
-    }
+    public abstract float getThrust();
+    public abstract float getBurnRate();
 }

@@ -85,7 +85,7 @@ public class MissilePartRecipe implements Recipe<Container> {
 
     public static Map<MissileIngredient, Integer> getRemainingItems(MissilePartType partType, Level level, List<ItemStack> items) {
         if (partType == null) return null;
-        Optional<MissilePartRecipe> recipe = fromResourceLocation(level, partType.resourceLocation);
+        Optional<MissilePartRecipe> recipe = fromResourceLocation(level, partType.getResourceLocation());
         return recipe.map(missilePartRecipe -> missilePartRecipe.getRemainingItems(items.subList(partType.getStartSlot(), partType.getEndSlot()))).orElse(null);
     }
 

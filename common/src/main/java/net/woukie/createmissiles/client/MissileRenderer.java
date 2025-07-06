@@ -37,13 +37,13 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
         Vector3f offset = new Vector3f(0, 5, 0);
 
         if (thrusterType != null)
-            renderPart(entity, poseStack, multiBufferSource, i, thrusterType.model, entity.getThrusterBuildPercent(), offset);
+            renderPart(entity, poseStack, multiBufferSource, i, thrusterType.getModel(), entity.getThrusterBuildPercent(), offset);
 
         if (chassisType != null)
-            renderPart(entity, poseStack, multiBufferSource, i, chassisType.model, entity.getChassisBuildPercent(), offset);
+            renderPart(entity, poseStack, multiBufferSource, i, chassisType.getModel(), entity.getChassisBuildPercent(), offset);
 
         if (warheadType != null)
-            renderPart(entity, poseStack, multiBufferSource, i, warheadType.model, entity.getWarheadBuildPercent(), offset);
+            renderPart(entity, poseStack, multiBufferSource, i, warheadType.getModel(), entity.getWarheadBuildPercent(), offset);
 
 //        if (lastTick != entity.tickCount) {
 //            lastTick = entity.tickCount;

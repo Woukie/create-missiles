@@ -34,12 +34,6 @@ public class Trajectory {
         this.data.incrementTick();
     }
 
-    public void explode(MinecraftServer server) {
-        WarheadType.Detonatable detonatable = this.data.warheadType.detonatable;
-        if (detonatable != null)
-            detonatable.detonate(this, server);
-    }
-
     private void reCalculate() {
         Vec2 distanceXZ = new Vec2(
                 data.target.getX() - data.source.getX(),

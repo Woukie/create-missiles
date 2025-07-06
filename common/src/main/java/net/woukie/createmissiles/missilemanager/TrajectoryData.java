@@ -3,7 +3,6 @@ package net.woukie.createmissiles.missilemanager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -45,9 +44,9 @@ public class TrajectoryData {
         this.chassisType = chassisType;
         this.thrusterType = thrusterType;
 
-        this.warheadData = warheadType.writeData != null ? warheadType.writeData.write(container, new CompoundTag()) : null;
-        this.chassisData = chassisType.writeData != null ? chassisType.writeData.write(container, new CompoundTag()) : null;
-        this.thrusterData = thrusterType.writeData != null ? thrusterType.writeData.write(container, new CompoundTag()) : null;
+        this.warheadData = warheadType.writeData(container, new CompoundTag());
+        this.chassisData = chassisType.writeData(container, new CompoundTag());
+        this.thrusterData = thrusterType.writeData(container, new CompoundTag());
     }
 
 //    Construct without data from container
@@ -108,9 +107,9 @@ public class TrajectoryData {
         tag.putDouble("FuelPercentage", this.fuelPercentage);
         tag.putInt("Tick", this.tick);
 
-        tag.putString("Warhead", warheadType.resourceLocation.toString());
-        tag.putString("Chassis", chassisType.resourceLocation.toString());
-        tag.putString("Thruster", thrusterType.resourceLocation.toString());
+        tag.putString("Warhead", warheadType.getResourceLocation().toString());
+        tag.putString("Chassis", chassisType.getResourceLocation().toString());
+        tag.putString("Thruster", thrusterType.getResourceLocation().toString());
 
         if (warheadData != null) tag.put("WarheadData", warheadData);
         if (chassisData != null) tag.put("ChassisData", chassisData);
