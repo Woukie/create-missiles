@@ -29,9 +29,6 @@ public class ExplodeFireworkMessage {
     }
 
     public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {
-        System.out.println(pos);
-        System.out.println(vel);
-        System.out.println(tag);
         contextSupplier.get().getPlayer().level().createFireworks(pos.x, pos.y, pos.z, vel.x, vel.y, vel.z, tag);
     }
 }
