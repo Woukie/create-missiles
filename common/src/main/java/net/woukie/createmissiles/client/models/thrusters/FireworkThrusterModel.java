@@ -34,22 +34,28 @@ public class FireworkThrusterModel implements MissilePartModel {
 
 	private final List<Function<PartDefinition, PartDefinition>> layers = List.of(
 			partDefinition -> partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create(), PartPose.ZERO),
-			partDefinition -> partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(4, 8).addBox(-2.0F, 4.0F, -2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(0.0F))
-					.texOffs(0, 0).addBox(-3.0F, 0.0F, -3.0F, 6.0F, 4.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F)),
 			partDefinition -> {
-				PartDefinition bb_main = partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(4, 8).addBox(-2.0F, 4.0F, -2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(0.0F))
-						.texOffs(0, 0).addBox(-3.0F, 0.0F, -3.0F, 6.0F, 4.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
-				bb_main.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, 5.0F, -3.0F, 6.0F, 2.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 1.5708F, 0.0F));
+				PartDefinition bb_main = partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+				bb_main.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 18).addBox(-2.0F, -0.5F, -2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 4.5F, 0.0F, 0.0F, 0.0F, -3.1416F));
+				bb_main.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, -2.0F, -3.0F, 6.0F, 4.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 2.0F, 0.0F, 0.0F, 0.0F, -3.1416F));
 				return partDefinition;
 			},
 			partDefinition -> {
-				PartDefinition bb_main = partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(4, 8).addBox(-2.0F, 4.0F, -2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(0.0F))
-						.texOffs(0, 0).addBox(-3.0F, 0.0F, -3.0F, 6.0F, 4.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
-				bb_main.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(20, 13).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 6.3246F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.0F, 7.0F, 0.0F, 0.0F, 1.5708F, -2.6987F));
-				bb_main.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(20, 13).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 6.3246F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.0F, 7.0F, 0.0F, 0.0F, -1.5708F, 2.6987F));
-				bb_main.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(20, 13).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 6.3246F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 7.0F, 3.0F, 2.6987F, 0.0F, 0.0F));
-				bb_main.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(20, 13).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 6.3246F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 7.0F, -3.0F, -0.4429F, 0.0F, 3.1416F));
-				bb_main.addOrReplaceChild("cube_r5", CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, 5.0F, -3.0F, 6.0F, 2.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 1.5708F, 0.0F));
+				PartDefinition bb_main = partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+				bb_main.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 10).addBox(-3.0F, -1.0F, -3.0F, 6.0F, 2.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 6.0F, 0.0F, 0.0F, 1.5708F, 3.1416F));
+				bb_main.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(0, 18).addBox(-2.0F, -0.5F, -2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 4.5F, 0.0F, 0.0F, 0.0F, -3.1416F));
+				bb_main.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, -2.0F, -3.0F, 6.0F, 4.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 2.0F, 0.0F, 0.0F, 0.0F, -3.1416F));
+				return partDefinition;
+			},
+			partDefinition -> {
+				PartDefinition bb_main = partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+				bb_main.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(20, 24).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 6.3246F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.0F, 7.0F, 0.0F, 0.0F, 1.5708F, -2.6987F));
+				bb_main.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(30, 24).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 6.3246F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.0F, 7.0F, 0.0F, 0.0F, -1.5708F, 2.6987F));
+				bb_main.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(0, 24).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 6.3246F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 7.0F, 3.0F, 2.6987F, 0.0F, 0.0F));
+				bb_main.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, -2.0F, -3.0F, 6.0F, 4.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 2.0F, 0.0F, 3.1416F, 0.0F, 0.0F));
+				bb_main.addOrReplaceChild("cube_r5", CubeListBuilder.create().texOffs(0, 18).addBox(-2.0F, -0.5F, -2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 4.5F, 0.0F, 3.1416F, 0.0F, 0.0F));
+				bb_main.addOrReplaceChild("cube_r6", CubeListBuilder.create().texOffs(10, 24).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 6.3246F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 7.0F, -3.0F, -0.4429F, 0.0F, 3.1416F));
+				bb_main.addOrReplaceChild("cube_r7", CubeListBuilder.create().texOffs(0, 10).addBox(-3.0F, -1.0F, -3.0F, 6.0F, 2.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 6.0F, 0.0F, 0.0F, -1.5708F, 3.1416F));
 				return partDefinition;
 			}
 	);
@@ -64,7 +70,7 @@ public class FireworkThrusterModel implements MissilePartModel {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 		layers.get(stage).apply(partdefinition);
-		return LayerDefinition.create(meshdefinition, 30, 33);
+		return LayerDefinition.create(meshdefinition, 48, 48);
 	}
 
 	@Override
