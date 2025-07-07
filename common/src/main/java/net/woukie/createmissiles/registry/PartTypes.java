@@ -10,6 +10,7 @@ import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
 import net.woukie.createmissiles.missilemanager.parts.chassis.FireworkChassis;
 import net.woukie.createmissiles.missilemanager.parts.thrusters.FireworkThruster;
 import net.woukie.createmissiles.missilemanager.parts.warheads.FireworkWarhead;
+import net.woukie.createmissiles.missilemanager.parts.warheads.ShulkerBoxWarhead;
 
 import java.util.HashMap;
 
@@ -37,10 +38,12 @@ public class PartTypes {
         CreateMissiles.LOGGER.info("Registering missile part types for " + CreateMissiles.NAME);
 
         PartTypes.register(new FireworkWarhead());
+        PartTypes.register(new ShulkerBoxWarhead());
         PartTypes.register(new FireworkChassis());
         PartTypes.register(new FireworkThruster());
 
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("firework_warhead"), WARHEAD_ASSEMBLY.get()));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("shulker_box_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("firework_chassis"), CHASSIS_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("firework_thruster"), THRUSTER_ASSEMBLY.get()));
     }

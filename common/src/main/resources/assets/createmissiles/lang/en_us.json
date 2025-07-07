@@ -12,6 +12,7 @@
   "container.createmissiles.assembly_panel": "Assembly Panel",
   "container.createmissiles.navigation_panel": "Navigation Panel",
   "warheads.createmissiles.firework_warhead": "Firework Warhead",
+  "warheads.createmissiles.shulker_box_warhead": "Shulker Box Warhead",
   "chassis.createmissiles.firework_chassis": "Firework Chassis",
   "thrusters.createmissiles.firework_thruster": "Firework Thruster",
   "gui.createmissiles.navigation_panel.no_map": "No map in navigation panel",
