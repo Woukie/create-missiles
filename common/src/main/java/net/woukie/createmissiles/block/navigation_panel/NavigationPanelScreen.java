@@ -61,18 +61,19 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
     public void render(@NotNull GuiGraphics gui, int i, int j, float f) {
         super.render(gui, i, j, f);
         this.renderTooltip(gui, i, j);
+
+        renderCrosshair(gui);
     }
 
     @Override
     protected void renderBg(GuiGraphics gui, float f, int i, int j) {
         errors.clear();
         gui.pose().pushPose();
-        gui.pose().translate(leftPos, topPos, 0);
+        gui.pose().translate(leftPos, topPos, -1);
 
         gui.blit(BACKGROUND, 0, 0, 0, 0, this.imageWidth, this.imageHeight);
 
         renderMap(gui);
-        renderCrosshair(gui);
         renderFuel(gui);
         renderTrajectory(gui);
         renderErrors(gui);
@@ -151,20 +152,20 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         int scaledY = (int) (currentMapCrosshairZ * mapHeight / 128);
 
         gui.pose().pushPose();
-        gui.pose().translate(mapLeft, mapTop, 10);
+        gui.pose().translate(mapLeft + leftPos, mapTop + topPos, 10);
 
         // Scissor ignores poses
         int scissorLeft = leftPos + mapLeft;
         int scissorTop = topPos + mapTop;
         gui.enableScissor(scissorLeft - 1, scissorTop - 1, scissorLeft + mapWidth + 1, scissorTop + mapHeight + 1);
 
-        gui.pose().pushPose();
-        gui.pose().translate(0, 0, -1);
         gui.blit(MAP_TARGET, scaledX - 4, scaledY - 4, 2, 0, 0, 9, 9, 9, 9);
-        gui.pose().popPose();
 
+        gui.pose().pushPose();
+        gui.pose().translate(0, 0, 1);
         gui.blit(MAP_TARGET_VERTICAL, scaledX - 2, -4, 1, 0, 0, 5, 62, 5 ,62);
         gui.blit(MAP_TARGET_HORIZONTAL, -4, scaledY - 2, 1, 0, 0, 62, 5, 62, 5);
+        gui.pose().popPose();
 
         gui.disableScissor();
         gui.pose().popPose();
