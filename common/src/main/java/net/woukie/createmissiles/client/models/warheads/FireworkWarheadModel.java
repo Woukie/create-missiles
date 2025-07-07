@@ -52,9 +52,7 @@ public class FireworkWarheadModel implements MissilePartModel {
 
 	@Override
 	public Map<String, Vector3f> getAttachements(int layer) {
-		return new HashMap<>() {{
-			put("bottom", new Vector3f(0, 0, 0));
-		}};
+		return attachments.get(layer);
 	}
 
 	@Override
