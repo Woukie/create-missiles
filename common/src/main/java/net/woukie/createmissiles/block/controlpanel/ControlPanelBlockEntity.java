@@ -181,10 +181,6 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
                 BlockEntities.ASSEMBLY_PANEL.get()
         );
 
-        int oldWarheadBuildPercent = warheadBuildPercent;
-        int oldChassisBuildPercent = chassisBuildPercent;
-        int oldThrusterBuildPercent = thrusterBuildPercent;
-
         int oldBuildTotal = warheadBuildPercent + chassisBuildPercent + thrusterBuildPercent;
 
         warheadBuildPercent = 0;
@@ -272,29 +268,36 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
             missileEntity.setThrusterBuildPercent(0);
         }
 
-        if (assemblyPanel != null && entity.getType() != EntityTypes.MISSILE) {
-            ItemStack warheadItem = assemblyPanel.getItem(0);
-            ItemStack chassisItem = assemblyPanel.getItem(1);
-            ItemStack thrusterItem = assemblyPanel.getItem(2);
-
-            MissilePartType warheadType = PartTypes.get(warheadItem);
-            MissilePartType chassisType = PartTypes.get(chassisItem);
-            MissilePartType thrusterType = PartTypes.get(thrusterItem);
-
+        if (entity.getType().equals(EntityTypes.MISSILE.get())) {
             var missileEntity = (MissileEntity) entity;
 
-            missileEntity.setWarheadBuildPercent(warheadBuildPercent);
-            missileEntity.setWarheadType(warheadType == null ? null : warheadType.getResourceLocation());
+            if (assemblyPanel != null) {
+                ItemStack warheadItem = assemblyPanel.getItem(0);
+                ItemStack chassisItem = assemblyPanel.getItem(1);
+                ItemStack thrusterItem = assemblyPanel.getItem(2);
 
-            missileEntity.setChassisBuildPercent(chassisBuildPercent);
-            missileEntity.setChassisType(chassisType == null ? null : chassisType.getResourceLocation());
+                MissilePartType warheadType = PartTypes.get(warheadItem);
+                MissilePartType chassisType = PartTypes.get(chassisItem);
+                MissilePartType thrusterType = PartTypes.get(thrusterItem);
 
-            missileEntity.setThrusterBuildPercent(thrusterBuildPercent);
-            missileEntity.setThrusterType(thrusterType == null ? null : thrusterType.getResourceLocation());
+                missileEntity.setWarheadBuildPercent(warheadBuildPercent);
+                missileEntity.setWarheadType(warheadType == null ? null : warheadType.getResourceLocation());
 
-            ejectNotNeededItems(warheadType, 0, 32);
-            ejectNotNeededItems(chassisType, 32, 64);
-            ejectNotNeededItems(thrusterType, 64, 96);
+                missileEntity.setChassisBuildPercent(chassisBuildPercent);
+                missileEntity.setChassisType(chassisType == null ? null : chassisType.getResourceLocation());
+
+                missileEntity.setThrusterBuildPercent(thrusterBuildPercent);
+                missileEntity.setThrusterType(thrusterType == null ? null : thrusterType.getResourceLocation());
+
+                ejectNotNeededItems(warheadType, 0, 32);
+                ejectNotNeededItems(chassisType, 32, 64);
+                ejectNotNeededItems(thrusterType, 64, 96);
+            } else {
+                ejectNotNeededItems(null, 0, 96);
+                missileEntity.setWarheadBuildPercent(0);
+                missileEntity.setChassisBuildPercent(0);
+                missileEntity.setThrusterBuildPercent(0);
+            }
         }
 
         entity.setPos(entityPosition.getX() + 0.5, entityPosition.getY() + 0.5, entityPosition.getZ() + 0.5);
