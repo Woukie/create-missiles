@@ -45,10 +45,6 @@ allprojects {
     String buildNumber = System.getenv("GITHUB_RUN_NUMBER")
     version = "$mod_version+$project.name-$minecraft_version" + (buildNumber != null ? "-build.$buildNumber" : "")
 
-    tasks.withType(Copy).configureEach {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    }
-
     tasks.withType(JavaCompile).configureEach {
         options.encoding = "UTF-8"
     }
