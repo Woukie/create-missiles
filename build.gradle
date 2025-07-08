@@ -3,6 +3,8 @@ plugins {
     id "dev.architectury.loom" version "1.7.+" apply false
 }
 
+tasks.withType(Copy).configureEach { duplicatesStrategy = DuplicatesStrategy.EXCLUDE }
+
 architectury {
     minecraft = minecraft_version
 }
