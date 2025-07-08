@@ -1,18 +1,14 @@
 package net.woukie.createmissiles.block.controlpanel;
 
-import net.minecraft.client.particle.SimpleAnimatedParticle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -24,14 +20,11 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec2;
-import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.MultiblockHelper;
 import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
@@ -51,7 +44,6 @@ import net.woukie.createmissiles.recipe.MissilePartRecipe;
 import net.woukie.createmissiles.registry.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.HashMap;
@@ -181,7 +173,10 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
                 BlockEntities.ASSEMBLY_PANEL.get()
         );
 
-        int oldBuildTotal = warheadBuildPercent + chassisBuildPercent + thrusterBuildPercent;
+        int oldWarheadBuildPercent = warheadBuildPercent;
+        int oldChassisBuildPercent = chassisBuildPercent;
+        int oldThrusterBuildPercent = thrusterBuildPercent;
+        int oldBuildTotal = oldWarheadBuildPercent + oldChassisBuildPercent + oldThrusterBuildPercent;
 
         warheadBuildPercent = 0;
         chassisBuildPercent = 0;
@@ -201,11 +196,18 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
             var soundOrigin = cornerLaunchPadPos.relative(facing).relative(facing.getClockWise());
             int newBuildTotal = warheadBuildPercent + chassisBuildPercent + thrusterBuildPercent;
             if (oldBuildTotal < newBuildTotal) {
-                level.playSound(null, soundOrigin, SoundEvents.COPPER_PLACE, SoundSource.BLOCKS);
                 if (!level.isClientSide) {
                     var p = soundOrigin.getCenter();
                     ((ServerLevel)level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.IRON_BLOCK.defaultBlockState()), p.x, p.y + 0.5, p.z, 20, 0.5, 0, 0.5, 45);
                     ((ServerLevel)level).sendParticles(ParticleTypes.LARGE_SMOKE, p.x, p.y + 0.5, p.z, 1, 0, 0, 0, 0);
+
+                    level.playSound(null, soundOrigin, SoundEvents.COPPER_PLACE, SoundSource.BLOCKS);
+
+                    if ((oldWarheadBuildPercent != 100 && warheadBuildPercent == 100) ||
+                            (oldChassisBuildPercent != 100 && chassisBuildPercent == 100) ||
+                            (oldThrusterBuildPercent != 100 && thrusterBuildPercent == 100)) {
+                        level.playSound(null, soundOrigin, SoundEvents.CHAIN_PLACE, SoundSource.BLOCKS);
+                    }
 
                     Map<String, Vector3f> thrusterAttachments = thrusterType == null ? new HashMap<>() : thrusterType.getModel().getAttachements(thrusterType.getModel().getStage(thrusterBuildPercent));
                     Map<String, Vector3f> chassisAttachments = chassisType == null ? new HashMap<>() : chassisType.getModel().getAttachements(chassisType.getModel().getStage(chassisBuildPercent));
@@ -230,7 +232,7 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
                     }
                 }
             } else if(oldBuildTotal > newBuildTotal) {
-                level.playSound(null, soundOrigin, SoundEvents.COPPER_BREAK, SoundSource.BLOCKS);
+                level.playSound(null, soundOrigin, SoundEvents.CHAIN_BREAK, SoundSource.BLOCKS);
             }
         }
     }
