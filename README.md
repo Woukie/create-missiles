@@ -1,5 +1,7 @@
 # Create Missiles
 
+![icon](<https://raw.githubusercontent.com/Woukie/create-missiles/refs/heads/1.20.1/icon.gif>)
+
 Minecraft missle mod for Forge and Fabric, depends on Create.
 
 ## Features
