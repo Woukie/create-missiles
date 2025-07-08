@@ -13,7 +13,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
@@ -55,9 +54,6 @@ public class ShulkerBoxWarhead extends WarheadType {
         var level = (ServerLevel) trajectory.getData().level;
         if (level == null) return;
         var impactPos = trajectory.getData().target;
-
-        level.explode(null, impactPos.getX(), impactPos.getY(), impactPos.getZ(), 1, Level.ExplosionInteraction.BLOCK);
-
         CompoundTag data = trajectory.getData().warheadData;
         if (data != null && !data.isEmpty()) {
             ListTag boxes = data.getList("ShulkerBoxes", 10);
