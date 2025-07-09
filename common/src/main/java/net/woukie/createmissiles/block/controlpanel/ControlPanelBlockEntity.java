@@ -352,8 +352,6 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
 
         this.launching = false;
 
-        Direction launchPadDirection = this.getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
-
         if (cornerLaunchPadPos == null) return;
         if (assemblyPanel == null) return;
 
@@ -397,6 +395,8 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
         if (!warheadRecipe.matches(this, getLevel())) return;
         if (!chassisRecipe.matches(this, getLevel())) return;
         if (!thrusterRecipe.matches(this, getLevel())) return;
+
+        Direction launchPadDirection = this.getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
 
         Trajectory trajectory = new Trajectory(new TrajectoryData(
                 getLevel(),
