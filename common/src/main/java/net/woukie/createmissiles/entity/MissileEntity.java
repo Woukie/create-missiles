@@ -28,8 +28,6 @@ public class MissileEntity extends Entity {
     private static final EntityDataAccessor<Rotations> ROTATION =
             SynchedEntityData.defineId(MissileEntity.class, EntityDataSerializers.ROTATIONS);
 
-    private boolean initialized;
-
     public MissileEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
@@ -43,14 +41,6 @@ public class MissileEntity extends Entity {
         this.entityData.define(CHASSIS_BUILD_PERCENT, 0);
         this.entityData.define(THRUSTER_BUILD_PERCENT, 0);
         this.entityData.define(ROTATION, new Rotations(0, 0, 0));
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-
-        if (!initialized)
-            initialized = true;
     }
 
     @Override
