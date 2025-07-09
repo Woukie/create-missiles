@@ -33,12 +33,12 @@ public class TrajectoryData {
     public final CompoundTag thrusterData;
 
 //    Construct with data from container (intended for warhead with custom payload derrived from recipe ingredient, but we also support data from thruster and chassis)
-    public TrajectoryData(Level level, BlockPos source, BlockPos target, double fuelPercentage, int tick, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
+    public TrajectoryData(Level level, BlockPos source, BlockPos target, double fuelPercentage, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
         this.level = level;
         this.source = source;
         this.target = target;
         this.fuelPercentage = fuelPercentage;
-        this.tick = tick;
+        this.tick = 0;
 
         this.warheadType = warheadType;
         this.chassisType = chassisType;

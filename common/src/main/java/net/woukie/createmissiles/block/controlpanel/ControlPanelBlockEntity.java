@@ -403,7 +403,6 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
                 getBlockPos().relative(launchPadDirection, 2),
                 navigationPanel.getTarget(),
                 navigationPanel.getFuelPercent(),
-                0,
                 (WarheadType) warheadType,
                 (ChassisType) chassisType,
                 (ThrusterType) thrusterType,
