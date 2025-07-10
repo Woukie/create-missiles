@@ -6,7 +6,7 @@
   "block.createmissiles.navigation_panel": "Navigation Panel",
   "item.createmissiles.bound_ender_pearl": "Bound Ender Pearl",
   "item.createmissiles.bound_ender_pearl_player": "%1$s's Bound Ender Pearl",
-  "item.createmissiles.bound_ender_pearl_not_online": "Player isn't online",
+  "item.createmissiles.bound_ender_pearl_not_online": "Player not online",
   "item.createmissiles.assembly_invalid": "Invalid Part Type",
   "item.createmissiles.warhead_assembly": "Warhead Assembly",
   "item.createmissiles.chassis_assembly": "Chassis Assembly",
