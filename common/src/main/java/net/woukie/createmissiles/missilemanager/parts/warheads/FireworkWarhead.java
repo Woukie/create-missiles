@@ -65,15 +65,6 @@ public class FireworkWarhead extends WarheadType {
     }
 
     @Override
-    public void onLaunch(Trajectory trajectory) {
-        var level = (ServerLevel) trajectory.getData().level;
-        if (level != null) {
-            var p = trajectory.getPosition(0);
-            level.playSound(null, p.x, p.y, p.z, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.NEUTRAL, 1, 1);
-        }
-    }
-
-    @Override
     public @NotNull MissilePartModel getModel() {
         return model;
     }
