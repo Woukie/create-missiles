@@ -54,7 +54,7 @@ public class TeleportationWarhead extends WarheadType {
                 if (serverPlayer.isPassenger()) {
                     serverPlayer.dismountTo(impactPos.getX(), impactPos.getY(), impactPos.getZ());
                 } else {
-                    serverPlayer.teleportTo(serverPlayer.getX(), impactPos.getY(), impactPos.getZ());
+                    serverPlayer.teleportTo(impactPos.getX(), impactPos.getY(), impactPos.getZ());
                 }
 
                 serverPlayer.resetFallDistance();
