@@ -6,6 +6,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.CreateMissiles;
@@ -56,6 +58,8 @@ public class TeleportationWarhead extends WarheadType {
                 } else {
                     serverPlayer.teleportTo(impactPos.getX(), impactPos.getY(), impactPos.getZ());
                 }
+
+                level.playSound(null, impactPos.getX(), impactPos.getY(), impactPos.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1, 1);
 
                 serverPlayer.resetFallDistance();
                 serverPlayer.hurt(serverPlayer.damageSources().fall(), 5.0F);
