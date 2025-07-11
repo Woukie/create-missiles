@@ -411,7 +411,10 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
 
         Trajectories trajectories = Trajectories.get();
         trajectories.launch(trajectory);
-        trajectory.getData().warheadType.onLaunch(trajectory);
+        var data = trajectory.getData();
+        data.warheadType.onLaunch(trajectory);
+        data.chassisType.onLaunch(trajectory);
+        data.thrusterType.onLaunch(trajectory);
         trajectories.setDirty();
 
         clearContent();
