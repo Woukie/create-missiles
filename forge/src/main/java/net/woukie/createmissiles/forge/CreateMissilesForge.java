@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.woukie.createmissiles.block.controlpanel.ControlPanelScreen;
-import net.woukie.createmissiles.block.navigation_panel.NavigationPanelScreen;
+import net.woukie.createmissiles.block.navigationpanel.NavigationPanelScreen;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelScreen;
 import net.woukie.createmissiles.registry.EntityRenderers;
 import net.woukie.createmissiles.registry.Menus;

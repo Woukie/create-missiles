@@ -4,8 +4,8 @@ import dev.architectury.networking.NetworkChannel;
 import net.minecraft.resources.ResourceLocation;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.controlpanel.messages.ClickLaunchMessage;
-import net.woukie.createmissiles.block.navigation_panel.messages.ClickFuelMessage;
-import net.woukie.createmissiles.block.navigation_panel.messages.ClickMapMessage;
+import net.woukie.createmissiles.block.navigationpanel.messages.ClickFuelMessage;
+import net.woukie.createmissiles.block.navigationpanel.messages.ClickMapMessage;
 import net.woukie.createmissiles.missilemanager.parts.warheads.ExplodeFireworkMessage;
 
 public class Packets {

@@ -13,7 +13,7 @@ import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
 import net.woukie.createmissiles.block.controlpanel.ControlPanelBlock;
 import net.woukie.createmissiles.block.launchpad.LaunchPadCTBehaviour;
-import net.woukie.createmissiles.block.navigation_panel.NavigationPanelBlock;
+import net.woukie.createmissiles.block.navigationpanel.NavigationPanelBlock;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 
 public class Blocks {

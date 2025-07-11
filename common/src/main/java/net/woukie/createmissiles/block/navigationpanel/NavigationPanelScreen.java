@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.navigation_panel;
+package net.woukie.createmissiles.block.navigationpanel;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;

@@ -8,7 +8,7 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.controlpanel.ControlPanelMenu;
-import net.woukie.createmissiles.block.navigation_panel.NavigationPanelMenu;
+import net.woukie.createmissiles.block.navigationpanel.NavigationPanelMenu;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelMenu;
 
 import static net.woukie.createmissiles.CreateMissiles.MANAGER;

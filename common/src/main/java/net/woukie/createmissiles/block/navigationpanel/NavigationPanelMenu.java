@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.navigation_panel;
+package net.woukie.createmissiles.block.navigationpanel;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
@@ -10,8 +10,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.block.InvisibleSlot;
 import net.woukie.createmissiles.block.MissileAbstractMenu;
-import net.woukie.createmissiles.block.navigation_panel.messages.ClickFuelMessage;
-import net.woukie.createmissiles.block.navigation_panel.messages.ClickMapMessage;
+import net.woukie.createmissiles.block.navigationpanel.messages.ClickFuelMessage;
+import net.woukie.createmissiles.block.navigationpanel.messages.ClickMapMessage;
 import net.woukie.createmissiles.registry.Items;
 import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;

@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.navigation_panel;
+package net.woukie.createmissiles.block.navigationpanel;
 
 import com.simibubi.create.foundation.utility.WorldAttached;
 import net.minecraft.core.BlockPos;

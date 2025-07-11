@@ -6,7 +6,7 @@ import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.launchpad.LaunchPadCogInstance;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
 import net.woukie.createmissiles.block.controlpanel.ControlPanelBlockEntity;
-import net.woukie.createmissiles.block.navigation_panel.NavigationPanelBlockEntity;
+import net.woukie.createmissiles.block.navigationpanel.NavigationPanelBlockEntity;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
 
 public class BlockEntities {

@@ -1,11 +1,11 @@
-package net.woukie.createmissiles.block.navigation_panel.messages;
+package net.woukie.createmissiles.block.navigationpanel.messages;
 
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
-import net.woukie.createmissiles.block.navigation_panel.NavigationPanelBlockEntity;
-import net.woukie.createmissiles.block.navigation_panel.NavigationPanelInstanceTracker;
+import net.woukie.createmissiles.block.navigationpanel.NavigationPanelBlockEntity;
+import net.woukie.createmissiles.block.navigationpanel.NavigationPanelInstanceTracker;
 
 import java.util.function.Supplier;
 
