@@ -2,8 +2,12 @@ package net.woukie.createmissiles.registry;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import dev.architectury.registry.CreativeTabRegistry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.item.BoundEnderPearlItem;
 import net.woukie.createmissiles.item.assembly.AssemblyItem;
 
 public class Items {
@@ -24,7 +28,14 @@ public class Items {
             .removeTab(CreativeModeTabs.SEARCH)
             .register();
 
+    public static ItemEntry<BoundEnderPearlItem> BOUND_ENDER_PEARL = REGISTRATE
+            .item(CreateMissiles.MOD_ID, "bound_ender_pearl", BoundEnderPearlItem::new)
+            .tab(CreativeMenus.ASSEMBLIES_TAB.getKey())
+            .register();
+
     public static void init() {
         CreateMissiles.LOGGER.info("Registering items for " + CreateMissiles.NAME);
+
+//        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, new ItemStack(BOUND_ENDER_PEARL, 1));
     }
 }

@@ -11,6 +11,7 @@ import net.woukie.createmissiles.missilemanager.parts.chassis.FireworkChassis;
 import net.woukie.createmissiles.missilemanager.parts.thrusters.FireworkThruster;
 import net.woukie.createmissiles.missilemanager.parts.warheads.FireworkWarhead;
 import net.woukie.createmissiles.missilemanager.parts.warheads.ShulkerBoxWarhead;
+import net.woukie.createmissiles.missilemanager.parts.warheads.TeleportationWarhead;
 
 import java.util.HashMap;
 
@@ -39,11 +40,13 @@ public class PartTypes {
 
         PartTypes.register(new FireworkWarhead());
         PartTypes.register(new ShulkerBoxWarhead());
+        PartTypes.register(new TeleportationWarhead());
         PartTypes.register(new FireworkChassis());
         PartTypes.register(new FireworkThruster());
 
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("firework_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("shulker_box_warhead"), WARHEAD_ASSEMBLY.get()));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("teleportation_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("firework_chassis"), CHASSIS_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("firework_thruster"), THRUSTER_ASSEMBLY.get()));
     }
@@ -51,5 +54,4 @@ public class PartTypes {
     private static ResourceLocation id(String id) {
         return new ResourceLocation(CreateMissiles.MOD_ID, id);
     }
-
 }
