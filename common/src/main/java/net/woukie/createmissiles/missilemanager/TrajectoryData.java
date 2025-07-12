@@ -28,28 +28,18 @@ public class TrajectoryData {
     public final ChassisType chassisType;
     public final ThrusterType thrusterType;
 
-    public final CompoundTag warheadData;
-    public final CompoundTag chassisData;
-    public final CompoundTag thrusterData;
+    public CompoundTag warheadData;
+    public CompoundTag chassisData;
+    public CompoundTag thrusterData;
 
-//    Construct with data from container (intended for warhead with custom payload derrived from recipe ingredient, but we also support data from thruster and chassis)
-    public TrajectoryData(Level level, BlockPos source, BlockPos target, double fuelPercentage, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
-        this.level = level;
-        this.source = source;
-        this.target = target;
-        this.fuelPercentage = fuelPercentage;
-        this.tick = 0;
-
-        this.warheadType = warheadType;
-        this.chassisType = chassisType;
-        this.thrusterType = thrusterType;
-
-        this.warheadData = warheadType.writeData(container, new CompoundTag());
-        this.chassisData = chassisType.writeData(container, new CompoundTag());
-        this.thrusterData = thrusterType.writeData(container, new CompoundTag());
+    public static TrajectoryData fromContainer(Level level, BlockPos source, BlockPos target, double fuelPercentage, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
+        TrajectoryData data = new TrajectoryData(level, source, target, fuelPercentage, 0, warheadType, chassisType, thrusterType);
+        data.warheadData = warheadType.writeData(container, new CompoundTag());
+        data.chassisData = chassisType.writeData(container, new CompoundTag());
+        data.thrusterData = thrusterType.writeData(container, new CompoundTag());
+        return data;
     }
 
-//    Construct without data from container
     public TrajectoryData(Level level, BlockPos source, BlockPos target, double fuelPercentage, int tick, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType) {
         this.level = level;
         this.source = source;
@@ -74,8 +64,11 @@ public class TrajectoryData {
         this.entityId = uuid;
     }
 
-//    Construct by loading from disk
-    public TrajectoryData(CompoundTag savedData, MinecraftServer server) {
+    public static TrajectoryData fromDisk(CompoundTag savedData, MinecraftServer server) {
+        return new TrajectoryData(savedData, server);
+    }
+
+    private TrajectoryData(CompoundTag savedData, MinecraftServer server) {
         String dimension = savedData.getString("Dimension");
         ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimension));
         this.level = server.getLevel(dimensionKey);

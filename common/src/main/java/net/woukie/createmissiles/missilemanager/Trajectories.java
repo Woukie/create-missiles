@@ -110,7 +110,7 @@ public class Trajectories extends SavedData {
     public Trajectories load(CompoundTag nbt) {
         for (int i = 0; i < nbt.size(); i++) {
             CompoundTag trajectory = nbt.getCompound("" + i);
-            launch(new Trajectory(new TrajectoryData(trajectory, server)));
+            launch(new Trajectory(TrajectoryData.fromDisk(trajectory, server)));
         }
 
         return this;

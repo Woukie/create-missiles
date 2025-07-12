@@ -398,7 +398,7 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
 
         Direction launchPadDirection = this.getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
 
-        Trajectory trajectory = new Trajectory(new TrajectoryData(
+        Trajectory trajectory = new Trajectory(TrajectoryData.fromContainer(
                 getLevel(),
                 getBlockPos().relative(launchPadDirection, 2),
                 navigationPanel.getTarget(),
