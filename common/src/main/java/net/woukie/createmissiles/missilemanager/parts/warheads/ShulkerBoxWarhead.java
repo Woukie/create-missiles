@@ -51,10 +51,10 @@ public class ShulkerBoxWarhead extends WarheadType {
 
     @Override
     public void onDetonate(Trajectory trajectory, MinecraftServer server) {
-        var level = (ServerLevel) trajectory.getData().level;
+        var level = (ServerLevel) trajectory.data.level;
         if (level == null) return;
-        var impactPos = trajectory.getData().target;
-        CompoundTag data = trajectory.getData().warheadData;
+        var impactPos = trajectory.data.target;
+        CompoundTag data = trajectory.data.warheadData;
         if (data != null && !data.isEmpty()) {
             ListTag boxes = data.getList("ShulkerBoxes", 10);
 
@@ -79,7 +79,7 @@ public class ShulkerBoxWarhead extends WarheadType {
 
     @Override
     public void onLaunch(Trajectory trajectory) {
-        var level = (ServerLevel) trajectory.getData().level;
+        var level = (ServerLevel) trajectory.data.level;
         if (level != null) {
             var p = trajectory.getPosition(0);
             level.playSound(null, p.x, p.y, p.z, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.NEUTRAL, 1, 1);

@@ -3,6 +3,7 @@ package net.woukie.createmissiles.missilemanager;
 import net.minecraft.core.Rotations;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -10,7 +11,9 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.entity.MissileEntity;
+import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.registry.EntityTypes;
+import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -45,8 +48,8 @@ public class Trajectories extends SavedData {
     public void serverTick(MinecraftServer server) {
         activeTrajectories.forEach(trajectory -> {
             trajectory.incrementTick();
-            Vec3 p = trajectory.getPosition(trajectory.getData().getTick() * 0.05F);
-            var trajectoryData = trajectory.getData();
+            Vec3 p = trajectory.getPosition(trajectory.data.getTick() * 0.05F);
+            var trajectoryData = trajectory.data;
 
             ServerLevel level = (ServerLevel) trajectoryData.level;
             if (level != null) {
@@ -90,9 +93,9 @@ public class Trajectories extends SavedData {
         activeTrajectories.removeIf(trajectory -> {
             var remove = trajectory.shouldExplode();
             if (remove) {
-                ServerLevel level = (ServerLevel) trajectory.getData().level;
+                ServerLevel level = (ServerLevel) trajectory.data.level;
                 if (level == null) return true;
-                var entity = level.getEntity(trajectory.getData().getEntityId());
+                var entity = level.getEntity(trajectory.data.getEntityId());
                 if (entity != null && entity.getType().equals(EntityTypes.MISSILE.get())) {
                     entity.remove(Entity.RemovalReason.KILLED);
                 }
@@ -109,8 +112,9 @@ public class Trajectories extends SavedData {
 
     public Trajectories load(CompoundTag nbt) {
         for (int i = 0; i < nbt.size(); i++) {
-            CompoundTag trajectory = nbt.getCompound("" + i);
-            launch(new Trajectory(TrajectoryData.fromDisk(trajectory, server)));
+            CompoundTag savedData = nbt.getCompound("" + i);
+            ThrusterType thrusterType = (ThrusterType) PartTypes.get(new ResourceLocation(savedData.getString("Thruster")));
+            launch(thrusterType.createTrajectory(TrajectoryData.fromDisk(savedData, server)));
         }
 
         return this;
@@ -120,7 +124,7 @@ public class Trajectories extends SavedData {
     public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag) {
         for (int i = 0; i < activeTrajectories.size(); i++) {
             Trajectory trajectory = activeTrajectories.get(i);
-            compoundTag.put("" + i, trajectory.getData().saveTo(new CompoundTag()));
+            compoundTag.put("" + i, trajectory.data.saveTo(new CompoundTag()));
         }
 
         return compoundTag;

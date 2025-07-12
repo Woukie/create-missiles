@@ -29,9 +29,9 @@ public abstract class MissilePartType {
     }
 
     public void onDetonate(Trajectory trajectory, MinecraftServer server) {
-        var level = (ServerLevel) trajectory.getData().level;
+        var level = (ServerLevel) trajectory.data.level;
         if (level != null) {
-            var impactPos = trajectory.getPosition((float)trajectory.getImpactTime());
+            var impactPos = trajectory.data.target.getCenter();
             level.explode(null, impactPos.x, impactPos.y, impactPos.z, 5, Level.ExplosionInteraction.BLOCK);
         }
     }

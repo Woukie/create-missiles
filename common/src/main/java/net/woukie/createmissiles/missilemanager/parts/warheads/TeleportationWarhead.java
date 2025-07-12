@@ -45,21 +45,21 @@ public class TeleportationWarhead extends WarheadType {
 
     @Override
     public void onDetonate(Trajectory trajectory, MinecraftServer server) {
-        var level = (ServerLevel) trajectory.getData().level;
+        var level = (ServerLevel) trajectory.data.level;
         if (level == null) return;
-        var impactPos = trajectory.getData().target;
+        var impactPos = trajectory.data.target.getCenter();
 
-        CompoundTag data = trajectory.getData().warheadData;
+        CompoundTag data = trajectory.data.warheadData;
         if (data != null && !data.isEmpty()) {
             ServerPlayer serverPlayer = (ServerPlayer) level.getPlayerByUUID(data.getUUID("PlayerUUID"));
             if (serverPlayer != null && serverPlayer.connection.isAcceptingMessages()) {
                 if (serverPlayer.isPassenger()) {
-                    serverPlayer.dismountTo(impactPos.getX(), impactPos.getY(), impactPos.getZ());
+                    serverPlayer.dismountTo(impactPos.x(), impactPos.y(), impactPos.z());
                 } else {
-                    serverPlayer.teleportTo(impactPos.getX(), impactPos.getY(), impactPos.getZ());
+                    serverPlayer.teleportTo(impactPos.x(), impactPos.y(), impactPos.z());
                 }
 
-                level.playSound(null, impactPos.getX(), impactPos.getY(), impactPos.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1, 1);
+                level.playSound(null, impactPos.x(), impactPos.y(), impactPos.z(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1, 1);
 
                 serverPlayer.resetFallDistance();
                 serverPlayer.hurt(serverPlayer.damageSources().fall(), 5.0F);

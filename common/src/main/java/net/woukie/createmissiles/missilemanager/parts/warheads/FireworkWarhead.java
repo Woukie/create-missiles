@@ -9,8 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -39,13 +37,13 @@ public class FireworkWarhead extends WarheadType {
 
     @Override
     public void onDetonate(Trajectory trajectory, MinecraftServer server) {
-        var level = (ServerLevel) trajectory.getData().level;
+        var level = (ServerLevel) trajectory.data.level;
         if (level == null) return;
-        var impactPos = trajectory.getPosition((float)trajectory.getImpactTime());
+        Vec3 impactPos = trajectory.data.target.getCenter();
 
         level.explode(null, impactPos.x, impactPos.y, impactPos.z, 2, Level.ExplosionInteraction.BLOCK);
 
-        CompoundTag explosions = trajectory.getData().warheadData;
+        CompoundTag explosions = trajectory.data.warheadData;
 
         if (explosions == null || explosions.isEmpty()) {
             var random = Random.from(new Random());

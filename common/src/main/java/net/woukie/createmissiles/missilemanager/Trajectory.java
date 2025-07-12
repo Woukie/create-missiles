@@ -1,86 +1,63 @@
 package net.woukie.createmissiles.missilemanager;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 
-public class Trajectory {
-//    Data computed at control panel
-    private TrajectoryData data;
+/**
+ * Calculates a flight path based on data from serializable TrajectoryData.
+ * <br>
+ * Constructed when in motion on the server. And when rendering a trajectory in the navigator on the client
+ */
+public abstract class Trajectory {
+    public final TrajectoryData data;
 
-//    Data computed at run-time
-    private double angle;
-    private double launchVelocity;
-    private double flightLength;
-    private boolean canHitTarget;
-    private Vec2 localTarget;
-
+    /**
+     * Create trajectory from serializable data
+     * @param data serializable trajectory data
+     */
     public Trajectory(TrajectoryData data) {
         this.data = data;
-        reCalculate();
     }
 
-    public TrajectoryData getData() {
-        return data;
-    }
-
-    public void setData(TrajectoryData data) {
-        this.data = data;
-        reCalculate();
-    }
-
+    /**
+     * Increments the trajectories serialized tick number
+     * <br>
+     * Called every tick the trajectory is simulated on the server
+     * @implNote if using a simulated approach, here is where you simulate path
+     * @see Trajectories#serverTick(MinecraftServer)
+     */
     public void incrementTick() {
         this.data.incrementTick();
     }
 
-    private void reCalculate() {
-        Vec2 distanceXZ = new Vec2(
-                data.target.getX() - data.source.getX(),
-                data.target.getZ() - data.source.getZ()
-        );
+    /**
+     * Gets the position of the projectile in world-space at a given time
+     * @implNote For client-side GUI rendering
+     * @param second time in seconds since launch
+     * @return global position of the missile at the given time
+     */
+    public abstract Vec3 getPosition(float second);
 
-        this.launchVelocity = 25F;
-        this.localTarget = new Vec2(distanceXZ.length(), data.target.getY() - data.source.getY());
-        ProjectileUtils.LaunchInfo info = ProjectileUtils.getLaunchInfo(localTarget.x, localTarget.y, launchVelocity, data.gravity);
-        this.angle = info.getAngle();
-        this.flightLength = info.getTime();
-        this.canHitTarget = info.canHitTarget();
-    }
+    /**
+     * Gets the position of the rocket in world-space at the current tick as given in the data
+     * @return global position of the rocket at the current tick
+     */
+    public abstract Vec3 getPosition();
 
-//    Wraps Vec2 getPosition
-    public Vec3 getPosition(float second) {
-        Vec2 position = getLocalPosition(second);
-        Vec2 distanceXZ = new Vec2(
-                data.target.getX() - data.source.getX(),
-                data.target.getZ() - data.source.getZ()
-        );
+    /**
+     * Gets how long the flight will take from launch to impact
+     * @return flight time in seconds
+     */
+    public abstract double getFlightTime();
 
-        float horizontalProportionTravelled = position.x / localTarget.x;
-        return new Vec3(
-                data.source.getX() + horizontalProportionTravelled * distanceXZ.x,
-                data.source.getY() + position.y,
-                data.source.getZ() + horizontalProportionTravelled * distanceXZ.y
-        );
-    }
+    /**
+     * @implNote For client-side GUI rendering
+     * @return True if the trajectory intersects with the target block
+     */
+    public abstract boolean canHitTarget();
 
-//    For da expert salad:
-//    Use 'source' and 'target' block positions to calculate the position in the trajectory at time 'ticks' (1 tick = 0.05s)
-//    This isn't static because we will be referencing instance data
-    public Vec2 getLocalPosition(float second) {
-        return ProjectileUtils.getPositionAt(launchVelocity, angle, data.gravity, second);
-    }
-
-//    Gets how long the flight will take from launch to impact
-    public double getImpactTime() {
-        return this.flightLength;
-    }
-
-    public boolean canHitTarget() {
-        return this.canHitTarget;
-    }
-
-    public boolean shouldExplode() {
-        return (data.getTick() / 20F) > flightLength;
-    }
+    /**
+     * @return True if the missile should detonate at the current tick
+     */
+    public abstract boolean shouldExplode();
 }
