@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class Trajectories extends SavedData {
     private final List<Trajectory> activeTrajectories = new ArrayList<>();
@@ -47,14 +46,13 @@ public class Trajectories extends SavedData {
 
     public void serverTick(MinecraftServer server) {
         activeTrajectories.forEach(trajectory -> {
-            trajectory.incrementTick();
+            trajectory.tick();
             Vec3 p = trajectory.getPosition(trajectory.data.getTick() * 0.05F);
-            var trajectoryData = trajectory.data;
 
-            ServerLevel level = (ServerLevel) trajectoryData.level;
+            ServerLevel level = (ServerLevel) trajectory.getLevel();
             if (level != null) {
 
-                Entity entity = level.getEntity(trajectoryData.getEntityId());
+                Entity entity = level.getEntity(trajectory.getEntityId());
                 if (entity == null || !entity.getType().equals(EntityTypes.MISSILE.get())) {
                     entity = new MissileEntity(EntityTypes.MISSILE.get(), level);
                     entity.setPos(p.x + 0.5, p.y + 0.5, p.z + 0.5);
@@ -114,7 +112,7 @@ public class Trajectories extends SavedData {
         for (int i = 0; i < nbt.size(); i++) {
             CompoundTag savedData = nbt.getCompound("" + i);
             ThrusterType thrusterType = (ThrusterType) PartTypes.get(new ResourceLocation(savedData.getString("Thruster")));
-            launch(thrusterType.createTrajectory(TrajectoryData.fromDisk(savedData, server)));
+            thrusterType.createTrajectory(savedData, server);
         }
 
         return this;

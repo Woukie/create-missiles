@@ -1,68 +1,53 @@
 package net.woukie.createmissiles.missilemanager.trajectories;
 
-import net.minecraft.world.phys.Vec2;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.TrajectoryData;
 
-/**
- * Instant burn time trajectory, uses thruster burn <code>time * fuel</code> as initial velocity
- */
 public class BallisticTrajectory extends Trajectory {
-    private final CachedData cachedData = new CachedData();
+    private float tickLength = 0.05f; // Seconds
 
-    public BallisticTrajectory(TrajectoryData data) {
-        super(data);
-        calculateCache();
-    }
+    private Vec3 globalPosition; // m
+    private Vec3 velocity; // ms^-1
+
+    private Vec3 gravity; // N
+
+    private float mass; // g
+    private Vec3 rocketAngle; // radians
+    private float thrust; // N in direction of rocketAngle
 
     @Override
-    public Vec3 getPosition(float second) {
-        Vec2 position = getLocalPosition(second);
-        Vec2 distanceXZ = new Vec2(
-                data.target.getX() - data.source.getX(),
-                data.target.getZ() - data.source.getZ()
+    public void tick() {
+        Vec3 thrustForce = new Vec3(
+                thrust * Math.cos(rocketAngle.y) * Math.cos(rocketAngle.x),
+                thrust * Math.sin(rocketAngle.y),
+                thrust * Math.cos(rocketAngle.y) * Math.sin(rocketAngle.x)
         );
 
-        float horizontalProportionTravelled = position.x / cachedData.localTarget.x;
-        return new Vec3(
-                data.source.getX() + horizontalProportionTravelled * distanceXZ.x,
-                data.source.getY() + position.y,
-                data.source.getZ() + horizontalProportionTravelled * distanceXZ.y
-        );
+        Vec3 totalForce = gravity.add(thrustForce);
+        Vec3 acceleration = totalForce.scale(1.0f / mass);
+        velocity = velocity.add(acceleration.scale(tickLength));
+        globalPosition = globalPosition.add(velocity.scale(tickLength));
     }
 
     @Override
     public Vec3 getPosition() {
-        return null;
-    }
-
-    @Override
-    public double getFlightTime() {
-        return 0;
-    }
-
-    @Override
-    public boolean canHitTarget() {
-        return true;
+        return globalPosition;
     }
 
     @Override
     public boolean shouldExplode() {
-        return (data.getTick() / 20F) > cachedData.flightLength;
+        return false;
     }
 
-    private void calculateCache() {
+    @Override
+    public void saveTo(CompoundTag data) {
 
     }
 
-    private static class CachedData {
-        public double angle;
-        public double launchVelocity;
-        public double flightLength;
-        public boolean canHitTarget;
-        public Vec2 localTarget;
-
-//        And any more variables you need to make future operations faster
+    @Override
+    public Trajectory loadFrom(CompoundTag data) {
+        return null;
     }
 }

@@ -366,9 +366,9 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
         MissilePartRecipe chassisRecipe = null;
         MissilePartRecipe thrusterRecipe = null;
 
-        MissilePartType warheadType = PartTypes.get(assemblyPanel.getItem(0));
-        MissilePartType chassisType = PartTypes.get(assemblyPanel.getItem(1));
-        MissilePartType thrusterType = PartTypes.get(assemblyPanel.getItem(2));
+        WarheadType warheadType = (WarheadType) PartTypes.get(assemblyPanel.getItem(0));
+        ChassisType chassisType = (ChassisType) PartTypes.get(assemblyPanel.getItem(1));
+        ThrusterType thrusterType = (ThrusterType) PartTypes.get(assemblyPanel.getItem(2));
 
         if (warheadType == null || chassisType == null || thrusterType == null) return;
 
@@ -398,23 +398,22 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
 
         Direction launchPadDirection = this.getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
 
-        Trajectory trajectory = new Trajectory(TrajectoryData.fromContainer(
+        Trajectory trajectory = thrusterType.createTrajectory(TrajectoryData.fromContainer(
                 getLevel(),
                 getBlockPos().relative(launchPadDirection, 2),
                 navigationPanel.getTarget(),
                 navigationPanel.getFuelPercent(),
-                (WarheadType) warheadType,
-                (ChassisType) chassisType,
-                (ThrusterType) thrusterType,
+                warheadType,
+                chassisType,
+                thrusterType,
                 this
         ));
 
         Trajectories trajectories = Trajectories.get();
         trajectories.launch(trajectory);
-        var data = trajectory.getData();
-        data.warheadType.onLaunch(trajectory);
-        data.chassisType.onLaunch(trajectory);
-        data.thrusterType.onLaunch(trajectory);
+        warheadType.onLaunch(trajectory);
+        chassisType.onLaunch(trajectory);
+        thrusterType.onLaunch(trajectory);
         trajectories.setDirty();
 
         clearContent();

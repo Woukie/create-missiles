@@ -1,63 +1,71 @@
 package net.woukie.createmissiles.missilemanager;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.UUID;
+
 /**
- * Calculates a flight path based on data from serializable TrajectoryData.
+ * Applies logic to variables to represent a missile flight path, namely controlling velocity, global position and rotation.
  * <br>
- * Constructed when in motion on the server. And when rendering a trajectory in the navigator on the client
+ * Constructed when in motion on the server. And when rendering a trajectory in the navigator on the client.
  */
 public abstract class Trajectory {
-    public final TrajectoryData data;
+    private Level level;
+    private UUID entityId;
 
     /**
-     * Create trajectory from serializable data
-     * @param data serializable trajectory data
+     * Construct a trajectory with the data in the tag provided
+     * @param data to load the trajectory with
+     * @return the constructed trajectory
      */
-    public Trajectory(TrajectoryData data) {
-        this.data = data;
+    public Trajectory(CompoundTag data, MinecraftServer server) {
+        String dimension = data.getString("Dimension");
+        ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimension));
+
+        this.level = server.getLevel(dimensionKey);
+        this.entityId = data.hasUUID("EntityID") ? data.getUUID("EntityID") : null;
     }
 
     /**
-     * Increments the trajectories serialized tick number
-     * <br>
      * Called every tick the trajectory is simulated on the server
-     * @implNote if using a simulated approach, here is where you simulate path
+     * @implNote in simulated approaches, here is where you simulate path
      * @see Trajectories#serverTick(MinecraftServer)
      */
-    public void incrementTick() {
-        this.data.incrementTick();
-    }
+    public abstract void tick();
 
     /**
-     * Gets the position of the projectile in world-space at a given time
-     * @implNote For client-side GUI rendering
-     * @param second time in seconds since launch
-     * @return global position of the missile at the given time
-     */
-    public abstract Vec3 getPosition(float second);
-
-    /**
-     * Gets the position of the rocket in world-space at the current tick as given in the data
+     * Gets the position of the rocket in world-space at the current tick
      * @return global position of the rocket at the current tick
      */
     public abstract Vec3 getPosition();
 
     /**
-     * Gets how long the flight will take from launch to impact
-     * @return flight time in seconds
-     */
-    public abstract double getFlightTime();
-
-    /**
-     * @implNote For client-side GUI rendering
-     * @return True if the trajectory intersects with the target block
-     */
-    public abstract boolean canHitTarget();
-
-    /**
      * @return True if the missile should detonate at the current tick
      */
     public abstract boolean shouldExplode();
+
+    /**
+     * Saves trajectory data to a compound tag in a way where the whole object can be reconstructed in the constructor
+     * @param data tag to fill trajectory data with
+     */
+    public void saveTo(CompoundTag data, MinecraftServer server) {
+        String dimension = data.getString("Dimension");
+        ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimension));
+        this.level = server.getLevel(dimensionKey);
+    }
+
+    public UUID getEntityId() {
+        return this.entityId;
+    }
+
+    public Level getLevel() {
+        return this.level;
+    }
 }

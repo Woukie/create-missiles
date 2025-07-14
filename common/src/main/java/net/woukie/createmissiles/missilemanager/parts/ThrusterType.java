@@ -1,7 +1,9 @@
 package net.woukie.createmissiles.missilemanager.parts;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.TrajectoryData;
@@ -21,7 +23,7 @@ public abstract class ThrusterType extends MissilePartType {
         return 96;
     }
 
-    public abstract Trajectory createTrajectory(TrajectoryData data);
+    public abstract Trajectory createTrajectory(CompoundTag data, MinecraftServer server);
 
     public abstract float getThrust();
     public abstract float getBurnRate();
