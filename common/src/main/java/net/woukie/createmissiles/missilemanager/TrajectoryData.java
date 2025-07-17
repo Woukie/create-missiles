@@ -34,9 +34,9 @@ public class TrajectoryData {
 
     public static TrajectoryData fromContainer(Level level, BlockPos source, BlockPos target, double fuelPercentage, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
         TrajectoryData data = new TrajectoryData(level, source, target, fuelPercentage, 0, warheadType, chassisType, thrusterType);
-        data.warheadData = warheadType.writeData(container, new CompoundTag());
-        data.chassisData = chassisType.writeData(container, new CompoundTag());
-        data.thrusterData = thrusterType.writeData(container, new CompoundTag());
+        data.warheadData = warheadType.saveTo(container, new CompoundTag());
+        data.chassisData = chassisType.saveTo(container, new CompoundTag());
+        data.thrusterData = thrusterType.saveTo(container, new CompoundTag());
         return data;
     }
 

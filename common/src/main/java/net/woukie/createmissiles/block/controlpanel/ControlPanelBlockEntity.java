@@ -44,12 +44,10 @@ import net.woukie.createmissiles.recipe.MissilePartRecipe;
 import net.woukie.createmissiles.registry.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 // Inventory divided up into 32-slot areas representing thruster, chassis and warhead
@@ -398,16 +396,14 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
 
         Direction launchPadDirection = this.getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
 
-        Trajectory trajectory = thrusterType.createTrajectory(TrajectoryData.fromContainer(
-                getLevel(),
-                getBlockPos().relative(launchPadDirection, 2),
-                navigationPanel.getTarget(),
-                navigationPanel.getFuelPercent(),
-                warheadType,
-                chassisType,
-                thrusterType,
-                this
-        ));
+        Vector3f target = navigationPanel.getTarget().getCenter().toVector3f();
+        Vector3f source = cornerLaunchPadPos.relative(launchPadDirection, 2).relative(launchPadDirection.getClockWise()).getCenter().toVector3f();
+        Trajectory trajectory = thrusterType.createTrajectory(
+                level, new Vector3d(source),
+                new Vector3d(target),
+                warheadType, chassisType, thrusterType,
+                (Container)this
+        );
 
         Trajectories trajectories = Trajectories.get();
         trajectories.launch(trajectory);

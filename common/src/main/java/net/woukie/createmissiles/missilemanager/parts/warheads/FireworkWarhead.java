@@ -21,6 +21,7 @@ import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -31,19 +32,19 @@ public class FireworkWarhead extends WarheadType {
     private final MissilePartModel model = new FireworkWarheadModel();
 
     @Override
-    public int getWeight() {
+    public float getWeight() {
         return 10;
     }
 
     @Override
     public void onDetonate(Trajectory trajectory, MinecraftServer server) {
-        var level = (ServerLevel) trajectory.data.level;
+        var level = (ServerLevel) trajectory.getLevel();
         if (level == null) return;
-        Vec3 impactPos = trajectory.data.target.getCenter();
+        Vector3d impactPos = trajectory.getTargetPosition();
 
         level.explode(null, impactPos.x, impactPos.y, impactPos.z, 2, Level.ExplosionInteraction.BLOCK);
 
-        CompoundTag explosions = trajectory.data.warheadData;
+        CompoundTag explosions = trajectory.getWarheadData();
 
         if (explosions == null || explosions.isEmpty()) {
             var random = Random.from(new Random());
@@ -58,7 +59,8 @@ public class FireworkWarhead extends WarheadType {
             });
 
             Vector3f vel = new Vector3f(0, 0, 0); // TODO: Replace with rocket velocity
-            Packets.EXPLODE_FIREWORK.sendToPlayers(players, new ExplodeFireworkMessage(impactPos.toVector3f(), vel, explosions));
+            Vector3f impactPosFloat = new Vector3f((float) impactPos.x, (float) impactPos.y, (float) impactPos.z);
+            Packets.EXPLODE_FIREWORK.sendToPlayers(players, new ExplodeFireworkMessage(impactPosFloat, vel, explosions));
         }
     }
 
@@ -68,7 +70,7 @@ public class FireworkWarhead extends WarheadType {
     }
 
     @Override
-    public CompoundTag writeData(Container container, CompoundTag data) {
+    public CompoundTag saveTo(Container container, CompoundTag data) {
         ListTag explosions = new ListTag();
 
         for (int i = 0; i < container.getContainerSize(); i++) {

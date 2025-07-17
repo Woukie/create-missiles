@@ -204,18 +204,18 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
             return;
         }
 
-        TrajectoryData trajectoryData = new TrajectoryData(
-                minecraft.level,
-                source,
-                target,
-                getMenu().getFuelPercent(),
-                0,
-                (WarheadType) PartTypes.get(warhead),
-                (ChassisType) PartTypes.get(chassis),
-                (ThrusterType) PartTypes.get(thruster)
-        );
+//        TrajectoryData trajectoryData = new TrajectoryData(
+//                minecraft.level,
+//                source,
+//                target,
+//                getMenu().getFuelPercent(),
+//                0,
+//                (WarheadType) PartTypes.get(warhead),
+//                (ChassisType) PartTypes.get(chassis),
+//                (ThrusterType) PartTypes.get(thruster)
+//        );
 
-        Trajectory trajectory = new Trajectory(trajectoryData);
+//        Trajectory trajectory = new Trajectory(trajectoryData);
 
 //        Sample points and position between
 //        minY = min(sourceY, impactY)

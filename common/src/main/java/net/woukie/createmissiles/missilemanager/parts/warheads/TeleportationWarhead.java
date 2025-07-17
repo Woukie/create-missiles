@@ -22,12 +22,7 @@ public class TeleportationWarhead extends WarheadType {
     private final MissilePartModel model = new TeleportationWarheadModel();
 
     @Override
-    public int getWeight() {
-        return 1;
-    }
-
-    @Override
-    public CompoundTag writeData(Container container, CompoundTag data) {
+    public CompoundTag saveTo(Container container, CompoundTag data) {
 
         for (int i = getStartSlot(); i < getEndSlot(); i++) {
             ItemStack stack = container.getItem(i);
@@ -45,11 +40,11 @@ public class TeleportationWarhead extends WarheadType {
 
     @Override
     public void onDetonate(Trajectory trajectory, MinecraftServer server) {
-        var level = (ServerLevel) trajectory.data.level;
+        var level = (ServerLevel) trajectory.getLevel();
         if (level == null) return;
-        var impactPos = trajectory.data.target.getCenter();
+        var impactPos = trajectory.getTargetPosition();
 
-        CompoundTag data = trajectory.data.warheadData;
+        CompoundTag data = trajectory.getWarheadData();
         if (data != null && !data.isEmpty()) {
             ServerPlayer serverPlayer = (ServerPlayer) level.getPlayerByUUID(data.getUUID("PlayerUUID"));
             if (serverPlayer != null && serverPlayer.connection.isAcceptingMessages()) {

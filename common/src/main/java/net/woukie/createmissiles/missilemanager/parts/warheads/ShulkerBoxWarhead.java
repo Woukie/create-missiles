@@ -1,5 +1,6 @@
 package net.woukie.createmissiles.missilemanager.parts.warheads;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -31,12 +32,12 @@ public class ShulkerBoxWarhead extends WarheadType {
     private final MissilePartModel model = new ShulkerBoxWarheadModel();
 
     @Override
-    public int getWeight() {
+    public float getWeight() {
         return 5;
     }
 
     @Override
-    public CompoundTag writeData(Container container, CompoundTag data) {
+    public CompoundTag saveTo(Container container, CompoundTag data) {
         ListTag boxes = new ListTag();
 
         for (int i = getStartSlot(); i < getEndSlot(); i++) {
@@ -51,10 +52,10 @@ public class ShulkerBoxWarhead extends WarheadType {
 
     @Override
     public void onDetonate(Trajectory trajectory, MinecraftServer server) {
-        var level = (ServerLevel) trajectory.data.level;
+        var level = (ServerLevel) trajectory.getLevel();
         if (level == null) return;
-        var impactPos = trajectory.data.target;
-        CompoundTag data = trajectory.data.warheadData;
+        var impactPos = trajectory.getTargetPosition();
+        CompoundTag data = trajectory.getWarheadData();
         if (data != null && !data.isEmpty()) {
             ListTag boxes = data.getList("ShulkerBoxes", 10);
 
@@ -63,11 +64,12 @@ public class ShulkerBoxWarhead extends WarheadType {
                     CompoundTag tag = boxes.getCompound(i);
                     BlockState blockState = BuiltInRegistries.BLOCK.get(new ResourceLocation(tag.getString("id"))).defaultBlockState();
 
-                    level.setBlock(impactPos, blockState, 3);
-                    level.gameEvent(null, GameEvent.BLOCK_PLACE, impactPos);
+                    var impactBlock = new BlockPos((int)impactPos.x, (int)impactPos.y, (int)impactPos.z);
+                    level.setBlock(impactBlock, blockState, 3);
+                    level.gameEvent(null, GameEvent.BLOCK_PLACE, impactBlock);
 
                     if (tag.contains("tag") && tag.getCompound("tag").contains("BlockEntityTag")) {
-                        BlockEntity entity = ShulkerBoxBlockEntity.loadStatic(impactPos, blockState, tag.getCompound("tag").getCompound("BlockEntityTag"));
+                        BlockEntity entity = ShulkerBoxBlockEntity.loadStatic(impactBlock, blockState, tag.getCompound("tag").getCompound("BlockEntityTag"));
                         if (entity != null) {
                             level.setBlockEntity(entity);
                         }
@@ -79,9 +81,9 @@ public class ShulkerBoxWarhead extends WarheadType {
 
     @Override
     public void onLaunch(Trajectory trajectory) {
-        var level = (ServerLevel) trajectory.data.level;
+        var level = (ServerLevel) trajectory.getLevel();
         if (level != null) {
-            var p = trajectory.getPosition(0);
+            var p = trajectory.getPosition();
             level.playSound(null, p.x, p.y, p.z, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.NEUTRAL, 1, 1);
         }
     }
