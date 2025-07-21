@@ -22,7 +22,7 @@ public abstract class WarheadType extends MissilePartType {
         BlockPos blockPos = new BlockPos((int)p.x, (int)p.y, (int)p.z);
 
         ServerLevel level = server.getLevel(trajectory.getLevelKey());
-        if (level != null && trajectory.getTick() > 200 || (trajectory.getTick() > 15 && !level.getBlockState(blockPos).isAir())) {
+        if (level != null && (trajectory.getTick() > 15 && !level.getBlockState(blockPos).isAir())) {
             onDetonate(trajectory, server);
             trajectory.setSpent(true);
         }
