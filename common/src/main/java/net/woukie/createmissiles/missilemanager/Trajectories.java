@@ -1,21 +1,21 @@
 package net.woukie.createmissiles.missilemanager;
 
-import net.minecraft.core.Rotations;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
-import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.entity.MissileEntity;
+import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.registry.EntityTypes;
+import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class Trajectories extends SavedData {
     private final List<Trajectory> activeTrajectories = new ArrayList<>();
@@ -44,63 +44,40 @@ public class Trajectories extends SavedData {
 
     public void serverTick(MinecraftServer server) {
         activeTrajectories.forEach(trajectory -> {
-            trajectory.incrementTick();
-            Vec3 p = trajectory.getPosition(trajectory.getData().getTick() * 0.05F);
-            var trajectoryData = trajectory.getData();
-
-            ServerLevel level = (ServerLevel) trajectoryData.level;
-            if (level != null) {
-
-                Entity entity = level.getEntity(trajectoryData.getEntityId());
-                if (entity == null || !entity.getType().equals(EntityTypes.MISSILE.get())) {
-                    entity = new MissileEntity(EntityTypes.MISSILE.get(), level);
-                    entity.setPos(p.x + 0.5, p.y + 0.5, p.z + 0.5);
-
-                    MissileEntity missileEntity = (MissileEntity) entity;
-                    missileEntity.setWarheadBuildPercent(100);
-                    missileEntity.setChassisBuildPercent(100);
-                    missileEntity.setThrusterBuildPercent(100);
-                    missileEntity.setWarheadType(trajectoryData.warheadType.getResourceLocation());
-                    missileEntity.setChassisType(trajectoryData.chassisType.getResourceLocation());
-                    missileEntity.setThrusterType(trajectoryData.thrusterType.getResourceLocation());
-
-                    level.addFreshEntity(entity);
-
-                    trajectoryData.setEntityId(entity.getUUID());
-                    setDirty();
-                }
-
-                MissileEntity missileEntity = (MissileEntity) entity;
-
-                missileEntity.setPos(p.x + 0.5, p.y + 0.5, p.z + 0.5);
-                var rotation = missileEntity.getRotation();
-                missileEntity.setRotation(new Rotations(rotation.getX() + 0.05f, rotation.getY() + 0.05f, rotation.getZ() + 0.05f));
-
-                level.sendParticles(ParticleTypes.CLOUD, p.x + 0.5, p.y + 0.5, p.z + 0.5, 5, 0, 0, 0, 0);
-                if (trajectory.shouldExplode()) {
-                    trajectoryData.warheadType.onDetonate(trajectory, server);
-                }
+            ServerLevel level = server.getLevel(trajectory.getLevelKey());
+            if (level != null && trajectory.getEntityId() == null) {
+                MissileEntity entity = new MissileEntity(EntityTypes.MISSILE.get(), level);
+                trajectory.updateEntityModel(entity);
+                level.addFreshEntity(entity);
+                trajectory.setEntityId(entity.getUUID());
+                setDirty();
+                return;
             }
 
-            trajectoryData.warheadType.onTick(trajectory, server);
-            trajectoryData.chassisType.onTick(trajectory, server);
-            trajectoryData.thrusterType.onTick(trajectory, server);
+            trajectory.tick(server);
+            trajectory.warheadType.onTick(trajectory, server);
+            trajectory.chassisType.onTick(trajectory, server);
+            trajectory.thrusterType.onTick(trajectory, server);
+
+            if (level != null) {
+                MissileEntity entity = (MissileEntity) level.getEntity(trajectory.getEntityId());
+                trajectory.updateEntityModel(entity);
+            }
         });
 
         activeTrajectories.removeIf(trajectory -> {
-            var remove = trajectory.shouldExplode();
-            if (remove) {
-                ServerLevel level = (ServerLevel) trajectory.getData().level;
-                if (level == null) return true;
-                var entity = level.getEntity(trajectory.getData().getEntityId());
-                if (entity != null && entity.getType().equals(EntityTypes.MISSILE.get())) {
+            if (!trajectory.getSpent()) return false;
+
+            ServerLevel level = server.getLevel(trajectory.getLevelKey());
+            if (level != null) {
+                Entity entity = level.getEntity(trajectory.getEntityId());
+                if (entity != null) {
                     entity.remove(Entity.RemovalReason.KILLED);
                 }
             }
-            return remove;
+            setDirty();
+            return true;
         });
-
-        setDirty();
     }
 
     public void launch(Trajectory trajectory) {
@@ -109,8 +86,9 @@ public class Trajectories extends SavedData {
 
     public Trajectories load(CompoundTag nbt) {
         for (int i = 0; i < nbt.size(); i++) {
-            CompoundTag trajectory = nbt.getCompound("" + i);
-            launch(new Trajectory(TrajectoryData.fromDisk(trajectory, server)));
+            CompoundTag savedData = nbt.getCompound("" + i);
+            ThrusterType thrusterType = (ThrusterType) PartTypes.get(new ResourceLocation(savedData.getString("ThrusterType")));
+            launch(thrusterType.serializeTrajectory(savedData, server));
         }
 
         return this;
@@ -120,7 +98,7 @@ public class Trajectories extends SavedData {
     public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag) {
         for (int i = 0; i < activeTrajectories.size(); i++) {
             Trajectory trajectory = activeTrajectories.get(i);
-            compoundTag.put("" + i, trajectory.getData().saveTo(new CompoundTag()));
+            compoundTag.put("" + i, trajectory.saveTo(new CompoundTag()));
         }
 
         return compoundTag;

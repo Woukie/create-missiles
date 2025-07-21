@@ -1,11 +1,11 @@
 package net.woukie.createmissiles.missilemanager.parts;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.woukie.createmissiles.client.MissilePartModel;
-
-import javax.annotation.Nullable;
-import java.util.List;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.Container;
+import net.minecraft.world.level.Level;
+import net.woukie.createmissiles.missilemanager.Trajectory;
+import org.joml.Vector3d;
 
 public abstract class ThrusterType extends MissilePartType {
     @Override
@@ -17,6 +17,10 @@ public abstract class ThrusterType extends MissilePartType {
     public int getEndSlot() {
         return 96;
     }
+
+    public abstract Trajectory serializeTrajectory(CompoundTag data, MinecraftServer server);
+
+    public abstract Trajectory createTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container);
 
     public abstract float getThrust();
     public abstract float getBurnRate();

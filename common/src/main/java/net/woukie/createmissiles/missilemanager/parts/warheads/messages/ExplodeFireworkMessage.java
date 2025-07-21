@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.missilemanager.parts.warheads;
+package net.woukie.createmissiles.missilemanager.parts.warheads.messages;
 
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.nbt.CompoundTag;

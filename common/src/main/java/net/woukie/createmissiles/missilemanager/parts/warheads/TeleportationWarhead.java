@@ -22,13 +22,7 @@ public class TeleportationWarhead extends WarheadType {
     private final MissilePartModel model = new TeleportationWarheadModel();
 
     @Override
-    public int getWeight() {
-        return 1;
-    }
-
-    @Override
-    public CompoundTag writeData(Container container, CompoundTag data) {
-
+    public CompoundTag saveTo(Container container, CompoundTag data) {
         for (int i = getStartSlot(); i < getEndSlot(); i++) {
             ItemStack stack = container.getItem(i);
             if (stack.is(Items.BOUND_ENDER_PEARL.get())) {
@@ -45,21 +39,21 @@ public class TeleportationWarhead extends WarheadType {
 
     @Override
     public void onDetonate(Trajectory trajectory, MinecraftServer server) {
-        var level = (ServerLevel) trajectory.getData().level;
+        var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
-        var impactPos = trajectory.getData().target;
+        var impactPos = trajectory.getPosition();
 
-        CompoundTag data = trajectory.getData().warheadData;
+        CompoundTag data = trajectory.getWarheadData();
         if (data != null && !data.isEmpty()) {
             ServerPlayer serverPlayer = (ServerPlayer) level.getPlayerByUUID(data.getUUID("PlayerUUID"));
             if (serverPlayer != null && serverPlayer.connection.isAcceptingMessages()) {
                 if (serverPlayer.isPassenger()) {
-                    serverPlayer.dismountTo(impactPos.getX(), impactPos.getY(), impactPos.getZ());
+                    serverPlayer.dismountTo(impactPos.x(), impactPos.y(), impactPos.z());
                 } else {
-                    serverPlayer.teleportTo(impactPos.getX(), impactPos.getY(), impactPos.getZ());
+                    serverPlayer.teleportTo(impactPos.x(), impactPos.y(), impactPos.z());
                 }
 
-                level.playSound(null, impactPos.getX(), impactPos.getY(), impactPos.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1, 1);
+                level.playSound(null, impactPos.x(), impactPos.y(), impactPos.z(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1, 1);
 
                 serverPlayer.resetFallDistance();
                 serverPlayer.hurt(serverPlayer.damageSources().fall(), 5.0F);

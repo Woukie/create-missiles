@@ -9,8 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -21,8 +19,10 @@ import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.client.models.warheads.FireworkWarheadModel;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
+import net.woukie.createmissiles.missilemanager.parts.warheads.messages.ExplodeFireworkMessage;
 import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -33,19 +33,19 @@ public class FireworkWarhead extends WarheadType {
     private final MissilePartModel model = new FireworkWarheadModel();
 
     @Override
-    public int getWeight() {
+    public float getWeight() {
         return 10;
     }
 
     @Override
     public void onDetonate(Trajectory trajectory, MinecraftServer server) {
-        var level = (ServerLevel) trajectory.getData().level;
+        var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
-        var impactPos = trajectory.getPosition((float)trajectory.getImpactTime());
+        Vector3d impactPos = trajectory.getPosition();
 
         level.explode(null, impactPos.x, impactPos.y, impactPos.z, 2, Level.ExplosionInteraction.BLOCK);
 
-        CompoundTag explosions = trajectory.getData().warheadData;
+        CompoundTag explosions = trajectory.getWarheadData();
 
         if (explosions == null || explosions.isEmpty()) {
             var random = Random.from(new Random());
@@ -60,7 +60,8 @@ public class FireworkWarhead extends WarheadType {
             });
 
             Vector3f vel = new Vector3f(0, 0, 0); // TODO: Replace with rocket velocity
-            Packets.EXPLODE_FIREWORK.sendToPlayers(players, new ExplodeFireworkMessage(impactPos.toVector3f(), vel, explosions));
+            Vector3f impactPosFloat = new Vector3f((float) impactPos.x, (float) impactPos.y, (float) impactPos.z);
+            Packets.EXPLODE_FIREWORK.sendToPlayers(players, new ExplodeFireworkMessage(impactPosFloat, vel, explosions));
         }
     }
 
@@ -70,7 +71,7 @@ public class FireworkWarhead extends WarheadType {
     }
 
     @Override
-    public CompoundTag writeData(Container container, CompoundTag data) {
+    public CompoundTag saveTo(Container container, CompoundTag data) {
         ListTag explosions = new ListTag();
 
         for (int i = 0; i < container.getContainerSize(); i++) {

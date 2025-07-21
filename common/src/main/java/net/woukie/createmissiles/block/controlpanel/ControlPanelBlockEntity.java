@@ -44,12 +44,10 @@ import net.woukie.createmissiles.recipe.MissilePartRecipe;
 import net.woukie.createmissiles.registry.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 // Inventory divided up into 32-slot areas representing thruster, chassis and warhead
@@ -366,9 +364,9 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
         MissilePartRecipe chassisRecipe = null;
         MissilePartRecipe thrusterRecipe = null;
 
-        MissilePartType warheadType = PartTypes.get(assemblyPanel.getItem(0));
-        MissilePartType chassisType = PartTypes.get(assemblyPanel.getItem(1));
-        MissilePartType thrusterType = PartTypes.get(assemblyPanel.getItem(2));
+        WarheadType warheadType = (WarheadType) PartTypes.get(assemblyPanel.getItem(0));
+        ChassisType chassisType = (ChassisType) PartTypes.get(assemblyPanel.getItem(1));
+        ThrusterType thrusterType = (ThrusterType) PartTypes.get(assemblyPanel.getItem(2));
 
         if (warheadType == null || chassisType == null || thrusterType == null) return;
 
@@ -398,23 +396,20 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
 
         Direction launchPadDirection = this.getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
 
-        Trajectory trajectory = new Trajectory(TrajectoryData.fromContainer(
-                getLevel(),
-                getBlockPos().relative(launchPadDirection, 2),
-                navigationPanel.getTarget(),
-                navigationPanel.getFuelPercent(),
-                (WarheadType) warheadType,
-                (ChassisType) chassisType,
-                (ThrusterType) thrusterType,
-                this
-        ));
+        Vector3f target = navigationPanel.getTarget().getCenter().toVector3f();
+        Vector3f source = cornerLaunchPadPos.relative(launchPadDirection, 1).relative(launchPadDirection.getClockWise()).getCenter().toVector3f();
+        Trajectory trajectory = thrusterType.createTrajectory(
+                level, new Vector3d(source),
+                new Vector3d(target),
+                warheadType, chassisType, thrusterType,
+                (Container)this
+        );
 
         Trajectories trajectories = Trajectories.get();
         trajectories.launch(trajectory);
-        var data = trajectory.getData();
-        data.warheadType.onLaunch(trajectory);
-        data.chassisType.onLaunch(trajectory);
-        data.thrusterType.onLaunch(trajectory);
+        warheadType.onLaunch(trajectory, (ServerLevel) level);
+        chassisType.onLaunch(trajectory, (ServerLevel) level);
+        thrusterType.onLaunch(trajectory, (ServerLevel) level);
         trajectories.setDirty();
 
         clearContent();

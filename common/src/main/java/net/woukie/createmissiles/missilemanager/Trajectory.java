@@ -1,86 +1,200 @@
 package net.woukie.createmissiles.missilemanager;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.phys.Vec2;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.Container;
+import net.minecraft.world.level.Level;
+import net.woukie.createmissiles.entity.MissileEntity;
+import net.woukie.createmissiles.missilemanager.parts.ChassisType;
+import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
+import net.woukie.createmissiles.registry.PartTypes;
+import org.joml.Vector3d;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class Trajectory {
-//    Data computed at control panel
-    private TrajectoryData data;
+import java.util.UUID;
 
-//    Data computed at run-time
-    private double angle;
-    private double launchVelocity;
-    private double flightLength;
-    private boolean canHitTarget;
-    private Vec2 localTarget;
+/**
+ * Applies logic to variables to represent a missile flight path.
+ * <br>
+ * Implementations of this class support instantiation from either a container or CompoundTag.
+ * <br>
+ * Constructed on the server when launching/loading flight paths. And on the client when rendering a trajectory in the navigator.
+ */
+public abstract class Trajectory {
+    private static final Logger log = LoggerFactory.getLogger(Trajectory.class);
+    protected ResourceKey<Level> levelKey;
+    protected int tick;
+    protected UUID entityId;
+    protected WarheadType warheadType;
+    protected ChassisType chassisType;
+    protected ThrusterType thrusterType;
+    protected Vector3d initialPosition, targetPosition;
+    protected CompoundTag warheadData;
+    protected CompoundTag chassisData;
+    protected CompoundTag thrusterData;
 
-    public Trajectory(TrajectoryData data) {
-        this.data = data;
-        reCalculate();
+    private boolean spent;
+
+    public Trajectory(ResourceKey<Level> levelKey, Vector3d initialPosition, Vector3d targetPosition, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
+        this.levelKey = levelKey;
+        this.initialPosition = initialPosition;
+        this.targetPosition = targetPosition;
+        this.tick = 0;
+        this.warheadType = warheadType;
+        this.chassisType = chassisType;
+        this.thrusterType = thrusterType;
+        this.warheadData = warheadType.saveTo(container, new CompoundTag());
+        this.chassisData = chassisType.saveTo(container, new CompoundTag());
+        this.thrusterData = thrusterType.saveTo(container, new CompoundTag());
     }
 
-    public TrajectoryData getData() {
+    public Trajectory(CompoundTag data, MinecraftServer server) {
+        loadFrom(data, server);
+    }
+
+    /**
+     * Called every tick the trajectory is simulated on the server.
+     * <br>
+     * This method is followed by MissilePartType ticks (and if spent, entity removal, then trajectory removal)
+     * @implNote in simulated approaches, here is where you tick the simulation
+     * @see Trajectories#serverTick(MinecraftServer)
+     */
+    public void tick(MinecraftServer server) {
+        tick++;
+    }
+
+    /**
+     * Gets the position of the rocket in world-space at the current tick
+     * @return global position of the rocket at the current tick
+     */
+    public abstract Vector3d getPosition();
+
+    /**
+     * Saves trajectory data to a compound tag in a way where the whole object can be reconstructed in <code>loadFrom()</code>
+     * @param data tag to fill trajectory data with
+     * @see Trajectory#loadFrom(CompoundTag, MinecraftServer)
+     */
+    public CompoundTag saveTo(CompoundTag data) {
+        data.putString("Dimension", levelKey.location().getPath());
+        data.putUUID("EntityID", entityId);
+        data.putInt("Tick", tick);
+        data.putDouble("InitialPositionX", initialPosition.x);
+        data.putDouble("InitialPositionY", initialPosition.y);
+        data.putDouble("InitialPositionZ", initialPosition.z);
+        data.putDouble("TargetPositionX", targetPosition.x);
+        data.putDouble("TargetPositionY", targetPosition.y);
+        data.putDouble("TargetPositionZ", targetPosition.z);
+        data.putString("WarheadType", warheadType.getResourceLocation().toString());
+        data.putString("ChassisType", chassisType.getResourceLocation().toString());
+        data.putString("ThrusterType", thrusterType.getResourceLocation().toString());
+        data.put("WarheadData", warheadData);
+        data.put("ChassisData", chassisData);
+        data.put("ThrusterData", thrusterData);
         return data;
     }
 
-    public void setData(TrajectoryData data) {
-        this.data = data;
-        reCalculate();
+    /**
+     * Fill the trajectory with data from the provided compound tag
+     * @param data to load the trajectory with
+     * @param server the calling server instance used to access the level
+     * @see Trajectory#saveTo(CompoundTag)
+     */
+    private void loadFrom(CompoundTag data, MinecraftServer server) {
+        String dimension = data.getString("Dimension");
+
+        this.levelKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimension));
+        this.entityId = data.hasUUID("EntityID") ? data.getUUID("EntityID") : null;
+        this.tick = data.getInt("Tick");
+        this.warheadType = (WarheadType) PartTypes.get(new ResourceLocation(data.getString("WarheadType")));
+        this.chassisType = (ChassisType) PartTypes.get(new ResourceLocation(data.getString("ChassisType")));
+        this.thrusterType = (ThrusterType) PartTypes.get(new ResourceLocation(data.getString("ThrusterType")));
+        this.initialPosition = new Vector3d(data.getDouble("InitialPositionX"), data.getDouble("InitialPositionY"), data.getDouble("InitialPositionZ"));
+        this.targetPosition = new Vector3d(data.getDouble("TargetPositionX"), data.getDouble("TargetPositionY"), data.getDouble("TargetPositionZ"));
+        this.warheadData = data.getCompound("WarheadData");
+        this.chassisData = data.getCompound("ChassisData");
+        this.thrusterData = data.getCompound("ThrusterData");
     }
 
-    public void incrementTick() {
-        this.data.incrementTick();
+    /**
+     * Update the entity model with visual changes about the missile like setting position, build percent and part types
+     * <br>
+     * @implNote called every frame
+     * @param entity the entity associated with this trajectory
+     */
+    public void updateEntityModel(MissileEntity entity) {
+        if (entity == null) return;
+        var p = this.getPosition();
+        entity.setPos(p.x, p.y, p.z);
+        entity.setWarheadBuildPercent(100);
+        entity.setChassisBuildPercent(100);
+        entity.setThrusterBuildPercent(100);
+        entity.setWarheadType(warheadType.getResourceLocation());
+        entity.setChassisType(chassisType.getResourceLocation());
+        entity.setThrusterType(thrusterType.getResourceLocation());
     }
 
-    private void reCalculate() {
-        Vec2 distanceXZ = new Vec2(
-                data.target.getX() - data.source.getX(),
-                data.target.getZ() - data.source.getZ()
-        );
-
-        this.launchVelocity = 25F;
-        this.localTarget = new Vec2(distanceXZ.length(), data.target.getY() - data.source.getY());
-        ProjectileUtils.LaunchInfo info = ProjectileUtils.getLaunchInfo(localTarget.x, localTarget.y, launchVelocity, data.gravity);
-        this.angle = info.getAngle();
-        this.flightLength = info.getTime();
-        this.canHitTarget = info.canHitTarget();
+    public UUID getEntityId() {
+        return this.entityId;
     }
 
-//    Wraps Vec2 getPosition
-    public Vec3 getPosition(float second) {
-        Vec2 position = getLocalPosition(second);
-        Vec2 distanceXZ = new Vec2(
-                data.target.getX() - data.source.getX(),
-                data.target.getZ() - data.source.getZ()
-        );
-
-        float horizontalProportionTravelled = position.x / localTarget.x;
-        return new Vec3(
-                data.source.getX() + horizontalProportionTravelled * distanceXZ.x,
-                data.source.getY() + position.y,
-                data.source.getZ() + horizontalProportionTravelled * distanceXZ.y
-        );
+    public ResourceKey<Level> getLevelKey() {
+        return this.levelKey;
     }
 
-//    For da expert salad:
-//    Use 'source' and 'target' block positions to calculate the position in the trajectory at time 'ticks' (1 tick = 0.05s)
-//    This isn't static because we will be referencing instance data
-    public Vec2 getLocalPosition(float second) {
-        return ProjectileUtils.getPositionAt(launchVelocity, angle, data.gravity, second);
+    public WarheadType getWarheadType() {
+        return this.warheadType;
     }
 
-//    Gets how long the flight will take from launch to impact
-    public double getImpactTime() {
-        return this.flightLength;
+    public ChassisType getChassisType() {
+        return this.chassisType;
     }
 
-    public boolean canHitTarget() {
-        return this.canHitTarget;
+    public ThrusterType getThrusterType() {
+        return this.thrusterType;
     }
 
-    public boolean shouldExplode() {
-        return (data.getTick() / 20F) > flightLength;
+    public Vector3d getTargetPosition() {
+        return this.targetPosition;
+    }
+
+    public Vector3d getInitialPosition() {
+        return this.initialPosition;
+    }
+
+    public int getTick() {
+        return this.tick;
+    }
+
+    public CompoundTag getWarheadData() {
+        return this.warheadData;
+    }
+
+    public CompoundTag getChassisData() {
+        return this.chassisData;
+    }
+
+    public CompoundTag getThrusterData() {
+        return this.thrusterData;
+    }
+
+    public void setSpent(boolean spent) {
+        this.spent = spent;
+    }
+
+    /**
+     * Whether this trajectory should be unloaded and the trajectory list re-serialized
+     * @return true if the trajectory should be destroyed
+     */
+    public boolean getSpent() {
+        return this.spent;
+    }
+
+    public void setEntityId(UUID uuid) {
+        this.entityId = uuid;
     }
 }
