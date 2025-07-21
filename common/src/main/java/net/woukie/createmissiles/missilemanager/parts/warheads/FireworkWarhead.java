@@ -39,7 +39,7 @@ public class FireworkWarhead extends WarheadType {
 
     @Override
     public void onDetonate(Trajectory trajectory, MinecraftServer server) {
-        var level = (ServerLevel) trajectory.getLevel();
+        var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
         Vector3d impactPos = trajectory.getPosition();
 

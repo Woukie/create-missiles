@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.missilemanager.Trajectory;
@@ -20,7 +21,7 @@ public abstract class MissilePartType {
 
     }
 
-    public void onLaunch(Trajectory trajectory) {
+    public void onLaunch(Trajectory trajectory, ServerLevel level) {
 
     }
 

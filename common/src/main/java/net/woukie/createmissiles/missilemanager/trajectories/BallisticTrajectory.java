@@ -34,13 +34,14 @@ public class BallisticTrajectory extends Trajectory {
         double fuel = chassisType.getFuelCapacity();
         double timeSinceLastTick = 1.0f / tickSpeed;
 
-        globalPosition.add(0, 0.2, 0);
-        rotation.add(0, 0.1, 0);
+        velocity.add(0, 0.01F, 0);
+        globalPosition.add(velocity);
+        rotation.add(0, 0.1F, 0);
     }
 
 //    Called when launching a missile from the console panel
     public BallisticTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
-        super(level, start, target, warheadType, chassisType, thrusterType, container);
+        super(level.dimension(), start, target, warheadType, chassisType, thrusterType, container);
         globalPosition = start;
         rotation = new Vector3d(0, 0, 0);
         velocity = new Vector3d(0, 0, 0);
@@ -49,10 +50,9 @@ public class BallisticTrajectory extends Trajectory {
 //    Called when deserialising trajectories
     public BallisticTrajectory(CompoundTag data, MinecraftServer server) {
         super(data, server);
-        globalPosition = new Vector3d(data.getDouble("PositionX"), data.getDouble("PositionY"), data.getDouble("PositionZ"));
-        rotation = new Vector3d(data.getDouble("RotationX"), data.getDouble("RotationY"), data.getDouble("RotationZ"));
-        velocity = new Vector3d(data.getDouble("VelocityX"), data.getDouble("VelocityY"), data.getDouble("VelocityZ"));
-        System.out.println("Instantiated Ballistic Trajecytory");
+        this.globalPosition = new Vector3d(data.getDouble("PositionX"), data.getDouble("PositionY"), data.getDouble("PositionZ"));
+        this.rotation = new Vector3d(data.getDouble("RotationX"), data.getDouble("RotationY"), data.getDouble("RotationZ"));
+        this.velocity = new Vector3d(data.getDouble("VelocityX"), data.getDouble("VelocityY"), data.getDouble("VelocityZ"));
     }
 
 //    Called when serializing a trajectory when exiting the world
@@ -79,6 +79,7 @@ public class BallisticTrajectory extends Trajectory {
     @Override
     public void updateEntityModel(MissileEntity entity) {
         super.updateEntityModel(entity);
+        if (entity == null) return;
         entity.setRotation(new Rotations((float) rotation.x, (float) rotation.y, (float) rotation.z));
     }
 }

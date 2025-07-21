@@ -13,6 +13,8 @@ import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.joml.Vector3d;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
@@ -24,7 +26,8 @@ import java.util.UUID;
  * Constructed on the server when launching/loading flight paths. And on the client when rendering a trajectory in the navigator.
  */
 public abstract class Trajectory {
-    protected Level level;
+    private static final Logger log = LoggerFactory.getLogger(Trajectory.class);
+    protected ResourceKey<Level> levelKey;
     protected int tick;
     protected UUID entityId;
     protected WarheadType warheadType;
@@ -37,8 +40,8 @@ public abstract class Trajectory {
 
     private boolean spent;
 
-    public Trajectory(Level level, Vector3d initialPosition, Vector3d targetPosition, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
-        this.level = level;
+    public Trajectory(ResourceKey<Level> levelKey, Vector3d initialPosition, Vector3d targetPosition, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
+        this.levelKey = levelKey;
         this.initialPosition = initialPosition;
         this.targetPosition = targetPosition;
         this.tick = 0;
@@ -77,7 +80,7 @@ public abstract class Trajectory {
      * @see Trajectory#loadFrom(CompoundTag, MinecraftServer)
      */
     public CompoundTag saveTo(CompoundTag data) {
-        data.putString("Dimension", level.dimension().location().getPath());
+        data.putString("Dimension", levelKey.location().getPath());
         data.putUUID("EntityID", entityId);
         data.putInt("Tick", tick);
         data.putDouble("InitialPositionX", initialPosition.x);
@@ -103,19 +106,18 @@ public abstract class Trajectory {
      */
     private void loadFrom(CompoundTag data, MinecraftServer server) {
         String dimension = data.getString("Dimension");
-        ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimension));
 
-        level = server.getLevel(dimensionKey);
-        entityId = data.hasUUID("EntityID") ? data.getUUID("EntityID") : null;
-        tick = data.getInt("Tick");
-        warheadType = (WarheadType) PartTypes.get(new ResourceLocation(data.getString("WarheadType")));
-        chassisType = (ChassisType) PartTypes.get(new ResourceLocation(data.getString("ChassisType")));
-        thrusterType = (ThrusterType) PartTypes.get(new ResourceLocation(data.getString("ThrusterType")));
-        initialPosition = new Vector3d(data.getDouble("InitialPositionX"), data.getDouble("InitialPositionY"), data.getDouble("InitialPositionZ"));
-        targetPosition = new Vector3d(data.getDouble("TargetPositionX"), data.getDouble("TargetPositionY"), data.getDouble("TargetPositionZ"));
-        warheadData = data.getCompound("WarheadData");
-        chassisData = data.getCompound("ChassisData");
-        thrusterData = data.getCompound("ThrusterData");
+        this.levelKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimension));
+        this.entityId = data.hasUUID("EntityID") ? data.getUUID("EntityID") : null;
+        this.tick = data.getInt("Tick");
+        this.warheadType = (WarheadType) PartTypes.get(new ResourceLocation(data.getString("WarheadType")));
+        this.chassisType = (ChassisType) PartTypes.get(new ResourceLocation(data.getString("ChassisType")));
+        this.thrusterType = (ThrusterType) PartTypes.get(new ResourceLocation(data.getString("ThrusterType")));
+        this.initialPosition = new Vector3d(data.getDouble("InitialPositionX"), data.getDouble("InitialPositionY"), data.getDouble("InitialPositionZ"));
+        this.targetPosition = new Vector3d(data.getDouble("TargetPositionX"), data.getDouble("TargetPositionY"), data.getDouble("TargetPositionZ"));
+        this.warheadData = data.getCompound("WarheadData");
+        this.chassisData = data.getCompound("ChassisData");
+        this.thrusterData = data.getCompound("ThrusterData");
     }
 
     /**
@@ -125,7 +127,8 @@ public abstract class Trajectory {
      * @param entity the entity associated with this trajectory
      */
     public void updateEntityModel(MissileEntity entity) {
-        var p = getPosition();
+        if (entity == null) return;
+        var p = this.getPosition();
         entity.setPos(p.x, p.y, p.z);
         entity.setWarheadBuildPercent(100);
         entity.setChassisBuildPercent(100);
@@ -136,47 +139,47 @@ public abstract class Trajectory {
     }
 
     public UUID getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
-    public Level getLevel() {
-        return level;
+    public ResourceKey<Level> getLevelKey() {
+        return this.levelKey;
     }
 
     public WarheadType getWarheadType() {
-        return warheadType;
+        return this.warheadType;
     }
 
     public ChassisType getChassisType() {
-        return chassisType;
+        return this.chassisType;
     }
 
     public ThrusterType getThrusterType() {
-        return thrusterType;
+        return this.thrusterType;
     }
 
     public Vector3d getTargetPosition() {
-        return targetPosition;
+        return this.targetPosition;
     }
 
     public Vector3d getInitialPosition() {
-        return initialPosition;
+        return this.initialPosition;
     }
 
     public int getTick() {
-        return tick;
+        return this.tick;
     }
 
     public CompoundTag getWarheadData() {
-        return warheadData;
+        return this.warheadData;
     }
 
     public CompoundTag getChassisData() {
-        return chassisData;
+        return this.chassisData;
     }
 
     public CompoundTag getThrusterData() {
-        return thrusterData;
+        return this.thrusterData;
     }
 
     public void setSpent(boolean spent) {

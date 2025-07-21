@@ -33,7 +33,8 @@ public class FireworkThruster extends ThrusterType {
     public void onTick(Trajectory trajectory, MinecraftServer server) {
         super.onTick(trajectory, server);
         var p = trajectory.getPosition();
-        ((ServerLevel)trajectory.getLevel()).sendParticles(ParticleTypes.CLOUD, p.x, p.y, p.z, 5, 0.1, 0, 0, 0);
+        ServerLevel level = server.getLevel(trajectory.getLevelKey());
+        if (level != null) level.sendParticles(ParticleTypes.CLOUD, p.x, p.y, p.z, 5, 0.1, 0, 0, 0);
     }
 
     @Override
@@ -52,12 +53,9 @@ public class FireworkThruster extends ThrusterType {
     }
 
     @Override
-    public void onLaunch(Trajectory trajectory) {
-        var level = (ServerLevel) trajectory.getLevel();
-        if (level != null) {
-            var p = trajectory.getPosition();
-            level.playSound(null, p.x, p.y, p.z, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.NEUTRAL, 1, 1);
-        }
+    public void onLaunch(Trajectory trajectory, ServerLevel level) {
+        var p = trajectory.getPosition();
+        level.playSound(null, p.x, p.y, p.z, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.NEUTRAL, 1, 1);
     }
 
     @Override

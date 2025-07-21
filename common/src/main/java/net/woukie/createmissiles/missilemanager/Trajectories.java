@@ -16,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Trajectories extends SavedData {
     private final List<Trajectory> activeTrajectories = new ArrayList<>();
@@ -44,19 +43,15 @@ public class Trajectories extends SavedData {
     }
 
     public void serverTick(MinecraftServer server) {
-        AtomicBoolean dirty = new AtomicBoolean(false);
-        activeTrajectories.removeIf(trajectory -> {
-            Level level = trajectory.getLevel();
-            Entity entity = ((ServerLevel) level).getEntity(trajectory.getEntityId());
-            if (entity == null || !entity.getType().equals(EntityTypes.MISSILE.get())) {
-                entity = new MissileEntity(EntityTypes.MISSILE.get(), level);
-
-                trajectory.updateEntityModel((MissileEntity) entity);
-
+        activeTrajectories.forEach(trajectory -> {
+            ServerLevel level = server.getLevel(trajectory.getLevelKey());
+            if (level != null && trajectory.getEntityId() == null) {
+                MissileEntity entity = new MissileEntity(EntityTypes.MISSILE.get(), level);
+                trajectory.updateEntityModel(entity);
                 level.addFreshEntity(entity);
-
                 trajectory.setEntityId(entity.getUUID());
-                dirty.set(true);
+                setDirty();
+                return;
             }
 
             trajectory.tick(server);
@@ -64,20 +59,25 @@ public class Trajectories extends SavedData {
             trajectory.chassisType.onTick(trajectory, server);
             trajectory.thrusterType.onTick(trajectory, server);
 
-            trajectory.updateEntityModel((MissileEntity) entity);
-
-            if (trajectory.getSpent()) {
-                entity.remove(Entity.RemovalReason.KILLED);
-                dirty.set(true);
-                return true;
+            if (level != null) {
+                MissileEntity entity = (MissileEntity) level.getEntity(trajectory.getEntityId());
+                trajectory.updateEntityModel(entity);
             }
-
-            return false;
         });
 
-        if (dirty.get()) {
+        activeTrajectories.removeIf(trajectory -> {
+            if (!trajectory.getSpent()) return false;
+
+            ServerLevel level = server.getLevel(trajectory.getLevelKey());
+            if (level != null) {
+                Entity entity = level.getEntity(trajectory.getEntityId());
+                if (entity != null) {
+                    entity.remove(Entity.RemovalReason.KILLED);
+                }
+            }
             setDirty();
-        }
+            return true;
+        });
     }
 
     public void launch(Trajectory trajectory) {
