@@ -3,9 +3,14 @@ package net.woukie.createmissiles.missilemanager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.woukie.createmissiles.entity.MissileEntity;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
+import net.woukie.createmissiles.registry.EntityTypes;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,11 +46,28 @@ public class Trajectories extends SavedData {
     public void serverTick(MinecraftServer server) {
         AtomicBoolean dirty = new AtomicBoolean(false);
         activeTrajectories.removeIf(trajectory -> {
-            if (trajectory.tick(server)) {
+            Level level = trajectory.getLevel();
+            Entity entity = ((ServerLevel) level).getEntity(trajectory.getEntityId());
+            if (entity == null || !entity.getType().equals(EntityTypes.MISSILE.get())) {
+                entity = new MissileEntity(EntityTypes.MISSILE.get(), level);
+
+                trajectory.updateEntityModel((MissileEntity) entity);
+
+                level.addFreshEntity(entity);
+
+                trajectory.setEntityId(entity.getUUID());
                 dirty.set(true);
             }
 
-            if (trajectory.shouldRemove()) {
+            trajectory.tick(server);
+            trajectory.warheadType.onTick(trajectory, server);
+            trajectory.chassisType.onTick(trajectory, server);
+            trajectory.thrusterType.onTick(trajectory, server);
+
+            trajectory.updateEntityModel((MissileEntity) entity);
+
+            if (trajectory.getSpent()) {
+                entity.remove(Entity.RemovalReason.KILLED);
                 dirty.set(true);
                 return true;
             }
@@ -65,7 +87,7 @@ public class Trajectories extends SavedData {
     public Trajectories load(CompoundTag nbt) {
         for (int i = 0; i < nbt.size(); i++) {
             CompoundTag savedData = nbt.getCompound("" + i);
-            ThrusterType thrusterType = (ThrusterType) PartTypes.get(new ResourceLocation(savedData.getString("Thruster")));
+            ThrusterType thrusterType = (ThrusterType) PartTypes.get(new ResourceLocation(savedData.getString("ThrusterType")));
             launch(thrusterType.serializeTrajectory(savedData, server));
         }
 

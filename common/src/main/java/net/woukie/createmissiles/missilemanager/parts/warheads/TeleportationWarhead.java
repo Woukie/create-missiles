@@ -23,7 +23,6 @@ public class TeleportationWarhead extends WarheadType {
 
     @Override
     public CompoundTag saveTo(Container container, CompoundTag data) {
-
         for (int i = getStartSlot(); i < getEndSlot(); i++) {
             ItemStack stack = container.getItem(i);
             if (stack.is(Items.BOUND_ENDER_PEARL.get())) {
@@ -42,7 +41,7 @@ public class TeleportationWarhead extends WarheadType {
     public void onDetonate(Trajectory trajectory, MinecraftServer server) {
         var level = (ServerLevel) trajectory.getLevel();
         if (level == null) return;
-        var impactPos = trajectory.getTargetPosition();
+        var impactPos = trajectory.getPosition();
 
         CompoundTag data = trajectory.getWarheadData();
         if (data != null && !data.isEmpty()) {

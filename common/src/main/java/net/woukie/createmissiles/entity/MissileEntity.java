@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
 
 public class MissileEntity extends Entity {
     private static final EntityDataAccessor<String> WARHEAD_TYPE =
@@ -112,5 +113,17 @@ public class MissileEntity extends Entity {
 
     public void setThrusterType(ResourceLocation type) {
         entityData.set(THRUSTER_TYPE, type == null ? "" : type.toString());
+    }
+
+    public void setWarheadType(MissilePartType type) {
+        entityData.set(WARHEAD_TYPE, type == null ? "" : type.getResourceLocation().toString());
+    }
+
+    public void setChassisType(MissilePartType type) {
+        entityData.set(CHASSIS_TYPE, type == null ? "" : type.getResourceLocation().toString());
+    }
+
+    public void setThrusterType(MissilePartType type) {
+        entityData.set(THRUSTER_TYPE, type == null ? "" : type.getResourceLocation().toString());
     }
 }

@@ -15,7 +15,6 @@ public abstract class MissilePartType {
     public @NotNull abstract MissilePartModel getModel();
     public abstract ResourceLocation getResourceLocation();
     public abstract Component getDisplayName();
-    public CompoundTag warheadData;
 
     public void onTick(Trajectory trajectory, MinecraftServer server) {
 

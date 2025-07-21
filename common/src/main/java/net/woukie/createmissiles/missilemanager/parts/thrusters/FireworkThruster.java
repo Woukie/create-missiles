@@ -1,5 +1,6 @@
 package net.woukie.createmissiles.missilemanager.parts.thrusters;
 
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -26,6 +27,13 @@ public class FireworkThruster extends ThrusterType {
     @Override
     public Trajectory serializeTrajectory(CompoundTag data, MinecraftServer server) {
         return new BallisticTrajectory(data, server);
+    }
+
+    @Override
+    public void onTick(Trajectory trajectory, MinecraftServer server) {
+        super.onTick(trajectory, server);
+        var p = trajectory.getPosition();
+        ((ServerLevel)trajectory.getLevel()).sendParticles(ParticleTypes.CLOUD, p.x, p.y, p.z, 5, 0.1, 0, 0, 0);
     }
 
     @Override

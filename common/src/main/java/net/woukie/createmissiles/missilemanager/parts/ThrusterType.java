@@ -7,8 +7,6 @@ import net.minecraft.world.level.Level;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import org.joml.Vector3d;
 
-import java.util.List;
-
 public abstract class ThrusterType extends MissilePartType {
     @Override
     public int getStartSlot() {

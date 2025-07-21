@@ -5,25 +5,23 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.entity.MissileEntity;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
-import net.woukie.createmissiles.registry.EntityTypes;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.joml.Vector3d;
 
 import java.util.UUID;
 
 /**
- * Applies logic to variables to represent a missile flight path, namely controlling velocity, global position and rotation.
+ * Applies logic to variables to represent a missile flight path.
  * <br>
- * Constructed when in motion on the server. And when rendering a trajectory in the navigator on the client.
+ * Implementations of this class support instantiation from either a container or CompoundTag.
+ * <br>
+ * Constructed on the server when launching/loading flight paths. And on the client when rendering a trajectory in the navigator.
  */
 public abstract class Trajectory {
     protected Level level;
@@ -37,13 +35,13 @@ public abstract class Trajectory {
     protected CompoundTag chassisData;
     protected CompoundTag thrusterData;
 
-    public Trajectory() {
-    }
+    private boolean spent;
 
     public Trajectory(Level level, Vector3d initialPosition, Vector3d targetPosition, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
         this.level = level;
         this.initialPosition = initialPosition;
         this.targetPosition = targetPosition;
+        this.tick = 0;
         this.warheadType = warheadType;
         this.chassisType = chassisType;
         this.thrusterType = thrusterType;
@@ -57,35 +55,21 @@ public abstract class Trajectory {
     }
 
     /**
-     * Called every tick the trajectory is simulated on the server
+     * Called every tick the trajectory is simulated on the server.
+     * <br>
+     * This method is followed by MissilePartType ticks (and if spent, entity removal, then trajectory removal)
      * @implNote in simulated approaches, here is where you tick the simulation
      * @see Trajectories#serverTick(MinecraftServer)
-     * @return whether the trajectories should be saved to disk
      */
-    public boolean tick(MinecraftServer server) {
-        if (level != null) {
-            tick++;
-            Entity entity = ((ServerLevel) level).getEntity(getEntityId());
-            if (entity == null || !entity.getType().equals(EntityTypes.MISSILE.get())) {
-                entity = new MissileEntity(EntityTypes.MISSILE.get(), level);
-
-                updateEntityModel((MissileEntity) entity);
-
-                level.addFreshEntity(entity);
-
-                setEntityId(entity.getUUID());
-                return true;
-            }
-        }
-
-        return false;
+    public void tick(MinecraftServer server) {
+        tick++;
     }
 
     /**
      * Gets the position of the rocket in world-space at the current tick
      * @return global position of the rocket at the current tick
      */
-    public abstract Vec3 getPosition();
+    public abstract Vector3d getPosition();
 
     /**
      * Saves trajectory data to a compound tag in a way where the whole object can be reconstructed in <code>loadFrom()</code>
@@ -117,7 +101,7 @@ public abstract class Trajectory {
      * @param server the calling server instance used to access the level
      * @see Trajectory#saveTo(CompoundTag)
      */
-    public void loadFrom(CompoundTag data, MinecraftServer server) {
+    private void loadFrom(CompoundTag data, MinecraftServer server) {
         String dimension = data.getString("Dimension");
         ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimension));
 
@@ -140,7 +124,16 @@ public abstract class Trajectory {
      * @implNote called every frame
      * @param entity the entity associated with this trajectory
      */
-    public abstract void updateEntityModel(MissileEntity entity);
+    public void updateEntityModel(MissileEntity entity) {
+        var p = getPosition();
+        entity.setPos(p.x, p.y, p.z);
+        entity.setWarheadBuildPercent(100);
+        entity.setChassisBuildPercent(100);
+        entity.setThrusterBuildPercent(100);
+        entity.setWarheadType(warheadType.getResourceLocation());
+        entity.setChassisType(chassisType.getResourceLocation());
+        entity.setThrusterType(thrusterType.getResourceLocation());
+    }
 
     public UUID getEntityId() {
         return entityId;
@@ -186,13 +179,19 @@ public abstract class Trajectory {
         return thrusterData;
     }
 
-    public void setEntityId(UUID uuid) {
-        entityId = uuid;
+    public void setSpent(boolean spent) {
+        this.spent = spent;
     }
 
     /**
      * Whether this trajectory should be unloaded and the trajectory list re-serialized
      * @return true if the trajectory should be destroyed
      */
-    public abstract boolean shouldRemove();
+    public boolean getSpent() {
+        return this.spent;
+    }
+
+    public void setEntityId(UUID uuid) {
+        this.entityId = uuid;
+    }
 }

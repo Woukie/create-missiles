@@ -19,6 +19,7 @@ import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.client.models.warheads.FireworkWarheadModel;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
+import net.woukie.createmissiles.missilemanager.parts.warheads.messages.ExplodeFireworkMessage;
 import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
@@ -40,7 +41,7 @@ public class FireworkWarhead extends WarheadType {
     public void onDetonate(Trajectory trajectory, MinecraftServer server) {
         var level = (ServerLevel) trajectory.getLevel();
         if (level == null) return;
-        Vector3d impactPos = trajectory.getTargetPosition();
+        Vector3d impactPos = trajectory.getPosition();
 
         level.explode(null, impactPos.x, impactPos.y, impactPos.z, 2, Level.ExplosionInteraction.BLOCK);
 

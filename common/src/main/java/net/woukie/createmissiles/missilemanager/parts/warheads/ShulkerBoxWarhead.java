@@ -54,7 +54,7 @@ public class ShulkerBoxWarhead extends WarheadType {
     public void onDetonate(Trajectory trajectory, MinecraftServer server) {
         var level = (ServerLevel) trajectory.getLevel();
         if (level == null) return;
-        var impactPos = trajectory.getTargetPosition();
+        var impactPos = trajectory.getPosition();
         CompoundTag data = trajectory.getWarheadData();
         if (data != null && !data.isEmpty()) {
             ListTag boxes = data.getList("ShulkerBoxes", 10);
@@ -101,5 +101,10 @@ public class ShulkerBoxWarhead extends WarheadType {
     @Override
     public Component getDisplayName() {
         return Component.translatable("warheads.createmissiles.shulker_box_warhead");
+    }
+
+    @Override
+    public void onTick(Trajectory trajectory, MinecraftServer server) {
+
     }
 }

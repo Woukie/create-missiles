@@ -397,7 +397,7 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
         Direction launchPadDirection = this.getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
 
         Vector3f target = navigationPanel.getTarget().getCenter().toVector3f();
-        Vector3f source = cornerLaunchPadPos.relative(launchPadDirection, 2).relative(launchPadDirection.getClockWise()).getCenter().toVector3f();
+        Vector3f source = cornerLaunchPadPos.relative(launchPadDirection, 1).relative(launchPadDirection.getClockWise()).getCenter().toVector3f();
         Trajectory trajectory = thrusterType.createTrajectory(
                 level, new Vector3d(source),
                 new Vector3d(target),
