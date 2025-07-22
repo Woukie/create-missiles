@@ -34,7 +34,6 @@ import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
 import net.woukie.createmissiles.entity.MissileEntity;
 import net.woukie.createmissiles.missilemanager.Trajectories;
 import net.woukie.createmissiles.missilemanager.Trajectory;
-import net.woukie.createmissiles.missilemanager.TrajectoryData;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
 import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
@@ -307,7 +306,7 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
         if (level == null) return;
         var recipe = MissilePartRecipe.fromResourceLocation(level, partType == null ? null : partType.getResourceLocation());
 
-        Map<MissileIngredient, Integer> ingredientStatus = recipe.map(a -> a.getMissileIngredients().stream().collect(Collectors.toMap(b -> b, MissileIngredient::getCount))).orElseGet(Map::of);
+        Map<MissileIngredient, Integer> ingredientStatus = recipe.map(a -> a.getMissileIngredients().stream().collect(Collectors.toMap(b -> b, MissileIngredient::count))).orElseGet(Map::of);
 
         int start = partType != null ? partType.getStartSlot() : backupStartSlot;
         int end = partType != null ? partType.getEndSlot() : backupEndSlot;

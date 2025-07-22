@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.item.assembly;
+package net.woukie.createmissiles.item;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;

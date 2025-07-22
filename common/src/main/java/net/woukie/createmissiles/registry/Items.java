@@ -2,13 +2,10 @@ package net.woukie.createmissiles.registry;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.ItemEntry;
-import dev.architectury.registry.CreativeTabRegistry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.item.BoundEnderPearlItem;
-import net.woukie.createmissiles.item.assembly.AssemblyItem;
+import net.woukie.createmissiles.item.AssemblyItem;
 
 public class Items {
     private static final CreateRegistrate REGISTRATE = CreateMissiles.registrate();

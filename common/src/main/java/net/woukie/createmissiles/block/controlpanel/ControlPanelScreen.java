@@ -180,11 +180,11 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
     private int writeIngredientStatus(List<FormattedText> text, Map<MissileIngredient, Integer> ingredients) {
         AtomicInteger increment = new AtomicInteger();
         ingredients.forEach((ingredient, left) -> {
-            int required = ingredient.getCount();
+            int required = ingredient.count();
             int have = required - left;
-            List<ItemStack> items = new ArrayList<>(Arrays.stream(ingredient.getItems()).toList());
+            List<ItemStack> items = new ArrayList<>(Arrays.stream(ingredient.items()).toList());
 
-            for (var tag : ingredient.getTags()) {
+            for (var tag : ingredient.tags()) {
                 for(Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
                     items.add(new ItemStack(holder));
                 }

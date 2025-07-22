@@ -15,29 +15,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.stream.StreamSupport;
 
-public class MissileIngredient {
+/**
+ * @param items Ingredient accepts any of these items
+ * @param tags  Ingredient accepts any of these tags
+ */
+public record MissileIngredient(int count, ItemStack[] items, TagKey<Item>[] tags) {
     public static final MissileIngredient EMPTY = new MissileIngredient(0, new ItemStack[0], new TagKey[0]);
-    private final int count;
-    private final ItemStack[] items; // Ingredient accepts any of these items
-    private final TagKey<Item>[] tags; // Ingredient accepts any of these tags
-
-    public MissileIngredient(int count, ItemStack[] items, TagKey<Item>[] tags) {
-        this.count = count;
-        this.items = items;
-        this.tags = tags;
-    }
-
-    public ItemStack[] getItems() {
-        return items;
-    }
-
-    public TagKey<Item>[] getTags() {
-        return tags;
-    }
-
-    public int getCount() {
-        return count;
-    }
 
     public boolean isEmpty() {
         return (items.length == 0 && tags.length == 0) || count == 0;
@@ -60,8 +43,8 @@ public class MissileIngredient {
     }
 
     public void toNetwork(FriendlyByteBuf friendlyByteBuf) {
-        friendlyByteBuf.writeCollection(Arrays.asList(getItems()), FriendlyByteBuf::writeItem);
-        friendlyByteBuf.writeCollection(Arrays.asList(getTags()), (a, b) -> a.writeResourceLocation(b.location()));
+        friendlyByteBuf.writeCollection(Arrays.asList(items()), FriendlyByteBuf::writeItem);
+        friendlyByteBuf.writeCollection(Arrays.asList(tags()), (a, b) -> a.writeResourceLocation(b.location()));
         friendlyByteBuf.writeInt(count);
     }
 

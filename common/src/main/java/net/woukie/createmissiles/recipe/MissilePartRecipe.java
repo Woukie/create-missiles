@@ -59,7 +59,7 @@ public class MissilePartRecipe implements Recipe<Container> {
     }
 
     public Map<MissileIngredient, Integer> getRemainingItems(List<ItemStack> items) {
-        Map<MissileIngredient, Integer> ingredientStatus = getMissileIngredients().stream().collect(Collectors.toMap(a -> a, MissileIngredient::getCount));
+        Map<MissileIngredient, Integer> ingredientStatus = getMissileIngredients().stream().collect(Collectors.toMap(a -> a, MissileIngredient::count));
 
         for (ItemStack item : items) {
             var itemsRemaining = item.getCount();
@@ -95,8 +95,8 @@ public class MissilePartRecipe implements Recipe<Container> {
         int totalCount = 0;
         int fulfilled = 0;
         for (var entry : remainingItems.entrySet()) {
-            int required = entry.getKey().getCount();
-            totalCount += entry.getKey().getCount();
+            int required = entry.getKey().count();
+            totalCount += entry.getKey().count();
             fulfilled += required - entry.getValue();
         }
 
