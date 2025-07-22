@@ -3,8 +3,10 @@ package net.woukie.createmissiles.block.controlpanel;
 import com.simibubi.create.foundation.utility.VoxelShaper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -51,5 +53,14 @@ public class ControlPanelBlock extends MissileAbstractBlock<ControlPanelBlockEnt
     @Override
     public Class<ControlPanelBlockEntity> getBlockEntityClass() {
         return ControlPanelBlockEntity.class;
+    }
+
+    @Override
+    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos blockPos2, boolean bl) {
+        boolean powered = level.hasNeighborSignal(blockPos) || level.hasNeighborSignal(blockPos.above());
+        if (powered) {
+            ControlPanelBlockEntity blockEntity = (ControlPanelBlockEntity) level.getBlockEntity(blockPos);;
+            if (blockEntity != null) blockEntity.launch();
+        }
     }
 }

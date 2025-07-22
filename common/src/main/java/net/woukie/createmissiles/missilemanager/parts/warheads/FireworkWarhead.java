@@ -92,4 +92,16 @@ public class FireworkWarhead extends WarheadType {
     public Component getDisplayName() {
         return Component.translatable("warheads.createmissiles.firework_warhead");
     }
+
+    @Override
+    public void onTick(Trajectory trajectory, MinecraftServer server) {
+        ServerLevel level = server.getLevel(trajectory.getLevelKey());
+        if (level != null && trajectory.getTick() > 100) {
+            onDetonate(trajectory, server);
+            trajectory.setSpent(true);
+            return;
+        }
+
+        super.onTick(trajectory, server);
+    }
 }
