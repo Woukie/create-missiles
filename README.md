@@ -1,4 +1,4 @@
-<img src="./icons/icon_256.gif" alt="Logo" width="256">
+<div align="center"><img src="./icons/icon_256.gif" alt="Logo" width="256"></div>
 
 <h1>Create Missiles</h1>
 
