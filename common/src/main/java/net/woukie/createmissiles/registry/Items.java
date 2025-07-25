@@ -2,9 +2,11 @@ package net.woukie.createmissiles.registry;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.item.BoundEnderPearlItem;
@@ -35,10 +37,6 @@ public class Items {
             "bound_ender_pearl",
             () -> new BoundEnderPearlItem(new Item.Properties())
     );
-
-    public static ItemEntry<BoundEnderPearlItem> TEST = REGISTRATE
-            .item(CreateMissiles.MOD_ID, "chassis_assembly_item", BoundEnderPearlItem::new)
-            .register();
 
     public static void init() {
         CreateMissiles.LOGGER.info("Registering items for " + CreateMissiles.NAME);
