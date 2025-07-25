@@ -5,7 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.item.AssemblyItem;
+import net.woukie.createmissiles.item.assembly.AssemblyItem;
 import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
 import net.woukie.createmissiles.missilemanager.parts.chassis.FireworkChassis;
 import net.woukie.createmissiles.missilemanager.parts.thrusters.FireworkThruster;

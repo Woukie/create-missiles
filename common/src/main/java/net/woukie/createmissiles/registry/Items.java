@@ -2,37 +2,46 @@ package net.woukie.createmissiles.registry;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.ItemEntry;
-import net.minecraft.world.item.CreativeModeTabs;
+import dev.architectury.registry.registries.DeferredRegister;
+import dev.architectury.registry.registries.RegistrySupplier;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.Item;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.item.BoundEnderPearlItem;
-import net.woukie.createmissiles.item.AssemblyItem;
+import net.woukie.createmissiles.item.assembly.AssemblyItem;
 
 public class Items {
+    public static final DeferredRegister<Item> ITEMS =
+            DeferredRegister.create(CreateMissiles.MOD_ID, Registries.ITEM);
+
     private static final CreateRegistrate REGISTRATE = CreateMissiles.registrate();
 
-    public static ItemEntry<AssemblyItem> WARHEAD_ASSEMBLY = REGISTRATE
-            .item(CreateMissiles.MOD_ID, "warhead_assembly", AssemblyItem::new)
-            .removeTab(CreativeModeTabs.SEARCH)
-            .register();
+    public static final RegistrySupplier<Item> WARHEAD_ASSEMBLY = ITEMS.register(
+            "warhead_assembly",
+            () -> new AssemblyItem(new Item.Properties())
+    );
 
-    public static ItemEntry<AssemblyItem> CHASSIS_ASSEMBLY = REGISTRATE
-            .item(CreateMissiles.MOD_ID, "chassis_assembly", AssemblyItem::new)
-            .removeTab(CreativeModeTabs.SEARCH)
-            .register();
+    public static final RegistrySupplier<Item> CHASSIS_ASSEMBLY = ITEMS.register(
+            "chassis_assembly",
+            () -> new AssemblyItem(new Item.Properties())
+    );
 
-    public static ItemEntry<AssemblyItem> THRUSTER_ASSEMBLY = REGISTRATE
-            .item(CreateMissiles.MOD_ID, "thruster_assembly", AssemblyItem::new)
-            .removeTab(CreativeModeTabs.SEARCH)
-            .register();
+    public static final RegistrySupplier<Item> THRUSTER_ASSEMBLY = ITEMS.register(
+            "thruster_assembly",
+            () -> new AssemblyItem(new Item.Properties())
+    );
 
-    public static ItemEntry<BoundEnderPearlItem> BOUND_ENDER_PEARL = REGISTRATE
-            .item(CreateMissiles.MOD_ID, "bound_ender_pearl", BoundEnderPearlItem::new)
-            .tab(CreativeMenus.ASSEMBLIES_TAB.getKey())
+    public static final RegistrySupplier<Item> BOUND_ENDER_PEARL = ITEMS.register(
+            "bound_ender_pearl",
+            () -> new BoundEnderPearlItem(new Item.Properties())
+    );
+
+    public static ItemEntry<BoundEnderPearlItem> TEST = REGISTRATE
+            .item(CreateMissiles.MOD_ID, "chassis_assembly_item", BoundEnderPearlItem::new)
             .register();
 
     public static void init() {
         CreateMissiles.LOGGER.info("Registering items for " + CreateMissiles.NAME);
-
-//        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, new ItemStack(BOUND_ENDER_PEARL, 1));
+        ITEMS.register();
     }
 }
