@@ -1,20 +1,25 @@
 package net.woukie.createmissiles.fabric;
 
-import dev.architectury.registry.menu.MenuRegistry;
+import com.simibubi.create.foundation.item.render.CustomRenderedItems;
 import net.fabricmc.api.ClientModInitializer;
-import net.woukie.createmissiles.block.controlpanel.ControlPanelScreen;
-import net.woukie.createmissiles.block.navigationpanel.NavigationPanelScreen;
-import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelScreen;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.registry.EntityRenderers;
-import net.woukie.createmissiles.registry.Menus;
+import net.woukie.createmissiles.registry.Items;
 
 public class CreateMissilesClientFabric implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        MenuRegistry.registerScreenFactory(Menus.CONTROL_PANEL.get(), ControlPanelScreen::new);
-        MenuRegistry.registerScreenFactory(Menus.ASSEMBLY_PANEL.get(), AssemblyPanelScreen::new);
-        MenuRegistry.registerScreenFactory(Menus.NAVIGATION_PANEL.get(), NavigationPanelScreen::new);
-
+        CreateMissiles.initClient();
         EntityRenderers.init();
+
+        BuiltinItemRendererRegistry.INSTANCE.register(Items.WARHEAD_ASSEMBLY.get(), new AssemblyRenderer());
+        CustomRenderedItems.register(Items.WARHEAD_ASSEMBLY.get());
+
+        BuiltinItemRendererRegistry.INSTANCE.register(Items.CHASSIS_ASSEMBLY.get(), new AssemblyRenderer());
+        CustomRenderedItems.register(Items.CHASSIS_ASSEMBLY.get());
+
+        BuiltinItemRendererRegistry.INSTANCE.register(Items.THRUSTER_ASSEMBLY.get(), new AssemblyRenderer());
+        CustomRenderedItems.register(Items.THRUSTER_ASSEMBLY.get());
     }
 }

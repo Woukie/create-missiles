@@ -6,7 +6,11 @@ import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.event.events.common.TickEvent;
+import dev.architectury.registry.menu.MenuRegistry;
 import dev.architectury.registry.registries.RegistrarManager;
+import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelScreen;
+import net.woukie.createmissiles.block.controlpanel.ControlPanelScreen;
+import net.woukie.createmissiles.block.navigationpanel.NavigationPanelScreen;
 import net.woukie.createmissiles.missilemanager.Trajectories;
 import net.woukie.createmissiles.registry.*;
 import org.slf4j.Logger;
@@ -46,5 +50,11 @@ public class CreateMissiles {
 
     public static CreateRegistrate registrate() {
         return REGISTRATE;
+    }
+
+    public static void initClient() {
+        MenuRegistry.registerScreenFactory(Menus.CONTROL_PANEL.get(), ControlPanelScreen::new);
+        MenuRegistry.registerScreenFactory(Menus.NAVIGATION_PANEL.get(), NavigationPanelScreen::new);
+        MenuRegistry.registerScreenFactory(Menus.ASSEMBLY_PANEL.get(), AssemblyPanelScreen::new);
     }
 }
