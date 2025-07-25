@@ -23,8 +23,6 @@ import org.joml.Vector3f;
 import java.util.Map;
 
 public class AssemblyRenderer extends CustomRenderedItemModelRenderer {
-    private static final ModelResourceLocation ASSEMBLY_MODEL = new ModelResourceLocation("createmissiles", "chassis_assembly_item", "inventory");
-
     @Override
     protected void render(ItemStack stack, CustomRenderedItemModel model, PartialItemModelRenderer renderer, ItemDisplayContext transformType, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
         ms.pushPose();
