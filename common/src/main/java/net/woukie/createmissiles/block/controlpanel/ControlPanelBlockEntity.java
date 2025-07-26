@@ -260,7 +260,7 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
             setChanged();
         }
 
-        if (entity.getType().equals(EntityTypes.MISSILE.get())) {
+        if (entity != null && entity.getType().equals(EntityTypes.MISSILE.get())) {
             MissileEntity missileEntity = (MissileEntity) entity;
 
             if (cornerLaunchPadPos == null) {
@@ -425,7 +425,7 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
         ControlPanelInstanceTracker.remove(this);
         if (getLevel() != null && !getLevel().isClientSide) {
             ServerLevel level = (ServerLevel) getLevel();
-            Entity entity = level.getEntity(entityId);
+            Entity entity = level.getEntity(this.entityId);
             if (entity != null && entity.getType().equals(EntityTypes.MISSILE.get())) {
                 entity.remove(Entity.RemovalReason.KILLED);
             }
