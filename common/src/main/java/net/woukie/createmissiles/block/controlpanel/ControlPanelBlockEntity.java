@@ -252,23 +252,23 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
         }
 
         Entity entity = level.getEntity(this.entityId);
-        if (entity == null || !entity.getType().equals(EntityTypes.MISSILE.get())) {
+        if (this.entityId == null) {
             entity = new MissileEntity(EntityTypes.MISSILE.get(), level);
             entity.setPos(entityPosition.getX() + 0.5, entityPosition.getY() + 0.5, entityPosition.getZ() + 0.5);
             level.addFreshEntity(entity);
             this.entityId = entity.getUUID();
-        }
-
-        if (cornerLaunchPadPos == null) {
-            ejectNotNeededItems(null, 0, 96);
-            var missileEntity = (MissileEntity) entity;
-            missileEntity.setWarheadBuildPercent(0);
-            missileEntity.setChassisBuildPercent(0);
-            missileEntity.setThrusterBuildPercent(0);
+            setChanged();
         }
 
         if (entity.getType().equals(EntityTypes.MISSILE.get())) {
-            var missileEntity = (MissileEntity) entity;
+            MissileEntity missileEntity = (MissileEntity) entity;
+
+            if (cornerLaunchPadPos == null) {
+                ejectNotNeededItems(null, 0, 96);
+                missileEntity.setWarheadBuildPercent(0);
+                missileEntity.setChassisBuildPercent(0);
+                missileEntity.setThrusterBuildPercent(0);
+            }
 
             if (assemblyPanel != null) {
                 ItemStack warheadItem = assemblyPanel.getItem(0);
@@ -297,9 +297,9 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
                 missileEntity.setChassisBuildPercent(0);
                 missileEntity.setThrusterBuildPercent(0);
             }
-        }
 
-        entity.setPos(entityPosition.getX() + 0.5, entityPosition.getY() + 0.5, entityPosition.getZ() + 0.5);
+            missileEntity.setPos(entityPosition.getCenter());
+        }
     }
 
     private void ejectNotNeededItems(@Nullable MissilePartType partType, int backupStartSlot, int backupEndSlot) {
