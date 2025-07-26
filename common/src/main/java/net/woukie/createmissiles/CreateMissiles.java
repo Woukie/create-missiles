@@ -31,6 +31,10 @@ public class CreateMissiles {
             Trajectories.get().init(instance);
         });
 
+        LifecycleEvent.SERVER_STOPPING.register(instance -> {
+            Trajectories.get().stop();
+        });
+
         TickEvent.SERVER_PRE.register(instance -> {
             Trajectories.get().serverTick(instance);
         });

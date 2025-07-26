@@ -21,6 +21,7 @@ public class Trajectories extends SavedData {
 
     private static Trajectories instance;
     private static boolean initialized = false;
+    private static boolean destroyOnSave = false;
     private static MinecraftServer server;
 
     private Trajectories() {}
@@ -41,10 +42,20 @@ public class Trajectories extends SavedData {
         storage.computeIfAbsent(this::load, () -> this, "trajectory");
     }
 
+    public void stop() {
+        if (!initialized) return;
+        initialized = false;
+
+        setDirty();
+        destroyOnSave = true;
+    }
+
     public void serverTick(MinecraftServer server) {
         activeTrajectories.forEach(trajectory -> {
             ServerLevel level = server.getLevel(trajectory.getLevelKey());
-            if (level != null && trajectory.getEntityId() == null) {
+            if (level == null) return;
+
+            if (trajectory.getEntityId() == null) {
                 MissileEntity entity = new MissileEntity(EntityTypes.MISSILE.get(), level);
                 trajectory.updateEntityModel(entity);
                 level.addFreshEntity(entity);
@@ -58,10 +69,10 @@ public class Trajectories extends SavedData {
             trajectory.chassisType.onTick(trajectory, server);
             trajectory.thrusterType.onTick(trajectory, server);
 
-            if (level != null) {
-                MissileEntity entity = (MissileEntity) level.getEntity(trajectory.getEntityId());
-                trajectory.updateEntityModel(entity);
-            }
+            MissileEntity entity = (MissileEntity) level.getEntity(trajectory.getEntityId());
+            System.out.println(trajectory.getEntityId());
+            System.out.println(entity);
+            trajectory.updateEntityModel(entity);
         });
 
         activeTrajectories.removeIf(trajectory -> {
@@ -75,6 +86,7 @@ public class Trajectories extends SavedData {
                 }
             }
             setDirty();
+            System.out.println("REMOVING TRAJECTORY");
             return true;
         });
     }
@@ -98,6 +110,14 @@ public class Trajectories extends SavedData {
         for (int i = 0; i < activeTrajectories.size(); i++) {
             Trajectory trajectory = activeTrajectories.get(i);
             compoundTag.put("" + i, trajectory.saveTo(new CompoundTag()));
+        }
+
+        if (destroyOnSave) {
+            destroyOnSave = false;
+            initialized = false;
+            server = null;
+            activeTrajectories.clear();
+            instance = null;
         }
 
         return compoundTag;
