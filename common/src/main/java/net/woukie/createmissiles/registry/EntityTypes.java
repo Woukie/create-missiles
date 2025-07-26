@@ -14,8 +14,8 @@ public class EntityTypes {
             DeferredRegister.create(CreateMissiles.MOD_ID, Registries.ENTITY_TYPE);
 
     public static final RegistrySupplier<EntityType<MissileEntity>> MISSILE = ENTITY_TYPES.register(
-            "rocket_entity",
-            () -> EntityType.Builder.of(MissileEntity::new, MobCategory.MISC).noSummon().fireImmune().sized(1.5F, 5F).clientTrackingRange(4).updateInterval(20).build(new ResourceLocation(CreateMissiles.MOD_ID, "rocket_entity").toString())
+            "missile_entity",
+            () -> EntityType.Builder.of(MissileEntity::new, MobCategory.MISC).noSummon().fireImmune().sized(1.5F, 5F).clientTrackingRange(4).updateInterval(20).build(new ResourceLocation(CreateMissiles.MOD_ID, "missile_entity").toString())
     );
 
     public static void init() {
