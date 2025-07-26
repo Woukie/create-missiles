@@ -13,8 +13,6 @@ import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.joml.Vector3d;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
@@ -26,7 +24,6 @@ import java.util.UUID;
  * Constructed on the server when launching/loading flight paths. And on the client when rendering a trajectory in the navigator.
  */
 public abstract class Trajectory {
-    private static final Logger log = LoggerFactory.getLogger(Trajectory.class);
     protected ResourceKey<Level> levelKey;
     protected int tick;
     protected UUID entityId;
