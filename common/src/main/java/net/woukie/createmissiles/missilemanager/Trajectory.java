@@ -78,7 +78,7 @@ public abstract class Trajectory {
      */
     public CompoundTag saveTo(CompoundTag data) {
         data.putString("Dimension", levelKey.location().getPath());
-        data.putUUID("EntityID", entityId);
+        if (entityId != null) data.putUUID("EntityID", entityId); // May be null if saved before first tick has fired on trajectory
         data.putInt("Tick", tick);
         data.putDouble("InitialPositionX", initialPosition.x);
         data.putDouble("InitialPositionY", initialPosition.y);
