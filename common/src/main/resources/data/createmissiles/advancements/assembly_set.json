@@ -1,0 +1,62 @@
+{
+  "parent": "createmissiles:assembly",
+  "criteria": {
+    "0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "createmissiles:warhead_assembly"
+            ]
+          }
+        ]
+      }
+    },
+    "1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "createmissiles:chassis_assembly"
+            ]
+          }
+        ]
+      }
+    },
+    "2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "createmissiles:thruster_assembly"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.createmissiles.assembly_set.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "createmissiles:thruster_assembly"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.createmissiles.assembly_set.title"
+    }
+  },
+  "requirements": [
+    ["0"],
+    ["1"],
+    ["2"]
+  ],
+  "sends_telemetry_event": true
+}

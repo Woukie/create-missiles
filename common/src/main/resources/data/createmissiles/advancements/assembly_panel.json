@@ -1,0 +1,38 @@
+{
+  "parent": "createmissiles:launch_pad",
+  "criteria": {
+    "0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "createmissiles:assembly_panel"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.createmissiles.assembly_panel.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "createmissiles:assembly_panel"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.createmissiles.assembly_panel.title"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
