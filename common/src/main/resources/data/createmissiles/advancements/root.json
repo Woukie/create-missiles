@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {}
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "createmissiles:textures/gui/advancements/backgrounds/missiles.png",
+    "description": {
+      "translate": "advancements.createmissiles.root.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "createmissiles:launch_pad"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancements.createmissiles.root.title"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
