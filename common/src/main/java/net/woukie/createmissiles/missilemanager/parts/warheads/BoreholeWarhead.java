@@ -91,7 +91,7 @@ public class BoreholeWarhead extends WarheadType {
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("warheads.createmissiles.firework_warhead");
+        return Component.translatable("warheads.createmissiles.borehole_warhead");
     }
 
     @Override
