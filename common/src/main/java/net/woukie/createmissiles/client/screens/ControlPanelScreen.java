@@ -140,7 +140,6 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
 //        Recipe
         int lineCount = 9;
 
-
         ClientLevel level = minecraft != null ? minecraft.level : null;
         var warheadItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(warheadStack), level, getMenu().getItems());
         var chassisItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(chassisStack), level, getMenu().getItems());
@@ -178,7 +177,7 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
         gui.disableScissor();
         gui.pose().popPose();
 
-        return launchPad && assemblyPanelExists && navigationPanel && hasAssemblies && hasDestination && chassisPercent == 100 && warheadPercent == 100 && thrusterPercent == 100;
+        return launchPad && assemblyPanelExists && navigationPanel && hasAssemblies && launchPadPowered && hasDestination && chassisPercent == 100 && warheadPercent == 100 && thrusterPercent == 100;
     }
 
     private int writeIngredientStatus(List<FormattedText> text, Map<MissileIngredient, Integer> ingredients) {

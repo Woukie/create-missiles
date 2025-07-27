@@ -8,6 +8,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.woukie.createmissiles.block.controlpanel.ControlPanelBlockEntity;
 import net.woukie.createmissiles.block.controlpanel.messages.ClickLaunchMessage;
 import net.woukie.createmissiles.registry.Items;
 import net.woukie.createmissiles.registry.Packets;
@@ -78,7 +79,7 @@ public class ControlPanelMenu extends AbstractBasicMenu {
     }
 
     public boolean launchPadPowered() {
-        return controlPanelData.get(6) != 0;
+        return Math.abs(controlPanelData.get(6)) >= ControlPanelBlockEntity.speedRequired;
     }
 
     public ItemStack getWarhead() {

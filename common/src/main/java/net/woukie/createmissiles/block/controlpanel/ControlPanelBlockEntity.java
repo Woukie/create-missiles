@@ -53,6 +53,8 @@ import java.util.stream.Collectors;
 
 // Inventory divided up into 32-slot areas representing thruster, chassis and warhead
 public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
+    public static final double speedRequired = 64;
+
     private boolean initialized;
     private UUID entityId = null;
 
@@ -84,19 +86,7 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
                             getLevel(),
                             BlockEntities.NAVIGATION_PANEL.get()
                     ) == null ? 0 : 1;
-                    case 6 -> {
-                        Direction launchPadDirection = getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
-                        BlockPos launchPad = getBlockPos().relative(launchPadDirection, 1);
-                        Level level = getLevel();
-                        if (level == null) yield 0;
-
-                        BlockEntity blockEntity = level.getBlockEntity(launchPad);
-                        if (blockEntity instanceof LaunchPadBlockEntity launchPadBlockEntity) {
-                            yield (int)launchPadBlockEntity.getSpeed();
-                        }
-
-                        yield 0;
-                    }
+                    case 6 -> (int)getSpeed();
                     default -> 0;
                 };
             }
@@ -109,6 +99,21 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
                 return 7;
             }
         };
+    }
+
+    public float getSpeed() {
+        Direction launchPadDirection = getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
+        BlockPos launchPad = getBlockPos().relative(launchPadDirection, 1);
+
+        Level level = getLevel();
+        if (level != null) {
+            BlockEntity blockEntity = level.getBlockEntity(launchPad);
+            if (blockEntity instanceof LaunchPadBlockEntity launchPadBlockEntity) {
+                return launchPadBlockEntity.getSpeed();
+            }
+        }
+
+        return 0;
     }
 
     public void giveItem(@NotNull ItemStack itemStack) {
@@ -362,6 +367,8 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
                 BlockEntities.NAVIGATION_PANEL.get()
         );
         if (navigationPanel == null) return;
+
+        if (Math.abs(getSpeed()) < speedRequired) return;
 
         MissilePartRecipe warheadRecipe = null;
         MissilePartRecipe chassisRecipe = null;
