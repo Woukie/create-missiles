@@ -13,13 +13,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class MissileAbstractBlock<T extends BlockEntity> extends HorizontalDirectionalBlock implements IBE<T> {
-    protected MissileAbstractBlock(Properties properties) {
+public abstract class AbstractBasicBlock<T extends BlockEntity> extends HorizontalDirectionalBlock implements IBE<T> {
+    protected AbstractBasicBlock(Properties properties) {
         super(properties);
     }
 
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+    @SuppressWarnings("deprecation")
+    public @NotNull InteractionResult use(@NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull InteractionHand interactionHand, @NotNull BlockHitResult blockHitResult) {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         } else {
@@ -34,7 +36,8 @@ public abstract class MissileAbstractBlock<T extends BlockEntity> extends Horizo
             player.openMenu((MenuProvider)blockEntity);
     }
 
-    public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+    @SuppressWarnings("deprecation")
+    public void onRemove(BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, BlockState blockState2, boolean bl) {
         if (!blockState.is(blockState2.getBlock())) {
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
             if (blockEntity instanceof Container entity) {
@@ -46,7 +49,8 @@ public abstract class MissileAbstractBlock<T extends BlockEntity> extends Horizo
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState blockState) {
+    @SuppressWarnings("deprecation")
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState blockState) {
         return RenderShape.MODEL;
     }
 

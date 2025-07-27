@@ -13,11 +13,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.woukie.createmissiles.block.MissileAbstractBlock;
+import net.woukie.createmissiles.block.AbstractBasicBlock;
 import net.woukie.createmissiles.registry.BlockEntities;
 import org.jetbrains.annotations.NotNull;
 
-public class ControlPanelBlock extends MissileAbstractBlock<ControlPanelBlockEntity> {
+public class ControlPanelBlock extends AbstractBasicBlock<ControlPanelBlockEntity> {
     private static final VoxelShape leftPillarNorth = Shapes.box(12/16.0, 0/16.0, 15/16.0, 14/16.0, 15/16.0, 16/16.0);
     private static final VoxelShape rightPillarNorth = Shapes.box(2/16.0, 0/16.0, 15/16.0, 4/16.0, 15/16.0, 16/16.0);
     private static final VoxelShape displayNorth = Shapes.box(1/16.0, 9.325/16.0, 12.05/16.0, 15/16.0, 17.075/16.0, 1);
@@ -34,6 +34,7 @@ public class ControlPanelBlock extends MissileAbstractBlock<ControlPanelBlockEnt
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public @NotNull VoxelShape getShape(BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull CollisionContext collisionContext) {
         return VoxelShaper.forDirectional(voxelShape, Direction.NORTH).get(blockState.getValue(FACING));
     }
@@ -55,10 +56,11 @@ public class ControlPanelBlock extends MissileAbstractBlock<ControlPanelBlockEnt
     }
 
     @Override
-    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos blockPos2, boolean bl) {
+    @SuppressWarnings("deprecation")
+    public void neighborChanged(@NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos, @NotNull Block block, @NotNull BlockPos blockPos2, boolean bl) {
         boolean powered = level.hasNeighborSignal(blockPos) || level.hasNeighborSignal(blockPos.above());
         if (powered) {
-            ControlPanelBlockEntity blockEntity = (ControlPanelBlockEntity) level.getBlockEntity(blockPos);;
+            ControlPanelBlockEntity blockEntity = (ControlPanelBlockEntity) level.getBlockEntity(blockPos);
             if (blockEntity != null) blockEntity.launch();
         }
     }

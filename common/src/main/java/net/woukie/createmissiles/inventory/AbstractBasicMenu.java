@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block;
+package net.woukie.createmissiles.inventory;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -9,10 +9,10 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class MissileAbstractMenu extends AbstractContainerMenu {
+public abstract class AbstractBasicMenu extends AbstractContainerMenu {
     protected final Container container;
 
-    protected MissileAbstractMenu(@Nullable MenuType<?> menuType, int id, Container container) {
+    protected AbstractBasicMenu(@Nullable MenuType<?> menuType, int id, Container container) {
         super(menuType, id);
         this.container = container;
     }
@@ -31,11 +31,11 @@ public abstract class MissileAbstractMenu extends AbstractContainerMenu {
         boolean moveToContainer = clickedSlot >= containerSize;
 
         if (moveToContainer) {
-            if(!moveItemStackTo(clickedStack, 0, containerSize)) {
+            if(moveItemStackTo(clickedStack, 0, containerSize)) {
                 return ItemStack.EMPTY;
             }
         } else {
-            if (!moveItemStackTo(clickedStack, containerSize, slots.size())) {
+            if (moveItemStackTo(clickedStack, containerSize, slots.size())) {
                 return ItemStack.EMPTY;
             }
         }
@@ -110,6 +110,6 @@ public abstract class MissileAbstractMenu extends AbstractContainerMenu {
             }
         }
 
-        return success;
+        return !success;
     }
 }

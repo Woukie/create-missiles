@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.controlpanel;
+package net.woukie.createmissiles.inventory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
@@ -8,21 +8,19 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.woukie.createmissiles.block.InvisibleSlot;
-import net.woukie.createmissiles.block.MissileAbstractMenu;
 import net.woukie.createmissiles.block.controlpanel.messages.ClickLaunchMessage;
 import net.woukie.createmissiles.registry.Items;
 import net.woukie.createmissiles.registry.Packets;
 
 import static net.woukie.createmissiles.registry.Menus.CONTROL_PANEL;
 
-public class ControlPanelMenu extends MissileAbstractMenu {
+public class ControlPanelMenu extends AbstractBasicMenu {
     Container assemblyPanelContainer;
     Container navigationPanelContainer;
 
     ContainerData controlPanelData;
 
-    protected ControlPanelMenu(int id, Inventory playerInventory, Container container, ContainerData controlPanelData, Container assemblyPanelContainer, Container navigationPanelContainer) {
+    public ControlPanelMenu(int id, Inventory playerInventory, Container container, ContainerData controlPanelData, Container assemblyPanelContainer, Container navigationPanelContainer) {
         super(CONTROL_PANEL.get(), id, container);
 
         checkContainerDataCount(controlPanelData, 7);

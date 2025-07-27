@@ -12,11 +12,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.woukie.createmissiles.block.MissileAbstractBlock;
+import net.woukie.createmissiles.block.AbstractBasicBlock;
 import net.woukie.createmissiles.registry.BlockEntities;
 import org.jetbrains.annotations.NotNull;
 
-public class NavigationPanelBlock extends MissileAbstractBlock<NavigationPanelBlockEntity> {
+public class NavigationPanelBlock extends AbstractBasicBlock<NavigationPanelBlockEntity> {
     private static final VoxelShape leftPillarNorth = Shapes.box(12/16.0, 0/16.0, 15/16.0, 14/16.0, 15/16.0, 16/16.0);
     private static final VoxelShape rightPillarNorth = Shapes.box(2/16.0, 0/16.0, 15/16.0, 4/16.0, 15/16.0, 16/16.0);
     private static final VoxelShape displayNorth = Shapes.box(2/16.0, 5.45/16.0, 10.275/16.0, 14/16.0, 16.925/16.0, 15.8/16.0);
@@ -33,6 +33,7 @@ public class NavigationPanelBlock extends MissileAbstractBlock<NavigationPanelBl
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public @NotNull VoxelShape getShape(BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull CollisionContext collisionContext) {
         return VoxelShaper.forDirectional(voxelShape, Direction.NORTH).get(blockState.getValue(FACING));
     }

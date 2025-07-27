@@ -1,8 +1,9 @@
-package net.woukie.createmissiles.block.controlpanel;
+package net.woukie.createmissiles.client.screens;
 
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.inventory.ControlPanelMenu;
 import net.woukie.createmissiles.recipe.MissileIngredient;
 import net.woukie.createmissiles.recipe.MissilePartRecipe;
 import net.woukie.createmissiles.registry.PartTypes;
@@ -44,7 +46,6 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
     private static final int coverWidth = buttonWidth / 2;
     private static final int coverHeight = buttonHeight;
 
-    private double lineHeight = 9.0 / 2.0;
     private double currentOpenPercent = 0;
     private double currentScrollPosition = 0;
 
@@ -139,9 +140,11 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
 //        Recipe
         int lineCount = 9;
 
-        var warheadItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(warheadStack), minecraft.level, getMenu().getItems());
-        var chassisItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(chassisStack), minecraft.level, getMenu().getItems());
-        var thrusterItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(thrusterStack), minecraft.level, getMenu().getItems());
+
+        ClientLevel level = minecraft != null ? minecraft.level : null;
+        var warheadItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(warheadStack), level, getMenu().getItems());
+        var chassisItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(chassisStack), level, getMenu().getItems());
+        var thrusterItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(thrusterStack), level, getMenu().getItems());
 
         int warheadPercent = MissilePartRecipe.getBuildPercentage(warheadItemsLeft);
         int chassisPercent = MissilePartRecipe.getBuildPercentage(chassisItemsLeft);
@@ -163,6 +166,7 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
         gui.pose().pushPose();
         gui.pose().translate(consoleLeft, consoleTop, 0);
 
+        double lineHeight = 9.0 / 2.0;
         this.currentScrollPosition = Math.max(-lineHeight * lineCount -1 +consoleHeight, this.currentScrollPosition);
         this.currentScrollPosition = Math.min(0, this.currentScrollPosition);
 

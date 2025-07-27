@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block;
+package net.woukie.createmissiles.block.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -14,10 +14,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class MissileAbstractBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer {
+public abstract class AbstractBasicBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer {
     protected NonNullList<ItemStack> items;
 
-    protected MissileAbstractBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
+    protected AbstractBasicBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
     }
 

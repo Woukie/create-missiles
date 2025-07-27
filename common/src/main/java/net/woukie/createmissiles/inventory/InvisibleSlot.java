@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block;
+package net.woukie.createmissiles.inventory;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;

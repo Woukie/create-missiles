@@ -10,11 +10,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
+import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 import net.woukie.createmissiles.block.controlpanel.ControlPanelBlock;
+import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
 import net.woukie.createmissiles.block.launchpad.LaunchPadCTBehaviour;
 import net.woukie.createmissiles.block.navigationpanel.NavigationPanelBlock;
-import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 
 public class Blocks {
     private static final CreateRegistrate REGISTRATE = CreateMissiles.registrate();
@@ -54,6 +54,7 @@ public class Blocks {
             .simpleItem()
             .register();
 
+    @SuppressWarnings({"Experimental", "UnstableApiUsage"})
     public static void init() {
         CreateMissiles.LOGGER.info("Registering blocks for " + CreateMissiles.NAME);
 

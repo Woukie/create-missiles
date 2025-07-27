@@ -3,9 +3,9 @@ package net.woukie.createmissiles.registry;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.block.controlpanel.ControlPanelBlockEntity;
 import net.woukie.createmissiles.block.launchpad.LaunchPadCogInstance;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
-import net.woukie.createmissiles.block.controlpanel.ControlPanelBlockEntity;
 import net.woukie.createmissiles.block.navigationpanel.NavigationPanelBlockEntity;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
 

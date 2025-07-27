@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.navigationpanel;
+package net.woukie.createmissiles.inventory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
@@ -8,8 +8,6 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.woukie.createmissiles.block.InvisibleSlot;
-import net.woukie.createmissiles.block.MissileAbstractMenu;
 import net.woukie.createmissiles.block.navigationpanel.messages.ClickFuelMessage;
 import net.woukie.createmissiles.block.navigationpanel.messages.ClickMapMessage;
 import net.woukie.createmissiles.registry.Items;
@@ -18,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static net.woukie.createmissiles.registry.Menus.NAVIGATION_PANEL;
 
-public class NavigationPanelMenu extends MissileAbstractMenu {
+public class NavigationPanelMenu extends AbstractBasicMenu {
     private final ContainerData containerData;
     private final Container assemblyPanelContainer;
 
@@ -93,8 +91,8 @@ public class NavigationPanelMenu extends MissileAbstractMenu {
         return containerData.get(10) == 1;
     }
 
-    public boolean assemblyPanelExists() {
-        return containerData.get(11) == 1;
+    public boolean assemblyPanelAbsent() {
+        return containerData.get(11) != 1;
     }
 
     public ItemStack getMap() {
@@ -105,7 +103,7 @@ public class NavigationPanelMenu extends MissileAbstractMenu {
     }
 
     public ItemStack getWarhead() {
-        if (!assemblyPanelExists()) return null;
+        if (assemblyPanelAbsent()) return null;
         ItemStack item = assemblyPanelContainer.getItem(0);
         if (!item.is(Items.WARHEAD_ASSEMBLY.get()))
             return null;
@@ -113,7 +111,7 @@ public class NavigationPanelMenu extends MissileAbstractMenu {
     }
 
     public ItemStack getChassis() {
-        if (!assemblyPanelExists()) return null;
+        if (assemblyPanelAbsent()) return null;
         ItemStack item = assemblyPanelContainer.getItem(1);
         if(!item.is(Items.CHASSIS_ASSEMBLY.get()))
             return null;
@@ -121,7 +119,7 @@ public class NavigationPanelMenu extends MissileAbstractMenu {
     }
 
     public ItemStack getThruster() {
-        if (!assemblyPanelExists()) return null;
+        if (assemblyPanelAbsent()) return null;
         ItemStack item = assemblyPanelContainer.getItem(2);
         if (!item.is(Items.THRUSTER_ASSEMBLY.get()))
             return null;

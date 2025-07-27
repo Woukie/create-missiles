@@ -8,9 +8,9 @@ import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.event.events.common.TickEvent;
 import dev.architectury.registry.menu.MenuRegistry;
 import dev.architectury.registry.registries.RegistrarManager;
-import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelScreen;
-import net.woukie.createmissiles.block.controlpanel.ControlPanelScreen;
-import net.woukie.createmissiles.block.navigationpanel.NavigationPanelScreen;
+import net.woukie.createmissiles.client.screens.AssemblyPanelScreen;
+import net.woukie.createmissiles.client.screens.ControlPanelScreen;
+import net.woukie.createmissiles.client.screens.NavigationPanelScreen;
 import net.woukie.createmissiles.missilemanager.Trajectories;
 import net.woukie.createmissiles.registry.*;
 import org.slf4j.Logger;
@@ -27,17 +27,9 @@ public class CreateMissiles {
     public static void init() {
         LOGGER.info("{} initializing! Create version: {}}", NAME, Create.VERSION);
 
-        LifecycleEvent.SERVER_STARTED.register(instance -> {
-            Trajectories.get().init(instance);
-        });
-
-        LifecycleEvent.SERVER_STOPPING.register(instance -> {
-            Trajectories.get().stop();
-        });
-
-        TickEvent.SERVER_PRE.register(instance -> {
-            Trajectories.get().serverTick(instance);
-        });
+        LifecycleEvent.SERVER_STARTED.register(instance -> Trajectories.get().init(instance));
+        LifecycleEvent.SERVER_STOPPING.register(instance -> Trajectories.get().stop());
+        TickEvent.SERVER_PRE.register(instance -> Trajectories.get().serverTick(instance));
 
         Blocks.init();
         BlockEntities.init();

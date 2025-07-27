@@ -18,13 +18,14 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.woukie.createmissiles.MultiblockHelper;
-import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
+import net.woukie.createmissiles.block.entity.AbstractBasicBlockEntity;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
+import net.woukie.createmissiles.inventory.NavigationPanelMenu;
 import net.woukie.createmissiles.registry.BlockEntities;
 import org.jetbrains.annotations.NotNull;
 
-public class NavigationPanelBlockEntity extends MissileAbstractBlockEntity {
+public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
     public static final int SLOT_MAP = 0;
 
     private double mapCrosshairX, mapCrosshairZ, fuelPercent;
@@ -98,6 +99,7 @@ public class NavigationPanelBlockEntity extends MissileAbstractBlockEntity {
         return this.target;
     }
 
+    @SuppressWarnings("unused")
     public double getFuelPercent() {
         return fuelPercent;
     }

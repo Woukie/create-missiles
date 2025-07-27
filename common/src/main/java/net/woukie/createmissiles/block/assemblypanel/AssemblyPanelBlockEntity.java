@@ -10,11 +10,12 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
+import net.woukie.createmissiles.block.entity.AbstractBasicBlockEntity;
+import net.woukie.createmissiles.inventory.AssemblyPanelMenu;
 import net.woukie.createmissiles.registry.Items;
 import org.jetbrains.annotations.NotNull;
 
-public class AssemblyPanelBlockEntity extends MissileAbstractBlockEntity {
+public class AssemblyPanelBlockEntity extends AbstractBasicBlockEntity {
     public AssemblyPanelBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
         items = NonNullList.withSize(3, ItemStack.EMPTY);

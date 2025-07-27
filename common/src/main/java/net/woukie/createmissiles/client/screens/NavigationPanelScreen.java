@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.block.navigationpanel;
+package net.woukie.createmissiles.client.screens;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.inventory.NavigationPanelMenu;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -176,7 +177,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
             return;
         }
 
-        if (!getMenu().assemblyPanelExists()) {
+        if (getMenu().assemblyPanelAbsent()) {
             errors.add(Component.translatable("gui.createmissiles.navigation_panel.no_assembly_panel").getString());
             return;
         }

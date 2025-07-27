@@ -20,18 +20,20 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.woukie.createmissiles.MultiblockHelper;
-import net.woukie.createmissiles.block.MissileAbstractBlockEntity;
+import net.woukie.createmissiles.block.entity.AbstractBasicBlockEntity;
+import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
 import net.woukie.createmissiles.block.navigationpanel.NavigationPanelBlockEntity;
-import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
 import net.woukie.createmissiles.entity.MissileEntity;
+import net.woukie.createmissiles.inventory.ControlPanelMenu;
 import net.woukie.createmissiles.missilemanager.Trajectories;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
@@ -50,7 +52,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 // Inventory divided up into 32-slot areas representing thruster, chassis and warhead
-public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
+public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
     private boolean initialized;
     private UUID entityId = null;
 
@@ -85,8 +87,10 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
                     case 6 -> {
                         Direction launchPadDirection = getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
                         BlockPos launchPad = getBlockPos().relative(launchPadDirection, 1);
-                        BlockEntity blockEntity = getLevel().getBlockEntity(launchPad);
+                        Level level = getLevel();
+                        if (level == null) yield 0;
 
+                        BlockEntity blockEntity = level.getBlockEntity(launchPad);
                         if (blockEntity instanceof LaunchPadBlockEntity launchPadBlockEntity) {
                             yield (int)launchPadBlockEntity.getSpeed();
                         }
@@ -399,6 +403,8 @@ public class ControlPanelBlockEntity extends MissileAbstractBlockEntity {
         if (targetBlock == null) return;
         Vector3f target = targetBlock.getCenter().toVector3f();
         Vector3f source = cornerLaunchPadPos.relative(launchPadDirection, 1).relative(launchPadDirection.getClockWise()).getCenter().toVector3f();
+
+        //noinspection RedundantCast
         Trajectory trajectory = thrusterType.createTrajectory(
                 level, new Vector3d(source),
                 new Vector3d(target),

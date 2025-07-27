@@ -1,17 +1,16 @@
-package net.woukie.createmissiles.block.assemblypanel;
+package net.woukie.createmissiles.inventory;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.woukie.createmissiles.block.MissileAbstractMenu;
 import net.woukie.createmissiles.registry.Items;
 import org.jetbrains.annotations.NotNull;
 
 import static net.woukie.createmissiles.registry.Menus.ASSEMBLY_PANEL;
 
-public class AssemblyPanelMenu extends MissileAbstractMenu {
+public class AssemblyPanelMenu extends AbstractBasicMenu {
     public AssemblyPanelMenu(int id, Inventory playerInventory, Container container) {
         super(ASSEMBLY_PANEL.get(), id, container);
         checkContainerSize(container, 3);
