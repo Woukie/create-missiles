@@ -70,8 +70,6 @@ public class Trajectories extends SavedData {
             trajectory.thrusterType.onTick(trajectory, server);
 
             MissileEntity entity = (MissileEntity) level.getEntity(trajectory.getEntityId());
-            System.out.println(trajectory.getEntityId());
-            System.out.println(entity);
             trajectory.updateEntityModel(entity);
         });
 
@@ -86,7 +84,6 @@ public class Trajectories extends SavedData {
                 }
             }
             setDirty();
-            System.out.println("REMOVING TRAJECTORY");
             return true;
         });
     }
