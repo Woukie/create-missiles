@@ -64,7 +64,7 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
         double targetOpenPercent = buttonOpen ? 1 : 0;
         currentOpenPercent += targetOpenPercent > currentOpenPercent ? speed : -speed;
 
-        double adjusted = easeOutBounce(currentOpenPercent);
+        double adjusted = buttonOpen ? easeOutBounce(currentOpenPercent) : easeInBounce(currentOpenPercent);
         int width = (int) (adjusted * coverWidth + 0.5);
 
         gui.pose().pushPose();
@@ -115,6 +115,10 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
         } else {
             return n1 * (x -= 2.625 / d1) * x + 0.984375;
         }
+    }
+
+    private double easeInBounce(double x) {
+        return 1 - easeOutBounce(1 - x);
     }
 
     private boolean renderLogs(GuiGraphics gui) {
