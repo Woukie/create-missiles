@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -21,8 +22,10 @@ import net.woukie.createmissiles.MultiblockHelper;
 import net.woukie.createmissiles.block.entity.AbstractBasicBlockEntity;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
+import net.woukie.createmissiles.block.navigationpanel.messages.UpdateMapDataMessage;
 import net.woukie.createmissiles.inventory.NavigationPanelMenu;
 import net.woukie.createmissiles.registry.BlockEntities;
+import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;
 
 public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
@@ -82,6 +85,10 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
             NavigationPanelInstanceTracker.add(this);
             recalculateTarget();
         }
+
+        ItemStack itemStack = getItem(0);
+        if (!itemStack.is(Items.FILLED_MAP) || itemStack.isEmpty() || level == null) return;
+
     }
 
     public void fuelClicked(double fuelPercent) {
@@ -171,10 +178,21 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
     protected @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory) {
         recalculateTarget();
 
+
         Direction facing = getBlockState().getValue(AssemblyPanelBlock.FACING).getOpposite();
         BlockPos corner = MultiblockHelper.findCorner(getBlockPos(), facing, level);
         BlockEntity assemblyPanel = MultiblockHelper.findEdgeBlock(corner, facing, getLevel(), BlockEntities.ASSEMBLY_PANEL.get());
 
+        if (level != null && !level.isClientSide) {
+            ItemStack itemStack = getItem(SLOT_MAP);
+            if (itemStack.is(Items.FILLED_MAP) && !itemStack.isEmpty()) {
+                MapItemSavedData data = MapItem.getSavedData(itemStack, level);
+                Integer mapId = MapItem.getMapId(itemStack);
+                if (data != null && mapId != null) {
+                    Packets.UPDATE_MAP_DATA.sendToPlayer((ServerPlayer) playerInventory.player, new UpdateMapDataMessage(mapId, data.save(new CompoundTag())));
+                }
+            }
+        }
         return new NavigationPanelMenu(id, playerInventory, this, this.dataAccess, assemblyPanel == null ? new SimpleContainer(3) : (AssemblyPanelBlockEntity)assemblyPanel);
     }
 

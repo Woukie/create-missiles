@@ -41,8 +41,9 @@ public class NavigationPanelBlock extends AbstractBasicBlock<NavigationPanelBloc
     @Override
     public <S extends BlockEntity> BlockEntityTicker<S> getTicker(Level level, BlockState blockState, BlockEntityType<S> type) {
         return (level1, blockPos, blockState1, blockEntity) -> {
-            if (blockEntity instanceof NavigationPanelBlockEntity navigationPanel)
+            if (blockEntity instanceof NavigationPanelBlockEntity navigationPanel) {
                 navigationPanel.serverTick();
+            }
         };
     }
 
