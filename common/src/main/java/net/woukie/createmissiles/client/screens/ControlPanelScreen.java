@@ -189,14 +189,8 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
         ingredients.forEach((ingredient, left) -> {
             int required = ingredient.count();
             int have = required - left;
-            List<ItemStack> items = new ArrayList<>(Arrays.stream(ingredient.items()).toList());
 
-            for (var tag : ingredient.tags()) {
-                for(Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
-                    items.add(new ItemStack(holder));
-                }
-            }
-
+            List<ItemStack> items = ingredient.getAllValidItems();
             Component[] names = items.stream().map(ItemStack::getDisplayName).toList().toArray(new Component[0]);
             String name = names[(int)(Util.getMillis() / 1000f) % names.length].getString();
 

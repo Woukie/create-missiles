@@ -2,6 +2,7 @@ package net.woukie.createmissiles.recipe;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,7 +13,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.StreamSupport;
 
 /**
@@ -46,6 +49,18 @@ public record MissileIngredient(int count, ItemStack[] items, TagKey<Item>[] tag
         friendlyByteBuf.writeCollection(Arrays.asList(items()), FriendlyByteBuf::writeItem);
         friendlyByteBuf.writeCollection(Arrays.asList(tags()), (a, b) -> a.writeResourceLocation(b.location()));
         friendlyByteBuf.writeInt(count);
+    }
+
+    // Used currently only for display purposes
+    public List<ItemStack> getAllValidItems() {
+        List<ItemStack> items = new ArrayList<>(Arrays.stream(items()).toList());
+        for (var tag : tags()) {
+            for(Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
+                items.add(new ItemStack(holder));
+            }
+        }
+
+        return items;
     }
 
     public static MissileIngredient fromJson(JsonElement rawJson, boolean b) {

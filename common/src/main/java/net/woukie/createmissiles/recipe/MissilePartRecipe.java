@@ -79,6 +79,7 @@ public class MissilePartRecipe implements Recipe<Container> {
     }
 
     public static Optional<MissilePartRecipe> fromResourceLocation(Level level, ResourceLocation resourceLocation) {
+        if (level == null) return Optional.empty();
         var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MISSILE_PART.get());
         return missilePartRecipes.stream().filter(r -> r.getAssembly().equals(resourceLocation)).findFirst();
     }
