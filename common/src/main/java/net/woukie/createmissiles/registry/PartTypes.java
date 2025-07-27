@@ -7,6 +7,7 @@ import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
 import net.woukie.createmissiles.missilemanager.parts.chassis.FireworkChassis;
 import net.woukie.createmissiles.missilemanager.parts.thrusters.FireworkThruster;
+import net.woukie.createmissiles.missilemanager.parts.warheads.BoreholeWarhead;
 import net.woukie.createmissiles.missilemanager.parts.warheads.FireworkWarhead;
 import net.woukie.createmissiles.missilemanager.parts.warheads.ShulkerBoxWarhead;
 import net.woukie.createmissiles.missilemanager.parts.warheads.TeleportationWarhead;
@@ -37,6 +38,7 @@ public class PartTypes {
         PartTypes.register(new FireworkWarhead());
         PartTypes.register(new ShulkerBoxWarhead());
         PartTypes.register(new TeleportationWarhead());
+        PartTypes.register(new BoreholeWarhead());
         PartTypes.register(new FireworkChassis());
         PartTypes.register(new FireworkThruster());
 
