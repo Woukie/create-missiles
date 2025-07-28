@@ -210,7 +210,7 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
                             (oldChassisBuildPercent != 100 && chassisBuildPercent == 100) ||
                             (oldThrusterBuildPercent != 100 && thrusterBuildPercent == 100);
                     float pitch = newBuildTotal / 1200f + 0.75f;
-                    pitch += (float) (Math.random() / 5f);
+                    pitch += (float) (Math.random() / 5f) - 0.1f;
 
                     if (newBuildTotal == 300) {
                         level.playSound(null, soundOrigin, SoundEvents.DING.get(), SoundSource.BLOCKS);
