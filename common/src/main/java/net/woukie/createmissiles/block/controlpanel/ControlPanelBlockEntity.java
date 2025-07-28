@@ -413,7 +413,10 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
         BlockPos targetBlock = navigationPanel.getTarget();
         if (targetBlock == null) return;
         Vector3f target = targetBlock.getCenter().toVector3f();
-        Vector3f source = cornerLaunchPadPos.relative(launchPadDirection, 1).relative(launchPadDirection.getClockWise()).getCenter().toVector3f();
+        BlockPos sourceBlockPos = cornerLaunchPadPos.relative(launchPadDirection, 1).relative(launchPadDirection.getClockWise());
+        Vector3f source = sourceBlockPos.getCenter().toVector3f();
+
+        getLevel().playSound(null, sourceBlockPos, SoundEvents.BUTTON.get(), SoundSource.BLOCKS);
 
         //noinspection RedundantCast
         Trajectory trajectory = thrusterType.createTrajectory(
