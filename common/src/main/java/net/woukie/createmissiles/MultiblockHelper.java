@@ -76,7 +76,7 @@ public class MultiblockHelper {
         return true;
     }
 
-    public static ControlPanelBlockEntity findControlPanelFromLaunchPad(Level level, BlockPos pos) {
+    public static BlockPos findCornerFromLaunchPad(Level level, BlockPos pos) {
         Direction forward = Direction.NORTH;
         Direction right = forward.getClockWise();
 
@@ -91,7 +91,14 @@ public class MultiblockHelper {
                 if (!(level.getBlockEntity(corner.relative(forward, -x).relative(right, -z)) instanceof LaunchPadBlockEntity))
                     return null;
 
-        BlockEntity blockEntity = MultiblockHelper.findEdgeBlock(corner, forward.getOpposite(), level, BlockEntities.CONTROL_PANEL.get());
+        return corner;
+    }
+
+    public static ControlPanelBlockEntity findControlPanelFromLaunchPad(Level level, BlockPos pos) {
+        BlockPos corner = findCornerFromLaunchPad(level, pos);
+        if (corner == null) return null;
+
+        BlockEntity blockEntity = MultiblockHelper.findEdgeBlock(corner, Direction.NORTH.getOpposite(), level, BlockEntities.CONTROL_PANEL.get());
         if (blockEntity != null)
             return (ControlPanelBlockEntity)blockEntity;
 

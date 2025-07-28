@@ -10,10 +10,15 @@ import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.MultiblockHelper;
+import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
+import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
+import net.woukie.createmissiles.registry.BlockEntities;
 import net.woukie.createmissiles.registry.Blocks;
 
 import javax.annotation.Nullable;
@@ -66,6 +71,15 @@ public class ArmInteractionPointsForge {
         protected WorldlyContainer getContainer() {
             LaunchPadBlock block = Blocks.LAUNCH_PAD.get();
             return block.getContainer(cachedState, level, pos);
+        }
+
+        @Override
+        protected Vec3 getInteractionPositionVector() {
+            BlockPos corner = MultiblockHelper.findCornerFromLaunchPad(getLevel(), getPos());
+            if (corner != null)
+                return corner.relative(Direction.NORTH, -1).relative(Direction.EAST, -1).getCenter();
+
+            return super.getInteractionPositionVector();
         }
 
         @Override
