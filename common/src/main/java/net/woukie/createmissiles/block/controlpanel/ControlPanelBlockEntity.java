@@ -9,7 +9,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -207,12 +206,19 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
                     ((ServerLevel)level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.IRON_BLOCK.defaultBlockState()), p.x, p.y + 0.5, p.z, 20, 0.5, 0, 0.5, 45);
                     ((ServerLevel)level).sendParticles(ParticleTypes.LARGE_SMOKE, p.x, p.y + 0.5, p.z, 1, 0, 0, 0, 0);
 
-                    level.playSound(null, soundOrigin, SoundEvents.COPPER_PLACE, SoundSource.BLOCKS);
-
-                    if ((oldWarheadBuildPercent != 100 && warheadBuildPercent == 100) ||
+                    boolean partComplete = (oldWarheadBuildPercent != 100 && warheadBuildPercent == 100) ||
                             (oldChassisBuildPercent != 100 && chassisBuildPercent == 100) ||
-                            (oldThrusterBuildPercent != 100 && thrusterBuildPercent == 100)) {
-                        level.playSound(null, soundOrigin, SoundEvents.CHAIN_PLACE, SoundSource.BLOCKS);
+                            (oldThrusterBuildPercent != 100 && thrusterBuildPercent == 100);
+                    float pitch = newBuildTotal / 1200f + 0.75f;
+                    pitch += (float) (Math.random() / 5f);
+                    System.out.println(pitch);
+
+                    if (newBuildTotal == 300) {
+                        level.playSound(null, soundOrigin, SoundEvents.DING.get(), SoundSource.BLOCKS);
+                    } else if (partComplete) {
+                        level.playSound(null, soundOrigin, SoundEvents.BUILD_SPECIAL.get(), SoundSource.BLOCKS, 1f, pitch);
+                    } else {
+                        level.playSound(null, soundOrigin, SoundEvents.BUILD.get(), SoundSource.BLOCKS, 1f, pitch);
                     }
 
                     Map<String, Vector3f> thrusterAttachments = thrusterType == null ? new HashMap<>() : thrusterType.getModel().getAttachements(thrusterType.getModel().getStage(thrusterBuildPercent));
@@ -237,8 +243,6 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
                         ((ServerLevel)level).sendParticles(ParticleTypes.CRIT, x, y, z, 1, 0, 0, 0, 0);
                     }
                 }
-            } else if(oldBuildTotal > newBuildTotal) {
-                level.playSound(null, soundOrigin, SoundEvents.CHAIN_BREAK, SoundSource.BLOCKS);
             }
         }
     }

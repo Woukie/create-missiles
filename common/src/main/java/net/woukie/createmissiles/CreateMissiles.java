@@ -42,6 +42,7 @@ public class CreateMissiles {
         RecipeTypes.init();
         SpriteShifts.init();
         EntityTypes.init();
+        SoundEvents.init();
     }
 
     public static CreateRegistrate registrate() {
