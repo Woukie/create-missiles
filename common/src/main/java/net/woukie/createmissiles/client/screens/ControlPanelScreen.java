@@ -4,15 +4,11 @@ import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.inventory.ControlPanelMenu;
@@ -48,6 +44,7 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
 
     private double currentOpenPercent = 0;
     private double currentScrollPosition = 0;
+    private final long openedTime = System.currentTimeMillis();
 
     public ControlPanelScreen(ControlPanelMenu abstractContainerMenu, Inventory inventory, Component component) {
         super(abstractContainerMenu, inventory, component);
@@ -122,47 +119,34 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
     }
 
     private boolean renderLogs(GuiGraphics gui) {
-        boolean launchPad = getMenu().launchPadExists();
-        boolean launchPadPowered = getMenu().launchPadPowered();
-        boolean assemblyPanelExists = getMenu().assemblyPanelExists();
-        boolean navigationPanel = getMenu().navigationPanelExists();
+        List<Text> text = new ArrayList<>();
 
-        ItemStack warheadStack = getMenu().getWarhead();
-        ItemStack chassisStack = getMenu().getChassis();
-        ItemStack thrusterStack = getMenu().getThruster();
-
-        boolean hasAssemblies = warheadStack != null && chassisStack != null && thrusterStack != null;
-        boolean hasDestination = getMenu().hasDestination();
-
-        List<FormattedText> text = new ArrayList<>();
-
-//        Statuses
-        text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigation_panel.launch_pad_title").getString() + ": ", launchPad, launchPadPowered));
-        text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigation_panel.navigation_panel_title").getString() + ": ", navigationPanel, hasDestination));
-        text.addAll(formatStatus(Component.translatable("gui.createmissiles.navigation_panel.assembly_panel_title").getString() + ": ", assemblyPanelExists, hasAssemblies));
+        boolean launchPadValid = addLaunchPadStatus(text);
+        boolean navigationPanelValid = addNavigationPanelStatus(text);
+        boolean assemblyPanelValid = addAssemblyPanelStatus(text);
 
 //        Recipe
         int lineCount = 9;
 
         ClientLevel level = minecraft != null ? minecraft.level : null;
-        var warheadItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(warheadStack), level, getMenu().getItems());
-        var chassisItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(chassisStack), level, getMenu().getItems());
-        var thrusterItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(thrusterStack), level, getMenu().getItems());
+        var warheadItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(getMenu().getWarhead()), level, getMenu().getItems());
+        var chassisItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(getMenu().getChassis()), level, getMenu().getItems());
+        var thrusterItemsLeft = MissilePartRecipe.getRemainingItems(PartTypes.get(getMenu().getThruster()), level, getMenu().getItems());
 
         int warheadPercent = MissilePartRecipe.getBuildPercentage(warheadItemsLeft);
         int chassisPercent = MissilePartRecipe.getBuildPercentage(chassisItemsLeft);
         int thrusterPercent = MissilePartRecipe.getBuildPercentage(thrusterItemsLeft);
 
-        text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigation_panel.warhead_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
-        text.add(FormattedText.of(warheadPercent + "%\n", Style.EMPTY.withColor(warheadPercent == 0 ? 16711680 : (warheadPercent == 100 ? 65280 : 16776960))));
+        text.add(new Text("\n" + Component.translatable("gui.createmissiles.control_panel.warhead_title").getString() + ": ", Color.WHITE));
+        text.add(new Text(warheadPercent + "%\n", warheadPercent == 0 ? Color.RED : (warheadPercent == 100 ? Color.GREEN : Color.YELLOW)));
         if (warheadItemsLeft != null) lineCount += writeIngredientStatus(text, warheadItemsLeft);
 
-        text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigation_panel.chassis_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
-        text.add(FormattedText.of(chassisPercent + "%\n", Style.EMPTY.withColor(chassisPercent == 0 ? 16711680 : (chassisPercent == 100 ? 65280 : 16776960))));
+        text.add(new Text("\n" + Component.translatable("gui.createmissiles.control_panel.chassis_title").getString() + ": ", Color.WHITE));
+        text.add(new Text(chassisPercent + "%\n", chassisPercent == 0 ? Color.RED : (chassisPercent == 100 ? Color.GREEN : Color.YELLOW)));
         if (chassisItemsLeft != null) lineCount += writeIngredientStatus(text, chassisItemsLeft);
 
-        text.add(FormattedText.of("\n" + Component.translatable("gui.createmissiles.navigation_panel.thruster_title").getString() + ": ", Style.EMPTY.withColor(16777215)));
-        text.add(FormattedText.of(thrusterPercent + "%\n", Style.EMPTY.withColor(thrusterPercent == 0 ? 16711680 : (thrusterPercent == 100 ? 65280 : 16776960))));
+        text.add(new Text("\n" + Component.translatable("gui.createmissiles.control_panel.thruster_title").getString() + ": ", Color.WHITE));
+        text.add(new Text(thrusterPercent + "%\n", thrusterPercent == 0 ? Color.RED : (thrusterPercent == 100 ? Color.GREEN : Color.YELLOW)));
         if (thrusterItemsLeft != null) lineCount += writeIngredientStatus(text, thrusterItemsLeft);
 
 //        Render
@@ -177,14 +161,123 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
         gui.pose().scale(0.5F, 0.5F, 1);
 //        Scissor ignores pose transforms
         gui.enableScissor(consoleLeft + leftPos, consoleTop + topPos, consoleLeft + leftPos + consoleWidth, consoleTop + topPos + consoleHeight);
-        gui.drawWordWrap(this.font, FormattedText.composite(text), 2, 2, consoleWidth * 2 - 4, consoleHeight * 2 - 4);
+
+        animateText(text);
+
+        FormattedText formattedText = FormattedText.composite(text.stream().map(a -> FormattedText.of(a.text, a.getStyle())).toList());
+        gui.drawWordWrap(this.font, formattedText, 2, 2, consoleWidth * 2 - 4, consoleHeight * 2 - 4);
         gui.disableScissor();
         gui.pose().popPose();
 
-        return launchPad && assemblyPanelExists && navigationPanel && hasAssemblies && launchPadPowered && hasDestination && chassisPercent == 100 && warheadPercent == 100 && thrusterPercent == 100;
+        return launchPadValid && navigationPanelValid && assemblyPanelValid && chassisPercent == 100 && warheadPercent == 100 && thrusterPercent == 100;
     }
 
-    private int writeIngredientStatus(List<FormattedText> text, Map<MissileIngredient, Integer> ingredients) {
+    private void animateText(List<Text> text) {
+        long timePassed = System.currentTimeMillis() - openedTime;
+        int hideAfter = (int)(timePassed / 10L);
+
+        int currentCharacter = 0;
+        for (Text line : text) {
+            StringBuilder obuscated = new StringBuilder();
+            for (Character character : line.text.toCharArray()) {
+                if (currentCharacter <= hideAfter) {
+                    if (!character.equals('\n') && !character.equals(' ')) {
+                        if (Math.random() / (hideAfter - currentCharacter) > 0.05) {
+                            character = (char)(26 * Math.random() + (Math.random() > 0.2 ? 'a' : 'A'));
+                        }
+                    }
+
+                    obuscated.append(character);
+                }
+                currentCharacter++;
+            }
+            line.text = obuscated.toString();
+        }
+    }
+
+    private boolean addLaunchPadStatus(List<Text> text) {
+        String title = Component.translatable("gui.createmissiles.control_panel.launch_pad_title").getString();
+        text.add(new Text(title + ": ", Color.WHITE));
+
+        if (!getMenu().launchPadExists()) {
+            String status = Component.translatable("gui.createmissiles.control_panel.no_launch_pad").getString() + "\n";
+            text.add(new Text(status, Color.RED));
+            return false;
+        }
+
+        if (!getMenu().launchPadPowered()) {
+            String status = Component.translatable("gui.createmissiles.control_panel.launch_pad_no_power").getString() + "\n";
+            text.add(new Text(status, Color.YELLOW));
+            return false;
+        }
+
+        String status = Component.translatable("gui.createmissiles.control_panel.valid").getString() + "\n";
+        text.add(new Text(status, Color.GREEN));
+
+        return true;
+    }
+
+    private boolean addNavigationPanelStatus(List<Text> text) {
+        String title = Component.translatable("gui.createmissiles.control_panel.navigation_panel_title").getString();
+        text.add(new Text(title + ": ", Color.WHITE));
+
+        if (!getMenu().navigationPanelExists()) {
+            String status = Component.translatable("gui.createmissiles.control_panel.no_navigation_panel").getString() + "\n";
+            text.add(new Text(status, Color.YELLOW));
+            return false;
+        }
+
+        if (!getMenu().hasDestination()) {
+            String status = Component.translatable("gui.createmissiles.control_panel.no_destination").getString() + "\n";
+            text.add(new Text(status, Color.YELLOW));
+            return false;
+        }
+
+        String status = Component.translatable("gui.createmissiles.control_panel.valid").getString() + "\n";
+        text.add(new Text(status, Color.GREEN));
+
+        return true;
+    }
+
+    private boolean addAssemblyPanelStatus(List<Text> text) {
+        String title = Component.translatable("gui.createmissiles.control_panel.assembly_panel_title").getString();
+        text.add(new Text(title + ": ", Color.WHITE));
+
+        if (!getMenu().assemblyPanelExists()) {
+            String status = Component.translatable("gui.createmissiles.control_panel.no_assembly_panel").getString() + "\n";
+            text.add(new Text(status, Color.RED));
+            return false;
+        }
+
+        ItemStack warheadStack = getMenu().getWarhead();
+        ItemStack chassisStack = getMenu().getChassis();
+        ItemStack thrusterStack = getMenu().getThruster();
+
+        if (warheadStack == null) {
+            String status = Component.translatable("gui.createmissiles.control_panel.no_warhead").getString() + "\n";
+            text.add(new Text(status, Color.YELLOW));
+            return false;
+        }
+
+        if (chassisStack == null) {
+            String status = Component.translatable("gui.createmissiles.control_panel.no_chassis").getString() + "\n";
+            text.add(new Text(status, Color.YELLOW));
+            return false;
+        }
+
+        if (thrusterStack == null) {
+            String status = Component.translatable("gui.createmissiles.control_panel.no_thruster").getString() + "\n";
+            text.add(new Text(status, Color.YELLOW));
+            return false;
+        }
+
+        String status = Component.translatable("gui.createmissiles.control_panel.valid").getString() + "\n";
+        text.add(new Text(status, Color.GREEN));
+
+        return true;
+    }
+
+    private int writeIngredientStatus(List<Text> text, Map<MissileIngredient, Integer> ingredients) {
         AtomicInteger increment = new AtomicInteger();
         ingredients.forEach((ingredient, left) -> {
             int required = ingredient.count();
@@ -194,20 +287,12 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
             Component[] names = items.stream().map(ItemStack::getDisplayName).toList().toArray(new Component[0]);
             String name = names[(int)(Util.getMillis() / 1000f) % names.length].getString();
 
-            text.add(FormattedText.of("> " + name.substring(1, name.length() - 1) + " ", Style.EMPTY.withColor(16777215)));
-            text.add(FormattedText.of(have + "/" + required + "\n", Style.EMPTY.withColor(have == required ? 65280 : (have == 0 ? 16711680 : 16776960))));
+            text.add(new Text("> " + name.substring(1, name.length() - 1) + " ", Color.WHITE));
+            text.add(new Text(have + "/" + required + "\n", have == required ? Color.GREEN : (have == 0 ? Color.RED : Color.YELLOW)));
             increment.addAndGet(name.length() / 32 + 1); // Good enough fix for long names
         });
 
         return increment.get();
-    }
-
-    private List<FormattedText> formatStatus(String text, boolean online, boolean valid) {
-        List<FormattedText> result = new ArrayList<>();
-        result.add(FormattedText.of(text, Style.EMPTY.withColor(16777215)));
-        MutableComponent status = !online ? Component.translatable("gui.createmissiles.navigation_panel.offline") : (valid ? Component.translatable("gui.createmissiles.navigation_panel.valid") : Component.translatable("gui.createmissiles.navigation_panel.incomplete"));
-        result.add(FormattedText.of(status.getString() + "\n", !online ? Style.EMPTY.withColor(16711680) : (valid ? Style.EMPTY.withColor(65280) : Style.EMPTY.withColor(16776960))));
-        return result;
     }
 
     @Override
@@ -236,5 +321,28 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
         }
 
         return super.mouseClicked(x, y, i);
+    }
+
+    private static class Text {
+        public String text;
+        public Color color;
+
+        Text(String text, Color color) {
+            this.text = text;
+            this.color = color;
+        }
+
+        public Style getStyle() {
+            return switch (color) {
+                case WHITE -> Style.EMPTY.withColor(16777215);
+                case GREEN -> Style.EMPTY.withColor(65280);
+                case YELLOW -> Style.EMPTY.withColor(16776960);
+                case RED -> Style.EMPTY.withColor(16711680);
+            };
+        }
+    }
+
+    private enum Color {
+        GREEN, YELLOW, RED, WHITE
     }
 }
