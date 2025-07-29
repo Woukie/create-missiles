@@ -37,6 +37,8 @@
   "gui.createmissiles.control_panel.warhead_title": "Warhead",
   "gui.createmissiles.control_panel.chassis_title": "Chassis",
   "gui.createmissiles.control_panel.thruster_title": "Thruster",
+  "description.jei.firework_thruster": "Firework thruster :)",
+  "description.jei.firework_chassis": "Firework chassis :(",
   "subtitles.createmissiles.ding": "Missile built",
   "subtitles.createmissiles.build": "Missile part building",
   "subtitles.createmissiles.build_special": "Missile part built",

@@ -58,10 +58,10 @@ public class AssemblyItem extends Item {
         }
     }
 
-    public static ItemStack createWith(ResourceLocation chassis, ItemLike item) {
+    public static ItemStack createWith(ResourceLocation partTypeResourceLocation, ItemLike item) {
         ItemStack itemStack = new ItemStack(item);
         CompoundTag compoundTag = itemStack.getOrCreateTag();
-        compoundTag.putString("PartType", chassis.toString());
+        compoundTag.putString("PartType", partTypeResourceLocation.toString());
         itemStack.setTag(compoundTag);
         return itemStack;
     }
