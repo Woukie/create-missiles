@@ -42,6 +42,9 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
     private static final int coverWidth = buttonWidth / 2;
     private static final int coverHeight = buttonHeight;
 
+    private static final List<Character> textAnimatePallette = List.of('█','▓','▒','░',' ');
+    private static final double textAnimateWaveLenth = 3;
+
     private double currentOpenPercent = 0;
     private double currentScrollPosition = 0;
     private final long openedTime = System.currentTimeMillis();
@@ -181,9 +184,14 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
             StringBuilder obuscated = new StringBuilder();
             for (Character character : line.text.toCharArray()) {
                 if (currentCharacter <= hideAfter) {
-                    if (!character.equals('\n') && !character.equals(' ')) {
-                        if (Math.random() / (hideAfter - currentCharacter) > 0.05) {
-                            character = (char)(26 * Math.random() + (Math.random() > 0.2 ? 'a' : 'A'));
+                    if (!character.equals('\n')) {
+                        int distance = hideAfter - currentCharacter;
+                        distance += (int)(Math.random() * 3 - 1.5);
+                        double proportionThroughList = distance / (textAnimatePallette.size() * textAnimateWaveLenth);
+                        proportionThroughList = Math.max(0, proportionThroughList);
+                        if (proportionThroughList <= 1) {
+                            int palletteIndex = (int)(proportionThroughList * (textAnimatePallette.size() - 1));
+                            character = textAnimatePallette.get(palletteIndex);
                         }
                     }
 
