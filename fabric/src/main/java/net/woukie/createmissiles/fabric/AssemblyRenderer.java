@@ -42,14 +42,14 @@ public class AssemblyRenderer extends CustomRenderedItemModelRenderer {
             long time = (System.currentTimeMillis() / 10L) % 360;
             double a = Math.sin(Math.toRadians(time));
             ms.mulPose(Axis.ZP.rotationDegrees((float) a * 20F));
-            renderMissilePart(ms, buffer, overlay, partType);
+            renderMissilePart(ms, buffer, overlay, light, partType, transformType);
             ms.popPose();
         }
 
         ms.popPose();
     }
 
-    private static void renderMissilePart(PoseStack poseStack, MultiBufferSource multiBufferSource, int overlay, MissilePartType partType) {
+    private static void renderMissilePart(PoseStack poseStack, MultiBufferSource multiBufferSource, int overlay, int light, MissilePartType partType, ItemDisplayContext transformType) {
         MissilePartModel model = partType.getModel();
 
         poseStack.pushPose();
@@ -67,7 +67,7 @@ public class AssemblyRenderer extends CustomRenderedItemModelRenderer {
         ModelPart modelPart = warheadModelLayerDefinition.bakeRoot();
         modelPart.offsetPos(offset);
         VertexConsumer warheadVertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(model.getTexture(stage)));
-        modelPart.render(poseStack, warheadVertexConsumer, 255, overlay);
+        modelPart.render(poseStack, warheadVertexConsumer, transformType != ItemDisplayContext.GUI ? light : 255, overlay);
 
         poseStack.popPose();
     }
