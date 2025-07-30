@@ -203,7 +203,7 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
             if (oldBuildTotal < newBuildTotal) {
                 if (!level.isClientSide) {
                     var p = soundOrigin.getCenter();
-                    ((ServerLevel)level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.IRON_BLOCK.defaultBlockState()), p.x, p.y + 0.5, p.z, 20, 0.5, 0, 0.5, 45);
+                    ((ServerLevel)level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.IRON_BLOCK.defaultBlockState()), p.x, p.y + 0.5, p.z, 10, 0.5, 0, 0.5, 45);
                     ((ServerLevel)level).sendParticles(ParticleTypes.LARGE_SMOKE, p.x, p.y + 0.5, p.z, 1, 0, 0, 0, 0);
 
                     boolean partComplete = (oldWarheadBuildPercent != 100 && warheadBuildPercent == 100) ||
@@ -239,7 +239,7 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
                         var y = p.y + 0.5 + rocketTip.y * Math.random();
                         var z = p.z + rocketTip.z * Math.random();
                         ((ServerLevel)level).sendParticles(net.woukie.createmissiles.registry.ParticleTypes.WELD_SPARK.get(), x, y, z, 10, 0, 0, 0, 0);
-                        ((ServerLevel)level).sendParticles(ParticleTypes.POOF, x, y, z, 1, 0, 0, 0, 0);
+                        ((ServerLevel)level).sendParticles(ParticleTypes.SMOKE, x, y, z, 1, 0, 0, 0, 0);
                     }
                 }
             }
