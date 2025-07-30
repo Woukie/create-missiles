@@ -21,7 +21,7 @@ public class SoundEvents {
     public static final RegistrySupplier<SoundEvent> CRUNCH = register("crunch") ;
 
     public static void init() {
-        CreateMissiles.LOGGER.info("Registering custom recipe types for " + CreateMissiles.NAME);
+        CreateMissiles.LOGGER.info("Registering sound events for " + CreateMissiles.NAME);
         SOUND_EVENTS.register();
     }
 

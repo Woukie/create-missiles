@@ -224,7 +224,7 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
                     Map<String, Vector3f> chassisAttachments = chassisType == null ? new HashMap<>() : chassisType.getModel().getAttachements(chassisType.getModel().getStage(chassisBuildPercent));
                     Map<String, Vector3f> warheadAttachments = warheadType == null ? new HashMap<>() : warheadType.getModel().getAttachements(warheadType.getModel().getStage(warheadBuildPercent));
 
-                    Vector3f top = new Vector3f()
+                    Vector3f rocketTip = new Vector3f()
                             .add(thrusterAttachments.getOrDefault("bottom", new Vector3f()))
                             .add(thrusterAttachments.getOrDefault("top", new Vector3f()))
                             .add(chassisAttachments.getOrDefault("bottom", new Vector3f()))
@@ -234,12 +234,12 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
                             .div(16);
 
                     var r = Math.random();
-                    for (int i = 0; i < r * 4 + 2; i++) {
-                        var x = p.x + top.x * Math.random() + Math.random() - 0.5;
-                        var y = p.y + 0.5 + top.y * Math.random();
-                        var z = p.z + top.z * Math.random() + Math.random() - 0.5;
-                        ((ServerLevel)level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.IRON_BLOCK.defaultBlockState()), x, y, z, 3, 0, 0, 0, 0);
-                        ((ServerLevel)level).sendParticles(ParticleTypes.CRIT, x, y, z, 1, 0, 0, 0, 0);
+                    for (int i = 0; i < r * 2 + 1; i++) {
+                        var x = p.x + rocketTip.x * Math.random();
+                        var y = p.y + 0.5 + rocketTip.y * Math.random();
+                        var z = p.z + rocketTip.z * Math.random();
+                        ((ServerLevel)level).sendParticles(net.woukie.createmissiles.registry.ParticleTypes.WELD_SPARK.get(), x, y, z, 10, 0, 0, 0, 0);
+                        ((ServerLevel)level).sendParticles(ParticleTypes.POOF, x, y, z, 1, 0, 0, 0, 0);
                     }
                 }
             }
