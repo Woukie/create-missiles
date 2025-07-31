@@ -1,7 +1,6 @@
 package net.woukie.createmissiles.forge;
 
 import dev.architectury.platform.forge.EventBuses;
-import dev.architectury.registry.client.particle.ParticleProviderRegistry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.fml.DistExecutor;
