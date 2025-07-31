@@ -59,5 +59,7 @@ public class CreateMissiles {
         CustomRenderedItems.register(Items.WARHEAD_ASSEMBLY.get());
         CustomRenderedItems.register(Items.CHASSIS_ASSEMBLY.get());
         CustomRenderedItems.register(Items.THRUSTER_ASSEMBLY.get());
+
+        PonderIndex.register();
     }
 }
