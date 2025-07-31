@@ -45,8 +45,12 @@ public class BuildShrapnel extends TextureSheetParticle {
 
     @Override
     public void tick() {
-        this.roll += (float) spinSpeed;
-        this.oRoll = roll;
+        if (onGround) {
+            age += 4;
+        } else {
+            this.roll += (float) spinSpeed;
+            this.oRoll = roll;
+        }
 
         float lifePercent = 1 - (float) (age + 1) / lifetime;
         this.alpha = Math.min(lifePercent * 4f, 1);
@@ -55,9 +59,6 @@ public class BuildShrapnel extends TextureSheetParticle {
         quadSize = lifePercent == 1 ? 1 : (float) (1 - Math.pow(2, -10 * lifePercent));
         quadSize /= 12;
 
-        if (onGround) {
-            age += 4;
-        }
 
         super.tick();
     }
