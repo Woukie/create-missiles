@@ -12,7 +12,7 @@ public class ParticleTypes {
     public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES =
             DeferredRegister.create(MOD_ID, Registries.PARTICLE_TYPE);
 
-    public static final RegistrySupplier<SimpleParticleType> WELD_SPARK = PARTICLE_TYPES.register("weld_spark", SimpleParticleType::new);
+    public static final RegistrySupplier<SimpleParticleType> BUILD_SHRAPNEL = PARTICLE_TYPES.register("build_shrapnel", SimpleParticleType::new);
 
     public static void init() {
         CreateMissiles.LOGGER.info("Registering particles for " + CreateMissiles.NAME);

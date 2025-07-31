@@ -9,7 +9,7 @@ import net.woukie.createmissiles.CreateMissiles;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.woukie.createmissiles.particle.WeldSpark;
+import net.woukie.createmissiles.particle.BuildShrapnel;
 import net.woukie.createmissiles.registry.EntityRenderers;
 import net.woukie.createmissiles.registry.ParticleTypes;
 
@@ -35,6 +35,6 @@ public class CreateMissilesForge {
     }
 
     private void registerParticles(RegisterParticleProvidersEvent event) {
-        event.registerSpriteSet(ParticleTypes.WELD_SPARK.get(), WeldSpark.Provider::new);
+        event.registerSpriteSet(ParticleTypes.BUILD_SHRAPNEL.get(), BuildShrapnel.Provider::new);
     }
 }

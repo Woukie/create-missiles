@@ -4,17 +4,16 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.Random;
 
-public class WeldSpark extends TextureSheetParticle {
+public class BuildShrapnel extends TextureSheetParticle {
     private final static double spread = 0.25D;
     private final static float initialVelocity = 0.25f;
-    private final SpriteSet sprites;
+    private final double spinSpeed;
 
-    public WeldSpark(ClientLevel arg, double x, double y, double z, double vX, double vY, double vZ, SpriteSet arg2) {
+    public BuildShrapnel(ClientLevel arg, double x, double y, double z, double vX, double vY, double vZ, SpriteSet arg2) {
         super(arg, x, y, z);
 
         var rand = new Random((long) ((x + y + z) * 32D));
@@ -30,13 +29,13 @@ public class WeldSpark extends TextureSheetParticle {
         this.bbWidth = 1/16f;
         this.gravity = 1F;
         this.friction = 0.99F;
-        this.sprites = arg2;
         this.xd = vX + velocity.x;
         this.yd = vY + velocity.y;
         this.zd = vZ + velocity.z;
-        this.quadSize = this.random.nextFloat() / 16f + 1/32f;
+        this.quadSize = 0f;
         this.lifetime = (int)(100 + (double)this.random.nextFloat() * 10);
-        this.setSpriteFromAge(arg2);
+        this.spinSpeed = Math.random() - 0.5;
+        this.setSprite(arg2.get((int) (this.random.nextFloat() * 100f), 100));
     }
 
     @Override
@@ -46,17 +45,21 @@ public class WeldSpark extends TextureSheetParticle {
 
     @Override
     public void tick() {
-        Vector3d velocity = new Vector3d(xd, yd, zd);
-        this.roll = (float)velocity.angle(new Vector3d(0D, 1D, 0D)) + (float) Math.PI / 2;
+        this.roll += (float) spinSpeed;
         this.oRoll = roll;
+
         float lifePercent = 1 - (float) (age + 1) / lifetime;
         this.alpha = Math.min(lifePercent * 4f, 1);
 
-        setColor(1.0f, lifePercent / 2.0f + 0.5f, lifePercent);
-        quadSize -= (float) (quadSize * 0.1);
+//        https://easings.net/#easeInExpo
+        quadSize = lifePercent == 1 ? 1 : (float) (1 - Math.pow(2, -10 * lifePercent));
+        quadSize /= 12;
+
+        if (onGround) {
+            age += 4;
+        }
 
         super.tick();
-        this.setSpriteFromAge(this.sprites);
     }
 
     public static class Provider implements ParticleProvider<SimpleParticleType> {
@@ -67,7 +70,7 @@ public class WeldSpark extends TextureSheetParticle {
         }
 
         public Particle createParticle(@NotNull SimpleParticleType arg, @NotNull ClientLevel arg2, double d, double e, double f, double g, double h, double i) {
-            return new WeldSpark(arg2, d, e, f, g, h, i, this.sprites);
+            return new BuildShrapnel(arg2, d, e, f, g, h, i, this.sprites);
         }
     }
 }

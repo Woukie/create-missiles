@@ -238,7 +238,7 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
                         var x = p.x + rocketTip.x * Math.random();
                         var y = p.y + 0.5 + rocketTip.y * Math.random();
                         var z = p.z + rocketTip.z * Math.random();
-                        ((ServerLevel)level).sendParticles(net.woukie.createmissiles.registry.ParticleTypes.WELD_SPARK.get(), x, y, z, 10, 0, 0, 0, 0);
+                        ((ServerLevel)level).sendParticles(net.woukie.createmissiles.registry.ParticleTypes.BUILD_SHRAPNEL.get(), x, y, z, 10, 0, 0, 0, 0);
                         ((ServerLevel)level).sendParticles(ParticleTypes.SMOKE, x, y, z, 1, 0, 0, 0, 0);
                     }
                 }
