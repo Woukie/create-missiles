@@ -4,6 +4,7 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import com.simibubi.create.foundation.item.render.CustomRenderedItems;
 import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.event.events.common.TickEvent;
 import dev.architectury.registry.menu.MenuRegistry;
@@ -54,5 +55,9 @@ public class CreateMissiles {
         MenuRegistry.registerScreenFactory(Menus.CONTROL_PANEL.get(), ControlPanelScreen::new);
         MenuRegistry.registerScreenFactory(Menus.NAVIGATION_PANEL.get(), NavigationPanelScreen::new);
         MenuRegistry.registerScreenFactory(Menus.ASSEMBLY_PANEL.get(), AssemblyPanelScreen::new);
+
+        CustomRenderedItems.register(Items.WARHEAD_ASSEMBLY.get());
+        CustomRenderedItems.register(Items.CHASSIS_ASSEMBLY.get());
+        CustomRenderedItems.register(Items.THRUSTER_ASSEMBLY.get());
     }
 }

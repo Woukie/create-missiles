@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.forge.item;
+package net.woukie.createmissiles.forge;
 
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
