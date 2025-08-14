@@ -29,14 +29,34 @@ public class BallisticTrajectory extends Trajectory {
     public void tick(MinecraftServer server) {
         super.tick(server);
 
+        float tickLength = 0.05f;
+        float elapsedTime = this.tick * tickLength;
+
         double thrust = thrusterType.getThrust();
         double weight = warheadType.getWeight() + chassisType.getWeight() + thrusterType.getWeight();
         double fuel = chassisType.getFuelCapacity();
         double timeSinceLastTick = 1.0f / tickSpeed;
 
-        velocity.add(0, 0.01F, 0);
+
+        if(elapsedTime >= 2.5f)
+        {
+            velocity.add(0, -9.81 * 0.01, 0);
+        }
+        else
+        {
+            velocity.add(12.16 * Math.cos(Math.toRadians(80)) * 0.01, 12.16 * 0.01 * Math.sin(Math.toRadians(80)) - 9.81 * 0.01, 0);
+        }
+        //thruster on
+        //add velocity based on thrust and gravity
+
+        //thruster off
+        //add velocity based on gravity
+
+
+
+        //velocity.add(0, 0.01F, 0);
         globalPosition.add(velocity);
-        rotation.add(0, 0.1F, 0);
+        rotation.add(0, 0.1f, 0);
     }
 
 //    Called when launching a missile from the console panel
