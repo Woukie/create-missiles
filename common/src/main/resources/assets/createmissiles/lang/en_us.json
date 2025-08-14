@@ -63,6 +63,8 @@
   "advancements.createmissiles.control_panel.description": "Obtain a control panel",
   "advancements.createmissiles.firework_set.title":  "Fireworks",
   "advancements.createmissiles.firework_set.description": "Obtain a full set of firework assemblies",
+  "advancements.createmissiles.flaming_set.title":  "Flaming",
+  "advancements.createmissiles.flaming_set.description": "Obtain a full set of flaming assemblies",
   "createmissiles.ponder.missile_assembly.header": "Building a Missile",
   "createmissiles.ponder.missile_assembly.text_1": "Place launch pads in a 3x3 area and power them with at least 64 speed",
   "createmissiles.ponder.missile_assembly.text_2": "Give the navigation panel a filled map and select a target",
