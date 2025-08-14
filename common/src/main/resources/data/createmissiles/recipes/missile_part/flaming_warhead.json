@@ -1,0 +1,10 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "items": ["minecraft:blaze_rod"],
+      "count": 6
+    }
+  ],
+  "assembly": "createmissiles:flaming_warhead"
+}
