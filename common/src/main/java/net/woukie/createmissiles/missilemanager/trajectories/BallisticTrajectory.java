@@ -74,7 +74,7 @@ public class BallisticTrajectory extends Trajectory {
 
         TrajectoryHelper.LaunchSolution solution = findLaunchSolution(targetDistance, thrustDuration, minHeight, 80, 90);
         launchAngle = solution.angle;
-        initialThrust = solution.thrust;
+        initialThrust = solution.thrust * 1.46d; //WTFFFFFFFFFFFFFF
 
         System.out.println(targetDistance);
         System.out.println(launchAngle);
