@@ -1,6 +1,7 @@
 package net.woukie.createmissiles.missilemanager.trajectories;
 
 import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
+import net.minecraft.client.particle.SuspendedParticle;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -11,6 +12,7 @@ import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
+import org.joml.Vector2d;
 import org.joml.Vector3d;
 
 import static net.woukie.createmissiles.missilemanager.trajectories.TrajectoryHelper.findLaunchSolution;
@@ -23,6 +25,7 @@ public class BallisticTrajectory extends Trajectory {
     public final double tickSpeed = 20;
     protected Vector3d globalPosition;
     protected Vector3d velocity;
+    protected Vector3d acceleration;
     protected Vector3d rotation;
 
     private double initialThrust = 5;
@@ -34,32 +37,26 @@ public class BallisticTrajectory extends Trajectory {
     public void tick(MinecraftServer server) {
         super.tick(server);
 
-        float tickLength = 0.05f;
-        float elapsedTime = this.tick * tickLength;
+        double tickLength = 0.05d;
+        double elapsedTime = this.tick * tickLength;
+//
+//        double thrust = thrusterType.getThrust();
+//        double weight = warheadType.getWeight() + chassisType.getWeight() + thrusterType.getWeight();
+//        double fuel = chassisType.getFuelCapacity();
+//        double timeSinceLastTick = 1.0f / tickSpeed;
 
-        double thrust = thrusterType.getThrust();
-        double weight = warheadType.getWeight() + chassisType.getWeight() + thrusterType.getWeight();
-        double fuel = chassisType.getFuelCapacity();
-        double timeSinceLastTick = 1.0f / tickSpeed;
+        double forceHorizontal = initialThrust * Math.cos(Math.toRadians(launchAngle));
 
-        if(elapsedTime < 2.5f)
-        {
-            velocity.add(0, initialThrust * Math.sin(Math.toRadians(launchAngle)), 0);
-            double forceHorizontal = initialThrust * Math.cos(Math.toRadians(launchAngle));
-            velocity.add(launchDirection.x * forceHorizontal, 0, launchDirection.z * forceHorizontal);
-        }
+        acceleration = elapsedTime >= 2.5d ?
+                new Vector3d(0, gravity.y, 0) :
+                new Vector3d(
+                        launchDirection.x * forceHorizontal,
+                        initialThrust * Math.sin(Math.toRadians(launchAngle)) + gravity.y,
+                        launchDirection.z * forceHorizontal
+                );
 
-        velocity.add(0, gravity.y, 0);
-
-        Vector3d finalVelocity = new Vector3d(velocity.x * 0.01f, velocity.y * 0.01f, velocity.z * 0.01f);
-        globalPosition.add(finalVelocity);
-
-        double horizontalSpeed = Math.sqrt(finalVelocity.x * finalVelocity.x + finalVelocity.z * finalVelocity.z);
-        float pitch = (float) Math.toDegrees(Math.atan2(finalVelocity.y, horizontalSpeed));
-        float yaw = (float) Math.toDegrees(Math.atan2(-finalVelocity.x, finalVelocity.z));
-
-        rotation.set(pitch, yaw, 360);
-
+        velocity.add(acceleration.mul(tickLength));
+        globalPosition.add(velocity.x * tickLength, velocity.y * tickLength, velocity.z * tickLength);
     }
 
 //    Called when launching a missile from the console panel
@@ -70,16 +67,18 @@ public class BallisticTrajectory extends Trajectory {
         velocity = new Vector3d(0, 0, 0);
 
         double targetDistance = Vector3d.distance(target.x, 0, target.z, start.x, 0, start.z);
-        double thrustDuration = 2.5;
+
+        double thrustDuration = 2.5d;
         double minHeight = 50;
         launchDirection = new Vector3d(target.x - start.x, 0, target.z - start.z).normalize();
-
-        System.out.println(launchDirection);
-
 
         TrajectoryHelper.LaunchSolution solution = findLaunchSolution(targetDistance, thrustDuration, minHeight, 80, 90);
         launchAngle = solution.angle;
         initialThrust = solution.thrust;
+
+        System.out.println(targetDistance);
+        System.out.println(launchAngle);
+        System.out.println(initialThrust);
     }
 
     //    Called when deserialising trajectories
