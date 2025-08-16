@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class BoreholeWarheadModel implements MissilePartModel {
+public class ExcavatorWarheadModel implements MissilePartModel {
 	private final List<Map<String, Vector3f>> attachments = List.of(
 			new HashMap<>() {{
 				put("bottom", new Vector3f(0, 0, 0));
@@ -123,7 +123,7 @@ public class BoreholeWarheadModel implements MissilePartModel {
 
 	@Override
 	public ResourceLocation getTexture(int stage) {
-		return new ResourceLocation(CreateMissiles.MOD_ID,"textures/entity/borehole_warhead.png");
+		return new ResourceLocation(CreateMissiles.MOD_ID,"textures/entity/excavator_warhead.png");
 	}
 
 	@Override

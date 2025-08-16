@@ -5,14 +5,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
+import net.woukie.createmissiles.missilemanager.parts.chassis.ExcavatorChassis;
 import net.woukie.createmissiles.missilemanager.parts.chassis.FireworkChassis;
+import net.woukie.createmissiles.missilemanager.parts.chassis.FlamingChassis;
+import net.woukie.createmissiles.missilemanager.parts.thrusters.ExcavatorThruster;
 import net.woukie.createmissiles.missilemanager.parts.thrusters.FireworkThruster;
-import net.woukie.createmissiles.missilemanager.parts.warheads.BoreholeWarhead;
-import net.woukie.createmissiles.missilemanager.parts.warheads.FireworkWarhead;
-import net.woukie.createmissiles.missilemanager.parts.warheads.ShulkerBoxWarhead;
-import net.woukie.createmissiles.missilemanager.parts.warheads.TeleportationWarhead;
+import net.woukie.createmissiles.missilemanager.parts.thrusters.FlamingThruster;
+import net.woukie.createmissiles.missilemanager.parts.warheads.*;
 
 import java.util.HashMap;
+
 
 public class PartTypes {
     private static final HashMap<ResourceLocation, MissilePartType> missilePartTypes = new HashMap<>();
@@ -35,12 +37,16 @@ public class PartTypes {
     public static void init() {
         CreateMissiles.LOGGER.info("Registering missile part types for " + CreateMissiles.NAME);
 
+        PartTypes.register(new FlamingWarhead());
         PartTypes.register(new FireworkWarhead());
         PartTypes.register(new ShulkerBoxWarhead());
         PartTypes.register(new TeleportationWarhead());
-        PartTypes.register(new BoreholeWarhead());
+        PartTypes.register(new ExcavatorWarhead());
         PartTypes.register(new FireworkChassis());
+        PartTypes.register(new FlamingChassis());
+        PartTypes.register(new ExcavatorChassis());
         PartTypes.register(new FireworkThruster());
-
+        PartTypes.register(new FlamingThruster());
+        PartTypes.register(new ExcavatorThruster());
     }
 }

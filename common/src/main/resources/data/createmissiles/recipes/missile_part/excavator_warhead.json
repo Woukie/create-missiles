@@ -1,0 +1,10 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "tags": ["minecraft:planks"],
+      "count": 10
+    }
+  ],
+  "assembly": "createmissiles:excavator_warhead"
+}
