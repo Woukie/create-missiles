@@ -16,8 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
-import net.woukie.createmissiles.client.models.warheads.BoreholeWarheadModel;
-import net.woukie.createmissiles.client.models.warheads.FireworkWarheadModel;
+import net.woukie.createmissiles.client.models.warheads.ExcavatorWarheadModel;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.missilemanager.parts.warheads.messages.ExplodeFireworkMessage;
@@ -30,8 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class BoreholeWarhead extends WarheadType {
-    private final MissilePartModel model = new BoreholeWarheadModel();
+public class ExcavatorWarhead extends WarheadType {
+    private final MissilePartModel model = new ExcavatorWarheadModel();
 
     @Override
     public float getWeight() {
@@ -86,12 +85,12 @@ public class BoreholeWarhead extends WarheadType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "borehole_warhead");
+        return new ResourceLocation(CreateMissiles.MOD_ID, "excavator_warhead");
     }
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("warheads.createmissiles.borehole_warhead");
+        return Component.translatable("warheads.createmissiles.excavator_warhead");
     }
 
     @Override

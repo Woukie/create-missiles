@@ -5,9 +5,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
-import net.woukie.createmissiles.missilemanager.parts.WarheadType;
+import net.woukie.createmissiles.missilemanager.parts.chassis.ExcavatorChassis;
 import net.woukie.createmissiles.missilemanager.parts.chassis.FireworkChassis;
 import net.woukie.createmissiles.missilemanager.parts.chassis.FlamingChassis;
+import net.woukie.createmissiles.missilemanager.parts.thrusters.ExcavatorThruster;
 import net.woukie.createmissiles.missilemanager.parts.thrusters.FireworkThruster;
 import net.woukie.createmissiles.missilemanager.parts.thrusters.FlamingThruster;
 import net.woukie.createmissiles.missilemanager.parts.warheads.*;
@@ -40,11 +41,12 @@ public class PartTypes {
         PartTypes.register(new FireworkWarhead());
         PartTypes.register(new ShulkerBoxWarhead());
         PartTypes.register(new TeleportationWarhead());
-        PartTypes.register(new BoreholeWarhead());
+        PartTypes.register(new ExcavatorWarhead());
         PartTypes.register(new FireworkChassis());
         PartTypes.register(new FlamingChassis());
+        PartTypes.register(new ExcavatorChassis());
         PartTypes.register(new FireworkThruster());
         PartTypes.register(new FlamingThruster());
-
+        PartTypes.register(new ExcavatorThruster());
     }
 }
