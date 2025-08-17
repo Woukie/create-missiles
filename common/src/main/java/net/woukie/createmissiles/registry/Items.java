@@ -6,6 +6,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.item.BoundEnderPearlItem;
+import net.woukie.createmissiles.item.DroneItem;
 
 import java.util.Optional;
 import java.util.ServiceLoader;
@@ -22,6 +23,8 @@ public abstract class Items {
             "bound_ender_pearl",
             () -> new BoundEnderPearlItem(new Item.Properties())
     );
+
+    public static final RegistrySupplier<Item> DRONE_ITEM = ITEMS.register("drone", () -> new DroneItem(new Item.Properties()));
 
     protected abstract RegistrySupplier<Item> getWarheadAssembly();
     protected abstract RegistrySupplier<Item> getChassisAssembly();

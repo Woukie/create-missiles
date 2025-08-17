@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.entity.DroneEntity;
 import net.woukie.createmissiles.entity.MissileEntity;
 
 public class EntityTypes {
@@ -16,6 +17,11 @@ public class EntityTypes {
     public static final RegistrySupplier<EntityType<MissileEntity>> MISSILE = ENTITY_TYPES.register(
             "missile_entity",
             () -> EntityType.Builder.of(MissileEntity::new, MobCategory.MISC).noSummon().fireImmune().sized(1.5F, 5F).clientTrackingRange(4).updateInterval(20).build(new ResourceLocation(CreateMissiles.MOD_ID, "missile_entity").toString())
+    );
+
+    public static final RegistrySupplier<EntityType<DroneEntity>> DRONE = ENTITY_TYPES.register(
+            "drone_entity",
+            () -> EntityType.Builder.of(DroneEntity::new, MobCategory.MISC).noSummon().fireImmune().sized(2f, 1f).clientTrackingRange(4).updateInterval(20).build(new ResourceLocation(CreateMissiles.MOD_ID, "drone_entity").toString())
     );
 
     public static void init() {

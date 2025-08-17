@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.entity.client;
+package net.woukie.createmissiles.client.models.drone;
 
 // Made with Blockbench 4.12.4
 // Exported for Minecraft version 1.17 or later with Mojang mappings
