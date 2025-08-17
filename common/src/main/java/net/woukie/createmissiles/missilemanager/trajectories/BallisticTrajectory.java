@@ -2,6 +2,7 @@ package net.woukie.createmissiles.missilemanager.trajectories;
 
 import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
 import net.minecraft.client.particle.SuspendedParticle;
+import net.minecraft.core.Position;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -12,8 +13,9 @@ import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
-import org.joml.Vector2d;
-import org.joml.Vector3d;
+import org.joml.*;
+
+import java.lang.Math;
 
 import static net.woukie.createmissiles.missilemanager.trajectories.TrajectoryHelper.findLaunchSolution;
 
@@ -47,6 +49,11 @@ public class BallisticTrajectory extends Trajectory {
 
         double forceHorizontal = initialThrust * Math.cos(Math.toRadians(launchAngle));
 
+        if(launchDirection == null)
+        {
+            launchDirection = new Vector3d(0, 0, 0);
+        }
+
         acceleration = elapsedTime >= 2.5d ?
                 new Vector3d(0, gravity.y, 0) :
                 new Vector3d(
@@ -57,9 +64,17 @@ public class BallisticTrajectory extends Trajectory {
 
         velocity.add(acceleration.mul(tickLength));
         globalPosition.add(velocity.x * tickLength, velocity.y * tickLength, velocity.z * tickLength);
+
+        Vector3d direction = new Vector3d(velocity.x, velocity.y, velocity.z);
+        direction.normalize();
+        Vector3d forward = new Vector3d(0, 1, 0);
+        Quaterniond q = new Quaterniond().rotateTo(forward, direction);
+        Vector3d euler = q.getEulerAnglesZYX(new Vector3d());
+
+        rotation.set(euler.x, euler.y, euler.z);
     }
 
-//    Called when launching a missile from the console panel
+    //    Called when launching a missile from the console panel
     public BallisticTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
         super(level.dimension(), start, target, warheadType, chassisType, thrusterType, container);
         globalPosition = start;
@@ -75,10 +90,6 @@ public class BallisticTrajectory extends Trajectory {
         TrajectoryHelper.LaunchSolution solution = findLaunchSolution(targetDistance, thrustDuration, minHeight, 80, 90);
         launchAngle = solution.angle;
         initialThrust = solution.thrust * 1.46d; //WTFFFFFFFFFFFFFF
-
-        System.out.println(targetDistance);
-        System.out.println(launchAngle);
-        System.out.println(initialThrust);
     }
 
     //    Called when deserialising trajectories
