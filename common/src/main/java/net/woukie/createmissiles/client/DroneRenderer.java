@@ -1,13 +1,12 @@
-package net.woukie.createmissiles.entity.client;
+package net.woukie.createmissiles.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.woukie.createmissiles.entity.custom.DroneEntity;
+import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.entity.DroneEntity;
 
 public class DroneRenderer extends EntityRenderer<DroneEntity> {
 
@@ -17,7 +16,7 @@ public class DroneRenderer extends EntityRenderer<DroneEntity> {
 
     @Override
     public ResourceLocation getTextureLocation(DroneEntity entity) {
-        return null;
+        return new ResourceLocation(CreateMissiles.MOD_ID, "textures/entity/gunpowder_thruster.png");
     }
 
     @Override
