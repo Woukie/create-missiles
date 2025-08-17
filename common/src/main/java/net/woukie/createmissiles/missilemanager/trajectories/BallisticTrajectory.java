@@ -1,5 +1,8 @@
 package net.woukie.createmissiles.missilemanager.trajectories;
 
+import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
+import net.minecraft.client.particle.SuspendedParticle;
+import net.minecraft.core.Position;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -10,7 +13,11 @@ import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
-import org.joml.Vector3d;
+import org.joml.*;
+
+import java.lang.Math;
+
+import static net.woukie.createmissiles.missilemanager.trajectories.TrajectoryHelper.findLaunchSolution;
 
 // Salad notes
 // Can track as many variables as you like so long as you implement serialization
@@ -18,56 +25,74 @@ import org.joml.Vector3d;
 public class BallisticTrajectory extends Trajectory {
     public final Vector3d gravity = new Vector3d(0, -9.81, 0);
     public final double tickSpeed = 20;
-    public final double turnSpeed = 0.5;
-
     protected Vector3d globalPosition;
     protected Vector3d velocity;
+    protected Vector3d acceleration;
     protected Vector3d rotation;
-    protected boolean spent;
+
+    private double initialThrust = 5;
+    private double launchAngle = 90;
+    private Vector3d launchDirection;
+
 
     @Override
     public void tick(MinecraftServer server) {
         super.tick(server);
 
-        float tickLength = 0.05f;
-        float elapsedTime = this.tick * tickLength;
+        double tickLength = 0.05d;
+        double elapsedTime = this.tick * tickLength;
+//
+//        double thrust = thrusterType.getThrust();
+//        double weight = warheadType.getWeight() + chassisType.getWeight() + thrusterType.getWeight();
+//        double fuel = chassisType.getFuelCapacity();
+//        double timeSinceLastTick = 1.0f / tickSpeed;
 
-        double thrust = thrusterType.getThrust();
-        double weight = warheadType.getWeight() + chassisType.getWeight() + thrusterType.getWeight();
-        double fuel = chassisType.getFuelCapacity();
-        double timeSinceLastTick = 1.0f / tickSpeed;
+        double forceHorizontal = initialThrust * Math.cos(Math.toRadians(launchAngle));
 
-
-        if(elapsedTime >= 2.5f)
+        if(launchDirection == null)
         {
-            velocity.add(0, -9.81 * 0.01, 0);
+            launchDirection = new Vector3d(0, 0, 0);
         }
-        else
-        {
-            velocity.add(12.16 * Math.cos(Math.toRadians(80)) * 0.01, 12.16 * 0.01 * Math.sin(Math.toRadians(80)) - 9.81 * 0.01, 0);
-        }
-        //thruster on
-        //add velocity based on thrust and gravity
 
-        //thruster off
-        //add velocity based on gravity
+        acceleration = elapsedTime >= 2.5d ?
+                new Vector3d(0, gravity.y, 0) :
+                new Vector3d(
+                        launchDirection.x * forceHorizontal,
+                        initialThrust * Math.sin(Math.toRadians(launchAngle)) + gravity.y,
+                        launchDirection.z * forceHorizontal
+                );
 
+        velocity.add(acceleration.mul(tickLength));
+        globalPosition.add(velocity.x * tickLength, velocity.y * tickLength, velocity.z * tickLength);
 
+        Vector3d direction = new Vector3d(velocity.x, velocity.y, velocity.z);
+        direction.normalize();
+        Vector3d forward = new Vector3d(0, 1, 0);
+        Quaterniond q = new Quaterniond().rotateTo(forward, direction);
+        Vector3d euler = q.getEulerAnglesZYX(new Vector3d());
 
-        //velocity.add(0, 0.01F, 0);
-        globalPosition.add(velocity);
-        rotation.add(0, 0.1f, 0);
+        rotation.set(euler.x, euler.y, euler.z);
     }
 
-//    Called when launching a missile from the console panel
+    //    Called when launching a missile from the console panel
     public BallisticTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
         super(level.dimension(), start, target, warheadType, chassisType, thrusterType, container);
         globalPosition = start;
         rotation = new Vector3d(0, 0, 0);
         velocity = new Vector3d(0, 0, 0);
+
+        double targetDistance = Vector3d.distance(target.x, 0, target.z, start.x, 0, start.z);
+
+        double thrustDuration = 2.5d;
+        double minHeight = 50;
+        launchDirection = new Vector3d(target.x - start.x, 0, target.z - start.z).normalize();
+
+        TrajectoryHelper.LaunchSolution solution = findLaunchSolution(targetDistance, thrustDuration, minHeight, 80, 90);
+        launchAngle = solution.angle;
+        initialThrust = solution.thrust * 1.46d; //WTFFFFFFFFFFFFFF
     }
 
-//    Called when deserialising trajectories
+    //    Called when deserialising trajectories
     public BallisticTrajectory(CompoundTag data, MinecraftServer server) {
         super(data, server);
         this.globalPosition = new Vector3d(data.getDouble("PositionX"), data.getDouble("PositionY"), data.getDouble("PositionZ"));
@@ -75,7 +100,7 @@ public class BallisticTrajectory extends Trajectory {
         this.velocity = new Vector3d(data.getDouble("VelocityX"), data.getDouble("VelocityY"), data.getDouble("VelocityZ"));
     }
 
-//    Called when serializing a trajectory when exiting the world
+    //    Called when serializing a trajectory when exiting the world
     @Override
     public CompoundTag saveTo(CompoundTag data) {
         CompoundTag superData = super.saveTo(data);
