@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.client.models.warheads.ShulkerBoxWarheadModel;
@@ -51,10 +52,10 @@ public class ShulkerBoxWarhead extends WarheadType {
     }
 
     @Override
-    public void onDetonate(Trajectory trajectory, MinecraftServer server) {
+    public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
-        var impactPos = trajectory.getPosition();
+        var impactPos = hitPosition.add(0, 1, 0);
         CompoundTag data = trajectory.getWarheadData();
         if (data != null && !data.isEmpty()) {
             ListTag boxes = data.getList("ShulkerBoxes", 10);

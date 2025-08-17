@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
+import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +26,7 @@ public abstract class MissilePartType {
 
     }
 
-    public void onDetonate(Trajectory trajectory, MinecraftServer server) {
+    public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
 
     }
 

@@ -38,7 +38,7 @@ public class ExcavatorWarhead extends WarheadType {
     }
 
     @Override
-    public void onDetonate(Trajectory trajectory, MinecraftServer server) {
+    public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
         Vector3d impactPos = trajectory.getPosition();
