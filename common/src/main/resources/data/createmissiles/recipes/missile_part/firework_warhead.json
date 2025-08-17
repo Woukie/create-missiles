@@ -1,0 +1,14 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "items": ["minecraft:paper"],
+      "count": 4
+    },
+    {
+      "items": ["minecraft:firework_star"],
+      "count": 2
+    }
+  ],
+  "assembly": "createmissiles:firework_warhead"
+}

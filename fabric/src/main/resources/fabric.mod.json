@@ -19,6 +19,9 @@
     "client": ["net.woukie.createmissiles.fabric.CreateMissilesClientFabric"],
     "main": [
       "net.woukie.createmissiles.fabric.CreateMissilesFabric"
+    ],
+    "jei_mod_plugin": [
+      "net.woukie.createmissiles.jei.JEIPlugin"
     ]
   },
   "mixins": [

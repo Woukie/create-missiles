@@ -1,0 +1,10 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "items": ["minecraft:paper"],
+      "count": 16
+    }
+  ],
+  "assembly": "createmissiles:firework_chassis"
+}

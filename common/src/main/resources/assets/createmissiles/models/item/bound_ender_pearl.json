@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "createmissiles:item/bound_ender_pearl"
+  }
+}

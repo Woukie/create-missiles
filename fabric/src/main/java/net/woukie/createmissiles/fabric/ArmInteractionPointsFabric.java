@@ -12,9 +12,14 @@ import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.MultiblockHelper;
+import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
+import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
-import net.woukie.createmissiles.registry.MissileBlocks;
+import net.woukie.createmissiles.registry.BlockEntities;
+import net.woukie.createmissiles.registry.Blocks;
 
 import java.util.function.Function;
 
@@ -34,7 +39,7 @@ public class ArmInteractionPointsFabric {
 
         @Override
         public boolean canCreatePoint(Level level, BlockPos pos, BlockState state) {
-            return state.is(MissileBlocks.LAUNCH_PAD.get());
+            return state.is(Blocks.LAUNCH_PAD.get());
         }
 
         @Override
@@ -44,15 +49,26 @@ public class ArmInteractionPointsFabric {
     }
 
     public static class LaunchPadPoint extends AllArmInteractionPointTypes.DepositOnlyArmInteractionPoint {
+        public BlockState state;
         public LaunchPadPoint(ArmInteractionPointType type, Level level, BlockPos pos, BlockState state) {
             super(type, level, pos, state);
+            this.state = state;
+        }
+
+        @Override
+        protected Vec3 getInteractionPositionVector() {
+            BlockPos corner = MultiblockHelper.findCornerFromLaunchPad(getLevel(), getPos());
+            if (corner != null)
+                return corner.relative(Direction.NORTH, -1).relative(Direction.EAST, -1).getCenter();
+
+            return super.getInteractionPositionVector();
         }
 
         @Override
         public ItemStack insert(ItemStack stack, TransactionContext ctx) {
             ItemStack remainder = stack.copy();
             ItemStack toInsert = remainder.split(1);
-            LaunchPadBlock block = MissileBlocks.LAUNCH_PAD.get();
+            LaunchPadBlock block = Blocks.LAUNCH_PAD.get();
             WorldlyContainer container = block.getContainer(cachedState, level, pos);
             if (!container.canPlaceItemThroughFace(0, toInsert, Direction.UP)) {
                 return stack;

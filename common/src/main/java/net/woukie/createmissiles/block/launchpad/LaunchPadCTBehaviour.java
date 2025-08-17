@@ -1,6 +1,6 @@
 package net.woukie.createmissiles.block.launchpad;
 
-import net.woukie.createmissiles.registry.MissileSpriteShifts;
+import net.woukie.createmissiles.registry.SpriteShifts;
 import org.jetbrains.annotations.Nullable;
 
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
@@ -16,6 +16,6 @@ public class LaunchPadCTBehaviour extends ConnectedTextureBehaviour.Base {
         boolean isUp = direction == Direction.UP;
         boolean isSide = direction.getAxis().isHorizontal();
 
-        return isUp ? MissileSpriteShifts.LAUNCH_PAD_TOP : isSide ? MissileSpriteShifts.LAUNCH_PAD_SIDE : MissileSpriteShifts.LAUNCH_PAD_BOTTOM;
+        return isUp ? SpriteShifts.LAUNCH_PAD_TOP : isSide ? SpriteShifts.LAUNCH_PAD_SIDE : SpriteShifts.LAUNCH_PAD_BOTTOM;
     }
 }

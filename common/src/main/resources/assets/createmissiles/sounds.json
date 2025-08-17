@@ -1,0 +1,35 @@
+{
+  "ding": {
+    "subtitle": "subtitles.createmissiles.ding",
+    "sounds": [
+      "createmissiles:ding_0"
+    ]
+  },
+  "build": {
+    "subtitle": "subtitles.createmissiles.build",
+    "sounds": [
+      "createmissiles:build_0",
+      "createmissiles:build_1",
+      "createmissiles:build_2"
+    ]
+  },
+  "build_special": {
+    "subtitle": "subtitles.createmissiles.build_special",
+    "sounds": [
+      "createmissiles:build_special_0"
+    ]
+  },
+  "button": {
+    "subtitle": "subtitles.createmissiles.button",
+    "sounds": [
+      "createmissiles:button_0"
+    ]
+  },
+  "crunch": {
+    "subtitle": "subtitles.createmissiles.crunch",
+    "sounds": [
+      "createmissiles:crunch_0"
+    ]
+  }
+}
+

@@ -1,0 +1,41 @@
+{
+  "parent": "createmissiles:root",
+  "criteria": {
+    "0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "createmissiles:launch_pad"
+            ],
+            "count": {
+              "min": 9
+            }
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.createmissiles.launch_pad.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "createmissiles:launch_pad"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.createmissiles.launch_pad.title"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

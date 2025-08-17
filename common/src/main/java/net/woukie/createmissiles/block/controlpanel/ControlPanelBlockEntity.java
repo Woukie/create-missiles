@@ -1,0 +1,513 @@
+package net.woukie.createmissiles.block.controlpanel;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.woukie.createmissiles.MultiblockHelper;
+import net.woukie.createmissiles.block.entity.AbstractBasicBlockEntity;
+import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
+import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
+import net.woukie.createmissiles.block.navigationpanel.NavigationPanelBlockEntity;
+import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
+import net.woukie.createmissiles.entity.MissileEntity;
+import net.woukie.createmissiles.inventory.ControlPanelMenu;
+import net.woukie.createmissiles.missilemanager.Trajectories;
+import net.woukie.createmissiles.missilemanager.Trajectory;
+import net.woukie.createmissiles.missilemanager.parts.ChassisType;
+import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
+import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
+import net.woukie.createmissiles.missilemanager.parts.WarheadType;
+import net.woukie.createmissiles.recipe.MissileIngredient;
+import net.woukie.createmissiles.recipe.MissilePartRecipe;
+import net.woukie.createmissiles.registry.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+// Inventory divided up into 32-slot areas representing thruster, chassis and warhead
+public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
+    public static final double speedRequired = 64;
+
+    private boolean initialized;
+    private UUID entityId = null;
+
+    private final ContainerData dataAccess;
+
+    private boolean launching = false;
+
+//    Cached variables, all updated on tick or serverTick
+    private AssemblyPanelBlockEntity assemblyPanel;
+    private BlockPos cornerLaunchPadPos;
+    private int warheadBuildPercent;
+    private int chassisBuildPercent;
+    private int thrusterBuildPercent;
+
+    public ControlPanelBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
+        super(blockEntityType, blockPos, blockState);
+        this.items = NonNullList.withSize(96, ItemStack.EMPTY);
+        this.dataAccess = new ContainerData() {
+            @Override
+            public int get(int i) {
+                return switch (i) {
+                    case 0 -> getBlockPos().getX();
+                    case 1 -> getBlockPos().getY();
+                    case 2 -> getBlockPos().getZ();
+                    case 3 -> cornerLaunchPadPos == null ? 0 : 1;
+                    case 4 -> assemblyPanel == null ? 0 : 1;
+                    case 5 -> MultiblockHelper.findEdgeBlock(
+                            ControlPanelBlockEntity.this,
+                            getLevel(),
+                            BlockEntities.NAVIGATION_PANEL.get()
+                    ) == null ? 0 : 1;
+                    case 6 -> (int)getSpeed();
+                    default -> 0;
+                };
+            }
+
+            @Override
+            public void set(int i, int j) {}
+
+            @Override
+            public int getCount() {
+                return 7;
+            }
+        };
+    }
+
+    public float getSpeed() {
+        Direction launchPadDirection = getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
+        BlockPos launchPad = getBlockPos().relative(launchPadDirection, 1);
+
+        Level level = getLevel();
+        if (level != null) {
+            BlockEntity blockEntity = level.getBlockEntity(launchPad);
+            if (blockEntity instanceof LaunchPadBlockEntity launchPadBlockEntity) {
+                return launchPadBlockEntity.getSpeed();
+            }
+        }
+
+        return 0;
+    }
+
+    public void giveItem(@NotNull ItemStack itemStack) {
+        MissilePartRecipe recipe = findAcceptingRecipe(itemStack);
+        if (recipe == null) return;
+        var partType = PartTypes.get(recipe.getAssembly());
+        addItemToPartOfInventory(itemStack, partType.getStartSlot(), partType.getEndSlot());
+    }
+
+    private void addItemToPartOfInventory(ItemStack itemStack, int fromIndex, int toIndex) {
+        for (int i = fromIndex; i < toIndex; i++) {
+            ItemStack stack = getItem(i);
+            if (ItemStack.isSameItemSameTags(stack, itemStack)) {
+                itemStack.setCount(0);
+                stack.grow(1);
+                return;
+            }
+        }
+
+        for (int i = fromIndex; i < toIndex; i++) {
+            ItemStack stack = getItem(i);
+            if (stack.isEmpty()) {
+                setItem(i, itemStack.copyAndClear());
+                return;
+            }
+        }
+    }
+
+    public MissilePartRecipe findAcceptingRecipe(ItemStack itemStack) {
+        if (level == null || itemStack.getCount() != 1) return null;
+
+        if (assemblyPanel == null) return null;
+
+        MissilePartType warheadType = PartTypes.get(assemblyPanel.getItem(0));
+        MissilePartType chassisType = PartTypes.get(assemblyPanel.getItem(1));
+        MissilePartType thrusterType = PartTypes.get(assemblyPanel.getItem(2));
+
+        var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MISSILE_PART.get());
+        for (var recipe : missilePartRecipes) {
+            var assembly = recipe.getAssembly();
+            if (((warheadType != null && assembly.equals(warheadType.getResourceLocation())) ||
+                    (chassisType != null && assembly.equals(chassisType.getResourceLocation())) ||
+                    (thrusterType != null && assembly.equals(thrusterType.getResourceLocation())))
+                    && recipe.itemComplements(itemStack, this))
+                return recipe;
+        }
+
+        return null;
+    }
+
+    public void tick() {
+        Direction facing = getBlockState().getValue(AssemblyPanelBlock.FACING).getOpposite();
+        cornerLaunchPadPos = MultiblockHelper.findCorner(
+                getBlockPos(),
+                facing,
+                level
+        );
+
+        assemblyPanel = (AssemblyPanelBlockEntity) MultiblockHelper.findEdgeBlock(
+                cornerLaunchPadPos,
+                facing,
+                getLevel(),
+                BlockEntities.ASSEMBLY_PANEL.get()
+        );
+
+        int oldWarheadBuildPercent = warheadBuildPercent;
+        int oldChassisBuildPercent = chassisBuildPercent;
+        int oldThrusterBuildPercent = thrusterBuildPercent;
+        int oldBuildTotal = oldWarheadBuildPercent + oldChassisBuildPercent + oldThrusterBuildPercent;
+
+        warheadBuildPercent = 0;
+        chassisBuildPercent = 0;
+        thrusterBuildPercent = 0;
+
+        if (assemblyPanel == null) return;
+
+        var warheadType = PartTypes.get(assemblyPanel.getItem(0));
+        var chassisType = PartTypes.get(assemblyPanel.getItem(1));
+        var thrusterType = PartTypes.get(assemblyPanel.getItem(2));
+
+        warheadBuildPercent = MissilePartRecipe.getBuildPercentage(warheadType, level, items);
+        chassisBuildPercent = MissilePartRecipe.getBuildPercentage(chassisType, level, items);
+        thrusterBuildPercent = MissilePartRecipe.getBuildPercentage(thrusterType, level, items);
+
+        if (level != null) {
+            var soundOrigin = cornerLaunchPadPos.relative(facing).relative(facing.getClockWise());
+            int newBuildTotal = warheadBuildPercent + chassisBuildPercent + thrusterBuildPercent;
+            if (oldBuildTotal < newBuildTotal) {
+                if (!level.isClientSide) {
+                    var p = soundOrigin.getCenter();
+                    ((ServerLevel)level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.IRON_BLOCK.defaultBlockState()), p.x, p.y + 0.5, p.z, 10, 0.5, 0, 0.5, 45);
+                    ((ServerLevel)level).sendParticles(ParticleTypes.LARGE_SMOKE, p.x, p.y + 0.5, p.z, 1, 0, 0, 0, 0);
+
+                    boolean partComplete = (oldWarheadBuildPercent != 100 && warheadBuildPercent == 100) ||
+                            (oldChassisBuildPercent != 100 && chassisBuildPercent == 100) ||
+                            (oldThrusterBuildPercent != 100 && thrusterBuildPercent == 100);
+                    float pitch = newBuildTotal / 1200f + 0.75f;
+                    pitch += (float) (Math.random() / 5f) - 0.1f;
+
+                    if (newBuildTotal == 300) {
+                        level.playSound(null, soundOrigin, SoundEvents.DING.get(), SoundSource.BLOCKS);
+                    } else if (partComplete) {
+                        level.playSound(null, soundOrigin, SoundEvents.BUILD_SPECIAL.get(), SoundSource.BLOCKS, 1f, pitch);
+                    } else {
+                        level.playSound(null, soundOrigin, SoundEvents.BUILD.get(), SoundSource.BLOCKS, 1f, pitch);
+                    }
+
+                    Map<String, Vector3f> thrusterAttachments = thrusterType == null ? new HashMap<>() : thrusterType.getModel().getAttachements(thrusterType.getModel().getStage(thrusterBuildPercent));
+                    Map<String, Vector3f> chassisAttachments = chassisType == null ? new HashMap<>() : chassisType.getModel().getAttachements(chassisType.getModel().getStage(chassisBuildPercent));
+                    Map<String, Vector3f> warheadAttachments = warheadType == null ? new HashMap<>() : warheadType.getModel().getAttachements(warheadType.getModel().getStage(warheadBuildPercent));
+
+                    Vector3f rocketTip = new Vector3f()
+                            .add(thrusterAttachments.getOrDefault("bottom", new Vector3f()))
+                            .add(thrusterAttachments.getOrDefault("top", new Vector3f()))
+                            .add(chassisAttachments.getOrDefault("bottom", new Vector3f()))
+                            .add(chassisAttachments.getOrDefault("top", new Vector3f()))
+                            .add(warheadAttachments.getOrDefault("bottom", new Vector3f()))
+                            .add(warheadAttachments.getOrDefault("top", new Vector3f()))
+                            .div(16);
+
+                    var r = Math.random();
+                    for (int i = 0; i < r * 2 + 1; i++) {
+                        var x = p.x + rocketTip.x * Math.random();
+                        var y = p.y + 0.5 + rocketTip.y * Math.random();
+                        var z = p.z + rocketTip.z * Math.random();
+                        ((ServerLevel)level).sendParticles(net.woukie.createmissiles.registry.ParticleTypes.BUILD_SHRAPNEL.get(), x, y, z, 10, 0, 0, 0, 0);
+                        ((ServerLevel)level).sendParticles(ParticleTypes.SMOKE, x, y, z, 1, 0, 0, 0, 0);
+                    }
+                }
+            }
+        }
+    }
+
+    public void serverTick() {
+        if (!initialized && hasLevel()) {
+            initialized = true;
+            ControlPanelInstanceTracker.add(this);
+        }
+
+        ServerLevel level = (ServerLevel) getLevel();
+        if (level == null) return;
+
+        if (launching) launch();
+
+        BlockPos entityPosition = getBlockPos();
+        if (cornerLaunchPadPos != null) {
+            var forward = getBlockState().getValue(AssemblyPanelBlock.FACING).getOpposite();
+            entityPosition = new BlockPos(cornerLaunchPadPos).relative(forward).relative(forward.getClockWise());
+        }
+
+        Entity entity = level.getEntity(this.entityId);
+        if (this.entityId == null) {
+            entity = new MissileEntity(EntityTypes.MISSILE.get(), level);
+            entity.setPos(entityPosition.getX() + 0.5, entityPosition.getY() + 0.5, entityPosition.getZ() + 0.5);
+            level.addFreshEntity(entity);
+            this.entityId = entity.getUUID();
+            setChanged();
+        }
+
+        if (entity != null && entity.getType().equals(EntityTypes.MISSILE.get())) {
+            MissileEntity missileEntity = (MissileEntity) entity;
+
+            if (cornerLaunchPadPos == null) {
+                ejectNotNeededItems(null, 0, 96);
+                missileEntity.setWarheadBuildPercent(0);
+                missileEntity.setChassisBuildPercent(0);
+                missileEntity.setThrusterBuildPercent(0);
+            }
+
+            if (assemblyPanel != null) {
+                ItemStack warheadItem = assemblyPanel.getItem(0);
+                ItemStack chassisItem = assemblyPanel.getItem(1);
+                ItemStack thrusterItem = assemblyPanel.getItem(2);
+
+                MissilePartType warheadType = PartTypes.get(warheadItem);
+                MissilePartType chassisType = PartTypes.get(chassisItem);
+                MissilePartType thrusterType = PartTypes.get(thrusterItem);
+
+                missileEntity.setWarheadBuildPercent(warheadBuildPercent);
+                missileEntity.setWarheadType(warheadType == null ? null : warheadType.getResourceLocation());
+
+                missileEntity.setChassisBuildPercent(chassisBuildPercent);
+                missileEntity.setChassisType(chassisType == null ? null : chassisType.getResourceLocation());
+
+                missileEntity.setThrusterBuildPercent(thrusterBuildPercent);
+                missileEntity.setThrusterType(thrusterType == null ? null : thrusterType.getResourceLocation());
+
+                ejectNotNeededItems(warheadType, 0, 32);
+                ejectNotNeededItems(chassisType, 32, 64);
+                ejectNotNeededItems(thrusterType, 64, 96);
+            } else {
+                ejectNotNeededItems(null, 0, 96);
+                missileEntity.setWarheadBuildPercent(0);
+                missileEntity.setChassisBuildPercent(0);
+                missileEntity.setThrusterBuildPercent(0);
+            }
+
+            missileEntity.setPos(entityPosition.getCenter());
+        }
+    }
+
+    private void ejectNotNeededItems(@Nullable MissilePartType partType, int backupStartSlot, int backupEndSlot) {
+        if (level == null) return;
+        var recipe = MissilePartRecipe.fromResourceLocation(level, partType == null ? null : partType.getResourceLocation());
+
+        Map<MissileIngredient, Integer> ingredientStatus = recipe.map(a -> a.getMissileIngredients().stream().collect(Collectors.toMap(b -> b, MissileIngredient::count))).orElseGet(Map::of);
+
+        int start = partType != null ? partType.getStartSlot() : backupStartSlot;
+        int end = partType != null ? partType.getEndSlot() : backupEndSlot;
+
+        for (int i = start; i < end; i++) {
+            ItemStack item = getItem(i);
+            if (item.isEmpty()) continue;
+
+            Optional<MissileIngredient> matchingIngredient = ingredientStatus.keySet().stream().filter(a -> a.test(item)).findFirst();
+            if (matchingIngredient.isPresent()) {
+                int itemCount = item.getCount();
+                int requiredCount = ingredientStatus.get(matchingIngredient.get());
+
+                if (itemCount < requiredCount) {
+                    ingredientStatus.put(matchingIngredient.get(), requiredCount - itemCount);
+                } else {
+                    if (itemCount != requiredCount) {
+                        ItemStack ejected = item.split(requiredCount - itemCount);
+                        DefaultDispenseItemBehavior.spawnItem(level, ejected, 1, Direction.UP, getBlockPos().getCenter());
+                    }
+
+                    ingredientStatus.remove(matchingIngredient.get());
+                }
+            } else {
+
+                DefaultDispenseItemBehavior.spawnItem(level, item.copyAndClear(), 1, Direction.UP, getBlockPos().getCenter());
+            }
+        }
+    }
+
+    public void launch() {
+//        Initially called on network thread, need to get multiblock structure which requires server thread
+        if(getLevel() == null ||
+                getLevel().getServer() == null ||
+                Thread.currentThread() != getLevel().getServer().getRunningThread()
+        ) {
+            this.launching = true;
+            return;
+        }
+
+        this.launching = false;
+
+        if (cornerLaunchPadPos == null) return;
+        if (assemblyPanel == null) return;
+
+        NavigationPanelBlockEntity navigationPanel = (NavigationPanelBlockEntity) MultiblockHelper.findEdgeBlock(
+                ControlPanelBlockEntity.this,
+                getLevel(),
+                BlockEntities.NAVIGATION_PANEL.get()
+        );
+        if (navigationPanel == null) return;
+
+        if (Math.abs(getSpeed()) < speedRequired) return;
+
+        MissilePartRecipe warheadRecipe = null;
+        MissilePartRecipe chassisRecipe = null;
+        MissilePartRecipe thrusterRecipe = null;
+
+        WarheadType warheadType = (WarheadType) PartTypes.get(assemblyPanel.getItem(0));
+        ChassisType chassisType = (ChassisType) PartTypes.get(assemblyPanel.getItem(1));
+        ThrusterType thrusterType = (ThrusterType) PartTypes.get(assemblyPanel.getItem(2));
+
+        if (warheadType == null || chassisType == null || thrusterType == null) return;
+
+        var missilePartRecipes = getLevel().getRecipeManager().getAllRecipesFor(RecipeTypes.MISSILE_PART.get());
+        for (var recipe : missilePartRecipes) {
+            if (!(warheadRecipe == null || chassisRecipe == null || thrusterRecipe == null)) break;
+            var assembly = recipe.getAssembly();
+            if (assembly.equals(warheadType.getResourceLocation())) {
+                warheadRecipe = recipe;
+                continue;
+            }
+
+            if (assembly.equals(chassisType.getResourceLocation())) {
+                chassisRecipe = recipe;
+                continue;
+            }
+
+            if (assembly.equals(thrusterType.getResourceLocation())) {
+                thrusterRecipe = recipe;
+            }
+        }
+
+        if (warheadRecipe == null || chassisRecipe == null || thrusterRecipe == null) return;
+        if (!warheadRecipe.matches(this, getLevel())) return;
+        if (!chassisRecipe.matches(this, getLevel())) return;
+        if (!thrusterRecipe.matches(this, getLevel())) return;
+
+        Direction launchPadDirection = this.getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
+
+        BlockPos targetBlock = navigationPanel.getTarget();
+        if (targetBlock == null) return;
+        Vector3f target = targetBlock.getCenter().toVector3f();
+        BlockPos sourceBlockPos = cornerLaunchPadPos.relative(launchPadDirection, 1).relative(launchPadDirection.getClockWise());
+        Vector3f source = sourceBlockPos.getCenter().toVector3f();
+
+        getLevel().playSound(null, sourceBlockPos, SoundEvents.BUTTON.get(), SoundSource.BLOCKS);
+
+        //noinspection RedundantCast
+        Trajectory trajectory = thrusterType.createTrajectory(
+                level, new Vector3d(source),
+                new Vector3d(target),
+                warheadType, chassisType, thrusterType,
+                (Container)this
+        );
+
+        Trajectories trajectories = Trajectories.get();
+        trajectories.launch(trajectory);
+        warheadType.onLaunch(trajectory, (ServerLevel) level);
+        chassisType.onLaunch(trajectory, (ServerLevel) level);
+        thrusterType.onLaunch(trajectory, (ServerLevel) level);
+        trajectories.setDirty();
+
+        clearContent();
+    }
+
+    @Override
+    public int getMaxStackSize() {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        ControlPanelInstanceTracker.remove(this);
+        if (getLevel() != null && !getLevel().isClientSide) {
+            ServerLevel level = (ServerLevel) getLevel();
+            Entity entity = level.getEntity(this.entityId);
+            if (entity != null && entity.getType().equals(EntityTypes.MISSILE.get())) {
+                entity.remove(Entity.RemovalReason.KILLED);
+            }
+        }
+    }
+
+    @Override
+    public void load(@NotNull CompoundTag compoundTag) {
+        super.load(compoundTag);
+        this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(compoundTag, this.items);
+        if (compoundTag.contains("EntityID")) {
+            this.entityId = compoundTag.getUUID("EntityID");
+        }
+    }
+
+    @Override
+    protected void saveAdditional(@NotNull CompoundTag compoundTag) {
+        super.saveAdditional(compoundTag);
+        ContainerHelper.saveAllItems(compoundTag, this.items);
+        if (this.entityId != null) {
+            compoundTag.putUUID("EntityID", this.entityId);
+        }
+    }
+
+    @Override
+    public void saveToItem(@NotNull ItemStack itemStack) {
+        var data = this.saveWithoutMetadata();
+        data.remove("EntityID");
+        data.remove("Items");
+        BlockItem.setBlockEntityData(itemStack, this.getType(), data);
+    }
+
+    @Override
+    protected @NotNull Component getDefaultName() {
+        return Component.translatable("container.createmissiles.control_panel");
+    }
+
+    @Override
+    protected @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory) {
+        Direction facing = getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
+
+        BlockEntity navigationPanel = MultiblockHelper.findEdgeBlock(cornerLaunchPadPos, facing, getLevel(), BlockEntities.NAVIGATION_PANEL.get());
+
+        return new ControlPanelMenu(
+                id,
+                playerInventory,
+                this,
+                dataAccess,
+                assemblyPanel == null ? new SimpleContainer(3) : assemblyPanel,
+                navigationPanel == null ? new SimpleContainer(1) : (Container) navigationPanel
+        );
+    }
+
+    @Override
+    public boolean canPlaceItemThroughFace(int i, @NotNull ItemStack itemStack, @Nullable Direction direction) {
+        return false;
+    }
+
+    @Override
+    public boolean canTakeItemThroughFace(int i, @NotNull ItemStack itemStack, @NotNull Direction direction) {
+        return false;
+    }
+}

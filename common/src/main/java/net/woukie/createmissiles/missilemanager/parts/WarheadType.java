@@ -1,22 +1,30 @@
 package net.woukie.createmissiles.missilemanager.parts;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
-public class WarheadType extends MissilePartType {
-    public final float weight;
-    public final Detonatable detonatable;
-
-    public WarheadType(Component displayName, ResourceLocation resourceLocation, @Nullable WriteData writeData, List<Ingredient> ingredients, float weight, @Nullable Detonatable detonatable) {
-        super(displayName, resourceLocation, writeData, ingredients);
-        this.weight = weight;
-        this.detonatable = detonatable;
+public abstract class WarheadType extends MissilePartType {
+    @Override
+    public int getStartSlot() {
+        return 0;
     }
 
-    public interface Detonatable {
-        void detonate(Trajectory trajectory);
+    @Override
+    public int getEndSlot() {
+        return 32;
+    }
+
+    @Override
+    public void onTick(Trajectory trajectory, MinecraftServer server) {
+        var p = trajectory.getPosition();
+        BlockPos blockPos = new BlockPos((int)p.x, (int)p.y, (int)p.z);
+
+        ServerLevel level = server.getLevel(trajectory.getLevelKey());
+        if (level != null && (trajectory.getTick() > 15 && !level.getBlockState(blockPos).isAir())) {
+            onDetonate(trajectory, server);
+            trajectory.setSpent(true);
+        }
     }
 }

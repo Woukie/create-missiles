@@ -1,37 +1,33 @@
-# Create Missiles
+<div align="center"><img src="./icons/icon_256.gif" alt="Logo" width="256"></div>
 
-Minecraft missle mod for Forge and Fabric, depends on Create.
+<h1>Create Missiles</h1>
 
-## Features
+<p>This is a Minecraft mod about missles for Forge and Fabric, depends on Create.</p>
 
-List is subject to change.
+<h1>Features</h1>
 
-- Launch pad
-- Rocket fuel
-- Tiered 'chassisType' that carry greater payloads and larger fuel capacity
-- Tiered 'engines' that travel further
-- Various 'warheads' including novelty, explosive and nuclear
-- Survey drone that takes a coordinate and produces a filled map of the area
-- Drone slingshot
-- Control panel
-  - Place adjacant to a launch pad to use
-  - Feed it explored maps
-  - Displays all maps in a map viewer
-  - Select a target position from the map
-  - Can trigger rocket launch in menu
-- Davinci style that stays authentic to Create
-- Potential mod integration
-  - Config to disable mod integration for a specific mod
-  - New warheads for nuclear create mods
-  - Any TNT/explosives mod
+<p>Subject to change.</p>
 
-## Implementation and Distribution
+<ul>
+    <li>Launch long-range missiles</li>
+    <li>Mix and match unique warheads, chassis and thrusters</li>
+    <li>Each assembly has a unique model that depends on its build stage</li>
+    <li>The navigation panel lets you click on a map to set the target and view a simulated trajectory that gets as close as possible to the target</li>
+    <li>Set the burn time to change the height of the trajectory</li>
+    <li>Fire survey drones to create a map of an area</li>
+    <li>Integration with some other mods</li>
+</ul>
 
-Implementation details, subject to change
+<h1>Implementation and Distribution</h1>
 
-- Built on Architectury, for Fabric and Forge
-- Development starts with 1.20.1, working down after initial release
-- Distributed on GitHub and CurseForge
-- Uses the hybrid versioning style defined [here](https://forge.gemwire.uk/wiki/Semantic_Versioning)
-- A new branch is created for each minecraft version
-- If you see another site distributing the mod, it's not me. Lmk if you want me to consider distributing elsewhere
+<p>Implementation details, subject to change</p>
+
+<ul>
+    <li>Built on Architectury, for Fabric and Forge</li>
+    <li>Development starts with 1.20.1</li>
+    <li>Distributed on GitHub, CurseForge and Modrinth</li>
+    <li>Licenced under `GNU GENERAL PUBLIC LICENSE V3`</li>
+    <li>Uses the hybrid versioning style defined [here](https://forge.gemwire.uk/wiki/Semantic_Versioning)</li>
+    <li>A new branch is created for each version of Minecraft</li>
+    <li>If you see another site distributing the mod, it's not me. Lmk if you want me to consider distributing elsewhere</li>
+</ul>

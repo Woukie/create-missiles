@@ -1,0 +1,34 @@
+{
+  "type": "create:mechanical_crafting",
+  "acceptMirrored": false,
+  "key": {
+    "S": {
+      "item": "create:iron_sheet"
+    },
+    "C": {
+      "item": "create:cogwheel"
+    },
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "T": {
+      "item": "minecraft:tinted_glass"
+    },
+    "R": {
+      "item": "minecraft:cartography_table"
+    }
+  },
+  "pattern": [
+    "RSR",
+    " R ",
+    " T ",
+    " I ",
+    " C ",
+    " I ",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "item": "createmissiles:navigation_panel"
+  }
+}

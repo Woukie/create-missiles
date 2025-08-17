@@ -2,7 +2,6 @@ package net.woukie.createmissiles.fabric;
 
 import io.github.fabricators_of_create.porting_lib.util.EnvExecutor;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.registry.MissileBlocks;
 import net.fabricmc.api.ModInitializer;
 
 public class CreateMissilesFabric implements ModInitializer {

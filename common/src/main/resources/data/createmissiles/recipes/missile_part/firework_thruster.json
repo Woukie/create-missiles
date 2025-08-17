@@ -1,0 +1,14 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "items": ["minecraft:gunpowder"],
+      "count": 4
+    },
+    {
+      "items": ["minecraft:stick"],
+      "count": 1
+    }
+  ],
+  "assembly": "createmissiles:firework_thruster"
+}

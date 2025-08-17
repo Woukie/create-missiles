@@ -1,19 +1,25 @@
 package net.woukie.createmissiles.fabric;
 
-import dev.architectury.registry.menu.MenuRegistry;
+import dev.architectury.registry.client.particle.ParticleProviderRegistry;
 import net.fabricmc.api.ClientModInitializer;
-import net.woukie.createmissiles.block.controller.ControllerScreen;
-import net.woukie.createmissiles.block.navigator.NavigatorScreen;
-import net.woukie.createmissiles.block.schematicator.SchematicatorScreen;
-import net.woukie.createmissiles.registry.MissileMenus;
-import net.woukie.createmissiles.registry.MissilesEntityRenderers;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.client.AssemblyRenderer;
+import net.woukie.createmissiles.particle.BuildShrapnel;
+import net.woukie.createmissiles.registry.EntityRenderers;
+import net.woukie.createmissiles.registry.Items;
+import net.woukie.createmissiles.registry.ParticleTypes;
 
 public class CreateMissilesClientFabric implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        MenuRegistry.registerScreenFactory(MissileMenus.CONTROLLER.get(), ControllerScreen::new);
-        MenuRegistry.registerScreenFactory(MissileMenus.SCHEMATICATOR.get(), SchematicatorScreen::new);
-        MenuRegistry.registerScreenFactory(MissileMenus.NAVIGATOR.get(), NavigatorScreen::new);
-        MissilesEntityRenderers.initClient();
+        CreateMissiles.initClient();
+        EntityRenderers.init();
+
+        BuiltinItemRendererRegistry.INSTANCE.register(Items.WARHEAD_ASSEMBLY.get(), new AssemblyRenderer());
+        BuiltinItemRendererRegistry.INSTANCE.register(Items.CHASSIS_ASSEMBLY.get(), new AssemblyRenderer());
+        BuiltinItemRendererRegistry.INSTANCE.register(Items.THRUSTER_ASSEMBLY.get(), new AssemblyRenderer());
+
+        ParticleProviderRegistry.register(ParticleTypes.BUILD_SHRAPNEL.get(), BuildShrapnel.Provider::new);
     }
 }
