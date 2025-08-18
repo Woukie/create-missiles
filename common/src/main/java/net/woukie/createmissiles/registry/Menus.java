@@ -8,6 +8,7 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.inventory.ControlPanelMenu;
+import net.woukie.createmissiles.inventory.DroneMenu;
 import net.woukie.createmissiles.inventory.NavigationPanelMenu;
 import net.woukie.createmissiles.inventory.AssemblyPanelMenu;
 
@@ -30,6 +31,11 @@ public class Menus {
     public static final RegistrySupplier<MenuType<NavigationPanelMenu>> NAVIGATION_PANEL = MENUS.register(
             new ResourceLocation(MOD_ID, "navigation_panel"),
             () -> new MenuType<>(NavigationPanelMenu::new, FeatureFlags.VANILLA_SET)
+    );
+
+    public static final RegistrySupplier<MenuType<DroneMenu>> DRONE_PANEL = MENUS.register(
+            new ResourceLocation(MOD_ID, "drone_panel"),
+            () -> new MenuType<>(DroneMenu::new, FeatureFlags.VANILLA_SET)
     );
 
     public static void init() {

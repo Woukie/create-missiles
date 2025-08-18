@@ -11,6 +11,7 @@ import dev.architectury.registry.menu.MenuRegistry;
 import dev.architectury.registry.registries.RegistrarManager;
 import net.woukie.createmissiles.client.screens.AssemblyPanelScreen;
 import net.woukie.createmissiles.client.screens.ControlPanelScreen;
+import net.woukie.createmissiles.client.screens.DroneScreen;
 import net.woukie.createmissiles.client.screens.NavigationPanelScreen;
 import net.woukie.createmissiles.missilemanager.Trajectories;
 import net.woukie.createmissiles.registry.*;
@@ -55,6 +56,7 @@ public class CreateMissiles {
         MenuRegistry.registerScreenFactory(Menus.CONTROL_PANEL.get(), ControlPanelScreen::new);
         MenuRegistry.registerScreenFactory(Menus.NAVIGATION_PANEL.get(), NavigationPanelScreen::new);
         MenuRegistry.registerScreenFactory(Menus.ASSEMBLY_PANEL.get(), AssemblyPanelScreen::new);
+        MenuRegistry.registerScreenFactory(Menus.DRONE_PANEL.get(), DroneScreen::new);
 
         CustomRenderedItems.register(Items.WARHEAD_ASSEMBLY.get());
         CustomRenderedItems.register(Items.CHASSIS_ASSEMBLY.get());
