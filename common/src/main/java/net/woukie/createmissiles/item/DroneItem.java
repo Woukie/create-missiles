@@ -53,6 +53,7 @@ public class DroneItem extends Item {
                 DroneEntity droneEntity = new DroneEntity(EntityTypes.DRONE.get(), level);
                 droneEntity.setPos(blockPos.getX() + 0.5f, blockPos.getY() + 1, blockPos.getZ() + 0.5f);
                 droneEntity.setYRot(player.getYRot());
+                droneEntity.dropMap();
                 level.addFreshEntity(droneEntity);
 
                 if (!player.getAbilities().instabuild) {
