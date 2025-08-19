@@ -1,7 +1,8 @@
 package net.woukie.createmissiles.missilemanager.parts.warheads;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -11,14 +12,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.DirectionalPlaceContext;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
@@ -27,7 +26,8 @@ import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
+import java.util.*;
+import java.util.function.Function;
 
 public class ShulkerBoxWarhead extends WarheadType {
     private final MissilePartModel model = new ShulkerBoxWarheadModel();
@@ -55,26 +55,19 @@ public class ShulkerBoxWarhead extends WarheadType {
     public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
-        var impactPos = hitPosition.add(0, 1, 0);
         CompoundTag data = trajectory.getWarheadData();
         if (data != null && !data.isEmpty()) {
             ListTag boxes = data.getList("ShulkerBoxes", 10);
 
             if (!boxes.isEmpty()) {
                 for (int i = 0; i < boxes.size(); ++i) {
-                    CompoundTag tag = boxes.getCompound(i);
-                    BlockState blockState = BuiltInRegistries.BLOCK.get(new ResourceLocation(tag.getString("id"))).defaultBlockState();
-
-                    var impactBlock = new BlockPos((int)impactPos.x, (int)impactPos.y, (int)impactPos.z);
-                    level.setBlock(impactBlock, blockState, 3);
-                    level.gameEvent(null, GameEvent.BLOCK_PLACE, impactBlock);
-
-                    if (tag.contains("tag") && tag.getCompound("tag").contains("BlockEntityTag")) {
-                        BlockEntity entity = ShulkerBoxBlockEntity.loadStatic(impactBlock, blockState, tag.getCompound("tag").getCompound("BlockEntityTag"));
-                        if (entity != null) {
-                            level.setBlockEntity(entity);
-                        }
+                    var itemStack = ItemStack.of(boxes.getCompound(i));
+                    var emptyBlock = locateShulkerPlacement(hitPosition.add(0, 1, 0), level);
+                    if (emptyBlock != null) {
+                        var success = ((BlockItem)(itemStack.getItem())).place(new DirectionalPlaceContext(level, emptyBlock, Direction.UP, itemStack, Direction.UP)).consumesAction();
+                        if (success) continue;
                     }
+                    DefaultDispenseItemBehavior.spawnItem(level, itemStack, 1, Direction.UP, hitPosition);
                 }
             }
         }
@@ -101,8 +94,37 @@ public class ShulkerBoxWarhead extends WarheadType {
         return Component.translatable("warheads.createmissiles.shulker_box_warhead");
     }
 
-    @Override
-    public void onTick(Trajectory trajectory, MinecraftServer server) {
+    public static BlockPos locateShulkerPlacement(Vec3 origin, ServerLevel level) {
+        return locateNearestMatchingBlock(origin, blockPos -> level.isEmptyBlock(blockPos) && !level.isEmptyBlock(blockPos.relative(Direction.DOWN)), 100);
+    }
 
+    public static BlockPos locateNearestMatchingBlock(Vec3 origin, Function<BlockPos, Boolean> condition, int limit) {
+        class Neighbor {
+            public final BlockPos position;
+            public final double distance;
+
+            public Neighbor(BlockPos position, double distance) {
+                this.position = position;
+                this.distance = distance;
+            }
+        }
+
+        var invalidNeighbors = new ArrayList<BlockPos>();
+        var neighbors = new PriorityQueue<Neighbor>(Comparator.comparingDouble(neighbour -> neighbour.distance));
+        neighbors.add(new Neighbor(new BlockPos((int) origin.x, (int) origin.y, (int) origin.z), 0));
+
+        int steps = 0;
+        while (!neighbors.isEmpty() && steps < limit) {
+            Neighbor neighbor = neighbors.poll();
+            if (condition.apply(neighbor.position)) return neighbor.position;
+            invalidNeighbors.add(neighbor.position);
+            for (Direction dir : Direction.values()) {
+                var newPos = neighbor.position.offset(dir.getStepX(), dir.getStepY(), dir.getStepZ());
+                if (!invalidNeighbors.contains(newPos))
+                    neighbors.add(new Neighbor(newPos, newPos.getCenter().distanceTo(origin)));
+            }
+            steps ++;
+        }
+        return null;
     }
 }
