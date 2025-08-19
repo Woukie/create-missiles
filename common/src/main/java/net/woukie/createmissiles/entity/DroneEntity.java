@@ -20,14 +20,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.inventory.DroneMenu;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaterniond;
 import org.joml.Vector3d;
 
 import java.util.Objects;
@@ -35,21 +38,84 @@ import java.util.Objects;
 public class DroneEntity extends Entity {
     protected Vector3d acceleration;
     protected Vector3d velocity;
-    double flySpeed = 10;
+    public Vector3d destination = new Vector3d(-900, 0, -900);
+    public Vector3d startPosition;
+    public Vector3d forward;
+    public enum DroneJourneyStage {TAXI, TAKEOFF, CRUISE, RETURN, LAND, COMPLETE}
+
+    private DroneJourneyStage journeyStage;
+    private ItemStack mapItemStack;
+    private double flySpeed = 7;
 
     public DroneEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
         acceleration = new Vector3d();
         velocity = new Vector3d();
+        journeyStage = DroneJourneyStage.TAXI;
     }
 
-    public void dropMap()
-    {
-        Position pos = this.position();
-        this.setPos(-5000, 200, -5000);
-        ItemStack mapItemStack = createAndFillMap((ServerLevel) this.level(), (int)this.getX(), (int)this.getZ(), 0);
-        this.setPos(pos.x(), pos.y(), pos.z());
-        DefaultDispenseItemBehavior.spawnItem(this.level(), mapItemStack, 1, Direction.UP, pos);
+    @Override
+    public void tick() {
+        double tickLength = 0.05d;
+        double elapsedTime = this.tickCount * tickLength;
+
+        switch (journeyStage) {
+            case TAXI -> handleTaxi();
+            case TAKEOFF -> handleTakeoff();
+            case CRUISE -> handleCruise();
+            case RETURN -> handleReturn();
+            case LAND -> handleLanding();
+            case COMPLETE -> handleComplete();
+        }
+
+        velocity.add(acceleration.mul(tickLength));
+        this.setPos(this.position().x + velocity.x * tickLength, this.position().y + velocity.y * tickLength, this.position().z + velocity.z * tickLength);
+
+        super.tick();
+    }
+
+    private void handleTaxi() {
+        this.startPosition = new Vector3d(position().x, position().y, position().z);
+        journeyStage = DroneJourneyStage.TAKEOFF;
+    }
+
+    private void handleTakeoff() {
+        if(position().y >= 80) journeyStage = DroneJourneyStage.CRUISE;
+        acceleration = velocity.x > 3 ? new Vector3d(1f, 1f, 0) : new Vector3d(2f, 0f, 0);
+    }
+
+    private void handleCruise() {
+        acceleration = new Vector3d(0, 0, 0);
+        Vector3d moveDir = new Vector3d(velocity.x, velocity.y, velocity.z).normalize();
+        Vector3d targetDir = new Vector3d(destination.x - this.position().x, 0, destination.z - this.position().z).normalize();
+
+        velocity = moveDir.lerp(targetDir, 0.05f).mul(flySpeed);
+
+        if(position().distanceTo(new Vec3(destination.x, position().y, destination.z)) < 5) {
+            journeyStage = DroneJourneyStage.RETURN;
+            mapItemStack = createAndFillMap(this.level(), (int)this.getX(), (int)this.getZ(), 0);
+        };
+    }
+
+    private void handleReturn() {
+        Vector3d moveDir = new Vector3d(velocity.x, velocity.y, velocity.z).normalize();
+        Vector3d targetDir = new Vector3d(startPosition.x - this.position().x, 0, startPosition.z - this.position().z).normalize();
+
+        velocity = moveDir.lerp(targetDir, 0.05f).mul(flySpeed);
+        if(position().distanceTo(new Vec3(startPosition.x, position().y, startPosition.z)) < 5) journeyStage = DroneJourneyStage.LAND;
+    }
+
+    private void handleLanding() {
+        velocity = new Vector3d(0, -0.5f, 0);
+        if(position().y - startPosition.y < 1) journeyStage = DroneJourneyStage.COMPLETE;
+    }
+
+    private void handleComplete() {
+        if(mapItemStack != null)
+        {
+            DefaultDispenseItemBehavior.spawnItem(this.level(), mapItemStack, 1, Direction.UP, this.position());
+        }
+        this.discard();
     }
 
     private static final EntityDataAccessor<Rotations> ROTATION =
@@ -80,29 +146,17 @@ public class DroneEntity extends Entity {
         return true;
     }
 
-    public Rotations getRotation() {
-        return entityData.get(ROTATION);
+    public static Vec3 getForwardVector(float yawDegrees, float pitchDegrees) {
+        float yawRad = (float) Math.toRadians(-yawDegrees);
+        float pitchRad = (float) Math.toRadians(-pitchDegrees);
+
+        float x = Mth.sin(yawRad) * Mth.cos(pitchRad);
+        float y = Mth.sin(pitchRad);
+        float z = Mth.cos(yawRad) * Mth.cos(pitchRad);
+
+        return new Vec3(x, y, z).normalize();
     }
 
-    public void setRotation(Rotations rotation) {
-        entityData.set(ROTATION, rotation);
-    }
-
-    @Override
-    public void tick() {
-        double tickLength = 0.05d;
-        double elapsedTime = this.tickCount * tickLength;
-
-        velocity.add(acceleration.mul(tickLength));
-        this.setPos(this.position().x + velocity.x * tickLength, this.position().y + velocity.y * tickLength, this.position().z + velocity.z * tickLength);
-
-        if(elapsedTime > 2)
-        {
-            this.discard();
-        }
-
-        super.tick();
-    }
 
     @Override
     public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
@@ -112,7 +166,7 @@ public class DroneEntity extends Entity {
         return InteractionResult.sidedSuccess(this.level().isClientSide);
     }
 
-    public static ItemStack createAndFillMap(ServerLevel level, int centerX, int centerZ, int scale) {
+    public static ItemStack createAndFillMap(Level level, int centerX, int centerZ, int scale) {
         ItemStack map = MapItem.create(level, centerX, centerZ, (byte) scale, true, true);
         MapItemSavedData mapData = MapItem.getSavedData(map, level);
 
