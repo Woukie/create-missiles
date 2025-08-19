@@ -1,10 +1,12 @@
 package net.woukie.createmissiles.missilemanager.parts.warheads;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
@@ -32,14 +34,13 @@ public class FlamingWarhead extends WarheadType {
     public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
-        Vector3d impactPos = trajectory.getPosition();
-        level.explode(null, impactPos.x, impactPos.y, impactPos.z, 10, true, Level.ExplosionInteraction.BLOCK);
+        level.explode(null, hitPosition.x, hitPosition.y, hitPosition.z, 10, true, Level.ExplosionInteraction.BLOCK);
 
         var random = new Random();
         for (int i = 0; i < 30; i++) {
             FireballEntity fireball = new FireballEntity(EntityTypes.FIREBALL.get(), level);
             fireball.setNoGravity(false);
-            fireball.setPos(hitPosition);
+            fireball.setPos(hitPosition.add(0, 0.6, 0));
             var velocity = fireballVelocity;
             if (i >= 20) velocity = fireballSlowVelocity;
             fireball.setDeltaMovement(
@@ -50,7 +51,7 @@ public class FlamingWarhead extends WarheadType {
             level.addFreshEntity(fireball);
         }
 
-        level.addParticle(ParticleTypes.LAVA, impactPos.x, impactPos.y, impactPos.z, random.nextGaussian() * 0.05, 0.005, random.nextGaussian() * 0.05);
+        level.addParticle(ParticleTypes.LAVA, hitPosition.x, hitPosition.y, hitPosition.z, random.nextGaussian() * 0.05, 0.005, random.nextGaussian() * 0.05);
     }
 
     @Override
