@@ -1,8 +1,6 @@
 package net.woukie.createmissiles.missilemanager.parts;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
@@ -34,7 +32,7 @@ public abstract class WarheadType extends MissilePartType {
     }
 
     /**
-     * Interpolates from 'current position - velocity' to 'current possition' and returns any blocks along that path
+     * Interpolates from 'current position - velocity' to 'current position' and returns the position of the first block that isn't empty
      * @return BlockPos if a block is intercepted
      */
     protected Vec3 hitPosition(Trajectory trajectory, MinecraftServer server) {
