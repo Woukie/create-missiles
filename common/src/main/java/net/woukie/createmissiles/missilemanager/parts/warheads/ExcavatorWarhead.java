@@ -1,17 +1,11 @@
 package net.woukie.createmissiles.missilemanager.parts.warheads;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
@@ -19,50 +13,17 @@ import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.client.models.warheads.ExcavatorWarheadModel;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
-import net.woukie.createmissiles.missilemanager.parts.warheads.messages.ExplodeFireworkMessage;
-import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
-import org.joml.Vector3f;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class ExcavatorWarhead extends WarheadType {
     private final MissilePartModel model = new ExcavatorWarheadModel();
+    private final double stepSize = 1.5d;
+    private final int initialCharges = 10;
 
     @Override
     public float getWeight() {
         return 10;
-    }
-
-    @Override
-    public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
-        var level = server.getLevel(trajectory.getLevelKey());
-        if (level == null) return;
-        Vector3d impactPos = trajectory.getPosition();
-
-        level.explode(null, impactPos.x, impactPos.y, impactPos.z, 2, Level.ExplosionInteraction.BLOCK);
-
-        CompoundTag explosions = trajectory.getWarheadData();
-
-        if (explosions == null || explosions.isEmpty()) {
-            var random = Random.from(new Random());
-            level.addParticle(ParticleTypes.POOF, impactPos.x, impactPos.y, impactPos.z, random.nextGaussian() * 0.05, 0.005, random.nextGaussian() * 0.05);
-        } else {
-            List<ServerPlayer> players = new ArrayList<>();
-            level.players().forEach(serverPlayer -> {
-                BlockPos blockPos = serverPlayer.blockPosition();
-                if (blockPos.closerToCenterThan(new Vec3(impactPos.x, impactPos.y, impactPos.z), 512.0)) {
-                    players.add(serverPlayer);
-                }
-            });
-
-            Vector3f vel = new Vector3f(0, 0, 0); // TODO: Replace with rocket velocity
-            Vector3f impactPosFloat = new Vector3f((float) impactPos.x, (float) impactPos.y, (float) impactPos.z);
-            Packets.EXPLODE_FIREWORK.sendToPlayers(players, new ExplodeFireworkMessage(impactPosFloat, vel, explosions));
-        }
     }
 
     @Override
@@ -72,14 +33,8 @@ public class ExcavatorWarhead extends WarheadType {
 
     @Override
     public CompoundTag saveTo(Container container, CompoundTag data) {
-        ListTag explosions = new ListTag();
-
-        for (int i = 0; i < container.getContainerSize(); i++) {
-            ItemStack itemStack = container.getItem(i);
-            if (itemStack.is(Items.FIREWORK_STAR) && itemStack.getTag() != null)
-                explosions.add(itemStack.getTagElement("Explosion"));
-        }
-        data.put("Explosions", explosions);
+        data.putInt("Charges", initialCharges);
+        data.putDouble("DetonationGap", 0);
         return data;
     }
 
@@ -96,12 +51,42 @@ public class ExcavatorWarhead extends WarheadType {
     @Override
     public void onTick(Trajectory trajectory, MinecraftServer server) {
         ServerLevel level = server.getLevel(trajectory.getLevelKey());
-//        if (level != null && trajectory.getTick() > 100) {
-//            onDetonate(trajectory, server);
-//            trajectory.setSpent(true);
-//            return;
-//        }
+        if (level == null || trajectory.getTick() <= 40) return;
 
-        super.onTick(trajectory, server);
+        Vector3d end = trajectory.getPosition();
+        if (trajectory.getWarheadData().getInt("Charges") != initialCharges) {
+            Vector3d start = trajectory.getLastPosition();
+            detonateLine(new Vec3(start.x, start.y, start.z), new Vec3(end.x, end.y, end.z), level, trajectory);
+        } else {
+            Vec3 hitPosition = hitPosition(trajectory, server);
+            if (hitPosition != null) {
+                detonateLine(hitPosition, new Vec3(end.x, end.y, end.z), level, trajectory);
+            }
+        }
+
+        if (trajectory.getWarheadData().getInt("Charges") <= 0) {
+            trajectory.setSpent(true);
+        }
+    }
+
+    private void detonateLine(Vec3 start, Vec3 end, ServerLevel level, Trajectory trajectory) {
+        int charges = trajectory.getWarheadData().getInt("Charges");
+        double detonationGap = trajectory.getWarheadData().getDouble("DetonationGap");
+        Vec3 totalDistance = end.subtract(start);
+        Vec3 stepOffset = totalDistance.normalize().scale(stepSize);
+
+        Vec3 currentDistance = stepOffset.normalize().scale(detonationGap);
+        while (currentDistance.length() < totalDistance.length() && charges > 0) {
+            Vec3 globalPosition = currentDistance.add(start);
+            level.explode(null, globalPosition.x, globalPosition.y, globalPosition.z, 5, Level.ExplosionInteraction.BLOCK);
+            charges--;
+            trajectory.getWarheadData().putInt("Charges", charges);
+
+            currentDistance = currentDistance.add(stepOffset);
+        }
+
+//        Offset the next to keep a constant step size across line detonations
+        detonationGap = totalDistance.subtract(currentDistance).length();
+        trajectory.getWarheadData().putDouble("DetonationGap", detonationGap);
     }
 }
