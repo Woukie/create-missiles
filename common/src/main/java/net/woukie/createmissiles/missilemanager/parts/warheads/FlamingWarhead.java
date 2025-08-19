@@ -33,7 +33,7 @@ public class FlamingWarhead extends WarheadType {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
         Vector3d impactPos = trajectory.getPosition();
-        level.explode(null, impactPos.x, impactPos.y, impactPos.z, 10, Level.ExplosionInteraction.BLOCK);
+        level.explode(null, impactPos.x, impactPos.y, impactPos.z, 10, true, Level.ExplosionInteraction.BLOCK);
 
         var random = new Random();
         for (int i = 0; i < 30; i++) {
