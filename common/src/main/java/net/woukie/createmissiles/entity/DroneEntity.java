@@ -15,6 +15,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
@@ -41,11 +43,12 @@ public class DroneEntity extends Entity {
     public Vector3d destination = new Vector3d(-900, 0, -900);
     public Vector3d startPosition;
     public Vector3d forward;
-    public enum DroneJourneyStage {TAXI, TAKEOFF, CRUISE, RETURN, LAND, COMPLETE}
-
+    public enum DroneJourneyStage {TAXI, TAKEOFF, CRUISE, RETURN, APPROACH, LAND, COMPLETE}
     private DroneJourneyStage journeyStage;
     private ItemStack mapItemStack;
-    private double flySpeed = 7;
+    private final double flySpeed = 7;
+    private final double turnSpeed = 0.05f;
+    private Vector3d approachPosition;
 
     public DroneEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -64,6 +67,7 @@ public class DroneEntity extends Entity {
             case TAKEOFF -> handleTakeoff();
             case CRUISE -> handleCruise();
             case RETURN -> handleReturn();
+            case APPROACH -> handleApproach();
             case LAND -> handleLanding();
             case COMPLETE -> handleComplete();
         }
@@ -76,6 +80,7 @@ public class DroneEntity extends Entity {
 
     private void handleTaxi() {
         this.startPosition = new Vector3d(position().x, position().y, position().z);
+        this.approachPosition = new Vector3d(startPosition.x + 25, startPosition.y, startPosition.z);
         journeyStage = DroneJourneyStage.TAKEOFF;
     }
 
@@ -89,7 +94,7 @@ public class DroneEntity extends Entity {
         Vector3d moveDir = new Vector3d(velocity.x, velocity.y, velocity.z).normalize();
         Vector3d targetDir = new Vector3d(destination.x - this.position().x, 0, destination.z - this.position().z).normalize();
 
-        velocity = moveDir.lerp(targetDir, 0.05f).mul(flySpeed);
+        velocity = moveDir.lerp(targetDir, turnSpeed).mul(flySpeed);
 
         if(position().distanceTo(new Vec3(destination.x, position().y, destination.z)) < 5) {
             journeyStage = DroneJourneyStage.RETURN;
@@ -99,18 +104,29 @@ public class DroneEntity extends Entity {
 
     private void handleReturn() {
         Vector3d moveDir = new Vector3d(velocity.x, velocity.y, velocity.z).normalize();
-        Vector3d targetDir = new Vector3d(startPosition.x - this.position().x, 0, startPosition.z - this.position().z).normalize();
+        Vector3d targetDir = new Vector3d(approachPosition.x - this.position().x, 0, approachPosition.z - this.position().z).normalize();
 
-        velocity = moveDir.lerp(targetDir, 0.05f).mul(flySpeed);
-        if(position().distanceTo(new Vec3(startPosition.x, position().y, startPosition.z)) < 5) journeyStage = DroneJourneyStage.LAND;
+        velocity = moveDir.lerp(targetDir, turnSpeed).mul(flySpeed);
+        if(position().distanceTo(new Vec3(approachPosition.x, position().y, approachPosition.z)) < 5) journeyStage = DroneJourneyStage.APPROACH;
+    }
+
+    private void handleApproach(){
+        Vector3d moveDir = new Vector3d(velocity.x, velocity.y, velocity.z).normalize();
+        Vector3d targetDir = new Vector3d(startPosition.x - approachPosition.x, 0, startPosition.z - approachPosition.z).normalize();
+        velocity = moveDir.lerp(targetDir, turnSpeed).mul(flySpeed / 2);
+        double dot = moveDir.dot(targetDir);
+        double angle = Math.acos(dot / (moveDir.length() * targetDir.length()));
+        System.out.println(angle);
+        if(angle < Math.toRadians(5)) journeyStage = DroneJourneyStage.LAND;
     }
 
     private void handleLanding() {
-        velocity = new Vector3d(0, -0.5f, 0);
+        velocity = new Vector3d(-flySpeed / 2, -1.5f, 0);
         if(position().y - startPosition.y < 1) journeyStage = DroneJourneyStage.COMPLETE;
     }
 
     private void handleComplete() {
+        velocity = new Vector3d(0);
         if(mapItemStack != null)
         {
             DefaultDispenseItemBehavior.spawnItem(this.level(), mapItemStack, 1, Direction.UP, this.position());
