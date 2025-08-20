@@ -3,6 +3,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedHashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Multisets;
+import com.ibm.icu.impl.ValidIdentifiers;
 import net.minecraft.core.*;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
@@ -15,6 +16,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.FlyingMob;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
@@ -37,96 +41,97 @@ import org.joml.Vector3d;
 
 import java.util.Objects;
 
-public class DroneEntity extends Entity {
-    protected Vector3d acceleration;
-    protected Vector3d velocity;
-    public Vector3d destination = new Vector3d(-900, 0, -900);
-    public Vector3d startPosition;
-    public Vector3d forward;
-    public enum DroneJourneyStage {TAXI, TAKEOFF, CRUISE, RETURN, APPROACH, LAND, COMPLETE}
+public class DroneEntity extends FlyingMob{
+    private Vec3 moveTargetPoint;
+
+    public enum DroneJourneyStage {TAXI, TRAVEL, RETURN, COMPLETE}
+
     private DroneJourneyStage journeyStage;
     private ItemStack mapItemStack;
-    private final double flySpeed = 7;
-    private final double turnSpeed = 0.05f;
-    private Vector3d approachPosition;
 
-    public DroneEntity(EntityType<?> entityType, Level level) {
+    public DroneEntity(EntityType<? extends DroneEntity> entityType, Level level) {
         super(entityType, level);
-        acceleration = new Vector3d();
-        velocity = new Vector3d();
         journeyStage = DroneJourneyStage.TAXI;
+        this.moveTargetPoint = Vec3.ZERO;
+        this.moveControl = new DroneEntity.DroneMoveControl(this);
+    }
+
+    private  class DroneMoveControl extends MoveControl {
+        public DroneMoveControl(Mob mob) {
+            super(mob);
+        }
+
+        private float speed = 1F;
+
+        public void tick() {
+            if (DroneEntity.this.horizontalCollision) {
+                DroneEntity.this.setYRot(DroneEntity.this.getYRot() + 180.0F);
+                this.speed = 0.1F;
+            }
+
+            double d = DroneEntity.this.moveTargetPoint.x - DroneEntity.this.getX();
+            double e = DroneEntity.this.moveTargetPoint.y - DroneEntity.this.getY();
+            double f = DroneEntity.this.moveTargetPoint.z - DroneEntity.this.getZ();
+            double g = Math.sqrt(d * d + f * f);
+            if (Math.abs(g) > 9.999999747378752E-6) {
+                double h = 1.0 - Math.abs(e * 0.699999988079071) / g;
+                d *= h;
+                f *= h;
+                g = Math.sqrt(d * d + f * f);
+                double i = Math.sqrt(d * d + f * f + e * e);
+                float j = DroneEntity.this.getYRot();
+                float k = (float) Mth.atan2(f, d);
+                float l = Mth.wrapDegrees(DroneEntity.this.getYRot() + 90.0F);
+                float m = Mth.wrapDegrees(k * 57.295776F);
+                DroneEntity.this.setYRot(Mth.approachDegrees(l, m, 4.0F) - 90.0F);
+                DroneEntity.this.yBodyRot = DroneEntity.this.getYRot();
+                if (Mth.degreesDifferenceAbs(j, DroneEntity.this.getYRot()) < 3.0F) {
+                    this.speed = Mth.approach(this.speed, 1.8F, 0.005F * (1.8F / this.speed));
+                } else {
+                    this.speed = Mth.approach(this.speed, 0.2F, 0.025F);
+                }
+
+                float n = (float) (-(Mth.atan2(-e, g) * 57.2957763671875));
+                DroneEntity.this.setXRot(n);
+                float o = DroneEntity.this.getYRot() + 90.0F;
+                double p = (double) (this.speed * Mth.cos(o * 0.017453292F)) * Math.abs(d / i);
+                double q = (double) (this.speed * Mth.sin(o * 0.017453292F)) * Math.abs(f / i);
+                double r = (double) (this.speed * Mth.sin(n * 0.017453292F)) * Math.abs(e / i);
+                Vec3 vec3 = DroneEntity.this.getDeltaMovement();
+                DroneEntity.this.setDeltaMovement(vec3.add((new Vec3(p, r, q)).subtract(vec3).scale(0.2)));
+            }
+
+        }
     }
 
     @Override
     public void tick() {
-        double tickLength = 0.05d;
-        double elapsedTime = this.tickCount * tickLength;
 
         switch (journeyStage) {
             case TAXI -> handleTaxi();
-            case TAKEOFF -> handleTakeoff();
-            case CRUISE -> handleCruise();
+            case TRAVEL -> handleTravel();
             case RETURN -> handleReturn();
-            case APPROACH -> handleApproach();
-            case LAND -> handleLanding();
             case COMPLETE -> handleComplete();
         }
 
-        velocity.add(acceleration.mul(tickLength));
-        this.setPos(this.position().x + velocity.x * tickLength, this.position().y + velocity.y * tickLength, this.position().z + velocity.z * tickLength);
-
+        //mapItemStack = createAndFillMap(this.level(), (int)this.getX(), (int)this.getZ(), 0);
         super.tick();
     }
 
     private void handleTaxi() {
-        this.startPosition = new Vector3d(position().x, position().y, position().z);
-        this.approachPosition = new Vector3d(startPosition.x + 25, startPosition.y, startPosition.z);
-        journeyStage = DroneJourneyStage.TAKEOFF;
+        journeyStage = DroneJourneyStage.TRAVEL;
     }
 
-    private void handleTakeoff() {
-        if(position().y >= 80) journeyStage = DroneJourneyStage.CRUISE;
-        acceleration = velocity.x > 3 ? new Vector3d(1f, 1f, 0) : new Vector3d(2f, 0f, 0);
-    }
-
-    private void handleCruise() {
-        acceleration = new Vector3d(0, 0, 0);
-        Vector3d moveDir = new Vector3d(velocity.x, velocity.y, velocity.z).normalize();
-        Vector3d targetDir = new Vector3d(destination.x - this.position().x, 0, destination.z - this.position().z).normalize();
-
-        velocity = moveDir.lerp(targetDir, turnSpeed).mul(flySpeed);
-
-        if(position().distanceTo(new Vec3(destination.x, position().y, destination.z)) < 5) {
-            journeyStage = DroneJourneyStage.RETURN;
-            mapItemStack = createAndFillMap(this.level(), (int)this.getX(), (int)this.getZ(), 0);
-        };
+    private void handleTravel() {
+        travel(new Vec3(-900, 150, -900));
     }
 
     private void handleReturn() {
-        Vector3d moveDir = new Vector3d(velocity.x, velocity.y, velocity.z).normalize();
-        Vector3d targetDir = new Vector3d(approachPosition.x - this.position().x, 0, approachPosition.z - this.position().z).normalize();
-
-        velocity = moveDir.lerp(targetDir, turnSpeed).mul(flySpeed);
-        if(position().distanceTo(new Vec3(approachPosition.x, position().y, approachPosition.z)) < 5) journeyStage = DroneJourneyStage.APPROACH;
-    }
-
-    private void handleApproach(){
-        Vector3d moveDir = new Vector3d(velocity.x, velocity.y, velocity.z).normalize();
-        Vector3d targetDir = new Vector3d(startPosition.x - approachPosition.x, 0, startPosition.z - approachPosition.z).normalize();
-        velocity = moveDir.lerp(targetDir, turnSpeed).mul(flySpeed / 2);
-        double dot = moveDir.dot(targetDir);
-        double angle = Math.acos(dot / (moveDir.length() * targetDir.length()));
-        System.out.println(angle);
-        if(angle < Math.toRadians(5)) journeyStage = DroneJourneyStage.LAND;
-    }
-
-    private void handleLanding() {
-        velocity = new Vector3d(-flySpeed / 2, -1.5f, 0);
-        if(position().y - startPosition.y < 1) journeyStage = DroneJourneyStage.COMPLETE;
     }
 
     private void handleComplete() {
-        velocity = new Vector3d(0);
+
+
         if(mapItemStack != null)
         {
             DefaultDispenseItemBehavior.spawnItem(this.level(), mapItemStack, 1, Direction.UP, this.position());
@@ -140,16 +145,7 @@ public class DroneEntity extends Entity {
     @Override
     protected void defineSynchedData() {
         this.entityData.define(ROTATION, new Rotations(0, 0, 0));
-    }
-
-    @Override
-    protected void readAdditionalSaveData(CompoundTag compoundTag) {
-
-    }
-
-    @Override
-    protected void addAdditionalSaveData(CompoundTag compoundTag) {
-
+        super.defineSynchedData();
     }
 
     @Override
@@ -162,24 +158,12 @@ public class DroneEntity extends Entity {
         return true;
     }
 
-    public static Vec3 getForwardVector(float yawDegrees, float pitchDegrees) {
-        float yawRad = (float) Math.toRadians(-yawDegrees);
-        float pitchRad = (float) Math.toRadians(-pitchDegrees);
-
-        float x = Mth.sin(yawRad) * Mth.cos(pitchRad);
-        float y = Mth.sin(pitchRad);
-        float z = Mth.cos(yawRad) * Mth.cos(pitchRad);
-
-        return new Vec3(x, y, z).normalize();
-    }
-
-
     @Override
-    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
+    protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand interactionHand) {
         if (!this.level().isClientSide) {
             player.openMenu(new SimpleMenuProvider((ix, inventory, playerx) -> new DroneMenu(ix, inventory), Component.literal("")));
         }
-        return InteractionResult.sidedSuccess(this.level().isClientSide);
+        return super.mobInteract(player, interactionHand);
     }
 
     public static ItemStack createAndFillMap(Level level, int centerX, int centerZ, int scale) {

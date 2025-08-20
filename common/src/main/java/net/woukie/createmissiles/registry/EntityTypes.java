@@ -2,9 +2,11 @@ package net.woukie.createmissiles.registry;
 
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.entity.DroneEntity;
@@ -27,5 +29,6 @@ public class EntityTypes {
     public static void init() {
         CreateMissiles.LOGGER.info("Registering entity types for " + CreateMissiles.NAME);
         ENTITY_TYPES.register();
+        FabricDefaultAttributeRegistry.register(DRONE.get(), DroneEntity.createMobAttributes());
     }
 }
