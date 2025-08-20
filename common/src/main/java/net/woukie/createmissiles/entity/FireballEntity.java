@@ -10,9 +10,9 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.woukie.createmissiles.registry.Blocks;
 
 public class FireballEntity extends AbstractHurtingProjectile implements ItemSupplier {
     private boolean spent;
@@ -83,7 +83,11 @@ public class FireballEntity extends AbstractHurtingProjectile implements ItemSup
                     BlockPos testBlockPos = selectedBlock.relative(Direction.UP, y);
                     if (level().isEmptyBlock(testBlockPos)) {
                         if (previouslySolid) {
-                            level().setBlock(testBlockPos, Blocks.FIRE.defaultBlockState(), 3);
+                            if (Math.random() > 0.5) {
+                                level().setBlock(testBlockPos, Blocks.FLAMING_FIRE.get().defaultBlockState(), 3);
+                            } else {
+                                level().setBlock(testBlockPos, net.minecraft.world.level.block.Blocks.FIRE.defaultBlockState(), 3);
+                            }
                             break;
                         }
                         continue;

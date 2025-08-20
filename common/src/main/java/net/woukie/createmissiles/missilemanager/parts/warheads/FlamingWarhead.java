@@ -1,6 +1,5 @@
 package net.woukie.createmissiles.missilemanager.parts.warheads;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +15,6 @@ import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.registry.EntityTypes;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3d;
 
 import java.util.Random;
 

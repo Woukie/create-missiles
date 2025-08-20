@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.block.FlamingFireBlock;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 import net.woukie.createmissiles.block.controlpanel.ControlPanelBlock;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
@@ -52,6 +53,12 @@ public class Blocks {
             .properties(p -> p.mapColor(MapColor.COLOR_BROWN))
             .properties(BlockBehaviour.Properties::noOcclusion)
             .simpleItem()
+            .register();
+
+    public static final BlockEntry<FlamingFireBlock> FLAMING_FIRE = REGISTRATE
+            .block("flaming_fire", FlamingFireBlock::new)
+            .initialProperties(() -> net.minecraft.world.level.block.Blocks.FIRE)
+            .addLayer(() -> RenderType::cutoutMipped)
             .register();
 
     @SuppressWarnings({"Experimental", "UnstableApiUsage"})
