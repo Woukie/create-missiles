@@ -63,6 +63,8 @@
   "advancements.createmissiles.navigation_panel.description": "Obtain a navigation panel",
   "advancements.createmissiles.control_panel.title":  "Control Panel",
   "advancements.createmissiles.control_panel.description": "Obtain a control panel",
+  "advancements.createmissiles.spyglass_at_missile.title":  "Is it pointed at us?",
+  "advancements.createmissiles.spyglass_at_missile.description": "Look at a Missile through a Spyglass",
   "advancements.createmissiles.firework_set.title":  "Fireworks",
   "advancements.createmissiles.firework_set.description": "Obtain a full set of firework assemblies",
   "advancements.createmissiles.flaming_set.title":  "Flaming",

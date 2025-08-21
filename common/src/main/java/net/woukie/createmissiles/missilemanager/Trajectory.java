@@ -137,6 +137,7 @@ public abstract class Trajectory {
         entity.setWarheadType(warheadType.getResourceLocation());
         entity.setChassisType(chassisType.getResourceLocation());
         entity.setThrusterType(thrusterType.getResourceLocation());
+        entity.setFlying(true);
     }
 
     public UUID getEntityId() {
