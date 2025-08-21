@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:chain"
+    },
+    {
+      "item": "createmissiles:dragon_egg_shell"
+    }
+  ],
+  "result": {
+    "item": "createmissiles:reinforced_dragon_egg_shell"
+  }
+}
