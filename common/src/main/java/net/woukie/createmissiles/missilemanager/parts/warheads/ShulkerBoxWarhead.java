@@ -29,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.Function;
 
+import static net.woukie.createmissiles.Util.locateNearestMatchingBlock;
+
 public class ShulkerBoxWarhead extends WarheadType {
     private final MissilePartModel model = new ShulkerBoxWarheadModel();
 
@@ -94,37 +96,7 @@ public class ShulkerBoxWarhead extends WarheadType {
         return Component.translatable("warheads.createmissiles.shulker_box_warhead");
     }
 
-    public static BlockPos locateShulkerPlacement(Vec3 origin, ServerLevel level) {
+    public BlockPos locateShulkerPlacement(Vec3 origin, ServerLevel level) {
         return locateNearestMatchingBlock(origin, blockPos -> level.isEmptyBlock(blockPos) && !level.isEmptyBlock(blockPos.relative(Direction.DOWN)), 100);
-    }
-
-    public static BlockPos locateNearestMatchingBlock(Vec3 origin, Function<BlockPos, Boolean> condition, int limit) {
-        class Neighbor {
-            public final BlockPos position;
-            public final double distance;
-
-            public Neighbor(BlockPos position, double distance) {
-                this.position = position;
-                this.distance = distance;
-            }
-        }
-
-        var invalidNeighbors = new ArrayList<BlockPos>();
-        var neighbors = new PriorityQueue<Neighbor>(Comparator.comparingDouble(neighbour -> neighbour.distance));
-        neighbors.add(new Neighbor(new BlockPos((int) origin.x, (int) origin.y, (int) origin.z), 0));
-
-        int steps = 0;
-        while (!neighbors.isEmpty() && steps < limit) {
-            Neighbor neighbor = neighbors.poll();
-            if (condition.apply(neighbor.position)) return neighbor.position;
-            invalidNeighbors.add(neighbor.position);
-            for (Direction dir : Direction.values()) {
-                var newPos = neighbor.position.offset(dir.getStepX(), dir.getStepY(), dir.getStepZ());
-                if (!invalidNeighbors.contains(newPos))
-                    neighbors.add(new Neighbor(newPos, newPos.getCenter().distanceTo(origin)));
-            }
-            steps ++;
-        }
-        return null;
     }
 }

@@ -5,12 +5,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.Container;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.client.models.warheads.DragonWarheadModel;
 import net.woukie.createmissiles.missilemanager.Trajectory;
+import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.AsyncExplosionHandler;
+import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.Explosion;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,8 +27,7 @@ public class DragonWarhead extends WarheadType {
     public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
-
-        level.explode(null, hitPosition.x, hitPosition.y, hitPosition.z, 10, Level.ExplosionInteraction.BLOCK);
+        AsyncExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 120f, 20));
     }
 
     @Override

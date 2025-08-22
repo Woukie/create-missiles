@@ -13,6 +13,7 @@ import net.woukie.createmissiles.client.screens.AssemblyPanelScreen;
 import net.woukie.createmissiles.client.screens.ControlPanelScreen;
 import net.woukie.createmissiles.client.screens.NavigationPanelScreen;
 import net.woukie.createmissiles.missilemanager.Trajectories;
+import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.AsyncExplosionHandler;
 import net.woukie.createmissiles.registry.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +29,18 @@ public class CreateMissiles {
     public static void init() {
         LOGGER.info("{} initializing! Create version: {}}", NAME, Create.VERSION);
 
-        LifecycleEvent.SERVER_STARTED.register(instance -> Trajectories.get().init(instance));
-        LifecycleEvent.SERVER_STOPPING.register(instance -> Trajectories.get().stop());
-        TickEvent.SERVER_PRE.register(instance -> Trajectories.get().serverTick(instance));
+        LifecycleEvent.SERVER_STARTED.register(server -> {
+            Trajectories.get().init(server);
+            AsyncExplosionHandler.get().init(server);
+        });
+        LifecycleEvent.SERVER_STOPPING.register(server -> {
+            Trajectories.get().stop();
+            AsyncExplosionHandler.get().stop();
+        });
+        TickEvent.SERVER_PRE.register(server -> {
+            Trajectories.get().serverTick(server);
+            AsyncExplosionHandler.get().serverTick(server);
+        });
 
         Blocks.init();
         BlockEntities.init();
