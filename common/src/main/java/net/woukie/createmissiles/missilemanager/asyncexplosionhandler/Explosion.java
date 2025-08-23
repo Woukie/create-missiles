@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Explosion {
-    public static final int EXPLOSION_CHUNK_SIZE = 15;
+    public static final int EXPLOSION_CHUNKS = 2;
 
     private final Vec3 originPosition;
     private final BlockPos originBlockPosition;
@@ -34,23 +34,19 @@ public class Explosion {
         this.originBlockPosition = BlockPos.containing(originPosition);
         this.power = power;
 
-        int maxRadius = (int)(this.power / 0.315); // TODO: set to real max distance of effected block
+        int maxRadius = (int)(this.power / 0.315);
+        int chunkSize = maxRadius * 2 / EXPLOSION_CHUNKS;
         BlockPos start = originBlockPosition.offset(-maxRadius, -maxRadius, -maxRadius);
         BlockPos end = originBlockPosition.offset(maxRadius, maxRadius, maxRadius);
-        for (int x = start.getX(); x <= end.getX(); x += EXPLOSION_CHUNK_SIZE) {
-            for (int y = start.getY(); y <= end.getY(); y += EXPLOSION_CHUNK_SIZE) {
-                for (int z = start.getZ(); z <= end.getZ(); z += EXPLOSION_CHUNK_SIZE) {
-                    BlockPos chunkStart = new BlockPos(x - EXPLOSION_CHUNK_SIZE / 2, y - EXPLOSION_CHUNK_SIZE / 2, z - EXPLOSION_CHUNK_SIZE / 2);
-                    BlockPos chunkEnd = new BlockPos(chunkStart.getX() + EXPLOSION_CHUNK_SIZE - 1, chunkStart.getY() + EXPLOSION_CHUNK_SIZE - 1, chunkStart.getZ() + EXPLOSION_CHUNK_SIZE - 1);
+        for (int x = start.getX(); x <= end.getX(); x += chunkSize) {
+            for (int y = start.getY(); y <= end.getY(); y += chunkSize) {
+                for (int z = start.getZ(); z <= end.getZ(); z += chunkSize) {
+                    BlockPos chunkStart = new BlockPos(x, y, z);
+                    BlockPos chunkEnd = new BlockPos(chunkStart.getX() + chunkSize - 1, chunkStart.getY() + chunkSize - 1, chunkStart.getZ() + chunkSize - 1);
                     ExplodingAreaWorker worker = new ExplodingAreaWorker(chunkStart, chunkEnd, originBlockPosition, level, power, hardnessMap);
                     Thread thread = new Thread(worker);
                     workers.add(worker);
                     threads.add(thread);
-
-                    double distance = new Vec3(x, y, z).distanceTo(originPosition);
-                    double proximity = 1 - (distance / maxRadius);
-                    int priority = (int) Math.clamp(proximity * (Thread.MAX_PRIORITY - Thread.MIN_PRIORITY) + Thread.MIN_PRIORITY, Thread.MIN_PRIORITY, Thread.MAX_PRIORITY);
-                    thread.setPriority(priority);
                     thread.start();
                 }
             }
