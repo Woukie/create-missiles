@@ -17,11 +17,17 @@ import java.util.concurrent.atomic.AtomicReference;
 import static net.woukie.createmissiles.Util.traverseSupercover;
 
 public class Explosion {
-    private final HashMap<BlockPos, BlockData> blockData = new HashMap<>();
-    private final PriorityQueue<BlockPos> blockQueue = new PriorityQueue<>((o1, o2) -> Double.compare(this.position.distanceTo(o1.getCenter()), this.position.distanceTo(o2.getCenter())));
+    private final Map<BlockPos, Float> hardnessCache = new HashMap<>();
+    private final Set<BlockPos> processedBlocks = new HashSet<>();
+    private final PriorityQueue<BlockPos> queuedBlocks = new PriorityQueue<>((o1, o2) ->
+            Double.compare(this.originPosition.distanceTo(o1.getCenter()), this.originPosition.distanceTo(o2.getCenter())));
 
-    private Vec3 position;
-    private double radius;
+    private static final Direction[] DIRECTIONS = Direction.values();
+    private static final double HARDNESS_MULTIPLIER = 0.3;
+    private static final double HARDNESS_OFFSET = 0.315;
+
+    private Vec3 originPosition;
+    private BlockPos originBlockPosition;
     private double radiusOfLastChange = 0;
     private double power;
     private ResourceKey<Level> levelKey;
@@ -30,80 +36,90 @@ public class Explosion {
     public Explosion() {
     }
 
-    public Explosion(Level level, Vec3 position, double radius, double power) {
+    public Explosion(Level level, Vec3 originPosition, double power) {
         this.levelKey = level.dimension();
-        this.position = position;
-        this.radius = radius;
+        this.originPosition = originPosition;
+        this.originBlockPosition = BlockPos.containing(originPosition);
         this.power = power;
     }
 
     public void serverTick(MinecraftServer server) {
-        var startTime = System.currentTimeMillis();
-        var level = server.getLevel(levelKey);
-        if (level == null) return;
-
-        if (blockQueue.isEmpty() && blockData.isEmpty()) {
-            var pos = new BlockPos((int) position.x, (int) position.y, (int) position.z);
-            blockData.put(pos, new BlockData(level.getBlockState(pos).getBlock().getExplosionResistance()));
-            blockQueue.add(pos);
+        final long startTime = System.currentTimeMillis();
+        final Level level = server.getLevel(levelKey);
+        if (level == null) {
+            this.complete = true;
+            return;
         }
 
-        while (System.currentTimeMillis() - startTime < 100) {
-            if (blockQueue.isEmpty()) {
-//                Radius exhausted
-                System.out.println("Radius exhausted");
-                this.complete = true;
-                return;
-            }
+        if (queuedBlocks.isEmpty() && processedBlocks.isEmpty()) {
+            hardnessCache.put(originBlockPosition, level.getBlockState(originBlockPosition).getBlock().getExplosionResistance());
+            queuedBlocks.offer(originBlockPosition);
+        }
 
-            BlockPos blockPos = this.blockQueue.poll();
-            var radius = blockPos.getCenter().distanceTo(this.position);
-            if (radius - radiusOfLastChange > 2) {
-//                No more blocks being broken
-                System.out.println("No more blocks being broken");
+        while (System.currentTimeMillis() - startTime < 20 && !queuedBlocks.isEmpty()) {
+            final BlockPos blockPos = queuedBlocks.poll();
+            final double distance = blockPos.getCenter().distanceTo(originPosition);
+
+            if (distance - radiusOfLastChange > 2) {
                 this.complete = true;
                 return;
             }
 
             if (damageBlock(blockPos, level)) {
-                radiusOfLastChange = radius;
+                radiusOfLastChange = distance;
             }
 
-            var directions = Arrays.asList(Direction.values());
-            Collections.shuffle(directions);
-            for (Direction dir : directions) {
-                var newPos = blockPos.offset(dir.getStepX(), dir.getStepY(), dir.getStepZ());
-                if (!blockQueue.contains(newPos) && !blockData.containsKey(newPos)) {
-                    if (newPos.getCenter().distanceTo(this.position) < this.radius) {
-                        this.blockQueue.add(newPos);
-                        blockData.put(newPos, new BlockData(level.getBlockState(newPos).getBlock().getExplosionResistance()));
-                    }
-                }
+            processedBlocks.add(blockPos);
+            for (final Direction dir : DIRECTIONS) {
+                final BlockPos newPos = blockPos.relative(dir);
+                if (queuedBlocks.contains(newPos) || processedBlocks.contains(newPos))
+                    continue;
+                queuedBlocks.offer(newPos);
+                hardnessCache.put(newPos, level.getBlockState(newPos).getBlock().getExplosionResistance());
             }
+        }
+
+        if (queuedBlocks.isEmpty()) {
+            this.complete = true;
         }
     }
 
     private boolean damageBlock(BlockPos blockPos, Level level) {
-        var from = new Vector3d(this.position.x, this.position.y, this.position.z);
-        var to = new Vector3d(blockPos.getX(), blockPos.getY(), blockPos.getZ()).add(0.5, 0.5, 0.5);
-        AtomicReference<Float> totalHardness = new AtomicReference<>(0f);
-        AtomicReference<Integer> passedCount = new AtomicReference<>(0);
+        final double distance = blockPos.getCenter().distanceTo(originPosition);
+        if (this.power - distance * HARDNESS_OFFSET <= 0) {
+            return false;
+        }
+
+        final Vector3d from = new Vector3d(originPosition.x, originPosition.y, originPosition.z);
+        final Vector3d to = new Vector3d(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5);
+
+        final AtomicReference<Float> totalHardness = new AtomicReference<>(0f);
+        final AtomicReference<Integer> passedCount = new AtomicReference<>(0);
+
         traverseSupercover(from, to, pos -> {
-            var traversedBlockPos = new BlockPos((int) pos.x, (int) pos.y, (int) pos.z);
-            float hardness = blockData.containsKey(traversedBlockPos) ?
-                    blockData.get(traversedBlockPos).hardness :
-                    level.getBlockState(traversedBlockPos).getBlock().getExplosionResistance();
-            totalHardness.getAndUpdate(a -> a + hardness);
-            passedCount.getAndUpdate(a -> ++a);
+            final BlockPos traversedPos = BlockPos.containing(pos.x, pos.y, pos.z);
+            final float hardness = hardnessCache.containsKey(traversedPos) ?
+                    hardnessCache.get(traversedPos) :
+                    level.getBlockState(traversedPos).getBlock().getExplosionResistance();
+
+            totalHardness.updateAndGet(current -> current + hardness);
+            passedCount.updateAndGet(a -> ++a);
             return false;
         });
 
-        double distance = blockPos.getCenter().distanceTo(this.position);
-        double averageHardness = totalHardness.get() / passedCount.get();
-        double powerLeft = this.power - ((0.3 * averageHardness + 0.315) * distance);
+        final int passedBlocks = passedCount.get();
 
-        var hardness = level.getBlockState(blockPos).getBlock().getExplosionResistance();
-        powerLeft -= 0.3 * hardness + 0.315;
+        // Avoid division by zero
+        if (passedBlocks == 0) {
+            return false;
+        }
+
+        final double averageHardness = totalHardness.get() / (double) passedBlocks;
+        double powerLeft = (0.8 + Math.random() * 0.2) * this.power - ((HARDNESS_MULTIPLIER * averageHardness + HARDNESS_OFFSET) * distance);
+
+        final float blockHardness = level.getBlockState(blockPos).getBlock().getExplosionResistance();
+        powerLeft -= HARDNESS_MULTIPLIER * blockHardness + HARDNESS_OFFSET;
+
         if (powerLeft > 0) {
             level.destroyBlock(blockPos, true);
             return true;
@@ -116,59 +132,70 @@ public class Explosion {
     }
 
     public CompoundTag save() {
-        var blockData = new CompoundTag();
-        blockData.putLongArray("Positions", this.blockData.keySet().stream().map(BlockPos::asLong).toList());
-        ListTag blockDataValues = new ListTag();
-        blockDataValues.addAll(this.blockData.values().stream().map(BlockData::save).toList());
-        blockData.put("Data", blockDataValues);
-
-        var data = new CompoundTag();
-        data.put("BlockData", blockData);
-        data.putLongArray("BlockQueue", this.blockQueue.stream().map(BlockPos::asLong).toList());
-        data.putString("Dimension", levelKey.location().getPath());
-        data.putDouble("PositionX", position.x);
-        data.putDouble("PositionY", position.y);
-        data.putDouble("PositionZ", position.z);
-        data.putDouble("Radius", radius);
-        data.putDouble("RadiusOfLastChange", radiusOfLastChange);
-        data.putDouble("Power", power);
-        return data;
+//        final CompoundTag blockDataTag = new CompoundTag();
+//        final long[] positions = blockData.keySet().stream().mapToLong(BlockPos::asLong).toArray();
+//        blockDataTag.putLongArray("Positions", positions);
+//
+//        final ListTag blockDataValues = new ListTag();
+//        blockData.values().forEach(data -> blockDataValues.add(data.save()));
+//        blockDataTag.put("Data", blockDataValues);
+//
+//        final CompoundTag data = new CompoundTag();
+//        data.put("BlockData", blockDataTag);
+//
+//        final long[] queueArray = queuedBlocks.stream().mapToLong(BlockPos::asLong).toArray();
+//        data.putLongArray("BlockQueue", queueArray);
+//
+//        data.putString("Dimension", levelKey.location().getPath());
+//        data.putDouble("PositionX", originPosition.x);
+//        data.putDouble("PositionY", originPosition.y);
+//        data.putDouble("PositionZ", originPosition.z);
+//        data.putDouble("Radius", radius);
+//        data.putDouble("RadiusOfLastChange", radiusOfLastChange);
+//        data.putDouble("Power", power);
+//
+//        return data;
+        return new CompoundTag();
     }
 
     public static Explosion loadFrom(CompoundTag data) {
-        var explosion = new Explosion();
-        String dimension = data.getString("Dimension");
-        explosion.levelKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimension));
-        explosion.position = new Vec3(data.getDouble("PositionX"), data.getDouble("PositionY"), data.getDouble("PositionZ"));
-        explosion.radius = data.getDouble("Radius");
-        explosion.blockQueue.clear();
-        explosion.blockQueue.addAll(Arrays.stream(data.getLongArray("BlockQueue")).mapToObj(BlockPos::of).toList());
-        explosion.radiusOfLastChange = data.getDouble("RadiusOfLastChange");
-
-        CompoundTag blockDataTag = data.getCompound("BlockData");
-        explosion.blockData.clear();
-        List<BlockPos> blockDataKeys = Arrays.stream(blockDataTag.getLongArray("Positions")).mapToObj(BlockPos::of).toList();
-        ListTag blockDataValues = blockDataTag.getList("Data", 10);
-        for (int i = 0; i < blockDataValues.size(); i++) {
-            explosion.blockData.put(blockDataKeys.get(i), BlockData.load(blockDataValues.get(i)));
-        }
-
-        return explosion;
-    }
-
-    public record BlockData(float hardness) {
-        public CompoundTag save() {
-            var data = new CompoundTag();
-            data.putFloat("Hardness", hardness);
-            return data;
-        }
-
-        public static BlockData load(Tag tag) {
-            if (tag.getType() == CompoundTag.TYPE) {
-                var data = (CompoundTag) tag;
-                return new BlockData(data.getFloat("Hardness"));
-            }
-            return new BlockData(0);
-        }
+//        final Explosion explosion = new Explosion();
+//
+//        final String dimension = data.getString("Dimension");
+//        explosion.levelKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimension));
+//
+//        explosion.originPosition = new Vec3(
+//                data.getDouble("PositionX"),
+//                data.getDouble("PositionY"),
+//                data.getDouble("PositionZ")
+//        );
+//
+//        explosion.radius = data.getDouble("Radius");
+//        explosion.radiusSquared = explosion.radius * explosion.radius;
+//        explosion.power = data.getDouble("Power");
+//        explosion.radiusOfLastChange = data.getDouble("RadiusOfLastChange");
+//
+//        // Load block queue
+//        final long[] queueData = data.getLongArray("BlockQueue");
+//        explosion.queuedBlocks.clear();
+//        for (final long pos : queueData) {
+//            explosion.queuedBlocks.offer(BlockPos.of(pos));
+//        }
+//
+//        // Load block data
+//        final CompoundTag blockDataTag = data.getCompound("BlockData");
+//        explosion.blockData.clear();
+//
+//        final long[] positions = blockDataTag.getLongArray("Positions");
+//        final ListTag blockDataValues = blockDataTag.getList("Data", Tag.TAG_COMPOUND);
+//
+//        for (int i = 0; i < positions.length && i < blockDataValues.size(); i++) {
+//            final BlockPos pos = BlockPos.of(positions[i]);
+//            final BlockData blockData = BlockData.load(blockDataValues.get(i));
+//            explosion.blockData.put(pos, blockData);
+//        }
+//
+//        return explosion;
+        return new Explosion();
     }
 }
