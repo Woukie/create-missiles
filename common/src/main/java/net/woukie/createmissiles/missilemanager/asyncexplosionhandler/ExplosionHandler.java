@@ -59,7 +59,6 @@ public class ExplosionHandler extends SavedData {
             explosion.serverTick(server);
             if (explosion.isComplete()) {
                 setDirty();
-                System.out.println("DONE");
                 return true;
             }
             return false;
