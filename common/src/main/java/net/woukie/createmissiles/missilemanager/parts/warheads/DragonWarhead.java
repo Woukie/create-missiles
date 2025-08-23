@@ -10,7 +10,7 @@ import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.client.models.warheads.DragonWarheadModel;
 import net.woukie.createmissiles.missilemanager.Trajectory;
-import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.AsyncExplosionHandler;
+import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplosionHandler;
 import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.Explosion;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +27,7 @@ public class DragonWarhead extends WarheadType {
     public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
-        AsyncExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 20));
+        ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 20));
     }
 
     @Override

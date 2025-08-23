@@ -9,18 +9,18 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AsyncExplosionHandler extends SavedData {
+public class ExplosionHandler extends SavedData {
     private List<Explosion> explosions = new ArrayList<>();
     private static MinecraftServer server;
-    private static AsyncExplosionHandler instance;
+    private static ExplosionHandler instance;
     private static boolean initialized = false;
     private static boolean destroyOnSave = false;
 
-    private AsyncExplosionHandler() {}
+    private ExplosionHandler() {}
 
-    public static AsyncExplosionHandler get() {
+    public static ExplosionHandler get() {
         if (instance == null)
-            instance = new AsyncExplosionHandler();
+            instance = new ExplosionHandler();
         return instance;
     }
 
@@ -59,6 +59,7 @@ public class AsyncExplosionHandler extends SavedData {
             explosion.serverTick(server);
             if (explosion.isComplete()) {
                 setDirty();
+                System.out.println("DONE");
                 return true;
             }
             return false;
@@ -70,13 +71,13 @@ public class AsyncExplosionHandler extends SavedData {
             return;
         initialized = true;
 
-        AsyncExplosionHandler.server = server;
+        ExplosionHandler.server = server;
         DimensionDataStorage storage = server.overworld().getDataStorage();
         storage.computeIfAbsent(this::load, () -> this, "explosions");
     }
 
-    public AsyncExplosionHandler load(CompoundTag nbt) {
-        this.explosions = new ArrayList<>(nbt.getList("Explosions", 10).stream().map(tag -> Explosion.loadFrom((CompoundTag) tag)).toList());
+    public ExplosionHandler load(CompoundTag nbt) {
+//        this.explosions = new ArrayList<>(nbt.getList("Explosions", 10).stream().map(tag -> Explosion.loadFrom((CompoundTag) tag)).toList());
         return this;
     }
 }

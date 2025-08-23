@@ -13,7 +13,7 @@ import net.woukie.createmissiles.client.screens.AssemblyPanelScreen;
 import net.woukie.createmissiles.client.screens.ControlPanelScreen;
 import net.woukie.createmissiles.client.screens.NavigationPanelScreen;
 import net.woukie.createmissiles.missilemanager.Trajectories;
-import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.AsyncExplosionHandler;
+import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplosionHandler;
 import net.woukie.createmissiles.registry.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,15 +31,15 @@ public class CreateMissiles {
 
         LifecycleEvent.SERVER_STARTED.register(server -> {
             Trajectories.get().init(server);
-            AsyncExplosionHandler.get().init(server);
+            ExplosionHandler.get().init(server);
         });
         LifecycleEvent.SERVER_STOPPING.register(server -> {
             Trajectories.get().stop();
-            AsyncExplosionHandler.get().stop();
+            ExplosionHandler.get().stop();
         });
         TickEvent.SERVER_PRE.register(server -> {
             Trajectories.get().serverTick(server);
-            AsyncExplosionHandler.get().serverTick(server);
+            ExplosionHandler.get().serverTick(server);
         });
 
         Blocks.init();
