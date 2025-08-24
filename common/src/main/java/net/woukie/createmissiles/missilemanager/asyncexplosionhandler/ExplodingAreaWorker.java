@@ -1,14 +1,9 @@
 package net.woukie.createmissiles.missilemanager.asyncexplosionhandler;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3d;
 
-import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
@@ -22,6 +17,7 @@ public class ExplodingAreaWorker implements Runnable {
     private final Level level;
     private final Double power;
     private final ConcurrentHashMap<BlockPos, Float> hardnessMap;
+    private final double maxDistance;
     private boolean calculatedBlocks = false;
 
     public static final double HARDNESS_MULTIPLIER = 0.3;
@@ -34,47 +30,70 @@ public class ExplodingAreaWorker implements Runnable {
         this.level = level;
         this.power = power;
         this.hardnessMap = hardnessMap;
+        this.maxDistance = (this.power - 0.3 - HARDNESS_OFFSET) / HARDNESS_OFFSET;
         brokenBlocks = new PriorityBlockingQueue<>();
     }
 
     public void run() {
-        List<BlockPos> positions = new ArrayList<>();
-        for (int x = start.getX(); x <= end.getX(); x++)
-            for (int y = start.getY(); y <= end.getY(); y++)
-                for (int z = start.getZ(); z <= end.getZ(); z++)
-                    positions.add(new BlockPos(x, y, z));
-        positions = positions.stream().sorted((o1, o2) -> Double.compare(origin.distance(o1.getX(), o1.getY(), o1.getZ()), origin.distance(o2.getX(), o2.getY(), o2.getZ()))).toList();
+        boolean includeLowerX = origin.x - start.getX() - 0.5 >= (int) maxDistance;
+        boolean includeUpperX = end.getX() + 0.5 - origin.x >= (int) maxDistance - 1;
+        boolean includeLowerY = origin.y - start.getY() - 0.5 >= (int) maxDistance;
+        boolean includeUpperY = end.getY() + 0.5 - origin.y >= (int) maxDistance - 1;
+        boolean includeLowerZ = origin.z - start.getZ() - 0.5 >= (int) maxDistance;
+        boolean includeUpperZ = end.getZ() + 0.5 - origin.z >= (int) maxDistance - 1;
 
-        for (BlockPos blockPos : positions) {
-            Vector3d realBlockPos = new Vector3d(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5);
-            if (level.isEmptyBlock(blockPos)) continue;
-            final double distance = realBlockPos.distance(origin);
-            if (distance > (this.power -0.3 -HARDNESS_OFFSET) / HARDNESS_OFFSET) continue;
-            final float blockHardness = level.getBlockState(blockPos).getBlock().getExplosionResistance();
-            hardnessMap.put(blockPos, blockHardness);
-            final AtomicReference<Float> totalHardness = new AtomicReference<>(0f);
-            final AtomicReference<Integer> passedCount = new AtomicReference<>(0);
-            final AtomicReference<Boolean> broken = new AtomicReference<>(false);
-            traverseSupercover(origin, realBlockPos, pos -> {
-                final BlockPos traversedPos = BlockPos.containing(pos.x, pos.y, pos.z);
-                final float hardness = hardnessMap.containsKey(traversedPos) ?
-                        hardnessMap.get(traversedPos) :
-                        level.getBlockState(traversedPos).getBlock().getExplosionResistance();
-                totalHardness.updateAndGet(current -> current + hardness);
-                passedCount.updateAndGet(a -> ++a);
-
-                final int passedBlocks = Math.max(passedCount.get(), 1);
-                final double averageHardness = totalHardness.get() / (double) passedBlocks;
-                double powerLeft = (0.8 + Math.random() * 0.2) * this.power - ((HARDNESS_MULTIPLIER * averageHardness + HARDNESS_OFFSET + 0.3) * distance);
-                powerLeft -= HARDNESS_MULTIPLIER * blockHardness + HARDNESS_OFFSET + 0.3;
-                broken.set(powerLeft > 0);
-                return powerLeft <= 0;
-            });
-
-            if (broken.get())
-                brokenBlocks.offer(blockPos);
+        if (includeLowerX || includeUpperX) {
+            for (int z = start.getZ(); z < end.getZ(); z++) {
+                for (int y = start.getY(); y < end.getY(); y++) {
+                    if (includeLowerX) traverseBlock(new BlockPos(start.getX(), y, z));
+                    if (includeUpperX) traverseBlock(new BlockPos(end.getX(), y, z));
+                }
+            }
         }
+
+        if (includeLowerY || includeUpperY) {
+            for (int x = start.getX(); x < end.getX(); x++) {
+                for (int z = start.getZ(); z < end.getZ(); z++) {
+                    if (includeLowerY) traverseBlock(new BlockPos(x, start.getY(), z));
+                    if (includeUpperY) traverseBlock(new BlockPos(x, end.getY(), z));
+                }
+            }
+        }
+
+        if (includeLowerZ || includeUpperZ) {
+            for (int x = start.getX(); x < end.getX(); x++) {
+                for (int y = start.getY(); y < end.getY(); y++) {
+                    if (includeLowerZ) traverseBlock(new BlockPos(x, y, start.getZ()));
+                    if (includeUpperZ) traverseBlock(new BlockPos(x, y, end.getZ()));
+                }
+            }
+        }
+
         calculatedBlocks = true;
+    }
+
+    private void traverseBlock(BlockPos blockPos) {
+        final double startPower = (0.8 + Math.random() * 0.2) * this.power;
+        final AtomicReference<Float> totalHardness = new AtomicReference<>(0f);
+        final AtomicReference<Integer> passedCount = new AtomicReference<>(0);
+        traverseSupercover(origin, new Vector3d(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5), traversedPos -> {
+            if (traversedPos.distance(origin) > maxDistance) return true;
+
+            final BlockPos traversedBlockPos = BlockPos.containing(traversedPos.x, traversedPos.y, traversedPos.z);
+            final boolean alreadyCalculated = hardnessMap.containsKey(traversedBlockPos);
+            final float hardness = hardnessMap.computeIfAbsent(traversedBlockPos,
+                    p -> level.getBlockState(p).getBlock().getExplosionResistance());
+            totalHardness.updateAndGet(current -> current + hardness);
+            passedCount.updateAndGet(a -> ++a);
+
+            final int passedBlocks = Math.max(passedCount.get(), 1);
+            final double averageHardness = totalHardness.get() / (double) passedBlocks;
+            final double powerLeft = startPower - ((HARDNESS_MULTIPLIER * averageHardness + HARDNESS_OFFSET + 0.3) * traversedPos.distance(origin));
+
+            if (powerLeft > 0 && !alreadyCalculated)
+                brokenBlocks.offer(traversedBlockPos);
+            return false;
+        });
     }
 
     public boolean isComplete() {

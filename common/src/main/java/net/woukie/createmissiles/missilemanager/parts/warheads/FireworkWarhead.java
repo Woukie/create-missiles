@@ -41,7 +41,7 @@ public class FireworkWarhead extends WarheadType {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
 
-        ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 6));
+        ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 4));
 
         CompoundTag explosions = trajectory.getWarheadData();
         if (explosions == null || explosions.isEmpty()) {

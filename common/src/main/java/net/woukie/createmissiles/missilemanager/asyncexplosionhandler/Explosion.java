@@ -36,16 +36,15 @@ public class Explosion {
         this.originBlockPosition = BlockPos.containing(originPosition);
         this.power = power;
 
-        int maxRadius = (int)((this.power -0.3 -HARDNESS_OFFSET) / HARDNESS_OFFSET);
-        int chunkSize = maxRadius * 2 / EXPLOSION_CHUNKS;
-        BlockPos start = originBlockPosition.offset(-maxRadius, -maxRadius, -maxRadius);
-        BlockPos end = originBlockPosition.offset(maxRadius, maxRadius, maxRadius);
-        for (int x = start.getX(); x <= end.getX(); x += chunkSize) {
-            for (int y = start.getY(); y <= end.getY(); y += chunkSize) {
-                for (int z = start.getZ(); z <= end.getZ(); z += chunkSize) {
-                    BlockPos chunkStart = new BlockPos(x, y, z);
-                    BlockPos chunkEnd = new BlockPos(chunkStart.getX() + chunkSize - 1, chunkStart.getY() + chunkSize - 1, chunkStart.getZ() + chunkSize - 1);
-                    ExplodingAreaWorker worker = new ExplodingAreaWorker(chunkStart, chunkEnd, originBlockPosition, level, power, hardnessMap);
+        int radius = (int)((this.power -0.3 -HARDNESS_OFFSET) / HARDNESS_OFFSET);
+        int chunkSize = radius * 2 / EXPLOSION_CHUNKS;
+
+        for (int x = 0; x < EXPLOSION_CHUNKS; x++) {
+            for (int y = 0; y < EXPLOSION_CHUNKS; y++) {
+                for (int z = 0; z < EXPLOSION_CHUNKS; z++) {
+                    BlockPos start = originBlockPosition.offset(-radius + chunkSize * x, -radius + chunkSize * y, -radius + chunkSize * z);
+                    BlockPos end = start.offset(chunkSize, chunkSize, chunkSize);
+                    ExplodingAreaWorker worker = new ExplodingAreaWorker(start, end, originBlockPosition, level, power, hardnessMap);
                     Thread thread = new Thread(worker);
                     workers.add(worker);
                     threads.add(thread);
@@ -56,15 +55,9 @@ public class Explosion {
     }
 
     public void serverTick(MinecraftServer server) {
-        long startTime = System.currentTimeMillis();
         boolean keepDestroying = true;
         complete = true;
         while (keepDestroying) {
-            if (System.currentTimeMillis() - startTime > 10) {
-                complete = false;
-                return;
-            }
-
             keepDestroying = false;
             for (ExplodingAreaWorker worker : workers) {
                 if (!worker.isComplete()) {
