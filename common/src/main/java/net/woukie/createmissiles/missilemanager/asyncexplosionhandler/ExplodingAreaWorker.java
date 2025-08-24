@@ -4,6 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import org.joml.Vector3d;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
@@ -42,11 +44,13 @@ public class ExplodingAreaWorker implements Runnable {
         boolean includeLowerZ = origin.z - start.getZ() - 0.5 >= (int) maxDistance;
         boolean includeUpperZ = end.getZ() + 0.5 - origin.z >= (int) maxDistance - 1;
 
+        List<BlockPos> blocks = new ArrayList<>((int) (3 * maxDistance * maxDistance));
+
         if (includeLowerX || includeUpperX) {
             for (int z = start.getZ(); z < end.getZ(); z++) {
                 for (int y = start.getY(); y < end.getY(); y++) {
-                    if (includeLowerX) traverseBlock(new BlockPos(start.getX(), y, z));
-                    if (includeUpperX) traverseBlock(new BlockPos(end.getX(), y, z));
+                    if (includeLowerX) blocks.add((int)(Math.random() * blocks.size()), new BlockPos(start.getX(), y, z));
+                    if (includeUpperX) blocks.add((int)(Math.random() * blocks.size()), new BlockPos(end.getX(), y, z));
                 }
             }
         }
@@ -54,8 +58,8 @@ public class ExplodingAreaWorker implements Runnable {
         if (includeLowerY || includeUpperY) {
             for (int x = start.getX(); x < end.getX(); x++) {
                 for (int z = start.getZ(); z < end.getZ(); z++) {
-                    if (includeLowerY) traverseBlock(new BlockPos(x, start.getY(), z));
-                    if (includeUpperY) traverseBlock(new BlockPos(x, end.getY(), z));
+                    if (includeLowerY) blocks.add((int)(Math.random() * blocks.size()), new BlockPos(x, start.getY(), z));
+                    if (includeUpperY) blocks.add((int)(Math.random() * blocks.size()), new BlockPos(x, end.getY(), z));
                 }
             }
         }
@@ -63,12 +67,14 @@ public class ExplodingAreaWorker implements Runnable {
         if (includeLowerZ || includeUpperZ) {
             for (int x = start.getX(); x < end.getX(); x++) {
                 for (int y = start.getY(); y < end.getY(); y++) {
-                    if (includeLowerZ) traverseBlock(new BlockPos(x, y, start.getZ()));
-                    if (includeUpperZ) traverseBlock(new BlockPos(x, y, end.getZ()));
+                    if (includeLowerZ) blocks.add((int)(Math.random() * blocks.size()), new BlockPos(x, y, start.getZ()));
+                    if (includeUpperZ) blocks.add((int)(Math.random() * blocks.size()), new BlockPos(x, y, end.getZ()));
                 }
             }
         }
 
+        for (BlockPos pos : blocks)
+            traverseBlock(pos);
         calculatedBlocks = true;
     }
 
