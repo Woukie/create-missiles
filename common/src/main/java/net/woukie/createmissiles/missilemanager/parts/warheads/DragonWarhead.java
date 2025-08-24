@@ -27,7 +27,7 @@ public class DragonWarhead extends WarheadType {
     public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
-        ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 30));
+        ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 60));
     }
 
     @Override

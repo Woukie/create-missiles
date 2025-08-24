@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplodingAreaWorker.HARDNESS_OFFSET;
+
 public class Explosion {
     public static final int EXPLOSION_CHUNKS = 2;
 
@@ -34,7 +36,7 @@ public class Explosion {
         this.originBlockPosition = BlockPos.containing(originPosition);
         this.power = power;
 
-        int maxRadius = (int)(this.power / 0.315);
+        int maxRadius = (int)((this.power -0.3 -HARDNESS_OFFSET) / HARDNESS_OFFSET);
         int chunkSize = maxRadius * 2 / EXPLOSION_CHUNKS;
         BlockPos start = originBlockPosition.offset(-maxRadius, -maxRadius, -maxRadius);
         BlockPos end = originBlockPosition.offset(maxRadius, maxRadius, maxRadius);
@@ -54,11 +56,11 @@ public class Explosion {
     }
 
     public void serverTick(MinecraftServer server) {
-        long startTime = System.nanoTime();
+        long startTime = System.currentTimeMillis();
         boolean keepDestroying = true;
         complete = true;
         while (keepDestroying) {
-            if (System.nanoTime() - startTime > 5000000) {
+            if (System.currentTimeMillis() - startTime > 10) {
                 complete = false;
                 return;
             }
