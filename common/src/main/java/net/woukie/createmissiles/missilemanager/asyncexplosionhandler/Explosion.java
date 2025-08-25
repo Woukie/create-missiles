@@ -25,7 +25,6 @@ public class Explosion {
     private final List<ExplodingAreaWorker> workers = new ArrayList<>();
     private final List<Thread> threads = new ArrayList<>();
 
-
     private boolean complete = false;
 
     public Explosion(Level level, Vec3 originPosition, double power) {
@@ -36,7 +35,7 @@ public class Explosion {
         this.power = power;
         final int radius = (int)((this.power -0.3 -HARDNESS_OFFSET) / HARDNESS_OFFSET);
         final int chunkSize = radius * 2 / EXPLOSION_CHUNKS;
-        final ConcurrentHashMap<BlockPos, Float> hardnessMap = new ConcurrentHashMap<>((int) (4.0/3.0 * Math.PI * radius * radius * radius));
+        final ConcurrentHashMap<BlockPos, Float> hardnessMap = new ConcurrentHashMap<>((int) (4.0/3.0 * Math.PI * radius * radius * radius), 0.75f, EXPLOSION_CHUNKS * EXPLOSION_CHUNKS * EXPLOSION_CHUNKS);
 
         for (int x = 0; x < EXPLOSION_CHUNKS; x++) {
             for (int y = 0; y < EXPLOSION_CHUNKS; y++) {

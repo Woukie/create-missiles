@@ -22,6 +22,13 @@ public class ExplodingAreaWorker implements Runnable {
     private final double maxDistance;
     private boolean calculatedBlocks = false;
 
+    private boolean doneX = false;
+    private boolean doneY = false;
+    private boolean doneZ = false;
+    private int countX = 0;
+    private int countY = 0;
+    private int countZ = 0;
+
     public static final double HARDNESS_MULTIPLIER = 0.3;
     public static final double HARDNESS_OFFSET = 0.315;
 
@@ -37,45 +44,62 @@ public class ExplodingAreaWorker implements Runnable {
     }
 
     public void run() {
-        boolean includeLowerX = origin.x - start.getX() - 0.5 >= (int) maxDistance;
-        boolean includeUpperX = end.getX() + 0.5 - origin.x >= (int) maxDistance - 1;
-        boolean includeLowerY = origin.y - start.getY() - 0.5 >= (int) maxDistance;
-        boolean includeUpperY = end.getY() + 0.5 - origin.y >= (int) maxDistance - 1;
-        boolean includeLowerZ = origin.z - start.getZ() - 0.5 >= (int) maxDistance;
-        boolean includeUpperZ = end.getZ() + 0.5 - origin.z >= (int) maxDistance - 1;
+        final boolean includeLowerX = origin.x - start.getX() - 0.5 >= (int) maxDistance;
+        final boolean includeUpperX = end.getX() + 0.5 - origin.x >= (int) maxDistance - 1;
+        final boolean includeLowerY = origin.y - start.getY() - 0.5 >= (int) maxDistance;
+        final boolean includeUpperY = end.getY() + 0.5 - origin.y >= (int) maxDistance - 1;
+        final boolean includeLowerZ = origin.z - start.getZ() - 0.5 >= (int) maxDistance;
+        final boolean includeUpperZ = end.getZ() + 0.5 - origin.z >= (int) maxDistance - 1;
 
-        List<BlockPos> blocks = new ArrayList<>((int) (3 * maxDistance * maxDistance));
-
-        if (includeLowerX || includeUpperX) {
-            for (int z = start.getZ(); z < end.getZ(); z++) {
-                for (int y = start.getY(); y < end.getY(); y++) {
-                    if (includeLowerX) blocks.add((int)(Math.random() * blocks.size()), new BlockPos(start.getX(), y, z));
-                    if (includeUpperX) blocks.add((int)(Math.random() * blocks.size()), new BlockPos(end.getX(), y, z));
-                }
-            }
+        while (!this.doneX || !this.doneY || !this.doneZ) {
+            processX(includeLowerX, includeUpperX);
+            processY(includeLowerY, includeUpperY);
+            processZ(includeLowerZ, includeUpperZ);
         }
 
-        if (includeLowerY || includeUpperY) {
-            for (int x = start.getX(); x < end.getX(); x++) {
-                for (int z = start.getZ(); z < end.getZ(); z++) {
-                    if (includeLowerY) blocks.add((int)(Math.random() * blocks.size()), new BlockPos(x, start.getY(), z));
-                    if (includeUpperY) blocks.add((int)(Math.random() * blocks.size()), new BlockPos(x, end.getY(), z));
-                }
-            }
-        }
-
-        if (includeLowerZ || includeUpperZ) {
-            for (int x = start.getX(); x < end.getX(); x++) {
-                for (int y = start.getY(); y < end.getY(); y++) {
-                    if (includeLowerZ) blocks.add((int)(Math.random() * blocks.size()), new BlockPos(x, y, start.getZ()));
-                    if (includeUpperZ) blocks.add((int)(Math.random() * blocks.size()), new BlockPos(x, y, end.getZ()));
-                }
-            }
-        }
-
-        for (BlockPos pos : blocks)
-            traverseBlock(pos);
         calculatedBlocks = true;
+    }
+
+    private void processX(boolean includeLowerX, boolean includeUpperX) {
+        if (doneX) return;
+        if (includeLowerX || includeUpperX) {
+            int z = (int)(Math.random() * (end.getZ() - start.getZ())) + start.getZ();
+            int y = (int)(Math.random() * (end.getY() - start.getY())) + start.getY();
+            if (includeLowerX) traverseBlock(new BlockPos(start.getX(), y, z));
+            if (includeUpperX) traverseBlock(new BlockPos(end.getX(), y, z));
+            countX++;
+            if (countX >= maxDistance * maxDistance) doneX = true;
+            return;
+        }
+        doneX = true;
+    }
+
+    private void processY(boolean includeLowerY, boolean includeUpperY) {
+        if (doneY) return;
+        if (includeLowerY || includeUpperY) {
+            int x = (int)(Math.random() * (end.getX() - start.getX())) + start.getX();
+            int z = (int)(Math.random() * (end.getZ() - start.getZ())) + start.getZ();
+            if (includeLowerY) traverseBlock(new BlockPos(x, start.getY(), z));
+            if (includeUpperY) traverseBlock(new BlockPos(x, end.getY(), z));
+            countY++;
+            if (countY >= maxDistance * maxDistance) doneY = true;
+            return;
+        }
+        doneY = true;
+    }
+
+    private void processZ(boolean includeLowerZ, boolean includeUpperZ) {
+        if (doneZ) return;
+        if (includeLowerZ || includeUpperZ) {
+            int x = (int)(Math.random() * (end.getX() - start.getX())) + start.getX();
+            int y = (int)(Math.random() * (end.getY() - start.getY())) + start.getY();
+            if (includeLowerZ) traverseBlock(new BlockPos(x, y, start.getZ()));
+            if (includeUpperZ) traverseBlock(new BlockPos(x, y, end.getZ()));
+            countZ++;
+            if (countZ >= maxDistance * maxDistance) doneZ = true;
+            return;
+        }
+        doneZ = true;
     }
 
     private void traverseBlock(BlockPos blockPos) {
