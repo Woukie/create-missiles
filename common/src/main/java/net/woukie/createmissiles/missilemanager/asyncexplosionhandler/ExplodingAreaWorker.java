@@ -83,7 +83,8 @@ public class ExplodingAreaWorker implements Runnable {
         final AtomicReference<Float> totalHardness = new AtomicReference<>(0f);
         final AtomicReference<Integer> passedCount = new AtomicReference<>(0);
         traverseSupercover(origin, new Vector3d(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5), traversedPos -> {
-            if (traversedPos.distance(origin) > maxDistance) return true;
+            double distance = traversedPos.distance(origin);
+            if (distance > maxDistance) return true;
 
             final BlockPos traversedBlockPos = BlockPos.containing(traversedPos.x, traversedPos.y, traversedPos.z);
             final boolean alreadyCalculated = hardnessMap.containsKey(traversedBlockPos);
@@ -92,12 +93,17 @@ public class ExplodingAreaWorker implements Runnable {
             totalHardness.updateAndGet(current -> current + hardness);
             passedCount.updateAndGet(a -> ++a);
 
-            final int passedBlocks = Math.max(passedCount.get(), 1);
-            final double averageHardness = totalHardness.get() / (double) passedBlocks;
-            final double powerLeft = startPower - ((HARDNESS_MULTIPLIER * averageHardness + HARDNESS_OFFSET + 0.3) * traversedPos.distance(origin));
+            if (!alreadyCalculated) {
+                final int passedBlocks = Math.max(passedCount.get(), 1);
+                final double averageHardness = totalHardness.get() / (double) passedBlocks;
+                final double powerLeft = startPower - ((HARDNESS_MULTIPLIER * averageHardness + HARDNESS_OFFSET + 0.3) * distance);
+                if (powerLeft > 0) {
+                    brokenBlocks.offer(traversedBlockPos);
+                } else {
+                    return true;
+                }
+            }
 
-            if (powerLeft > 0 && !alreadyCalculated)
-                brokenBlocks.offer(traversedBlockPos);
             return false;
         });
     }

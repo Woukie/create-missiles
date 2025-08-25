@@ -29,15 +29,14 @@ public class Explosion {
     private boolean complete = false;
 
     public Explosion(Level level, Vec3 originPosition, double power) {
-        final ConcurrentHashMap<BlockPos, Float> hardnessMap = new ConcurrentHashMap<>();
         this.levelKey = level.dimension();
         this.level = level;
         this.originPosition = originPosition;
         this.originBlockPosition = BlockPos.containing(originPosition);
         this.power = power;
-
-        int radius = (int)((this.power -0.3 -HARDNESS_OFFSET) / HARDNESS_OFFSET);
-        int chunkSize = radius * 2 / EXPLOSION_CHUNKS;
+        final int radius = (int)((this.power -0.3 -HARDNESS_OFFSET) / HARDNESS_OFFSET);
+        final int chunkSize = radius * 2 / EXPLOSION_CHUNKS;
+        final ConcurrentHashMap<BlockPos, Float> hardnessMap = new ConcurrentHashMap<>((int) (4.0/3.0 * Math.PI * radius * radius * radius));
 
         for (int x = 0; x < EXPLOSION_CHUNKS; x++) {
             for (int y = 0; y < EXPLOSION_CHUNKS; y++) {
