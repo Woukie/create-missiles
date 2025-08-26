@@ -1,11 +1,12 @@
 package net.woukie.createmissiles.missilemanager.asyncexplosionhandler;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
 import org.joml.Vector3d;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
@@ -15,19 +16,21 @@ import static net.woukie.createmissiles.Util.traverseSupercover;
 public class ExplodingAreaWorker implements Runnable {
     private final BlockPos start, end;
     private final Vector3d origin;
-    private final PriorityBlockingQueue<BlockPos> brokenBlocks;
     private final Level level;
     private final Double power;
     private final ConcurrentHashMap<BlockPos, Float> hardnessMap;
     private final double maxDistance;
-    private boolean calculatedBlocks = false;
 
+    private PriorityBlockingQueue<BlockPos> brokenBlocks;
+    private boolean calculatedBlocks = false;
     private boolean doneX = false;
     private boolean doneY = false;
     private boolean doneZ = false;
     private int countX = 0;
     private int countY = 0;
     private int countZ = 0;
+
+    private boolean endEarly = false;
 
     public static final double HARDNESS_MULTIPLIER = 0.3;
     public static final double HARDNESS_OFFSET = 0.315;
@@ -51,7 +54,8 @@ public class ExplodingAreaWorker implements Runnable {
         final boolean includeLowerZ = origin.z - start.getZ() - 0.5 >= (int) maxDistance;
         final boolean includeUpperZ = end.getZ() + 0.5 - origin.z >= (int) maxDistance - 1;
 
-        while (!this.doneX || !this.doneY || !this.doneZ) {
+        while ((!this.doneX || !this.doneY || !this.doneZ)) {
+            if (endEarly) return;
             processX(includeLowerX, includeUpperX);
             processY(includeLowerY, includeUpperY);
             processZ(includeLowerZ, includeUpperZ);
@@ -63,12 +67,12 @@ public class ExplodingAreaWorker implements Runnable {
     private void processX(boolean includeLowerX, boolean includeUpperX) {
         if (doneX) return;
         if (includeLowerX || includeUpperX) {
+            if (countX >= maxDistance * maxDistance) doneX = true;
+            countX++;
             int z = (int)(Math.random() * (end.getZ() - start.getZ())) + start.getZ();
             int y = (int)(Math.random() * (end.getY() - start.getY())) + start.getY();
             if (includeLowerX) traverseBlock(new BlockPos(start.getX(), y, z));
             if (includeUpperX) traverseBlock(new BlockPos(end.getX(), y, z));
-            countX++;
-            if (countX >= maxDistance * maxDistance) doneX = true;
             return;
         }
         doneX = true;
@@ -77,12 +81,12 @@ public class ExplodingAreaWorker implements Runnable {
     private void processY(boolean includeLowerY, boolean includeUpperY) {
         if (doneY) return;
         if (includeLowerY || includeUpperY) {
+            if (countY >= maxDistance * maxDistance) doneY = true;
+            countY++;
             int x = (int)(Math.random() * (end.getX() - start.getX())) + start.getX();
             int z = (int)(Math.random() * (end.getZ() - start.getZ())) + start.getZ();
             if (includeLowerY) traverseBlock(new BlockPos(x, start.getY(), z));
             if (includeUpperY) traverseBlock(new BlockPos(x, end.getY(), z));
-            countY++;
-            if (countY >= maxDistance * maxDistance) doneY = true;
             return;
         }
         doneY = true;
@@ -91,22 +95,24 @@ public class ExplodingAreaWorker implements Runnable {
     private void processZ(boolean includeLowerZ, boolean includeUpperZ) {
         if (doneZ) return;
         if (includeLowerZ || includeUpperZ) {
+            if (countZ >= maxDistance * maxDistance) doneZ = true;
+            countZ++;
             int x = (int)(Math.random() * (end.getX() - start.getX())) + start.getX();
             int y = (int)(Math.random() * (end.getY() - start.getY())) + start.getY();
             if (includeLowerZ) traverseBlock(new BlockPos(x, y, start.getZ()));
             if (includeUpperZ) traverseBlock(new BlockPos(x, y, end.getZ()));
-            countZ++;
-            if (countZ >= maxDistance * maxDistance) doneZ = true;
             return;
         }
         doneZ = true;
     }
 
     private void traverseBlock(BlockPos blockPos) {
+        if (endEarly) return;
         final double startPower = (0.8 + Math.random() * 0.2) * this.power;
         final AtomicReference<Float> totalHardness = new AtomicReference<>(0f);
         final AtomicReference<Integer> passedCount = new AtomicReference<>(0);
         traverseSupercover(origin, new Vector3d(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5), traversedPos -> {
+            if (endEarly) return true;
             double distance = traversedPos.distance(origin);
             if (distance > maxDistance) return true;
 
@@ -137,11 +143,34 @@ public class ExplodingAreaWorker implements Runnable {
     }
 
     public boolean destroyBlock(Level level) {
+        if (endEarly) return false;
         BlockPos blockPos = brokenBlocks.poll();
         if (blockPos != null) {
             level.destroyBlock(blockPos, true);
             return true;
         }
         return false;
+    }
+
+    public void endEarly() {
+        this.endEarly = true;
+    }
+
+    public CompoundTag save() {
+        CompoundTag data = new CompoundTag();
+        data.putInt("CountX", countX);
+        data.putInt("CountY", countY);
+        data.putInt("CountZ", countZ);
+        data.putLongArray("BrokenBlocks", brokenBlocks.stream().map(BlockPos::asLong).toList());
+        System.out.println(brokenBlocks.size());
+        return data;
+    }
+
+    public void load(CompoundTag data) {
+        countX = data.getInt("CountX");
+        countY = data.getInt("CountY");
+        countZ = data.getInt("CountZ");
+        brokenBlocks = new PriorityBlockingQueue<>(Arrays.stream(data.getLongArray("BrokenBlocks")).mapToObj(BlockPos::of).toList());
+        System.out.println(brokenBlocks.size());
     }
 }
