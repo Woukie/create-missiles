@@ -12,6 +12,8 @@ import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.client.models.warheads.ExcavatorWarheadModel;
 import net.woukie.createmissiles.missilemanager.Trajectory;
+import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.Explosion;
+import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplosionHandler;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
@@ -19,11 +21,11 @@ import org.joml.Vector3d;
 public class ExcavatorWarhead extends WarheadType {
     private final MissilePartModel model = new ExcavatorWarheadModel();
     private final double stepSize = 1.5d;
-    private final int initialCharges = 10;
+    private final int initialCharges = 20;
 
     @Override
     public float getWeight() {
-        return 10;
+        return 9;
     }
 
     @Override
@@ -78,7 +80,7 @@ public class ExcavatorWarhead extends WarheadType {
         Vec3 currentDistance = stepOffset.normalize().scale(detonationGap);
         while (currentDistance.length() < totalDistance.length() && charges > 0) {
             Vec3 globalPosition = currentDistance.add(start);
-            level.explode(null, globalPosition.x, globalPosition.y, globalPosition.z, 5, Level.ExplosionInteraction.BLOCK);
+            ExplosionHandler.get().createExplosion(new Explosion(level, globalPosition, 10));
             charges--;
             trajectory.getWarheadData().putInt("Charges", charges);
 

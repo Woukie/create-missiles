@@ -29,7 +29,10 @@ public class CreativeMenus {
         CreateMissiles.LOGGER.info("Registering creative menus for " + CreateMissiles.NAME);
 
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("bound_ender_pearl"), BOUND_ENDER_PEARL.get()));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("dragon_egg_shell"), DRAGON_EGG_SHELL.get()));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("reinforced_dragon_egg_shell"), REINFORCED_DRAGON_EGG_SHELL.get()));
 
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("dragon_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("flaming_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("firework_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("shulker_box_warhead"), WARHEAD_ASSEMBLY.get()));

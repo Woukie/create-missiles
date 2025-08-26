@@ -23,6 +23,16 @@ public abstract class Items {
             () -> new BoundEnderPearlItem(new Item.Properties())
     );
 
+    public static final RegistrySupplier<Item> DRAGON_EGG_SHELL = ITEMS.register(
+            "dragon_egg_shell",
+            () -> new Item(new Item.Properties())
+    );
+
+    public static final RegistrySupplier<Item> REINFORCED_DRAGON_EGG_SHELL = ITEMS.register(
+            "reinforced_dragon_egg_shell",
+            () -> new Item(new Item.Properties())
+    );
+
     protected abstract RegistrySupplier<Item> getWarheadAssembly();
     protected abstract RegistrySupplier<Item> getChassisAssembly();
     protected abstract RegistrySupplier<Item> getThrusterAssembly();

@@ -4,14 +4,14 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.client.models.warheads.FlamingWarheadModel;
 import net.woukie.createmissiles.entity.FireballEntity;
 import net.woukie.createmissiles.missilemanager.Trajectory;
+import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.Explosion;
+import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplosionHandler;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.registry.EntityTypes;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +32,7 @@ public class FlamingWarhead extends WarheadType {
     public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
-        level.explode(null, hitPosition.x, hitPosition.y, hitPosition.z, 10, true, Level.ExplosionInteraction.BLOCK);
+        ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 10));
 
         var random = new Random();
         for (int i = 0; i < 30; i++) {

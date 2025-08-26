@@ -1,0 +1,10 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "items": ["createmissiles:reinforced_dragon_egg_shell"],
+      "count": 3
+    }
+  ],
+  "assembly": "createmissiles:dragon_warhead"
+}

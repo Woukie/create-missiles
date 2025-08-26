@@ -7,22 +7,21 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.client.models.warheads.FireworkWarheadModel;
 import net.woukie.createmissiles.missilemanager.Trajectory;
+import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.Explosion;
+import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplosionHandler;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.missilemanager.parts.warheads.messages.ExplodeFireworkMessage;
 import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ public class FireworkWarhead extends WarheadType {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
 
-        level.explode(null, hitPosition.x, hitPosition.y, hitPosition.z, 2, Level.ExplosionInteraction.BLOCK);
+        ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 4));
 
         CompoundTag explosions = trajectory.getWarheadData();
         if (explosions == null || explosions.isEmpty()) {
