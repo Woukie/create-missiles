@@ -1,6 +1,6 @@
 {
   "type": "minecraft:jigsaw",
-  "biomes": "#c:is_snowy",
+  "biomes": "#minecraft:has_structure/village_snowy",
   "terrain_adaptation": "beard_thin",
   "spawn_overrides": {},
   "step": "surface_structures",
