@@ -80,7 +80,7 @@ public class ExcavatorWarhead extends WarheadType {
         Vec3 currentDistance = stepOffset.normalize().scale(detonationGap);
         while (currentDistance.length() < totalDistance.length() && charges > 0) {
             Vec3 globalPosition = currentDistance.add(start);
-            ExplosionHandler.get().createExplosion(new Explosion(level, globalPosition, 10));
+            ExplosionHandler.get().createExplosion(new Explosion(level, globalPosition, 5));
             charges--;
             trajectory.getWarheadData().putInt("Charges", charges);
 
