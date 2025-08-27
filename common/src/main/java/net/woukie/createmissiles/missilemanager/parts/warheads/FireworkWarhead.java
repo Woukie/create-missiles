@@ -26,7 +26,6 @@ import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class FireworkWarhead extends WarheadType {
     private final MissilePartModel model = new FireworkWarheadModel();
@@ -45,8 +44,7 @@ public class FireworkWarhead extends WarheadType {
 
         CompoundTag explosions = trajectory.getWarheadData();
         if (explosions == null || explosions.isEmpty()) {
-            var random = Random.from(new Random());
-            level.addParticle(ParticleTypes.POOF, hitPosition.x, hitPosition.y, hitPosition.z, random.nextGaussian() * 0.05, 0.005, random.nextGaussian() * 0.05);
+            level.addParticle(ParticleTypes.POOF, hitPosition.x, hitPosition.y, hitPosition.z, Math.random() * 0.05, 0.005, Math.random() * 0.05);
         } else {
             List<ServerPlayer> players = new ArrayList<>();
             level.players().forEach(serverPlayer -> {
