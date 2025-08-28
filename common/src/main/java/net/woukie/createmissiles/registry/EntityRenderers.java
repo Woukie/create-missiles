@@ -13,5 +13,6 @@ public class EntityRenderers {
         EntityRendererRegistry.register(EntityTypes.MISSILE, MissileRenderer::new);
         EntityRendererRegistry.register(EntityTypes.DRONE, DroneRenderer::new);
         EntityRendererRegistry.register(EntityTypes.FIREBALL, context -> new ThrownItemRenderer<FireballEntity>(context));
+        EntityRendererRegistry.register(EntityTypes.DRONE, DroneRenderer::new);
     }
 }
