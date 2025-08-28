@@ -1,17 +1,16 @@
 package net.woukie.createmissiles.entity;
 
+import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.FlyingMob;
-import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.woukie.createmissiles.registry.Items;
 import org.jetbrains.annotations.NotNull;
 
 public class DroneEntity extends FlyingMob {
@@ -34,14 +33,23 @@ public class DroneEntity extends FlyingMob {
         }
     }
 
-    @Override
-    protected InteractionResult mobInteract(Player player, InteractionHand interactionHand) {
-        if (interactionHand == InteractionHand.OFF_HAND) {
-            kill();
-            level().playSound(null, blockPosition(), SoundEvents.SCAFFOLDING_BREAK, SoundSource.NEUTRAL);
-            return InteractionResult.SUCCESS;
+    public void aiStep() {
+        if (this.isAlive() && this.isSunBurnTick()) {
+            this.setSecondsOnFire(8);
         }
 
-        return super.mobInteract(player, interactionHand);
+        super.aiStep();
+    }
+
+    @Override
+    public boolean hurt(DamageSource damageSource, float f) {
+        Entity entity = damageSource.getEntity();
+        System.out.println(entity);
+        if (!level().isClientSide() && entity != null && entity.getType().equals(EntityType.PLAYER)) {
+            level().playSound(null, blockPosition(), SoundEvents.SCAFFOLDING_BREAK, SoundSource.NEUTRAL);
+            DefaultDispenseItemBehavior.spawnItem(level(), new ItemStack(Items.DRONE_BOX_ITEM.get()), 1, Direction.UP, position());
+            this.discard();
+        }
+        return super.hurt(damageSource, f);
     }
 }
