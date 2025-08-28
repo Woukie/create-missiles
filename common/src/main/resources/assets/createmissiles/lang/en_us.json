@@ -13,6 +13,7 @@
   "item.createmissiles.warhead_assembly": "Warhead Assembly",
   "item.createmissiles.chassis_assembly": "Chassis Assembly",
   "item.createmissiles.thruster_assembly": "Thruster Assembly",
+  "item.createmissiles.drone_box": "Drone Box",
   "container.createmissiles.control_panel": "Control Panel",
   "container.createmissiles.assembly_panel": "Assembly Panel",
   "container.createmissiles.navigation_panel": "Navigation Panel",
