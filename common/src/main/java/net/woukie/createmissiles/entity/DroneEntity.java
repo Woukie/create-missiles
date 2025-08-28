@@ -39,6 +39,7 @@ public class DroneEntity extends FlyingMob {
         if (interactionHand == InteractionHand.OFF_HAND) {
             kill();
             level().playSound(null, blockPosition(), SoundEvents.SCAFFOLDING_BREAK, SoundSource.NEUTRAL);
+            return InteractionResult.SUCCESS;
         }
 
         return super.mobInteract(player, interactionHand);
