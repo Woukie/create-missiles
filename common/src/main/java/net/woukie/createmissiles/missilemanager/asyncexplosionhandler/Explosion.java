@@ -1,10 +1,8 @@
 package net.woukie.createmissiles.missilemanager.asyncexplosionhandler;
 
-import com.simibubi.create.Create;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -14,9 +12,10 @@ import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import static net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplodingAreaWorker.HARDNESS_OFFSET;
 
@@ -24,7 +23,7 @@ public class Explosion {
     public static final int EXPLOSION_CHUNKS = 2;
 
     private final BlockPos originBlockPosition;
-    private final double power;
+    private final double power, decay;
     private final ResourceKey<Level> levelKey;
     private final Level level;
 
@@ -37,16 +36,21 @@ public class Explosion {
     private boolean endEarly = false;
 
     public Explosion(Level level, Vec3 originPosition, double power) {
+        this(level, originPosition, power, 0.3);
+    }
+
+    public Explosion(Level level, Vec3 originPosition, double power, double decay) {
         this.levelKey = level.dimension();
         this.level = level;
         this.originBlockPosition = BlockPos.containing(originPosition);
         this.power = power;
-        final int radius = (int)((this.power -0.3 -HARDNESS_OFFSET) / HARDNESS_OFFSET);
+        this.decay = decay;
+        final int radius = (int)((this.power - this.decay - HARDNESS_OFFSET) / HARDNESS_OFFSET);
         this.hardnessMap = new ConcurrentHashMap<>((int) (4.0/3.0 * Math.PI * radius * radius * radius), 0.75f, EXPLOSION_CHUNKS * EXPLOSION_CHUNKS * EXPLOSION_CHUNKS);
     }
 
     public void startCrunching() {
-        final int radius = (int)((this.power -0.3 -HARDNESS_OFFSET) / HARDNESS_OFFSET);
+        final int radius = (int)((this.power - this.decay - HARDNESS_OFFSET) / HARDNESS_OFFSET);
         final int chunkSize = radius * 2 / EXPLOSION_CHUNKS;
 
         for (int x = 0; x < EXPLOSION_CHUNKS; x++) {
@@ -54,7 +58,7 @@ public class Explosion {
                 for (int z = 0; z < EXPLOSION_CHUNKS; z++) {
                     BlockPos start = originBlockPosition.offset(-radius + chunkSize * x, -radius + chunkSize * y, -radius + chunkSize * z);
                     BlockPos end = start.offset(chunkSize, chunkSize, chunkSize);
-                    ExplodingAreaWorker worker = new ExplodingAreaWorker(start, end, originBlockPosition, level, power, hardnessMap);
+                    ExplodingAreaWorker worker = new ExplodingAreaWorker(start, end, originBlockPosition, level, power, hardnessMap, decay);
                     int i = x * (EXPLOSION_CHUNKS * EXPLOSION_CHUNKS) + y * EXPLOSION_CHUNKS + z;
                     if (workerData != null && workerData.size() > i) {
                         worker.load((CompoundTag) workerData.get(i));
