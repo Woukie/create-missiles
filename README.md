@@ -1,26 +1,39 @@
-<div align="center"><img src="./icons/icon_256.gif" alt="Logo" width="256"></div>
+<div align="center">
+    <img src="./icons/icon_256.gif" alt="Logo" width="256"><br>
+    <img src="https://github.com/Woukie/create-missiles/actions/workflows/build.yml/badge.svg" alt="Build Status" href="https://github.com/Woukie/create-missiles/actions/workflows/build.yml">
+    <img alt="Static Badge" src="https://img.shields.io/badge/latest-modrinth?logo=modrinth&label=modrinth&color=%2300AF5C&link=https%3A%2F%2Fmodrinth.com%2F">
+    <img src="https://cf.way2muchnoise.eu/author/woukie.svg" alt="Curseforge Downloads" href="https://github.com/Woukie/create-missiles/actions/workflows/build.yml">
+</div>
 
 <h1>Create Missiles</h1>
 
-<p>This is a Minecraft mod about missles for Forge and Fabric, depends on Create.</p>
+<p>This is a Minecraft mod for Forge and Fabric that adds missiles to your world, built as an addon for the Create mod.</p>
 
 <h1>Features</h1>
 
-<p>Subject to change.</p>
-
 <ul>
-    <li>Launch long-range missiles</li>
+    <li>Launch missiles by inserting a map into your launch pad and selecting a destination, or use reconnaissance drones to scout specific coordinates for unvisited targets.</li>
+    <li>Integrates into survival gameplay by gating progress through finding assemblies which are used at launch pads to consstruct missile parts</li>
     <li>Mix and match unique warheads, chassis and thrusters</li>
-    <li>Each assembly has a unique model that depends on its build stage</li>
-    <li>The navigation panel lets you click on a map to set the target and view a simulated trajectory that gets as close as possible to the target</li>
-    <li>Set the burn time to change the height of the trajectory</li>
-    <li>Fire survey drones to create a map of an area</li>
-    <li>Integration with some other mods</li>
+    <li>Use a map to  The navigation panel lets you click on a map to set the target and view a simulated trajectory that gets as close as possible to the target</li>
+    <li>Includes full Ponder and JEI integration, which provides information about how to set up a launch pad and how to obtain missile assemblies.</li>
 </ul>
 
-<h1>Implementation and Distribution</h1>
+<h1>Contributors</h1>
+<ul>
+    <li>Woukie (framework, content, modelling)</li>
+    <li>ExpertSalad (missile mechanics)</li>
+    <li>Bert (structures)</li>
+    <li>Translators</li>    
+</ul>
 
-<p>Implementation details, subject to change</p>
+<h1>Attribution</h1>
+<ul>
+    <li>BlockBench (Every model in the mod)</li>
+    <li>Easings.net (UI animation curve implementations)</li>
+</ul>
+
+<p>Implementation details</p>
 
 <ul>
     <li>Built on Architectury, for Fabric and Forge</li>
