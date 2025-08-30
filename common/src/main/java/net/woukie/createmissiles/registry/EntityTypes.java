@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.entity.DroneEntity;
 import net.woukie.createmissiles.entity.FireballEntity;
 import net.woukie.createmissiles.entity.MissileEntity;
 
@@ -21,6 +22,10 @@ public class EntityTypes {
     public static final RegistrySupplier<EntityType<FireballEntity>> FIREBALL = ENTITY_TYPES.register(
             "fireball",
             () -> EntityType.Builder.of(FireballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "fireball").toString())
+    );
+    public static final RegistrySupplier<EntityType<DroneEntity>> BASIC_DRONE = ENTITY_TYPES.register(
+            "basic_drone",
+            () -> EntityType.Builder.of(DroneEntity::new, MobCategory.MISC).noSummon().fireImmune().sized(2f, 1f).clientTrackingRange(4).updateInterval(20).build(new ResourceLocation(CreateMissiles.MOD_ID, "basic_drone").toString())
     );
 
     public static void init() {
