@@ -1,0 +1,111 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made with Blockbench",
+	"texture_size": [40, 25],
+	"textures": {
+		"1": "createmissiles:block/annoying_jukebox",
+		"particle": "minecraft:block/jukebox_side"
+	},
+	"elements": [
+		{
+			"from": [3, 0, 3],
+			"to": [13, 10, 13],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 5, 8]},
+			"faces": {
+				"north": {"uv": [4, 6.4, 8, 12.8], "texture": "#1"},
+				"east": {"uv": [0, 6.4, 4, 12.8], "texture": "#1"},
+				"south": {"uv": [12, 6.4, 16, 12.8], "texture": "#1"},
+				"west": {"uv": [8, 6.4, 12, 12.8], "texture": "#1"},
+				"up": {"uv": [8, 6.4, 4, 0], "texture": "#1"},
+				"down": {"uv": [12, 0, 8, 6.4], "texture": "#1"}
+			}
+		},
+		{
+			"name": "ribon1",
+			"from": [7, 10, 8],
+			"to": [9, 11, 12],
+			"rotation": {"angle": -22.5, "axis": "x", "origin": [8, 10, 8]},
+			"faces": {
+				"north": {"uv": [1.6, 15.36, 2.4, 16], "texture": "#1"},
+				"east": {"uv": [0, 15.36, 1.6, 16], "texture": "#1"},
+				"south": {"uv": [4, 15.36, 4.8, 16], "texture": "#1"},
+				"west": {"uv": [2.4, 15.36, 4, 16], "texture": "#1"},
+				"up": {"uv": [2.4, 15.36, 1.6, 12.8], "texture": "#1"},
+				"down": {"uv": [3.2, 12.8, 2.4, 15.36], "texture": "#1"}
+			}
+		},
+		{
+			"name": "ribon2",
+			"from": [4, 10, 7],
+			"to": [8, 11, 9],
+			"rotation": {"angle": -22.5, "axis": "z", "origin": [8, 10, 8]},
+			"faces": {
+				"north": {"uv": [5.6, 14.08, 7.2, 14.72], "texture": "#1"},
+				"east": {"uv": [4.8, 14.08, 5.6, 14.72], "texture": "#1"},
+				"south": {"uv": [8, 14.08, 9.6, 14.72], "texture": "#1"},
+				"west": {"uv": [7.2, 14.08, 8, 14.72], "texture": "#1"},
+				"up": {"uv": [7.2, 14.08, 5.6, 12.8], "texture": "#1"},
+				"down": {"uv": [8.8, 12.8, 7.2, 14.08], "texture": "#1"}
+			}
+		},
+		{
+			"name": "ribon2",
+			"from": [7, 10, 4],
+			"to": [9, 11, 8],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [8, 10, 8]},
+			"faces": {
+				"north": {"uv": [1.6, 15.36, 2.4, 16], "texture": "#1"},
+				"east": {"uv": [0, 15.36, 1.6, 16], "texture": "#1"},
+				"south": {"uv": [4, 15.36, 4.8, 16], "texture": "#1"},
+				"west": {"uv": [2.4, 15.36, 4, 16], "texture": "#1"},
+				"up": {"uv": [2.4, 15.36, 1.6, 12.8], "texture": "#1"},
+				"down": {"uv": [3.2, 12.8, 2.4, 15.36], "texture": "#1"}
+			}
+		},
+		{
+			"name": "ribon3",
+			"from": [8, 10, 7],
+			"to": [12, 11, 9],
+			"rotation": {"angle": 22.5, "axis": "z", "origin": [8, 10, 8]},
+			"faces": {
+				"north": {"uv": [5.6, 14.08, 7.2, 14.72], "texture": "#1"},
+				"east": {"uv": [4.8, 14.08, 5.6, 14.72], "texture": "#1"},
+				"south": {"uv": [8, 14.08, 9.6, 14.72], "texture": "#1"},
+				"west": {"uv": [7.2, 14.08, 8, 14.72], "texture": "#1"},
+				"up": {"uv": [7.2, 14.08, 5.6, 12.8], "texture": "#1"},
+				"down": {"uv": [8.8, 12.8, 7.2, 14.08], "texture": "#1"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, 45, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, -135, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"ground": {
+			"translation": [0, 3, 0],
+			"scale": [0.25, 0.25, 0.25]
+		},
+		"gui": {
+			"rotation": [30, -135, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"fixed": {
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
+}

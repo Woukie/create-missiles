@@ -1,0 +1,14 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "items": ["minecraft:diamond"],
+      "count": 1
+    },
+    {
+      "tags": ["minecraft:planks"],
+      "count": 8
+    }
+  ],
+  "assembly": "createmissiles:annoying_warhead"
+}
