@@ -121,9 +121,11 @@ public class AnnoyingWarheadModel implements MissilePartModel {
 			},
 			partDefinition -> {
 				PartDefinition bb_main = partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+				PartDefinition ribon3_r1 = bb_main.addOrReplaceChild("ribon3_r1", CubeListBuilder.create().texOffs(52, 25).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 10.0F, 0.0F, 2.7489F, 0.0F, 3.1416F));
+				PartDefinition ribon2_r1 = bb_main.addOrReplaceChild("ribon2_r1", CubeListBuilder.create().texOffs(52, 25).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 10.0F, 0.0F, 0.0F, 1.5708F, 0.3927F));
 				PartDefinition cube_r1 = bb_main.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 50).addBox(-5.0F, -5.0F, -5.0F, 10.0F, 10.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 5.0F, 0.0F, -3.1416F, 0.0F, 0.0F));
-				PartDefinition ribon1_r1 = bb_main.addOrReplaceChild("ribon1_r1", CubeListBuilder.create().texOffs(52, 25).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 10.0F, 0.0F, -0.0873F, -0.7854F, 0.0F));
-				PartDefinition ribon2_r1 = bb_main.addOrReplaceChild("ribon2_r1", CubeListBuilder.create().texOffs(40, 25).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 10.0F, 0.0F, 3.0543F, -0.3927F, -3.1416F));
+				PartDefinition ribon1_r1 = bb_main.addOrReplaceChild("ribon1_r1", CubeListBuilder.create().texOffs(52, 25).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 10.0F, 0.0F, -0.3927F, 0.0F, 0.0F));
+				PartDefinition ribon2_r2 = bb_main.addOrReplaceChild("ribon2_r2", CubeListBuilder.create().texOffs(40, 25).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 10.0F, 0.0F, 0.0F, -1.5708F, -0.3927F));
 				return partDefinition;
 			}
 	);

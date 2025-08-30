@@ -5,7 +5,6 @@ import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
@@ -14,6 +13,7 @@ import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.Explosion;
 import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplosionHandler;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
+import net.woukie.createmissiles.registry.Blocks;
 import org.jetbrains.annotations.NotNull;
 
 import static net.woukie.createmissiles.Util.locateAir;
@@ -32,9 +32,9 @@ public class AnnoyingWarhead extends WarheadType {
         if (level == null) return;
         var emptyBlock = locateAir(hitPosition.add(0, 1, 0), level, 100);
         if (emptyBlock != null) {
-            level.setBlock(emptyBlock, Blocks.JUKEBOX.defaultBlockState(), 3);
+            level.setBlock(emptyBlock, Blocks.ANNOYING_JUKEBOX.get().defaultBlockState(), 3);
         } else {
-            DefaultDispenseItemBehavior.spawnItem(level, Blocks.JUKEBOX.asItem().getDefaultInstance(), 1, Direction.UP, hitPosition.add(0, 1, 0));
+            DefaultDispenseItemBehavior.spawnItem(level, Blocks.ANNOYING_JUKEBOX.get().asItem().getDefaultInstance(), 1, Direction.UP, hitPosition.add(0, 1, 0));
         }
 
         ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 5));
