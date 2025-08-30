@@ -17,7 +17,7 @@ public class ExplodingAreaWorker implements Runnable {
     private final BlockPos start, end;
     private final Vector3d origin;
     private final Level level;
-    private final Double power;
+    private final Double power, decay;
     private final ConcurrentHashMap<BlockPos, Float> hardnessMap;
     private final double maxDistance;
 
@@ -35,14 +35,15 @@ public class ExplodingAreaWorker implements Runnable {
     public static final double HARDNESS_MULTIPLIER = 0.3;
     public static final double HARDNESS_OFFSET = 0.315;
 
-    public ExplodingAreaWorker(BlockPos start, BlockPos end, BlockPos originBlock, Level level, Double power, ConcurrentHashMap<BlockPos, Float> hardnessMap) {
+    public ExplodingAreaWorker(BlockPos start, BlockPos end, BlockPos originBlock, Level level, Double power, ConcurrentHashMap<BlockPos, Float> hardnessMap, Double decay) {
         this.start = start;
         this.end = end;
         this.origin = new Vector3d(originBlock.getX() + 0.5, originBlock.getY() + 0.5, originBlock.getZ() + 0.5);
         this.level = level;
         this.power = power;
+        this.decay = decay;
         this.hardnessMap = hardnessMap;
-        this.maxDistance = (this.power - 0.3 - HARDNESS_OFFSET) / HARDNESS_OFFSET;
+        this.maxDistance = (this.power - this.decay - HARDNESS_OFFSET) / HARDNESS_OFFSET;
         brokenBlocks = new PriorityBlockingQueue<>();
     }
 
@@ -126,7 +127,7 @@ public class ExplodingAreaWorker implements Runnable {
             if (!alreadyCalculated) {
                 final int passedBlocks = Math.max(passedCount.get(), 1);
                 final double averageHardness = totalHardness.get() / (double) passedBlocks;
-                final double powerLeft = startPower - ((HARDNESS_MULTIPLIER * averageHardness + HARDNESS_OFFSET + 0.3) * distance);
+                final double powerLeft = startPower - ((HARDNESS_MULTIPLIER * averageHardness + HARDNESS_OFFSET + this.decay) * distance);
                 if (powerLeft > 0) {
                     brokenBlocks.offer(traversedBlockPos);
                 } else {

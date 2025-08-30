@@ -1,0 +1,10 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "items": ["minecraft:iron_block"],
+      "count": 5
+    }
+  ],
+  "assembly": "createmissiles:direct_hit_warhead"
+}
