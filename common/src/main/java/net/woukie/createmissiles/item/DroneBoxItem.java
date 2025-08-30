@@ -1,25 +1,39 @@
 package net.woukie.createmissiles.item;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.woukie.createmissiles.entity.DroneEntity;
-import net.woukie.createmissiles.registry.EntityTypes;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.function.Function;
 
 public class DroneBoxItem extends Item {
-    public DroneBoxItem(Properties properties) {
+    private final Function<Level, Entity> entityConstructor;
+
+    public DroneBoxItem(Properties properties, Function<Level, Entity> entityConstructor) {
         super(properties);
+        this.entityConstructor = entityConstructor;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
+        super.appendHoverText(itemStack, level, list, tooltipFlag);
+        list.add(Component.translatable(this.getDescriptionId(itemStack) + ".tooltip"));
     }
 
     @Override
@@ -34,8 +48,7 @@ public class DroneBoxItem extends Item {
         } else {
             BlockPos blockPos = blockHitResult.getBlockPos();
             if (level.mayInteract(player, blockPos) && player.mayUseItemAt(blockPos, blockHitResult.getDirection(), itemStack)) {
-
-                DroneEntity droneEntity = new DroneEntity(EntityTypes.DRONE.get(), level);
+                Entity droneEntity =  entityConstructor.apply(level);
                 droneEntity.setPos(blockPos.getX() + 0.5f, blockPos.getY() + 1, blockPos.getZ() + 0.5f);
                 droneEntity.setYRot(player.getYRot());
                 level.addFreshEntity(droneEntity);

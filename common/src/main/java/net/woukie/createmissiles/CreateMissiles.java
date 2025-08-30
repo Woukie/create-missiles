@@ -74,7 +74,7 @@ public class CreateMissiles {
         CustomRenderedItems.register(Items.CHASSIS_ASSEMBLY.get());
         CustomRenderedItems.register(Items.THRUSTER_ASSEMBLY.get());
 
-        EntityAttributeRegistry.register(EntityTypes.DRONE, DroneEntity::createMobAttributes);
+        EntityAttributeRegistry.register(EntityTypes.BASIC_DRONE, DroneEntity::createMobAttributes);
 
         PonderIndex.register();
     }
