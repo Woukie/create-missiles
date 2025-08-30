@@ -7,7 +7,7 @@
 
 <h1>Create Missiles</h1>
 
-<p>This is a Minecraft mod for Forge and Fabric that adds missiles to your world, built as an addon for the Create mod.</p>
+<p>This is a Minecraft mod for Forge and Fabric that adds missiles to the game, built as an addon for the Create mod.</p>
 
 <h1>Features</h1>
 
