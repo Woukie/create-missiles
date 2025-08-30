@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.Function;
 
+import static net.woukie.createmissiles.Util.locateAir;
 import static net.woukie.createmissiles.Util.locateNearestMatchingBlock;
 
 public class ShulkerBoxWarhead extends WarheadType {
@@ -64,7 +65,7 @@ public class ShulkerBoxWarhead extends WarheadType {
             if (!boxes.isEmpty()) {
                 for (int i = 0; i < boxes.size(); ++i) {
                     var itemStack = ItemStack.of(boxes.getCompound(i));
-                    var emptyBlock = locateShulkerPlacement(hitPosition.add(0, 1, 0), level);
+                    var emptyBlock = locateAir(hitPosition.add(0, 1, 0), level, 100);
                     if (emptyBlock != null) {
                         var success = ((BlockItem)(itemStack.getItem())).place(new DirectionalPlaceContext(level, emptyBlock, Direction.UP, itemStack, Direction.UP)).consumesAction();
                         if (success) continue;
@@ -94,9 +95,5 @@ public class ShulkerBoxWarhead extends WarheadType {
     @Override
     public Component getDisplayName() {
         return Component.translatable("warheads.createmissiles.shulker_box_warhead");
-    }
-
-    public BlockPos locateShulkerPlacement(Vec3 origin, ServerLevel level) {
-        return locateNearestMatchingBlock(origin, blockPos -> level.isEmptyBlock(blockPos) && !level.isEmptyBlock(blockPos.relative(Direction.DOWN)), 100);
     }
 }

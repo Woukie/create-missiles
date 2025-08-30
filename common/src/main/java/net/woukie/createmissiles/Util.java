@@ -2,6 +2,7 @@ package net.woukie.createmissiles;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3d;
 
@@ -54,6 +55,10 @@ public class Util {
                 maxDist.z += deltaDist.z;
             }
         }
+    }
+
+    public static BlockPos locateAir(Vec3 origin, ServerLevel level, int limit) {
+        return locateNearestMatchingBlock(origin, blockPos -> level.isEmptyBlock(blockPos) && !level.isEmptyBlock(blockPos.relative(Direction.DOWN)), limit);
     }
 
     public static BlockPos locateNearestMatchingBlock(Vec3 origin, Function<BlockPos, Boolean> condition, int limit) {
