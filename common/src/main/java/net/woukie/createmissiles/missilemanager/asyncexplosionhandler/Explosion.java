@@ -64,6 +64,7 @@ public class Explosion {
         var c2 = originBlockPosition.getCenter().add(new Vec3(maxRadius, maxRadius, maxRadius));
         List<Entity> entities = this.level.getEntities(null, new AABB(c1.x, c1.y, c1.z, c2.x, c2.y, c2.z));
         entities.forEach(entity -> {
+            if (!(entity instanceof LivingEntity)) return;
             if (entity.ignoreExplosion()) return;
             double proximity = Math.sqrt(entity.distanceToSqr(originBlockPosition.getCenter()));
             double proportionToEdge = proximity / (double) maxRadius;
@@ -99,10 +100,8 @@ public class Explosion {
             double exposure = powerLeft / this.power;
             exposure = exposure >= 1 ? 1 : 1 - Math.pow(2, -10 * exposure); // Adjusted for a further falloff
             double impact = proportionToCenter * exposure;
-            entity.hurt(level.damageSources().explosion(null, null), (int)((impact*impact*impact)*7*power+1));
-            if (entity instanceof LivingEntity livingEntity) {
-                exposure = ProtectionEnchantment.getExplosionKnockbackAfterDampener(livingEntity, exposure);
-            }
+            entity.hurt(level.damageSources().explosion(null, null), (int)((impact * impact * impact) * 7 * power + 1));
+            exposure = ProtectionEnchantment.getExplosionKnockbackAfterDampener((LivingEntity)entity, exposure);
             entity.setDeltaMovement(entity.getDeltaMovement().add(entity.position().subtract(originBlockPosition.getCenter()).normalize().scale(exposure)));
         });
     }
