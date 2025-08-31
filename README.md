@@ -12,11 +12,12 @@
 <h1>Features</h1>
 
 <ul>
-    <li>Launch missiles by inserting a map into your launch pad and selecting a destination, or use a drone to scout specific coordinates for unvisited targets.</li>
+    <li>Launch missiles by inserting a map into your launch pad and selecting a destination</li>
+    <li>Use a drone to fly to and make a map of specific coordinates, but be carefull not to let it get intercepted on its journey</li>
     <li>Integrates into survival gameplay by gating progress through finding assemblies which are used to make missile parts</li>
     <li>Mix and match unique warheads, chassis and thrusters</li>
-    <li>Use a map to  The navigation panel lets you click on a map to set the target and view a simulated trajectory that gets as close as possible to the target</li>
-    <li>Includes full Ponder and JEI integration, which provides information about how to set up a launch pad and how to obtain missile assemblies.</li>
+    <li>View a simulated trajectory in the navigation panel</li>
+    <li>Includes full Ponder and JEI integration, which provides information about how to set up a launch pad and how to obtain missile assemblies</li>
 </ul>
 
 <h1>Contributors</h1>
