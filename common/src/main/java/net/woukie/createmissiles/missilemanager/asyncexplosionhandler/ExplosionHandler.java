@@ -28,6 +28,7 @@ public class ExplosionHandler extends SavedData {
 
     public void createExplosion(Explosion explosion) {
         this.explosions.add(explosion);
+        explosion.damageEntities();
         explosion.startCrunching();
         setDirty();
     }
