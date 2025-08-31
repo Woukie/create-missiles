@@ -21,7 +21,7 @@ import org.joml.Vector3d;
 public class ExcavatorWarhead extends WarheadType {
     private final MissilePartModel model = new ExcavatorWarheadModel();
     private final double stepSize = 1.5d;
-    private final int initialCharges = 20;
+    private final int initialCharges = 40;
 
     @Override
     public float getWeight() {
