@@ -24,11 +24,11 @@ public class AnnoyingWarheadModel implements MissilePartModel {
 			}},
 			new HashMap<>() {{
 				put("bottom", new Vector3f(0, 0, 0));
-				put("top", new Vector3f(0, 10, 0));
+				put("top", new Vector3f(0, 5, 0));
 			}},
 			new HashMap<>() {{
 				put("bottom", new Vector3f(0, 0, 0));
-				put("top", new Vector3f(0, 10, 0));
+				put("top", new Vector3f(0, 5, 0));
 			}},
 			new HashMap<>() {{
 				put("bottom", new Vector3f(0, 0, 0));
