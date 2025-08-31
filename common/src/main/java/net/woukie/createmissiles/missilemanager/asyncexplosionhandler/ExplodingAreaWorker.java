@@ -2,7 +2,6 @@ package net.woukie.createmissiles.missilemanager.asyncexplosionhandler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
 import org.joml.Vector3d;
 
@@ -10,6 +9,7 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 import static net.woukie.createmissiles.Util.traverseSupercover;
 

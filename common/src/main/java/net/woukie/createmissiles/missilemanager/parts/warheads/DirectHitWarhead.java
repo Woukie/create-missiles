@@ -37,7 +37,7 @@ public class DirectHitWarhead extends WarheadType {
             level.destroyBlock(dragonEgg, false);
             DefaultDispenseItemBehavior.spawnItem(level, new ItemStack(Items.DRAGON_EGG_SHELL.get(), 3), 1, Direction.UP, dragonEgg.getCenter());
         }
-        ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 100, 22));
+        ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 150, 30));
     }
 
     @Override
