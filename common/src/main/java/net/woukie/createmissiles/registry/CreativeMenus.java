@@ -28,11 +28,11 @@ public class CreativeMenus {
     public static void init() {
         CreateMissiles.LOGGER.info("Registering creative menus for " + CreateMissiles.NAME);
 
-        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, BOUND_ENDER_PEARL.get().getDefaultInstance());
-        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, DRAGON_EGG_SHELL.get().getDefaultInstance());
-        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, REINFORCED_DRAGON_EGG_SHELL.get().getDefaultInstance());
-        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, DRONE_BOX_ITEM.get().getDefaultInstance());
-        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, REINFORCED_DRONE_BOX.get().getDefaultInstance());
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, new ItemStack(BOUND_ENDER_PEARL.get()));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, new ItemStack(DRAGON_EGG_SHELL.get()));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, new ItemStack(REINFORCED_DRAGON_EGG_SHELL.get()));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, new ItemStack(DRONE_BOX_ITEM.get()));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, new ItemStack(REINFORCED_DRONE_BOX.get()));
 
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("annoying_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("direct_hit_warhead"), WARHEAD_ASSEMBLY.get()));
