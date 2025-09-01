@@ -15,7 +15,7 @@ public class StructurePoolElementTypes {
     public static final DeferredRegister<StructurePoolElementType<?>> STRUCTURE_POOL_ELEMENT_TYPES =
             DeferredRegister.create(MOD_ID, Registries.STRUCTURE_POOL_ELEMENT);
 
-    public static final RegistrySupplier<StructurePoolElementType<LiquidlessSinglePoolElement>> TEST_POOL = STRUCTURE_POOL_ELEMENT_TYPES.register("liquidless_single_pool_element", LiquidlessStructurePoolElementType::new);
+    public static final RegistrySupplier<StructurePoolElementType<LiquidlessSinglePoolElement>> LIQUIDLESS_SINGLE_POOL_ELEMENT = STRUCTURE_POOL_ELEMENT_TYPES.register("liquidless_single_pool_element", LiquidlessStructurePoolElementType::new);
 
     @SuppressWarnings({"Experimental"})
     public static void init() {
