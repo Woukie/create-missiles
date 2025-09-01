@@ -45,6 +45,7 @@ public class CreateMissiles {
             ExplosionHandler.get().serverTick(server);
         });
 
+        StructurePoolElementTypes.init();
         Blocks.init();
         BlockEntities.init();
         PartTypes.init();
