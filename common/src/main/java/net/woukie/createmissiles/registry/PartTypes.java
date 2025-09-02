@@ -42,6 +42,8 @@ public class PartTypes {
         PartTypes.register(new DirectHitWarhead());
         PartTypes.register(new DragonWarhead());
         PartTypes.register(new FlamingWarhead());
+        PartTypes.register(new BlazingWarhead());
+        PartTypes.register(new InfernalWarhead());
         PartTypes.register(new FireworkWarhead());
         PartTypes.register(new ShulkerBoxWarhead());
         PartTypes.register(new TeleportationWarhead());
