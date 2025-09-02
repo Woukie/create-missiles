@@ -56,9 +56,12 @@ public class FrostAreaEntity extends Entity {
 
     public void flintAndSteeled() {
         discard();
-        level().addParticle(ParticleTypes.FLASH, position().x, position().y, position().z, 0, 0, 0);
+        for (int i = 0; i < 25; i++) {
+            Vec3 pos = blockPosition().getCenter().add(random.nextGaussian() * 3, -0.5, random.nextGaussian() * 3);
+            level().addParticle(ParticleTypes.SMOKE, pos.x, pos.y, pos.z, 0, random.nextFloat() * 0.2 + 0.1, 0);
+        }
         level().playSound(null, BlockPos.containing(position()), SoundEvents.FLINTANDSTEEL_USE, SoundSource.NEUTRAL);
-        level().playSound(null, BlockPos.containing(position()), SoundEvents.GENERIC_DEATH, SoundSource.NEUTRAL);
+        level().playSound(null, BlockPos.containing(position()), SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.NEUTRAL);
     }
 
     @Override
