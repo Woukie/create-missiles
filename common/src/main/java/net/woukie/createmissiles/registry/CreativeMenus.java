@@ -40,6 +40,8 @@ public class CreativeMenus {
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("direct_hit_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("dragon_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("flaming_warhead"), WARHEAD_ASSEMBLY.get()));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("blazing_warhead"), WARHEAD_ASSEMBLY.get()));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("infernal_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("firework_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("shulker_box_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("teleportation_warhead"), WARHEAD_ASSEMBLY.get()));

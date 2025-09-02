@@ -21,6 +21,14 @@ public class EntityTypes {
             "fireball",
             () -> EntityType.Builder.of(FireballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "fireball").toString())
     );
+    public static final RegistrySupplier<EntityType<BlazingballEntity>> BLAZINGBALL = ENTITY_TYPES.register(
+            "blazingball",
+            () -> EntityType.Builder.of(BlazingballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "blazingball").toString())
+    );
+    public static final RegistrySupplier<EntityType<InfernalballEntity>> INFERNALBALL = ENTITY_TYPES.register(
+            "infernalball",
+            () -> EntityType.Builder.of(InfernalballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "infernalball").toString())
+    );
     public static final RegistrySupplier<EntityType<FrostballEntity>> FROSTBALL = ENTITY_TYPES.register(
             "frostball",
             () -> EntityType.Builder.of(FrostballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "frostball").toString())

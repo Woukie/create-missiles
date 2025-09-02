@@ -35,12 +35,12 @@ public class FlamingWarhead extends WarheadType {
         ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 10));
 
         var random = new Random();
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 20; i++) {
             FireballEntity fireball = new FireballEntity(EntityTypes.FIREBALL.get(), level);
             fireball.setNoGravity(false);
             fireball.setPos(hitPosition.add(0, 0.6, 0));
             var velocity = fireballVelocity;
-            if (i >= 20) velocity = fireballSlowVelocity;
+            if (i >= 15) velocity = fireballSlowVelocity;
             fireball.setDeltaMovement(
                    random.nextDouble() * velocity - velocity / 2,
                    random.nextDouble() * velocity,

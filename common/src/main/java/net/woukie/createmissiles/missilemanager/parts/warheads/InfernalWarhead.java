@@ -36,7 +36,7 @@ public class InfernalWarhead extends WarheadType {
 
         var random = new Random();
         for (int i = 0; i < 30; i++) {
-            FireballEntity fireball = new FireballEntity(EntityTypes.FIREBALL.get(), level);
+            FireballEntity fireball = new FireballEntity(EntityTypes.INFERNALBALL.get(), level);
             fireball.setNoGravity(false);
             fireball.setPos(hitPosition.add(0, 0.6, 0));
             var velocity = fireballVelocity;

@@ -8,6 +8,7 @@ import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.HitResult;
 import net.woukie.createmissiles.Util;
 import net.woukie.createmissiles.registry.EntityTypes;
@@ -24,7 +25,15 @@ public class FrostballEntity extends BallEntity {
     protected void onHit(@NotNull HitResult hitResult) {
         if (level().getServer() == null || spent) return;
         super.onHit(hitResult);
-        EntityTypes.FROST_AREA.get().spawn((ServerLevel) level(), BlockPos.containing(hitResult.getLocation()), MobSpawnType.MOB_SUMMONED);
+
+        int entityCount = (int)(Math.random() * 3);
+        BlockPos spawnPos = Util.locateNearestMatchingBlock(hitResult.getLocation(), blockPos -> level().getBlockState(blockPos).canBeReplaced(Fluids.WATER), 20);
+        spawnPos = spawnPos == null ? BlockPos.containing(hitResult.getLocation()) : spawnPos;
+        for (int i = 0; i < entityCount; i++) {
+            EntityType.SNOW_GOLEM.spawn((ServerLevel) level(), spawnPos, MobSpawnType.MOB_SUMMONED);
+        }
+
+        EntityTypes.FROST_AREA.get().spawn((ServerLevel) level(), spawnPos, MobSpawnType.MOB_SUMMONED);
         Util.locateNearestMatchingBlock(hitResult.getLocation(), blockPos -> {
             FrostAreaEntity.applyFrost(blockPos, level());
             return false;

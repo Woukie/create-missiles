@@ -61,6 +61,6 @@ public class WitheredWarhead extends WarheadType {
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("warheads.createmissiles.frozen_warhead");
+        return Component.translatable("warheads.createmissiles.withered_warhead");
     }
 }
