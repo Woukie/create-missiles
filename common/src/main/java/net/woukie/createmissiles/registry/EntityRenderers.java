@@ -2,6 +2,7 @@ package net.woukie.createmissiles.registry;
 
 import dev.architectury.registry.client.level.entity.EntityModelLayerRegistry;
 import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
+import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.DroneRenderer;
@@ -14,6 +15,8 @@ public class EntityRenderers {
         EntityRendererRegistry.register(EntityTypes.MISSILE, MissileRenderer::new);
         EntityRendererRegistry.register(EntityTypes.BASIC_DRONE, DroneRenderer::new);
         EntityRendererRegistry.register(EntityTypes.FIREBALL, ThrownItemRenderer::new);
+        EntityRendererRegistry.register(EntityTypes.FROSTBALL, ThrownItemRenderer::new);
+        EntityRendererRegistry.register(EntityTypes.FROST_AREA, NoopRenderer::new);
 
         EntityModelLayerRegistry.register(DroneModel.LAYER_LOCATION, DroneModel::createBodyLayer);
     }

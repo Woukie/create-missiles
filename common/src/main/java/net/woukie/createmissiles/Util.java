@@ -72,7 +72,8 @@ public class Util {
             }
         }
 
-        var invalidNeighbors = new ArrayList<BlockPos>();
+        var processedNeighbors = new ArrayList<BlockPos>();
+        var seenNeighbors = new ArrayList<BlockPos>();
         var neighbors = new PriorityQueue<Neighbor>(Comparator.comparingDouble(neighbour -> neighbour.distance));
         neighbors.add(new Neighbor(new BlockPos((int) origin.x, (int) origin.y, (int) origin.z), 0));
 
@@ -80,11 +81,13 @@ public class Util {
         while (!neighbors.isEmpty() && steps < limit) {
             Neighbor neighbor = neighbors.poll();
             if (condition.apply(neighbor.position)) return neighbor.position;
-            invalidNeighbors.add(neighbor.position);
+            processedNeighbors.add(neighbor.position);
             for (Direction dir : Direction.values()) {
                 var newPos = neighbor.position.offset(dir.getStepX(), dir.getStepY(), dir.getStepZ());
-                if (!invalidNeighbors.contains(newPos))
+                if (!processedNeighbors.contains(newPos) && !seenNeighbors.contains(newPos)) {
+                    seenNeighbors.add(newPos);
                     neighbors.add(new Neighbor(newPos, newPos.getCenter().distanceTo(origin)));
+                }
             }
             steps ++;
         }

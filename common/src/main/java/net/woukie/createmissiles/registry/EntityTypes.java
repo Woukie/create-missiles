@@ -7,9 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.entity.DroneEntity;
-import net.woukie.createmissiles.entity.FireballEntity;
-import net.woukie.createmissiles.entity.MissileEntity;
+import net.woukie.createmissiles.entity.*;
 
 public class EntityTypes {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
@@ -22,6 +20,14 @@ public class EntityTypes {
     public static final RegistrySupplier<EntityType<FireballEntity>> FIREBALL = ENTITY_TYPES.register(
             "fireball",
             () -> EntityType.Builder.of(FireballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "fireball").toString())
+    );
+    public static final RegistrySupplier<EntityType<FrostballEntity>> FROSTBALL = ENTITY_TYPES.register(
+            "frostball",
+            () -> EntityType.Builder.of(FrostballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "frostball").toString())
+    );
+    public static final RegistrySupplier<EntityType<FrostAreaEntity>> FROST_AREA = ENTITY_TYPES.register(
+            "frost_area",
+            () -> EntityType.Builder.of(FrostAreaEntity::new, MobCategory.MISC).sized(6.0F, 1.2F).fireImmune().clientTrackingRange(10).build(new ResourceLocation(CreateMissiles.MOD_ID, "frost_area").toString())
     );
     public static final RegistrySupplier<EntityType<DroneEntity>> BASIC_DRONE = ENTITY_TYPES.register(
             "basic_drone",
