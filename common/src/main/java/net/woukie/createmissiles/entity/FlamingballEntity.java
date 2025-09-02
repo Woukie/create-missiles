@@ -15,10 +15,10 @@ import net.woukie.createmissiles.Util;
 import net.woukie.createmissiles.registry.Blocks;
 import org.jetbrains.annotations.NotNull;
 
-public class FireballEntity extends AbstractHurtingProjectile implements ItemSupplier {
+public class FlamingballEntity extends AbstractHurtingProjectile implements ItemSupplier {
     boolean spent;
 
-    public FireballEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level level) {
+    public FlamingballEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level level) {
         super(entityType, level);
     }
 

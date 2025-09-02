@@ -10,7 +10,6 @@ import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.client.models.warheads.FlamingWarheadModel;
 import net.woukie.createmissiles.entity.BlazingballEntity;
-import net.woukie.createmissiles.entity.FireballEntity;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.Explosion;
 import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplosionHandler;

@@ -7,7 +7,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.level.Level;
 
-public class BlazingballEntity extends FireballEntity {
+public class BlazingballEntity extends FlamingballEntity {
     public BlazingballEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level level) {
         super(entityType, level);
     }

@@ -14,7 +14,7 @@ public class EntityRenderers {
         CreateMissiles.LOGGER.info("Registering entity renderers for " + CreateMissiles.NAME);
         EntityRendererRegistry.register(EntityTypes.MISSILE, MissileRenderer::new);
         EntityRendererRegistry.register(EntityTypes.BASIC_DRONE, DroneRenderer::new);
-        EntityRendererRegistry.register(EntityTypes.FIREBALL, ThrownItemRenderer::new);
+        EntityRendererRegistry.register(EntityTypes.FLAMINGBALL, ThrownItemRenderer::new);
         EntityRendererRegistry.register(EntityTypes.FROSTBALL, ThrownItemRenderer::new);
         EntityRendererRegistry.register(EntityTypes.BLAZINGBALL, ThrownItemRenderer::new);
         EntityRendererRegistry.register(EntityTypes.INFERNALBALL, ThrownItemRenderer::new);
