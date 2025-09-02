@@ -1,0 +1,14 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "items": ["minecraft:wither_rose"],
+      "count": 8
+    },
+    {
+      "tags": ["minecraft:nether_star"],
+      "count": 1
+    }
+  ],
+  "assembly": "createmissiles:annoying_warhead"
+}
