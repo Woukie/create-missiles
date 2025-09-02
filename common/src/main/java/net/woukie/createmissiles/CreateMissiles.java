@@ -59,6 +59,8 @@ public class CreateMissiles {
         EntityTypes.init();
         SoundEvents.init();
         ParticleTypes.init();
+
+
     }
 
     public static CreateRegistrate registrate() {

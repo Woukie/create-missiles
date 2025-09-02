@@ -11,6 +11,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.TraceableEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
 import static net.minecraft.world.level.block.SnowLayerBlock.LAYERS;
@@ -44,7 +46,7 @@ public class FrostAreaEntity extends Entity {
         for (int i = 0; i < frostsPerTick; i++) {
             double distance = level().random.nextGaussian() * radius;
             double yaw = level().random.nextFloat() * Math.PI * 2;
-            double pitch = level().random.nextGaussian() * Math.PI / 2;
+            double pitch = level().random.nextGaussian() * Math.PI / 4;
             Vector3d offset = new Vector3d(distance, 0, 0);
             offset.rotateZ(pitch);
             offset.rotateY(yaw);
@@ -52,21 +54,11 @@ public class FrostAreaEntity extends Entity {
         }
     }
 
-    @Override
-    public boolean skipAttackInteraction(Entity entity) {
-        return true;
-    }
-
-    @Override
-    public InteractionResult interact(Player player, InteractionHand interactionHand) {
-        if (player.getItemInHand(interactionHand).is(Items.FLINT_AND_STEEL)) {
-            discard();
-            level().addParticle(ParticleTypes.FLASH, position().x, position().y, position().z, 0, 0, 0);
-            level().playSound(null, BlockPos.containing(position()), SoundEvents.FLINTANDSTEEL_USE, SoundSource.NEUTRAL);
-            level().playSound(null, BlockPos.containing(position()), SoundEvents.GENERIC_DEATH, SoundSource.NEUTRAL);
-            return InteractionResult.SUCCESS;
-        }
-        return super.interact(player, interactionHand);
+    public void flintAndSteeled() {
+        discard();
+        level().addParticle(ParticleTypes.FLASH, position().x, position().y, position().z, 0, 0, 0);
+        level().playSound(null, BlockPos.containing(position()), SoundEvents.FLINTANDSTEEL_USE, SoundSource.NEUTRAL);
+        level().playSound(null, BlockPos.containing(position()), SoundEvents.GENERIC_DEATH, SoundSource.NEUTRAL);
     }
 
     @Override
@@ -82,11 +74,6 @@ public class FrostAreaEntity extends Entity {
     @Override
     protected void addAdditionalSaveData(CompoundTag compoundTag) {
 
-    }
-
-    @Override
-    public boolean isPickable() {
-        return true;
     }
 
 //    pushEntitiesUp causes this to go up

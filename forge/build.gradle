@@ -12,6 +12,7 @@ loom {
 
     forge {
         convertAccessWideners = true
+        mixinConfig "createmissiles-common.mixins.json"
         extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
     }
 }
