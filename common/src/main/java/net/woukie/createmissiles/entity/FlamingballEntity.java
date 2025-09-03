@@ -5,7 +5,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
-import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -15,16 +14,11 @@ import net.woukie.createmissiles.Util;
 import net.woukie.createmissiles.registry.Blocks;
 import org.jetbrains.annotations.NotNull;
 
-public class FlamingballEntity extends AbstractHurtingProjectile implements ItemSupplier {
+public class FlamingballEntity extends BallEntity {
     boolean spent;
 
     public FlamingballEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level level) {
         super(entityType, level);
-    }
-
-    @Override
-    protected boolean shouldBurn() {
-        return true;
     }
 
     @Override
