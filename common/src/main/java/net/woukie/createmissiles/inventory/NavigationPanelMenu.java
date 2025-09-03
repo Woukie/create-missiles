@@ -8,6 +8,8 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.MapItem;
+import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.woukie.createmissiles.block.navigationpanel.messages.ClickFuelMessage;
 import net.woukie.createmissiles.block.navigationpanel.messages.ClickMapMessage;
 import net.woukie.createmissiles.registry.Items;
@@ -29,7 +31,16 @@ public class NavigationPanelMenu extends AbstractBasicMenu {
 
         this.addSlot(new Slot(container, 0, 66, 35) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
-                return itemStack.is(net.minecraft.world.item.Items.FILLED_MAP);
+                if (!itemStack.is(net.minecraft.world.item.Items.FILLED_MAP))
+                    return false;
+
+                var data = MapItem.getSavedData(itemStack, playerInventory.player.level());
+                if (data == null) return false;
+
+                for(MapDecoration mapDecoration : data.getDecorations())
+                    if (mapDecoration.getType() == MapDecoration.Type.RED_X)
+                        return false;
+                return !data.isExplorationMap();
             }
         });
 
