@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.AnnoyingJukeboxBlock;
+import net.woukie.createmissiles.block.InfernalAshLayer;
 import net.woukie.createmissiles.block.FlamingFireBlock;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 import net.woukie.createmissiles.block.controlpanel.ControlPanelBlock;
@@ -72,6 +73,12 @@ public class Blocks {
             .simpleItem()
             .register();
 
+    public static final BlockEntry<InfernalAshLayer> INFERNAL_ASH = REGISTRATE
+            .block("infernal_ash", InfernalAshLayer::new)
+            .initialProperties(() -> net.minecraft.world.level.block.Blocks.SNOW)
+            .simpleItem()
+            .register();
+
     @SuppressWarnings({"Experimental", "UnstableApiUsage"})
     public static void init() {
         CreateMissiles.LOGGER.info("Registering blocks for " + CreateMissiles.NAME);
@@ -81,5 +88,6 @@ public class Blocks {
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(CONTROL_PANEL));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(NAVIGATION_PANEL));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(ANNOYING_JUKEBOX));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(INFERNAL_ASH));
     }
 }

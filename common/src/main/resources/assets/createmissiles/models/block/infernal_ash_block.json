@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_top",
+  "textures": {
+    "particle": "createmissiles:block/infernal_ash_height16",
+    "top": "createmissiles:block/infernal_ash_height16",
+    "side": "createmissiles:block/infernal_ash_height2"
+  }
+}

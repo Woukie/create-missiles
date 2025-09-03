@@ -19,6 +19,7 @@ public class EntityRenderers {
         EntityRendererRegistry.register(EntityTypes.BLAZINGBALL, ThrownItemRenderer::new);
         EntityRendererRegistry.register(EntityTypes.INFERNALBALL, ThrownItemRenderer::new);
         EntityRendererRegistry.register(EntityTypes.FROST_AREA, NoopRenderer::new);
+        EntityRendererRegistry.register(EntityTypes.INFERNAL_AREA, NoopRenderer::new);
 
         EntityModelLayerRegistry.register(DroneModel.LAYER_LOCATION, DroneModel::createBodyLayer);
     }
