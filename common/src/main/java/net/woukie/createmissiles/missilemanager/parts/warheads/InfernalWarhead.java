@@ -33,7 +33,7 @@ public class InfernalWarhead extends WarheadType {
     public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
-        ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 10));
+        ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 25));
 
         var random = new Random();
         for (int i = 0; i < 30; i++) {
