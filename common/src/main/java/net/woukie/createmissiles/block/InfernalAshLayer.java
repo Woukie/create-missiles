@@ -5,8 +5,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -35,6 +37,12 @@ public class InfernalAshLayer extends Block {
         super(properties);
         properties.forceSolidOn();
         this.registerDefaultState((this.stateDefinition.any()).setValue(LAYERS, 1));
+    }
+
+    @Override
+    public void stepOn(Level level, BlockPos blockPos, BlockState blockState, Entity entity) {
+        entity.hurt(level.damageSources().onFire(), 1);
+        super.stepOn(level, blockPos, blockState, entity);
     }
 
     @Override

@@ -34,7 +34,7 @@ public class InfernalAreaEntity extends Entity {
         super.tick();
         if (level().isClientSide()) {
             Vec3 pos = blockPosition().getCenter().add(random.nextGaussian() * 3, -0.5, random.nextGaussian() * 3);
-            level().addParticle(ParticleTypes.LAVA, pos.x, pos.y, pos.z, 0, random.nextFloat() * 0.2 + 0.1, 0);
+            level().addParticle(ParticleTypes.FLAME, pos.x, pos.y, pos.z, 0, random.nextFloat() * 0.2 + 0.1, 0);
             return;
         }
 
@@ -96,15 +96,19 @@ public class InfernalAreaEntity extends Entity {
                 BlockState westBlockState = level.getBlockState(blockPos.west());
                 BlockState eastBlockState = level.getBlockState(blockPos.east());
                 BlockState southBlockState = level.getBlockState(blockPos.south());
+                Block northBlock = southBlockState.getBlock();
+                Block westBlock =southBlockState.getBlock();
+                Block eastBlock =southBlockState.getBlock();
+                Block southBlock = southBlockState.getBlock();
                 var layersNorth = northBlockState.getOptionalValue(InfernalAshLayer.LAYERS);
                 var layersEast = eastBlockState.getOptionalValue(InfernalAshLayer.LAYERS);
                 var layersSouth = southBlockState.getOptionalValue(InfernalAshLayer.LAYERS);
                 var layersWest = westBlockState.getOptionalValue(InfernalAshLayer.LAYERS);
-                if (layersNorth.isPresent() && layersNorth.get() == InfernalAshLayer.MAX_HEIGHT) validAshBlocks++;
-                if (layersEast.isPresent() && layersEast.get() == InfernalAshLayer.MAX_HEIGHT) validAshBlocks++;
-                if (layersSouth.isPresent() && layersSouth.get() == InfernalAshLayer.MAX_HEIGHT) validAshBlocks++;
-                if (layersWest.isPresent() && layersWest.get() == InfernalAshLayer.MAX_HEIGHT) validAshBlocks++;
-                if (validAshBlocks > 0) level.setBlockAndUpdate(blockPos, Blocks.LAVA.defaultBlockState());
+                if (northBlock.equals(Blocks.LAVA) || (layersNorth.isPresent() && layersNorth.get() == InfernalAshLayer.MAX_HEIGHT)) validAshBlocks++;
+                if (eastBlock.equals(Blocks.LAVA) || (layersEast.isPresent() && layersEast.get() == InfernalAshLayer.MAX_HEIGHT)) validAshBlocks++;
+                if (southBlock.equals(Blocks.LAVA) || (layersSouth.isPresent() && layersSouth.get() == InfernalAshLayer.MAX_HEIGHT)) validAshBlocks++;
+                if (westBlock.equals(Blocks.LAVA) || (layersWest.isPresent() && layersWest.get() == InfernalAshLayer.MAX_HEIGHT)) validAshBlocks++;
+                if (validAshBlocks >= 4) level.setBlockAndUpdate(blockPos, Blocks.LAVA.defaultBlockState());
             }
         } else if (block.equals(Blocks.WATER)) {
             level.setBlock(blockPos, Blocks.COBBLESTONE.defaultBlockState(), 3);
