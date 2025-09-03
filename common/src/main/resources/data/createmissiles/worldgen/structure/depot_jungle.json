@@ -1,6 +1,6 @@
 {
   "type": "minecraft:jigsaw",
-  "biomes": "#minecraft:is_jungle",
+  "biomes": "#minecraft:has_structure/jungle_temple",
   "terrain_adaptation": "beard_thin",
   "spawn_overrides": {},
   "step": "surface_structures",
