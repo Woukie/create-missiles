@@ -108,7 +108,7 @@ public class InfernalAreaEntity extends Entity {
                 if (eastBlock.equals(Blocks.LAVA) || (layersEast.isPresent() && layersEast.get() == InfernalAshLayer.MAX_HEIGHT)) validAshBlocks++;
                 if (southBlock.equals(Blocks.LAVA) || (layersSouth.isPresent() && layersSouth.get() == InfernalAshLayer.MAX_HEIGHT)) validAshBlocks++;
                 if (westBlock.equals(Blocks.LAVA) || (layersWest.isPresent() && layersWest.get() == InfernalAshLayer.MAX_HEIGHT)) validAshBlocks++;
-                if (validAshBlocks >= 4) level.setBlockAndUpdate(blockPos, Blocks.LAVA.defaultBlockState());
+                if (validAshBlocks >= 3) level.setBlockAndUpdate(blockPos, Blocks.LAVA.defaultBlockState());
             }
         } else if (block.equals(Blocks.WATER)) {
             level.setBlock(blockPos, Blocks.COBBLESTONE.defaultBlockState(), 3);
