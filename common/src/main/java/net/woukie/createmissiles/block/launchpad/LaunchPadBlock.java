@@ -53,7 +53,7 @@ public class LaunchPadBlock extends KineticBlock implements IBE<LaunchPadBlockEn
 
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
-        return face == Direction.DOWN;
+        return false;
     }
 
     @Override
