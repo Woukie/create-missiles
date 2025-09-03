@@ -9,6 +9,7 @@ import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.client.models.warheads.FlamingWarheadModel;
 import net.woukie.createmissiles.entity.FlamingballEntity;
+import net.woukie.createmissiles.entity.InfernalballEntity;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.Explosion;
 import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplosionHandler;
@@ -36,7 +37,7 @@ public class InfernalWarhead extends WarheadType {
 
         var random = new Random();
         for (int i = 0; i < 30; i++) {
-            FlamingballEntity fireball = new FlamingballEntity(EntityTypes.INFERNALBALL.get(), level);
+            InfernalballEntity fireball = new InfernalballEntity(EntityTypes.INFERNALBALL.get(), level);
             fireball.setNoGravity(false);
             fireball.setPos(hitPosition.add(0, 0.6, 0));
             var velocity = fireballVelocity;
