@@ -9,6 +9,7 @@ import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.client.models.warheads.FlamingWarheadModel;
 import net.woukie.createmissiles.entity.FlamingballEntity;
+import net.woukie.createmissiles.entity.InfernalballEntity;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.Explosion;
 import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplosionHandler;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
-public class FlamingWarhead extends WarheadType {
+public class InfernalWarhead extends WarheadType {
     private final MissilePartModel model = new FlamingWarheadModel();
     private static final float fireballVelocity = 3;
     private static final float fireballSlowVelocity = 1.5f;
@@ -32,15 +33,15 @@ public class FlamingWarhead extends WarheadType {
     public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
-        ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 8));
+        ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 25));
 
         var random = new Random();
-        for (int i = 0; i < 20; i++) {
-            FlamingballEntity fireball = new FlamingballEntity(EntityTypes.FLAMINGBALL.get(), level);
+        for (int i = 0; i < 30; i++) {
+            InfernalballEntity fireball = new InfernalballEntity(EntityTypes.INFERNALBALL.get(), level);
             fireball.setNoGravity(false);
             fireball.setPos(hitPosition.add(0, 0.6, 0));
             var velocity = fireballVelocity;
-            if (i >= 15) velocity = fireballSlowVelocity;
+            if (i >= 20) velocity = fireballSlowVelocity;
             fireball.setDeltaMovement(
                    random.nextDouble() * velocity - velocity / 2,
                    random.nextDouble() * velocity,
@@ -59,11 +60,11 @@ public class FlamingWarhead extends WarheadType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "flaming_warhead");
+        return new ResourceLocation(CreateMissiles.MOD_ID, "infernal_warhead");
     }
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("warheads.createmissiles.flaming_warhead");
+        return Component.translatable("warheads.createmissiles.infernal_warhead");
     }
 }

@@ -15,7 +15,6 @@ import net.woukie.createmissiles.missilemanager.parts.warheads.*;
 
 import java.util.HashMap;
 
-
 public class PartTypes {
     private static final HashMap<ResourceLocation, MissilePartType> missilePartTypes = new HashMap<>();
 
@@ -37,10 +36,14 @@ public class PartTypes {
     public static void init() {
         CreateMissiles.LOGGER.info("Registering missile part types for " + CreateMissiles.NAME);
 
+        PartTypes.register(new WitheredWarhead());
+        PartTypes.register(new FrozenWarhead());
         PartTypes.register(new AnnoyingWarhead());
         PartTypes.register(new DirectHitWarhead());
         PartTypes.register(new DragonWarhead());
         PartTypes.register(new FlamingWarhead());
+        PartTypes.register(new BlazingWarhead());
+        PartTypes.register(new InfernalWarhead());
         PartTypes.register(new FireworkWarhead());
         PartTypes.register(new ShulkerBoxWarhead());
         PartTypes.register(new TeleportationWarhead());

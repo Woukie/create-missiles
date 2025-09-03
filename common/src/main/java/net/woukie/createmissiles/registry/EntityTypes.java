@@ -7,9 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.entity.DroneEntity;
-import net.woukie.createmissiles.entity.FireballEntity;
-import net.woukie.createmissiles.entity.MissileEntity;
+import net.woukie.createmissiles.entity.*;
 
 public class EntityTypes {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
@@ -19,9 +17,29 @@ public class EntityTypes {
             "missile_entity",
             () -> EntityType.Builder.of(MissileEntity::new, MobCategory.MISC).noSummon().fireImmune().sized(1.5F, 5F).clientTrackingRange(32).updateInterval(20).build(new ResourceLocation(CreateMissiles.MOD_ID, "missile_entity").toString())
     );
-    public static final RegistrySupplier<EntityType<FireballEntity>> FIREBALL = ENTITY_TYPES.register(
-            "fireball",
-            () -> EntityType.Builder.of(FireballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "fireball").toString())
+    public static final RegistrySupplier<EntityType<FlamingballEntity>> FLAMINGBALL = ENTITY_TYPES.register(
+            "flamingball",
+            () -> EntityType.Builder.of(FlamingballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "flamingball").toString())
+    );
+    public static final RegistrySupplier<EntityType<BlazingballEntity>> BLAZINGBALL = ENTITY_TYPES.register(
+            "blazingball",
+            () -> EntityType.Builder.of(BlazingballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "blazingball").toString())
+    );
+    public static final RegistrySupplier<EntityType<InfernalballEntity>> INFERNALBALL = ENTITY_TYPES.register(
+            "infernalball",
+            () -> EntityType.Builder.of(InfernalballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "infernalball").toString())
+    );
+    public static final RegistrySupplier<EntityType<FrostballEntity>> FROSTBALL = ENTITY_TYPES.register(
+            "frostball",
+            () -> EntityType.Builder.of(FrostballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "frostball").toString())
+    );
+    public static final RegistrySupplier<EntityType<FrostAreaEntity>> FROST_AREA = ENTITY_TYPES.register(
+            "frost_area",
+            () -> EntityType.Builder.of(FrostAreaEntity::new, MobCategory.MISC).sized(6.0F, 1.2F).fireImmune().clientTrackingRange(10).build(new ResourceLocation(CreateMissiles.MOD_ID, "frost_area").toString())
+    );
+    public static final RegistrySupplier<EntityType<InfernalAreaEntity>> INFERNAL_AREA = ENTITY_TYPES.register(
+            "infernal_area",
+            () -> EntityType.Builder.of(InfernalAreaEntity::new, MobCategory.MISC).sized(6.0F, 1.2F).fireImmune().clientTrackingRange(10).build(new ResourceLocation(CreateMissiles.MOD_ID, "infernal_area").toString())
     );
     public static final RegistrySupplier<EntityType<DroneEntity>> BASIC_DRONE = ENTITY_TYPES.register(
             "basic_drone",
