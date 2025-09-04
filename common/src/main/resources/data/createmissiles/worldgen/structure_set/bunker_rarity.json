@@ -1,0 +1,19 @@
+{
+    "structures": [
+        {
+            "structure": "createmissiles:bunker",
+            "weight": 1
+        }
+    ],
+    "placement": {
+        "salt": 2082003011235813,
+        "frequency": 1,
+        "type": "random_spread",
+        "spacing": 32,
+        "separation": 20,
+        "exclusion_zone": {
+            "chunk_count": 8,
+            "other_set": "minecraft:mineshafts"
+        }
+    }
+}

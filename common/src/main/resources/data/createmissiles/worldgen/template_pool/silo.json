@@ -1,0 +1,41 @@
+{
+	"fallback": "createmissiles:small_rooms",
+	"elements": [
+		{
+			"weight": 5,
+			"element": {
+				"location": "createmissiles:bunker_missilesiloopen_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 5,
+			"element": {
+				"location": "createmissiles:bunker_missilesiloclosed_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:bunker_missilesiloopen_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:bunker_missilesiloclosed_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		}
+	]
+}

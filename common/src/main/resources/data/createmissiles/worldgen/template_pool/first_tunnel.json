@@ -1,0 +1,23 @@
+{
+	"fallback": "createmissiles:small_rooms",
+	"elements": [
+		{
+			"weight": 3,
+			"element": {
+				"location": "createmissiles:bunker_liftsmall_first",
+				"processors": "minecraft:empty",
+				"projection":"rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:bunker_liftlarge_first",
+				"processors": "minecraft:empty",
+				"projection":"rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		}
+	]
+}
