@@ -7,14 +7,17 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.render.CustomRenderedItems;
 import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.event.events.common.TickEvent;
+import dev.architectury.registry.item.ItemPropertiesRegistry;
 import dev.architectury.registry.level.entity.EntityAttributeRegistry;
 import dev.architectury.registry.menu.MenuRegistry;
 import dev.architectury.registry.registries.RegistrarManager;
+import net.minecraft.resources.ResourceLocation;
 import net.woukie.createmissiles.client.screens.AssemblyPanelScreen;
 import net.woukie.createmissiles.client.screens.ControlPanelScreen;
 import net.woukie.createmissiles.client.screens.DroneScreen;
 import net.woukie.createmissiles.client.screens.NavigationPanelScreen;
 import net.woukie.createmissiles.entity.DroneEntity;
+import net.woukie.createmissiles.item.BiomeVialItem;
 import net.woukie.createmissiles.missilemanager.Trajectories;
 import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplosionHandler;
 import net.woukie.createmissiles.registry.*;
@@ -78,6 +81,14 @@ public class CreateMissiles {
         CustomRenderedItems.register(Items.THRUSTER_ASSEMBLY.get());
 
         EntityAttributeRegistry.register(EntityTypes.BASIC_DRONE, DroneEntity::createMobAttributes);
+
+        ItemPropertiesRegistry.register(Items.BIOME_VIAL.get(), new ResourceLocation("full"), (itemStack, clientLevel, livingEntity, i) -> {
+            if (livingEntity == null) return 0.0F;
+            if (itemStack.getItem() instanceof BiomeVialItem item) {
+                return item.isFull(itemStack) ? 1.0F : 0.0F;
+            }
+            return 0.0F;
+        });
 
         PonderIndex.register();
     }
