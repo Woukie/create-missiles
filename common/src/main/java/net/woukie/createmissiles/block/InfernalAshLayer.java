@@ -41,7 +41,8 @@ public class InfernalAshLayer extends Block {
 
     @Override
     public void stepOn(Level level, BlockPos blockPos, BlockState blockState, Entity entity) {
-        entity.hurt(level.damageSources().onFire(), 1);
+        int damage = blockState.getValue(FrostSnowLayer.LAYERS) * 2 / MAX_HEIGHT;
+        entity.hurt(level.damageSources().generic(), damage);
         super.stepOn(level, blockPos, blockState, entity);
     }
 

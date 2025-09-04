@@ -13,9 +13,7 @@ public class FrostSnowLayer extends InfernalAshLayer {
 
     @Override
     public void stepOn(Level level, BlockPos blockPos, BlockState blockState, Entity entity) {
-        if (!(entity.getType() == EntityType.SNOW_GOLEM)) {
-            entity.hurt(level.damageSources().onFire(), 1);
-        }
-        super.stepOn(level, blockPos, blockState, entity);
+        if (!entity.getType().equals(EntityType.SNOW_GOLEM))
+            super.stepOn(level, blockPos, blockState, entity);
     }
 }
