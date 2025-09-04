@@ -37,6 +37,7 @@ public class PartTypes {
         CreateMissiles.LOGGER.info("Registering missile part types for " + CreateMissiles.NAME);
 
         PartTypes.register(new WitheredWarhead());
+        PartTypes.register(new FrostWarhead());
         PartTypes.register(new FrozenWarhead());
         PartTypes.register(new AnnoyingWarhead());
         PartTypes.register(new DirectHitWarhead());
