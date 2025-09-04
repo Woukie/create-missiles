@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.client.models.warheads.TeleportationWarheadModel;
@@ -37,10 +38,10 @@ public class TeleportationWarhead extends WarheadType {
     }
 
     @Override
-    public void onDetonate(Trajectory trajectory, MinecraftServer server) {
+    public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
-        var impactPos = trajectory.getPosition();
+        var impactPos = hitPosition.add(0, 1, 0);
 
         CompoundTag data = trajectory.getWarheadData();
         if (data != null && !data.isEmpty()) {

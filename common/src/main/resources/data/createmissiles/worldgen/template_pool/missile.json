@@ -1,0 +1,59 @@
+{
+	"fallback": "createmissiles:missile",
+	"elements": [
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_trident",
+				"processors": "minecraft:empty",
+				"projection":"rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_firework",
+				"processors": "minecraft:empty",
+				"projection":"rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_drill",
+				"processors": "minecraft:empty",
+				"projection":"rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_flame",
+				"processors": "minecraft:empty",
+				"projection":"rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_guardian",
+				"processors": "minecraft:empty",
+				"projection":"rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_frozen",
+				"processors": "minecraft:empty",
+				"projection":"rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		}
+	]
+}

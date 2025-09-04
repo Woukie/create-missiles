@@ -19,13 +19,9 @@ import java.lang.Math;
 
 import static net.woukie.createmissiles.missilemanager.trajectories.TrajectoryHelper.findLaunchSolution;
 
-// Salad notes
-// Can track as many variables as you like so long as you implement serialization
-// This class can be butchered, you might want to work in local space instead and then convert to global in getPosition() if it makes the maths easier
 public class BallisticTrajectory extends Trajectory {
     public final Vector3d gravity = new Vector3d(0, -9.81, 0);
     public final double tickSpeed = 20;
-    protected Vector3d globalPosition;
     protected Vector3d velocity;
     protected Vector3d acceleration;
     protected Vector3d rotation;
@@ -63,7 +59,8 @@ public class BallisticTrajectory extends Trajectory {
                 );
 
         velocity.add(acceleration.mul(tickLength));
-        globalPosition.add(velocity.x * tickLength, velocity.y * tickLength, velocity.z * tickLength);
+        lastPosition = new Vector3d(position);
+        position.add(velocity.x * tickLength, velocity.y * tickLength, velocity.z * tickLength);
 
         Vector3d direction = new Vector3d(velocity.x, velocity.y, velocity.z);
         direction.normalize();
@@ -77,7 +74,6 @@ public class BallisticTrajectory extends Trajectory {
     //    Called when launching a missile from the console panel
     public BallisticTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
         super(level.dimension(), start, target, warheadType, chassisType, thrusterType, container);
-        globalPosition = start;
         rotation = new Vector3d(0, 0, 0);
         velocity = new Vector3d(0, 0, 0);
 
@@ -95,7 +91,6 @@ public class BallisticTrajectory extends Trajectory {
     //    Called when deserialising trajectories
     public BallisticTrajectory(CompoundTag data, MinecraftServer server) {
         super(data, server);
-        this.globalPosition = new Vector3d(data.getDouble("PositionX"), data.getDouble("PositionY"), data.getDouble("PositionZ"));
         this.rotation = new Vector3d(data.getDouble("RotationX"), data.getDouble("RotationY"), data.getDouble("RotationZ"));
         this.velocity = new Vector3d(data.getDouble("VelocityX"), data.getDouble("VelocityY"), data.getDouble("VelocityZ"));
     }
@@ -104,9 +99,6 @@ public class BallisticTrajectory extends Trajectory {
     @Override
     public CompoundTag saveTo(CompoundTag data) {
         CompoundTag superData = super.saveTo(data);
-        superData.putDouble("PositionX", globalPosition.x);
-        superData.putDouble("PositionY", globalPosition.y);
-        superData.putDouble("PositionZ", globalPosition.z);
         superData.putDouble("RotationX", rotation.x);
         superData.putDouble("RotationY", rotation.y);
         superData.putDouble("RotationZ", rotation.z);
@@ -114,11 +106,6 @@ public class BallisticTrajectory extends Trajectory {
         superData.putDouble("VelocityY", velocity.y);
         superData.putDouble("VelocityZ", velocity.z);
         return superData;
-    }
-
-    @Override
-    public Vector3d getPosition() {
-        return globalPosition;
     }
 
     @Override

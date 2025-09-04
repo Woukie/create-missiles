@@ -29,6 +29,9 @@ public class MissileEntity extends Entity {
     private static final EntityDataAccessor<Rotations> ROTATION =
             SynchedEntityData.defineId(MissileEntity.class, EntityDataSerializers.ROTATIONS);
 
+//    Used by spyglass achievement
+    private boolean flying = false;
+
     public MissileEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
@@ -52,6 +55,18 @@ public class MissileEntity extends Entity {
     @Override
     protected void addAdditionalSaveData(CompoundTag compoundTag) {
 
+    }
+
+    @Override
+    public CompoundTag saveWithoutId(CompoundTag compoundTag) {
+        compoundTag.putBoolean("Flying", this.flying);
+        return super.saveWithoutId(compoundTag);
+    }
+
+    @Override
+    public void load(CompoundTag compoundTag) {
+        super.load(compoundTag);
+        this.flying = compoundTag.getBoolean("Flying");
     }
 
     @Override
@@ -113,6 +128,10 @@ public class MissileEntity extends Entity {
 
     public void setThrusterType(ResourceLocation type) {
         entityData.set(THRUSTER_TYPE, type == null ? "" : type.toString());
+    }
+
+    public void setFlying(Boolean flying) {
+        this.flying = flying;
     }
 
     public void setWarheadType(MissilePartType type) {

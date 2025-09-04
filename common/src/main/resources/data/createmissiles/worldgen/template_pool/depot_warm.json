@@ -1,0 +1,32 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "createmissiles:liquidless_single_pool_element",
+        "location": "createmissiles:depot_warm_weathered",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "createmissiles:liquidless_single_pool_element",
+        "location": "createmissiles:depot_warm_ruined1",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "createmissiles:liquidless_single_pool_element",
+        "location": "createmissiles:depot_warm_ruined2",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}

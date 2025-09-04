@@ -1,0 +1,14 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "items": ["createmissiles:biome_vial"],
+      "count": 1
+    },
+    {
+      "tags": ["minecraft:dirt"],
+      "count": 8
+    }
+  ],
+  "assembly": "createmissiles:biome_brush_warhead"
+}

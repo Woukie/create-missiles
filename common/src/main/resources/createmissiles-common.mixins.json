@@ -6,6 +6,8 @@
   "client": [
   ],
   "mixins": [
+    "MixinBucketItem",
+    "MixinFlintAndSteelItem"
   ],
   "injectors": {
     "defaultRequire": 1

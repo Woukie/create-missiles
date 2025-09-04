@@ -1,0 +1,23 @@
+{
+	"fallback": "createmissiles:lab_entrances",
+	"elements": [
+		{
+            "weight": 5,
+			"element": {
+				"location": "createmissiles:lab_entrance_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+        {
+            "weight": 1,
+			"element": {
+				"location": "createmissiles:lab_entrance_overgrown_red",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		}
+	]
+}

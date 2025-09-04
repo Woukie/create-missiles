@@ -7,27 +7,25 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.client.models.warheads.FireworkWarheadModel;
 import net.woukie.createmissiles.missilemanager.Trajectory;
+import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.Explosion;
+import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplosionHandler;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.missilemanager.parts.warheads.messages.ExplodeFireworkMessage;
 import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class FireworkWarhead extends WarheadType {
     private final MissilePartModel model = new FireworkWarheadModel();
@@ -38,29 +36,26 @@ public class FireworkWarhead extends WarheadType {
     }
 
     @Override
-    public void onDetonate(Trajectory trajectory, MinecraftServer server) {
+    public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
-        Vector3d impactPos = trajectory.getPosition();
 
-        level.explode(null, impactPos.x, impactPos.y, impactPos.z, 2, Level.ExplosionInteraction.BLOCK);
+        ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 4));
 
         CompoundTag explosions = trajectory.getWarheadData();
-
         if (explosions == null || explosions.isEmpty()) {
-            var random = Random.from(new Random());
-            level.addParticle(ParticleTypes.POOF, impactPos.x, impactPos.y, impactPos.z, random.nextGaussian() * 0.05, 0.005, random.nextGaussian() * 0.05);
+            level.addParticle(ParticleTypes.POOF, hitPosition.x, hitPosition.y, hitPosition.z, Math.random() * 0.05, 0.005, Math.random() * 0.05);
         } else {
             List<ServerPlayer> players = new ArrayList<>();
             level.players().forEach(serverPlayer -> {
                 BlockPos blockPos = serverPlayer.blockPosition();
-                if (blockPos.closerToCenterThan(new Vec3(impactPos.x, impactPos.y, impactPos.z), 512.0)) {
+                if (blockPos.closerToCenterThan(new Vec3(hitPosition.x, hitPosition.y, hitPosition.z), 512.0)) {
                     players.add(serverPlayer);
                 }
             });
 
             Vector3f vel = new Vector3f(0, 0, 0); // TODO: Replace with rocket velocity
-            Vector3f impactPosFloat = new Vector3f((float) impactPos.x, (float) impactPos.y, (float) impactPos.z);
+            Vector3f impactPosFloat = new Vector3f((float) hitPosition.x, (float) hitPosition.y, (float) hitPosition.z);
             Packets.EXPLODE_FIREWORK.sendToPlayers(players, new ExplodeFireworkMessage(impactPosFloat, vel, explosions));
         }
     }
@@ -91,17 +86,5 @@ public class FireworkWarhead extends WarheadType {
     @Override
     public Component getDisplayName() {
         return Component.translatable("warheads.createmissiles.firework_warhead");
-    }
-
-    @Override
-    public void onTick(Trajectory trajectory, MinecraftServer server) {
-        ServerLevel level = server.getLevel(trajectory.getLevelKey());
-//        if (level != null && trajectory.getTick() > 20 * 20) {
-//            onDetonate(trajectory, server);
-//            trajectory.setSpent(true);
-//            return;
-//        }
-
-        super.onTick(trajectory, server);
     }
 }

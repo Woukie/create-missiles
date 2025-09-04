@@ -7,13 +7,19 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.render.CustomRenderedItems;
 import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.event.events.common.TickEvent;
+import dev.architectury.registry.item.ItemPropertiesRegistry;
+import dev.architectury.registry.level.entity.EntityAttributeRegistry;
 import dev.architectury.registry.menu.MenuRegistry;
 import dev.architectury.registry.registries.RegistrarManager;
+import net.minecraft.resources.ResourceLocation;
 import net.woukie.createmissiles.client.screens.AssemblyPanelScreen;
 import net.woukie.createmissiles.client.screens.ControlPanelScreen;
 import net.woukie.createmissiles.client.screens.DroneScreen;
 import net.woukie.createmissiles.client.screens.NavigationPanelScreen;
+import net.woukie.createmissiles.entity.DroneEntity;
+import net.woukie.createmissiles.item.BiomeVialItem;
 import net.woukie.createmissiles.missilemanager.Trajectories;
+import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplosionHandler;
 import net.woukie.createmissiles.registry.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +35,20 @@ public class CreateMissiles {
     public static void init() {
         LOGGER.info("{} initializing! Create version: {}}", NAME, Create.VERSION);
 
-        LifecycleEvent.SERVER_STARTED.register(instance -> Trajectories.get().init(instance));
-        LifecycleEvent.SERVER_STOPPING.register(instance -> Trajectories.get().stop());
-        TickEvent.SERVER_PRE.register(instance -> Trajectories.get().serverTick(instance));
+        LifecycleEvent.SERVER_STARTED.register(server -> {
+            Trajectories.get().init(server);
+            ExplosionHandler.get().init(server);
+        });
+        LifecycleEvent.SERVER_STOPPING.register(server -> {
+            Trajectories.get().stop();
+            ExplosionHandler.get().stop();
+        });
+        TickEvent.SERVER_PRE.register(server -> {
+            Trajectories.get().serverTick(server);
+            ExplosionHandler.get().serverTick(server);
+        });
 
+        StructurePoolElementTypes.init();
         Blocks.init();
         BlockEntities.init();
         PartTypes.init();
@@ -46,6 +62,8 @@ public class CreateMissiles {
         EntityTypes.init();
         SoundEvents.init();
         ParticleTypes.init();
+
+
     }
 
     public static CreateRegistrate registrate() {
@@ -61,6 +79,16 @@ public class CreateMissiles {
         CustomRenderedItems.register(Items.WARHEAD_ASSEMBLY.get());
         CustomRenderedItems.register(Items.CHASSIS_ASSEMBLY.get());
         CustomRenderedItems.register(Items.THRUSTER_ASSEMBLY.get());
+
+        EntityAttributeRegistry.register(EntityTypes.BASIC_DRONE, DroneEntity::createMobAttributes);
+
+        ItemPropertiesRegistry.register(Items.BIOME_VIAL.get(), new ResourceLocation("full"), (itemStack, clientLevel, livingEntity, i) -> {
+            if (livingEntity == null) return 0.0F;
+            if (itemStack.getItem() instanceof BiomeVialItem item) {
+                return item.isFull(itemStack) ? 1.0F : 0.0F;
+            }
+            return 0.0F;
+        });
 
         PonderIndex.register();
     }

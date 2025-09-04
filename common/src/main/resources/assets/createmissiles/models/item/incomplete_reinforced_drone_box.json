@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "createmissiles:item/incomplete_reinforced_drone_box"
+  }
+}

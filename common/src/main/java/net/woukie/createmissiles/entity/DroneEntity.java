@@ -5,13 +5,15 @@ import com.google.common.collect.Multiset;
 import com.google.common.collect.Multisets;
 import com.ibm.icu.impl.ValidIdentifiers;
 import net.minecraft.core.*;
+
+import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.Entity;
@@ -22,11 +24,12 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -35,9 +38,8 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.inventory.DroneMenu;
+import net.woukie.createmissiles.registry.Items;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Quaterniond;
-import org.joml.Vector3d;
 
 import java.util.Objects;
 
@@ -104,6 +106,10 @@ public class DroneEntity extends FlyingMob{
         }
     }
 
+    protected float getStandingEyeHeight(@NotNull Pose pose, EntityDimensions entityDimensions) {
+        return entityDimensions.height * 0.35F;
+    }
+
     @Override
     public void tick() {
 
@@ -151,6 +157,26 @@ public class DroneEntity extends FlyingMob{
     @Override
     public boolean isAttackable() {
         return false;
+    }
+
+    public void aiStep() {
+        if (this.isAlive() && this.isSunBurnTick()) {
+            this.setSecondsOnFire(8);
+        }
+
+        super.aiStep();
+    }
+
+    @Override
+    public boolean hurt(DamageSource damageSource, float f) {
+        Entity entity = damageSource.getEntity();
+        System.out.println(entity);
+        if (!level().isClientSide() && entity != null && entity.getType().equals(EntityType.PLAYER)) {
+            level().playSound(null, blockPosition(), SoundEvents.SCAFFOLDING_BREAK, SoundSource.NEUTRAL);
+            DefaultDispenseItemBehavior.spawnItem(level(), new ItemStack(Items.DRONE_BOX_ITEM.get()), 1, Direction.UP, position());
+            this.discard();
+        }
+        return super.hurt(damageSource, f);
     }
 
     @Override

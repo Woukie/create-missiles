@@ -1,0 +1,15 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 10127774,
+    "separation": 3,
+    "spacing": 20,
+    "spread_type": "triangular"
+  },
+  "structures": [
+    {
+      "structure": "createmissiles:depot_cold",
+      "weight": 1
+    }
+  ]
+}

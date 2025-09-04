@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_fire_floor",
+  "textures": {
+    "fire": "createmissiles:block/flaming_fire_0"
+  }
+}

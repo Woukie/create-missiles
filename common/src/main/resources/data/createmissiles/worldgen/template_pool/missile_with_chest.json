@@ -1,0 +1,209 @@
+{
+	"fallback": "createmissiles:missile_with_chest",
+	"elements": [
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_trident_withchest",
+				"processors": [
+					{
+						"processor_type": "minecraft:rule",
+						"rules": [
+							{
+								"input_predicate": {
+									"predicate_type": "block_match",
+									"block": "minecraft:chest"
+								},
+								"location_predicate": {
+									"predicate_type": "always_true"
+								},
+								"output_state": {
+									"Name": "minecraft:chest",
+									"Properties": {
+										"facing": "south"
+									}
+								},
+								"block_entity_modifier": {
+									"type": "minecraft:append_loot",
+									"loot_table": "createmissiles:chests/missile_chest_trident"
+								}
+							}
+						]
+					}
+				],
+				"projection":"rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_firework_withchest",
+				"processors": [
+					{
+						"processor_type": "minecraft:rule",
+						"rules": [
+							{
+								"input_predicate": {
+									"predicate_type": "block_match",
+									"block": "minecraft:chest"
+								},
+								"location_predicate": {
+									"predicate_type": "always_true"
+								},
+								"output_state": {
+									"Name": "minecraft:chest",
+									"Properties": {
+										"facing": "south"
+									}
+								},
+								"block_entity_modifier": {
+									"type": "minecraft:append_loot",
+									"loot_table": "createmissiles:chests/missile_chest_firework"
+								}
+							}
+						]
+					}
+				],
+				"projection":"rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_drill_withchest",
+				"processors": [
+					{
+						"processor_type": "minecraft:rule",
+						"rules": [
+							{
+								"input_predicate": {
+									"predicate_type": "block_match",
+									"block": "minecraft:chest"
+								},
+								"location_predicate": {
+									"predicate_type": "always_true"
+								},
+								"output_state": {
+									"Name": "minecraft:chest",
+									"Properties": {
+										"facing": "south"
+									}
+								},
+								"block_entity_modifier": {
+									"type": "minecraft:append_loot",
+									"loot_table": "createmissiles:chests/missile_chest_drill"
+								}
+							}
+						]
+					}
+				],
+				"projection":"rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_flame_withchest",
+				"processors": [
+					{
+						"processor_type": "minecraft:rule",
+						"rules": [
+							{
+								"input_predicate": {
+									"predicate_type": "block_match",
+									"block": "minecraft:chest"
+								},
+								"location_predicate": {
+									"predicate_type": "always_true"
+								},
+								"output_state": {
+									"Name": "minecraft:chest",
+									"Properties": {
+										"facing": "south"
+									}
+								},
+								"block_entity_modifier": {
+									"type": "minecraft:append_loot",
+									"loot_table": "createmissiles:chests/missile_chest_flame"
+								}
+							}
+						]
+					}
+				],
+				"projection":"rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_guardian_withchest",
+				"processors": [
+					{
+						"processor_type": "minecraft:rule",
+						"rules": [
+							{
+								"input_predicate": {
+									"predicate_type": "block_match",
+									"block": "minecraft:chest"
+								},
+								"location_predicate": {
+									"predicate_type": "always_true"
+								},
+								"output_state": {
+									"Name": "minecraft:chest",
+									"Properties": {
+										"facing": "south"
+									}
+								},
+								"block_entity_modifier": {
+									"type": "minecraft:append_loot",
+									"loot_table": "createmissiles:chests/missile_chest_guardian"
+								}
+							}
+						]
+					}
+				],
+				"projection":"rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_frozen_withchest",
+				"processors": [
+					{
+						"processor_type": "minecraft:rule",
+						"rules": [
+							{
+								"input_predicate": {
+									"predicate_type": "block_match",
+									"block": "minecraft:chest"
+								},
+								"location_predicate": {
+									"predicate_type": "always_true"
+								},
+								"output_state": {
+									"Name": "minecraft:chest",
+									"Properties": {
+										"facing": "south"
+									}
+								},
+								"block_entity_modifier": {
+									"type": "minecraft:append_loot",
+									"loot_table": "createmissiles:chests/missile_chest_frozen"
+								}
+							}
+						]
+					}
+				],
+				"projection":"rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		}
+	]
+}

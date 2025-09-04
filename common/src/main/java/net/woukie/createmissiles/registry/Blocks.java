@@ -10,6 +10,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.block.AnnoyingJukeboxBlock;
+import net.woukie.createmissiles.block.FrostSnowLayer;
+import net.woukie.createmissiles.block.InfernalAshLayer;
+import net.woukie.createmissiles.block.FlamingFireBlock;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 import net.woukie.createmissiles.block.controlpanel.ControlPanelBlock;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
@@ -54,6 +58,34 @@ public class Blocks {
             .simpleItem()
             .register();
 
+    public static final BlockEntry<FlamingFireBlock> FLAMING_FIRE = REGISTRATE
+            .block("flaming_fire", FlamingFireBlock::new)
+            .initialProperties(() -> net.minecraft.world.level.block.Blocks.FIRE)
+            .addLayer(() -> RenderType::cutoutMipped)
+            .register();
+
+    public static final BlockEntry<AnnoyingJukeboxBlock> ANNOYING_JUKEBOX = REGISTRATE
+            .block("annoying_jukebox", AnnoyingJukeboxBlock::new)
+            .initialProperties(() -> net.minecraft.world.level.block.Blocks.JUKEBOX)
+            .properties(BlockBehaviour.Properties::noOcclusion)
+            .properties(properties -> properties.destroyTime(150))
+            .properties(properties -> properties.explosionResistance(60))
+            .addLayer(() -> RenderType::cutoutMipped)
+            .simpleItem()
+            .register();
+
+    public static final BlockEntry<InfernalAshLayer> INFERNAL_ASH = REGISTRATE
+            .block("infernal_ash", InfernalAshLayer::new)
+            .initialProperties(() -> net.minecraft.world.level.block.Blocks.SNOW)
+            .simpleItem()
+            .register();
+
+    public static final BlockEntry<FrostSnowLayer> FROST_SNOW = REGISTRATE
+            .block("frost_snow", FrostSnowLayer::new)
+            .initialProperties(() -> net.minecraft.world.level.block.Blocks.SNOW)
+            .simpleItem()
+            .register();
+
     @SuppressWarnings({"Experimental", "UnstableApiUsage"})
     public static void init() {
         CreateMissiles.LOGGER.info("Registering blocks for " + CreateMissiles.NAME);
@@ -62,5 +94,8 @@ public class Blocks {
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(ASSEMBLY_PANEL));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(CONTROL_PANEL));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(NAVIGATION_PANEL));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(ANNOYING_JUKEBOX));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(INFERNAL_ASH));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(FROST_SNOW));
     }
 }

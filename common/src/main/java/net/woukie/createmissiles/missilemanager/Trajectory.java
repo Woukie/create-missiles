@@ -30,7 +30,7 @@ public abstract class Trajectory {
     protected WarheadType warheadType;
     protected ChassisType chassisType;
     protected ThrusterType thrusterType;
-    protected Vector3d initialPosition, targetPosition;
+    protected Vector3d initialPosition, position, targetPosition, lastPosition;
     protected CompoundTag warheadData;
     protected CompoundTag chassisData;
     protected CompoundTag thrusterData;
@@ -40,7 +40,9 @@ public abstract class Trajectory {
     public Trajectory(ResourceKey<Level> levelKey, Vector3d initialPosition, Vector3d targetPosition, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
         this.levelKey = levelKey;
         this.initialPosition = initialPosition;
+        this.position = initialPosition;
         this.targetPosition = targetPosition;
+        this.lastPosition = initialPosition;
         this.tick = 0;
         this.warheadType = warheadType;
         this.chassisType = chassisType;
@@ -66,12 +68,6 @@ public abstract class Trajectory {
     }
 
     /**
-     * Gets the position of the rocket in world-space at the current tick
-     * @return global position of the rocket at the current tick
-     */
-    public abstract Vector3d getPosition();
-
-    /**
      * Saves trajectory data to a compound tag in a way where the whole object can be reconstructed in <code>loadFrom()</code>
      * @param data tag to fill trajectory data with
      * @see Trajectory#loadFrom(CompoundTag, MinecraftServer)
@@ -83,9 +79,15 @@ public abstract class Trajectory {
         data.putDouble("InitialPositionX", initialPosition.x);
         data.putDouble("InitialPositionY", initialPosition.y);
         data.putDouble("InitialPositionZ", initialPosition.z);
+        data.putDouble("PositionX", position.x);
+        data.putDouble("PositionY", position.y);
+        data.putDouble("PositionZ", position.z);
         data.putDouble("TargetPositionX", targetPosition.x);
         data.putDouble("TargetPositionY", targetPosition.y);
         data.putDouble("TargetPositionZ", targetPosition.z);
+        data.putDouble("LastPositionX", lastPosition.x);
+        data.putDouble("LastPositionY", lastPosition.y);
+        data.putDouble("LastPositionZ", lastPosition.z);
         data.putString("WarheadType", warheadType.getResourceLocation().toString());
         data.putString("ChassisType", chassisType.getResourceLocation().toString());
         data.putString("ThrusterType", thrusterType.getResourceLocation().toString());
@@ -111,7 +113,9 @@ public abstract class Trajectory {
         this.chassisType = (ChassisType) PartTypes.get(new ResourceLocation(data.getString("ChassisType")));
         this.thrusterType = (ThrusterType) PartTypes.get(new ResourceLocation(data.getString("ThrusterType")));
         this.initialPosition = new Vector3d(data.getDouble("InitialPositionX"), data.getDouble("InitialPositionY"), data.getDouble("InitialPositionZ"));
+        this.position = new Vector3d(data.getDouble("PositionX"), data.getDouble("PositionY"), data.getDouble("PositionZ"));
         this.targetPosition = new Vector3d(data.getDouble("TargetPositionX"), data.getDouble("TargetPositionY"), data.getDouble("TargetPositionZ"));
+        this.lastPosition = new Vector3d(data.getDouble("LastPositionX"), data.getDouble("LastPositionY"), data.getDouble("LastPositionZ"));
         this.warheadData = data.getCompound("WarheadData");
         this.chassisData = data.getCompound("ChassisData");
         this.thrusterData = data.getCompound("ThrusterData");
@@ -133,6 +137,7 @@ public abstract class Trajectory {
         entity.setWarheadType(warheadType.getResourceLocation());
         entity.setChassisType(chassisType.getResourceLocation());
         entity.setThrusterType(thrusterType.getResourceLocation());
+        entity.setFlying(true);
     }
 
     public UUID getEntityId() {
@@ -155,12 +160,20 @@ public abstract class Trajectory {
         return this.thrusterType;
     }
 
+    public Vector3d getPosition() {
+        return this.position;
+    }
+
     public Vector3d getTargetPosition() {
         return this.targetPosition;
     }
 
     public Vector3d getInitialPosition() {
         return this.initialPosition;
+    }
+
+    public Vector3d getLastPosition() {
+        return this.lastPosition;
     }
 
     public int getTick() {

@@ -1,0 +1,68 @@
+{
+	"fallback": "createmissiles:lab_rooms",
+	"elements": [
+		{
+            "weight": 10,
+			"element": {
+				"location": "createmissiles:lab_bunkroom_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+        {
+            "weight": 4,
+			"element": {
+				"location": "createmissiles:lab_bunkroom_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+        {
+            "weight": 10,
+			"element": {
+				"location": "createmissiles:lab_storageroom_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+        {
+            "weight": 4,
+			"element": {
+				"location": "createmissiles:lab_storageroom_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+        {
+            "weight": 5,
+			"element": {
+				"location": "createmissiles:lab_lab1",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+        {
+            "weight": 5,
+			"element": {
+				"location": "createmissiles:lab_lab2",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+        {
+            "weight": 1,
+			"element": {
+				"location": "createmissiles:lab_observatory",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		}
+	]
+}

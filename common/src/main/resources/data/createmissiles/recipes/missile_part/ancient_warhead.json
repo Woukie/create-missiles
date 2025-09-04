@@ -1,0 +1,10 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "items": ["minecraft:echo_shard"],
+      "count": 8
+    }
+  ],
+  "assembly": "createmissiles:ancient_warhead"
+}
