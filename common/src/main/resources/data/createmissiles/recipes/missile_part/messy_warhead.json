@@ -1,0 +1,10 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "items": ["minecraft:ender_pearl"],
+      "count": 8
+    }
+  ],
+  "assembly": "createmissiles:messy_warhead"
+}

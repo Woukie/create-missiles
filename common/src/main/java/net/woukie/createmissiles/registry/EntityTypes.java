@@ -45,6 +45,10 @@ public class EntityTypes {
             "infernal_area",
             () -> EntityType.Builder.of(InfernalAreaEntity::new, MobCategory.MISC).sized(6.0F, 1.2F).fireImmune().clientTrackingRange(10).build(new ResourceLocation(CreateMissiles.MOD_ID, "infernal_area").toString())
     );
+    public static final RegistrySupplier<EntityType<MessyEntity>> MESSY = ENTITY_TYPES.register(
+            "messy",
+            () -> EntityType.Builder.of(MessyEntity::new, MobCategory.MISC).sized(1.2F, 1.2F).fireImmune().clientTrackingRange(10).build(new ResourceLocation(CreateMissiles.MOD_ID, "messy").toString())
+    );
     public static final RegistrySupplier<EntityType<DroneEntity>> BASIC_DRONE = ENTITY_TYPES.register(
             "basic_drone",
             () -> EntityType.Builder.of(DroneEntity::new, MobCategory.MISC).noSummon().fireImmune().sized(2f, 1f).clientTrackingRange(4).updateInterval(20).build(new ResourceLocation(CreateMissiles.MOD_ID, "basic_drone").toString())
