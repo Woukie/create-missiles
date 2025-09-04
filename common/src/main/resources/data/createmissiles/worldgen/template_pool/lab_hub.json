@@ -2,8 +2,9 @@
 	"fallback": "createmissiles:lab_corridors",
 	"elements": [
 		{
+			"weight": 1,
 			"element": {
-				"location": "createmissiles:lab_core",
+				"location": "createmissiles:lab_hub",
 				"processors": [
 					{
 						"processor_type": "minecraft:rule",
