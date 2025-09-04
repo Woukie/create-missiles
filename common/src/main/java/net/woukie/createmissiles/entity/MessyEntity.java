@@ -12,14 +12,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3d;
 
 public class MessyEntity extends Entity {
     private static final EntityDataAccessor<Integer> BLOCKS_LEFT;
-    public final int radius = 40;
-    public final int spreadRadius = 20;
-    public final int applysPerTick = 50;
+    public final int radius = 35;
+    public final int spreadRadius = 25;
+    public final int applysPerTick = 100;
 
     public MessyEntity(EntityType<? extends Entity> entityType, Level level) {
         super(entityType, level);
@@ -28,13 +27,6 @@ public class MessyEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (level().isClientSide()) {
-            if (random.nextFloat() > 0.25) {
-                Vec3 pos = blockPosition().getCenter();
-                level().addParticle(ParticleTypes.FLASH, pos.x, pos.y, pos.z, 0, 0, 0);
-            }
-            return;
-        }
 
         int blocksLeft = entityData.get(BLOCKS_LEFT);
 
@@ -63,9 +55,10 @@ public class MessyEntity extends Entity {
                 level().removeBlock(oldPosition, true);
             }
 
-            if (random.nextFloat() > 1.0 / applysPerTick) {
+            if (random.nextFloat() > 0.25 / applysPerTick) {
                 level().playSound(null, oldPosition, SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL);
                 level().playSound(null, newPosition, SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL);
+                level().addParticle(ParticleTypes.FLASH, oldPosition.getX(), oldPosition.getY(), oldPosition.getZ(), 0, 0, 0);
             }
         }
         entityData.set(BLOCKS_LEFT, blocksLeft - applysPerTick);
