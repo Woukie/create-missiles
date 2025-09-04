@@ -1,0 +1,50 @@
+{
+	"fallback": "createmissiles:lab_rooms",
+	"elements": [
+		{
+            "weight": 5,
+			"element": {
+				"location": "createmissiles:lab_corridor_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+        {
+            "weight": 5,
+			"element": {
+				"location": "createmissiles:lab_corridor_normal_skylight",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+        {
+            "weight": 1,
+			"element": {
+				"location": "createmissiles:lab_corridor_overgrown_brown",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+        {
+            "weight": 1,
+			"element": {
+				"location": "createmissiles:lab_corridor_overgrown_red",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+        {
+            "weight": 2,
+			"element": {
+				"location": "createmissiles:lab_corridor_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		}
+	]
+}

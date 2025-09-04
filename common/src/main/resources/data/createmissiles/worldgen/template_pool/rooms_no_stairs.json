@@ -1,0 +1,419 @@
+{
+	"fallback": "createmissiles:small_rooms",
+	"elements": [
+		{
+			"weight": 12,
+			"element": {
+				"location": "createmissiles:bunker_3waysplit_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 8,
+			"element": {
+				"location": "createmissiles:bunker_3waysplit_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 4,
+			"element": {
+				"location": "createmissiles:bunker_3waysplit_tech",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 12,
+			"element": {
+				"location": "createmissiles:bunker_4waysplit_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 8,
+			"element": {
+				"location": "createmissiles:bunker_4waysplit_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 4,
+			"element": {
+				"location": "createmissiles:bunker_4waysplit_tech",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 9,
+			"element": {
+				"location": "createmissiles:bunker_6waysplit_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 6,
+			"element": {
+				"location": "createmissiles:bunker_6waysplit_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 3,
+			"element": {
+				"location": "createmissiles:bunker_6waysplit_tech",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 5,
+			"element": {
+				"location": "createmissiles:bunker_bunkroom2_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 4,
+			"element": {
+				"location": "createmissiles:bunker_bunkroom2_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 3,
+			"element": {
+				"location": "createmissiles:bunker_bunkroom2_tech",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 8,
+			"element": {
+				"location": "createmissiles:bunker_corner_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 6,
+			"element": {
+				"location": "createmissiles:bunker_corner_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 4,
+			"element": {
+				"location": "createmissiles:bunker_corner_tech",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 3,
+			"element": {
+				"location": "createmissiles:bunker_feature_bigbot",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 3,
+			"element": {
+				"location": "createmissiles:bunker_feature_factory",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 3,
+			"element": {
+				"location": "createmissiles:bunker_feature_missilestorage",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 3,
+			"element": {
+				"location": "createmissiles:bunker_feature_workshop",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 8,
+			"element": {
+				"location": "createmissiles:bunker_fork_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 6,
+			"element": {
+				"location": "createmissiles:bunker_fork_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 4,
+			"element": {
+				"location": "createmissiles:bunker_fork_tech",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 10,
+			"element": {
+				"location": "createmissiles:bunker_link_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 8,
+			"element": {
+				"location": "createmissiles:bunker_link_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 6,
+			"element": {
+				"location": "createmissiles:bunker_link_tech",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:bunker_messhall_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:bunker_messhall_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 8,
+			"element": {
+				"location": "createmissiles:bunker_storageroom3_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 6,
+			"element": {
+				"location": "createmissiles:bunker_storageroom3_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 4,
+			"element": {
+				"location": "createmissiles:bunker_storageroom3_tech",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 12,
+			"element": {
+				"location": "createmissiles:bunker_tinysplit_3",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 8,
+			"element": {
+				"location": "createmissiles:bunker_tinysplit_3i",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 8,
+			"element": {
+				"location": "createmissiles:bunker_tinysplit_3v",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 12,
+			"element": {
+				"location": "createmissiles:bunker_tinysplit_4",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 8,
+			"element": {
+				"location": "createmissiles:bunker_tinysplit_4i",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 8,
+			"element": {
+				"location": "createmissiles:bunker_tinysplit_4v",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 10,
+			"element": {
+				"location": "createmissiles:bunker_tunnellink_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 8,
+			"element": {
+				"location": "createmissiles:bunker_tunnellink_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 6,
+			"element": {
+				"location": "createmissiles:bunker_tunnellink_tech",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 8,
+			"element": {
+				"location": "createmissiles:bunker_tunnellong_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 6,
+			"element": {
+				"location": "createmissiles:bunker_tunnellong_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 4,
+			"element": {
+				"location": "createmissiles:bunker_tunnellong_tech",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 8,
+			"element": {
+				"location": "createmissiles:bunker_tunnelshort_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 6,
+			"element": {
+				"location": "createmissiles:bunker_tunnelshort_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 4,
+			"element": {
+				"location": "createmissiles:bunker_tunnelshort_tech",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 8,
+			"element": {
+				"location": "createmissiles:bunker_uturnh_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		}
+	]
+}

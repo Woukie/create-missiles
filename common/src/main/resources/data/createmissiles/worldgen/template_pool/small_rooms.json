@@ -1,0 +1,236 @@
+{
+	"fallback": "createmissiles:small_rooms",
+	"elements": [
+		{
+			"weight": 3,
+			"element": {
+				"location": "createmissiles:bunker_bunkroom1_normal",
+				"processors": [
+					{
+						"processor_type": "minecraft:rule",
+						"rules": [
+							{
+								"input_predicate": {
+									"predicate_type": "block_match",
+									"block": "minecraft:chest"
+								},
+								"location_predicate": {
+									"predicate_type": "always_true"
+								},
+								"output_state": {
+									"Name": "minecraft:chest",
+									"Properties": {
+										"facing": "west"
+									}
+								},
+								"block_entity_modifier": {
+									"type": "minecraft:append_loot",
+									"loot_table": "createmissiles:chests/bunker_chest_common"
+								}
+							}
+						]
+					}
+				],
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 2,
+			"element": {
+				"location": "createmissiles:bunker_bunkroom1_ruined",
+				"processors": [
+					{
+						"processor_type": "minecraft:rule",
+						"rules": [
+							{
+								"input_predicate": {
+									"predicate_type": "block_match",
+									"block": "minecraft:chest"
+								},
+								"location_predicate": {
+									"predicate_type": "always_true"
+								},
+								"output_state": {
+									"Name": "minecraft:chest",
+									"Properties": {
+										"facing": "south"
+									}
+								},
+								"block_entity_modifier": {
+									"type": "minecraft:append_loot",
+									"loot_table": "createmissiles:chests/bunker_chest_common"
+								}
+							}
+						]
+					}
+				],
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 2,
+			"element": {
+				"location": "createmissiles:bunker_bunkroom1_tech",
+				"processors": [
+					{
+						"processor_type": "minecraft:rule",
+						"rules": [
+							{
+								"input_predicate": {
+									"predicate_type": "block_match",
+									"block": "minecraft:chest"
+								},
+								"location_predicate": {
+									"predicate_type": "always_true"
+								},
+								"output_state": {
+									"Name": "minecraft:chest",
+									"Properties": {
+										"facing": "west"
+									}
+								},
+								"block_entity_modifier": {
+									"type": "minecraft:append_loot",
+									"loot_table": "createmissiles:chests/bunker_chest_uncommon"
+								}
+							}
+						]
+					}
+				],
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 3,
+			"element": {
+				"location": "createmissiles:bunker_storageroom1_normal",
+				"processors": [
+					{
+						"processor_type": "minecraft:rule",
+						"rules": [
+							{
+								"input_predicate": {
+									"predicate_type": "block_match",
+									"block": "minecraft:chest"
+								},
+								"location_predicate": {
+									"predicate_type": "always_true"
+								},
+								"output_state": {
+									"Name": "minecraft:chest",
+									"Properties": {
+										"facing": "east"
+									}
+								},
+								"block_entity_modifier": {
+									"type": "minecraft:append_loot",
+									"loot_table": "createmissiles:chests/bunker_chest_common"
+								}
+							}
+						]
+					}
+				],
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 2,
+			"element": {
+				"location": "createmissiles:bunker_storageroom1_ruined",
+				"processors": [
+					{
+						"processor_type": "minecraft:rule",
+						"rules": [
+							{
+								"input_predicate": {
+									"predicate_type": "block_match",
+									"block": "minecraft:chest"
+								},
+								"location_predicate": {
+									"predicate_type": "always_true"
+								},
+								"output_state": {
+									"Name": "minecraft:chest",
+									"Properties": {
+										"facing": "south"
+									}
+								},
+								"block_entity_modifier": {
+									"type": "minecraft:append_loot",
+									"loot_table": "createmissiles:chests/bunker_chest_common"
+								}
+							}
+						]
+					}
+				],
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 2,
+			"element": {
+				"location": "createmissiles:bunker_storageroom1_tech",
+				"processors": [
+					{
+						"processor_type": "minecraft:rule",
+						"rules": [
+							{
+								"input_predicate": {
+									"predicate_type": "block_match",
+									"block": "minecraft:chest"
+								},
+								"location_predicate": {
+									"predicate_type": "always_true"
+								},
+								"output_state": {
+									"Name": "minecraft:chest",
+									"Properties": {
+										"facing": "west"
+									}
+								},
+								"block_entity_modifier": {
+									"type": "minecraft:append_loot",
+									"loot_table": "createmissiles:chests/bunker_chest_uncommon"
+								}
+							}
+						]
+					}
+				],
+				"projection": "rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 2,
+			"element": {
+				"location": "createmissiles:bunker_wall_drill",
+				"processors": "minecraft:empty",
+				"projection":"rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight": 4,
+			"element": {
+				"location": "createmissiles:bunker_wall_empty",
+				"processors": "minecraft:empty",
+				"projection":"rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		},
+		{
+			"weight":4,
+			"element": {
+				"location": "createmissiles:bunker_wall_pipe",
+				"processors": "minecraft:empty",
+				"projection":"rigid",
+				"element_type": "createmissiles:liquidless_single_pool_element"
+			}
+		}
+	]
+}

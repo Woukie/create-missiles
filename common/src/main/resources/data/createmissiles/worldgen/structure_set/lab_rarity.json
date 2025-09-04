@@ -1,0 +1,19 @@
+{
+    "structures": [
+        {
+            "structure": "createmissiles:lab",
+            "weight": 1
+        }
+    ],
+    "placement": {
+        "salt": 5552968711235817,
+        "frequency": 1,
+        "type": "random_spread",
+        "spacing": 12,
+        "separation": 10,
+        "exclusion_zone": {
+            "chunk_count": 8,
+            "other_set": "minecraft:mineshafts"
+        }
+    }
+}
