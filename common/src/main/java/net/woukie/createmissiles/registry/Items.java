@@ -6,6 +6,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.entity.DroneEntity;
+import net.woukie.createmissiles.item.BiomeVialItem;
 import net.woukie.createmissiles.item.BoundEnderPearlItem;
 import net.woukie.createmissiles.item.DroneBoxItem;
 
@@ -29,6 +30,10 @@ public abstract class Items {
     public static final RegistrySupplier<Item> DRAGON_EGG_SHELL = ITEMS.register(
             "dragon_egg_shell",
             () -> new Item(new Item.Properties())
+    );
+    public static final RegistrySupplier<BiomeVialItem> BIOME_VIAL = ITEMS.register(
+            "biome_vial",
+            () -> new BiomeVialItem(new BiomeVialItem.Properties())
     );
     public static final RegistrySupplier<Item> REINFORCED_DRAGON_EGG_SHELL = ITEMS.register(
             "reinforced_dragon_egg_shell",
