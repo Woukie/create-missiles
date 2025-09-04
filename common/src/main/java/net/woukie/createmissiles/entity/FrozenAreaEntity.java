@@ -7,30 +7,24 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.TraceableEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import net.woukie.createmissiles.block.FrostSnowLayer;
 import org.joml.Vector3d;
 
 import static net.minecraft.world.level.block.SnowLayerBlock.LAYERS;
 
-public class FrostAreaEntity extends Entity {
+public class FrozenAreaEntity extends Entity {
     public final int radius = 5;
     public final int frostsPerTick = 5;
 
-    public FrostAreaEntity(EntityType<? extends Entity> entityType, Level level) {
+    public FrozenAreaEntity(EntityType<? extends Entity> entityType, Level level) {
         super(entityType, level);
     }
 
@@ -91,12 +85,17 @@ public class FrostAreaEntity extends Entity {
         Block block = blockState.getBlock();
 
         if (block.equals(Blocks.SNOW)) {
-            int currentLayer = blockState.getValue(SnowLayerBlock.LAYERS);
-            if (currentLayer < 7) {
-                BlockState newBlockState = blockState.setValue(SnowLayerBlock.LAYERS, currentLayer + 1);
+            int currentLayer = blockState.getValue(FrostSnowLayer.LAYERS);
+            BlockState frostSnowState = net.woukie.createmissiles.registry.Blocks.FROST_SNOW.getDefaultState();
+            frostSnowState.setValue(FrostSnowLayer.LAYERS, currentLayer);
+            level.setBlock(blockPos, frostSnowState, 3);
+        } else if (block.equals(net.woukie.createmissiles.registry.Blocks.FROST_SNOW.get())) {
+            int currentLayer = blockState.getValue(FrostSnowLayer.LAYERS);
+            if (currentLayer < 8) {
+                BlockState newBlockState = blockState.setValue(FrostSnowLayer.LAYERS, currentLayer + 1);
                 Block.pushEntitiesUp(blockState, newBlockState, level, blockPos);
                 level.setBlockAndUpdate(blockPos, newBlockState);
-            } else if (currentLayer == 7) {
+            } else {
                 level.setBlock(blockPos, Blocks.POWDER_SNOW.defaultBlockState(), 3);
             }
         } else if (block.equals(Blocks.WATER)) {

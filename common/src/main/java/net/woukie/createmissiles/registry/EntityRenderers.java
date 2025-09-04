@@ -15,10 +15,10 @@ public class EntityRenderers {
         EntityRendererRegistry.register(EntityTypes.MISSILE, MissileRenderer::new);
         EntityRendererRegistry.register(EntityTypes.BASIC_DRONE, DroneRenderer::new);
         EntityRendererRegistry.register(EntityTypes.FLAMINGBALL, ThrownItemRenderer::new);
-        EntityRendererRegistry.register(EntityTypes.FROSTBALL, ThrownItemRenderer::new);
+        EntityRendererRegistry.register(EntityTypes.FROZENBALL, ThrownItemRenderer::new);
         EntityRendererRegistry.register(EntityTypes.BLAZINGBALL, ThrownItemRenderer::new);
         EntityRendererRegistry.register(EntityTypes.INFERNALBALL, ThrownItemRenderer::new);
-        EntityRendererRegistry.register(EntityTypes.FROST_AREA, NoopRenderer::new);
+        EntityRendererRegistry.register(EntityTypes.FROZEN_AREA, NoopRenderer::new);
         EntityRendererRegistry.register(EntityTypes.INFERNAL_AREA, NoopRenderer::new);
 
         EntityModelLayerRegistry.register(DroneModel.LAYER_LOCATION, DroneModel::createBodyLayer);

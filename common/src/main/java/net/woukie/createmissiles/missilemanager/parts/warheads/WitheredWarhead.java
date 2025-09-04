@@ -7,7 +7,7 @@ import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.client.models.warheads.FireworkWarheadModel;
-import net.woukie.createmissiles.entity.FrostballEntity;
+import net.woukie.createmissiles.entity.FrozenballEntity;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.Explosion;
 import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplosionHandler;
@@ -35,7 +35,7 @@ public class WitheredWarhead extends WarheadType {
 
         var random = new Random();
         for (int i = 0; i < 30; i++) {
-            FrostballEntity ball = new FrostballEntity(EntityTypes.FROSTBALL.get(), level);
+            FrozenballEntity ball = new FrozenballEntity(EntityTypes.FROZENBALL.get(), level);
             ball.setNoGravity(false);
             ball.setPos(hitPosition.add(0, 1, 0));
             var velocity = snowballVelocity;

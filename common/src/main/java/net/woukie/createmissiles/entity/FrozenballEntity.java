@@ -14,10 +14,10 @@ import net.woukie.createmissiles.Util;
 import net.woukie.createmissiles.registry.EntityTypes;
 import org.jetbrains.annotations.NotNull;
 
-public class FrostballEntity extends BallEntity {
+public class FrozenballEntity extends BallEntity {
     private boolean spent;
 
-    public FrostballEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level level) {
+    public FrozenballEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level level) {
         super(entityType, level);
     }
 
@@ -33,9 +33,9 @@ public class FrostballEntity extends BallEntity {
             EntityType.SNOW_GOLEM.spawn((ServerLevel) level(), spawnPos, MobSpawnType.MOB_SUMMONED);
         }
 
-        EntityTypes.FROST_AREA.get().spawn((ServerLevel) level(), spawnPos, MobSpawnType.MOB_SUMMONED);
+        EntityTypes.FROZEN_AREA.get().spawn((ServerLevel) level(), spawnPos, MobSpawnType.MOB_SUMMONED);
         Util.locateNearestMatchingBlock(hitResult.getLocation(), blockPos -> {
-            FrostAreaEntity.applyFrost(blockPos, level());
+            FrozenAreaEntity.applyFrost(blockPos, level());
             return false;
         }, 300);
         spent = true;

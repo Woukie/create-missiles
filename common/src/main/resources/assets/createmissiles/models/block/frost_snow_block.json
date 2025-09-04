@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "createmissiles:block/frost_snow_height16"
+  }
+}

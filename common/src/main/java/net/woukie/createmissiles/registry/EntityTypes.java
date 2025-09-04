@@ -29,13 +29,13 @@ public class EntityTypes {
             "infernalball",
             () -> EntityType.Builder.of(InfernalballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "infernalball").toString())
     );
-    public static final RegistrySupplier<EntityType<FrostballEntity>> FROSTBALL = ENTITY_TYPES.register(
-            "frostball",
-            () -> EntityType.Builder.of(FrostballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "frostball").toString())
+    public static final RegistrySupplier<EntityType<FrozenballEntity>> FROZENBALL = ENTITY_TYPES.register(
+            "frozenball",
+            () -> EntityType.Builder.of(FrozenballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "frozenball").toString())
     );
-    public static final RegistrySupplier<EntityType<FrostAreaEntity>> FROST_AREA = ENTITY_TYPES.register(
-            "frost_area",
-            () -> EntityType.Builder.of(FrostAreaEntity::new, MobCategory.MISC).sized(6.0F, 1.2F).fireImmune().clientTrackingRange(10).build(new ResourceLocation(CreateMissiles.MOD_ID, "frost_area").toString())
+    public static final RegistrySupplier<EntityType<FrozenAreaEntity>> FROZEN_AREA = ENTITY_TYPES.register(
+            "frozen_area",
+            () -> EntityType.Builder.of(FrozenAreaEntity::new, MobCategory.MISC).sized(6.0F, 1.2F).fireImmune().clientTrackingRange(10).build(new ResourceLocation(CreateMissiles.MOD_ID, "frozen_area").toString())
     );
     public static final RegistrySupplier<EntityType<InfernalAreaEntity>> INFERNAL_AREA = ENTITY_TYPES.register(
             "infernal_area",
