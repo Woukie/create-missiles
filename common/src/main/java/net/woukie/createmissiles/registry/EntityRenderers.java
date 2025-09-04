@@ -19,6 +19,7 @@ public class EntityRenderers {
         EntityRendererRegistry.register(EntityTypes.INFERNALBALL, ThrownItemRenderer::new);
         EntityRendererRegistry.register(EntityTypes.FROSTBALL, ThrownItemRenderer::new);
         EntityRendererRegistry.register(EntityTypes.FROZENBALL, ThrownItemRenderer::new);
+        EntityRendererRegistry.register(EntityTypes.ANCIENTBALL, ThrownItemRenderer::new);
         EntityRendererRegistry.register(EntityTypes.FROZEN_AREA, NoopRenderer::new);
         EntityRendererRegistry.register(EntityTypes.INFERNAL_AREA, NoopRenderer::new);
         EntityRendererRegistry.register(EntityTypes.MESSY, NoopRenderer::new);

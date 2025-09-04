@@ -34,6 +34,7 @@ public class CreativeMenus {
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(DRONE_BOX_ITEM.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(REINFORCED_DRONE_BOX.get()));
 
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("ancient_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("messy_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("withered_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("frost_warhead"), WARHEAD_ASSEMBLY.get()));
