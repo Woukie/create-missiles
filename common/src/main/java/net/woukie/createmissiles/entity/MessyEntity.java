@@ -63,8 +63,10 @@ public class MessyEntity extends Entity {
                 level().removeBlock(oldPosition, true);
             }
 
-            level().playSound(null, oldPosition, SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL);
-            level().playSound(null, newPosition, SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL);
+            if (random.nextFloat() > 1.0 / applysPerTick) {
+                level().playSound(null, oldPosition, SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL);
+                level().playSound(null, newPosition, SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL);
+            }
         }
         entityData.set(BLOCKS_LEFT, blocksLeft - applysPerTick);
     }
