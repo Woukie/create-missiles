@@ -70,12 +70,13 @@ public class CreateMissiles {
         LootEvent.MODIFY_LOOT_TABLE.register((lootDataManager, id, context, builtin) -> {
             if (builtin && id.equals(new ResourceLocation("minecraft:chests/abandoned_mineshaft"))) {
                 LootPool.Builder poolBuilder = LootPool.lootPool();
-
                 var warheadItem = LootItem.lootTableItem(Items.WARHEAD_ASSEMBLY.get());
                 warheadItem.when(LootItemRandomChanceCondition.randomChance(0.1f));
                 var data = new CompoundTag();
                 data.putString("PartType", "createmissiles:excavator_warhead");
                 warheadItem.apply(SetNbtFunction.setTag(data));
+
+                poolBuilder.add(warheadItem);
 
                 context.addPool(poolBuilder);
             }
