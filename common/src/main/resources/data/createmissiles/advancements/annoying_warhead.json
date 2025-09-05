@@ -1,0 +1,40 @@
+{
+  "parent": "createmissiles:assembly",
+  "criteria": {
+    "0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "createmissiles:warhead_assembly"
+            ],
+            "nbt": "{PartType:\"createmissiles:annoying_warhead\"}"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.createmissiles.annoying_warhead.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "createmissiles:warhead_assembly",
+      "nbt": "{PartType:\"createmissiles:annoying_warhead\"}"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.createmissiles.annoying_warhead.title"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
