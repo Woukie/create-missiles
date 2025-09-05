@@ -36,7 +36,7 @@ public class ShulkerBoxWarhead extends WarheadType {
     private final MissilePartModel model = new ShulkerBoxWarheadModel();
 
     @Override
-    public float getWeight() {
+    public float getMass() {
         return 5;
     }
 
