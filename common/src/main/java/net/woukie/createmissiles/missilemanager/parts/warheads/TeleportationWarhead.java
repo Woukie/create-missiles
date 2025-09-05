@@ -38,6 +38,11 @@ public class TeleportationWarhead extends WarheadType {
     }
 
     @Override
+    public float getMass() {
+        return 10;
+    }
+
+    @Override
     public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;

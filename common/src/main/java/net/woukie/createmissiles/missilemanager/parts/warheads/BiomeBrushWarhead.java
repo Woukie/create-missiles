@@ -37,7 +37,7 @@ public class BiomeBrushWarhead extends WarheadType {
     private final int radius = 16;
 
     @Override
-    public float getWeight() {
+    public float getMass() {
         return 20;
     }
 

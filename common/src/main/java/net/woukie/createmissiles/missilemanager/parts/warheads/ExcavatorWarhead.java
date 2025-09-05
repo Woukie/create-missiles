@@ -24,7 +24,7 @@ public class ExcavatorWarhead extends WarheadType {
     private final int initialCharges = 40;
 
     @Override
-    public float getWeight() {
+    public float getMass() {
         return 9;
     }
 

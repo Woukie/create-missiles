@@ -20,7 +20,7 @@ public class MessyWarhead extends WarheadType {
     private final MissilePartModel model = new FireworkWarheadModel();
 
     @Override
-    public float getWeight() {
+    public float getMass() {
         return 10;
     }
 

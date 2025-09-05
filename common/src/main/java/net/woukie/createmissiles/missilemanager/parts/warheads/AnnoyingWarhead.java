@@ -24,7 +24,7 @@ public class AnnoyingWarhead extends WarheadType {
     private final MissilePartModel model = new AnnoyingWarheadModel();
 
     @Override
-    public float getWeight() {
+    public float getMass() {
         return 5;
     }
 

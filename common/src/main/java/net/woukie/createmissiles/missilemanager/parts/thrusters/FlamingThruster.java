@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.Level;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.block.navigationpanel.NavigationPanelBlockEntity;
 import net.woukie.createmissiles.client.MissilePartModel;
 import net.woukie.createmissiles.client.models.thrusters.FlamingThrusterModel;
 import net.woukie.createmissiles.missilemanager.Trajectory;
@@ -38,17 +39,22 @@ public class FlamingThruster extends ThrusterType {
     }
 
     @Override
-    public Trajectory createTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
-        return new BallisticTrajectory(level, start, target, warheadType, chassisType, thrusterType, container);
+    public Trajectory createTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container, NavigationPanelBlockEntity navPanel) {
+        return new BallisticTrajectory(level, start, target, warheadType, chassisType, thrusterType, container, navPanel);
     }
 
     @Override
     public float getThrust() {
-        return 40;
+        return 600;
     }
 
     @Override
     public float getBurnRate() {
+        return 1;
+    }
+
+    @Override
+    public float getMass() {
         return 10;
     }
 

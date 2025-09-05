@@ -422,7 +422,8 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
                 level, new Vector3d(source),
                 new Vector3d(target),
                 warheadType, chassisType, thrusterType,
-                (Container)this
+                (Container)this,
+                navigationPanel
         );
 
         Trajectories trajectories = Trajectories.get();
