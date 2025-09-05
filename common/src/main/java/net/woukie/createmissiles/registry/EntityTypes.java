@@ -39,6 +39,10 @@ public class EntityTypes {
             "frozenball",
             () -> EntityType.Builder.of(FrozenballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "frozenball").toString())
     );
+    public static final RegistrySupplier<EntityType<GuardianballEntity>> GUARDIANBALL = ENTITY_TYPES.register(
+            "guardianball",
+            () -> EntityType.Builder.of(GuardianballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "guardianball").toString())
+    );
     public static final RegistrySupplier<EntityType<AncientballEntity>> ANCIENTBALL = ENTITY_TYPES.register(
             "ancientball",
             () -> EntityType.Builder.of(AncientballEntity::new, MobCategory.MISC).sized(0.5f, 0.5f).build(new ResourceLocation(CreateMissiles.MOD_ID, "ancientball").toString())
