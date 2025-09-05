@@ -24,25 +24,33 @@ import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
 import net.woukie.createmissiles.block.navigationpanel.messages.UpdateMapDataMessage;
 import net.woukie.createmissiles.inventory.NavigationPanelMenu;
+import net.woukie.createmissiles.missilemanager.parts.ChassisType;
+import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
+import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
+import net.woukie.createmissiles.missilemanager.trajectories.TrajectoryHelper;
 import net.woukie.createmissiles.registry.BlockEntities;
 import net.woukie.createmissiles.registry.Packets;
+import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
+
+import static net.woukie.createmissiles.missilemanager.trajectories.TrajectoryHelper.findMinLaunchSolution;
 
 public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
     public static final int SLOT_MAP = 0;
 
-    private double mapCrosshairX, mapCrosshairZ, fuelPercent;
+    private double mapCrosshairX, mapCrosshairZ, thrustDurationPercent;
     private boolean initialized;
     private BlockPos target;
-
     private final ContainerData dataAccess;
+    private AssemblyPanelBlockEntity assemblyPanel;
 
     public NavigationPanelBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
         this.items = NonNullList.withSize(1, ItemStack.EMPTY);
         this.mapCrosshairX = 64;
         this.mapCrosshairZ = 64;
-        this.fuelPercent = 0;
+        this.thrustDurationPercent = 0;
         this.dataAccess = new ContainerData() {
             public int get(int i) {
                 return switch (i) {
@@ -55,7 +63,7 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
                     case 6 -> getBlockPos().getX();
                     case 7 -> getBlockPos().getY();
                     case 8 -> getBlockPos().getZ();
-                    case 9 -> (int) (fuelPercent * 100D);
+                    case 9 -> (int) (thrustDurationPercent * 100D);
                     case 10 -> MultiblockHelper.findCorner(
                             blockPos,
                             blockState.getValue(AssemblyPanelBlock.FACING).getOpposite(),
@@ -86,19 +94,45 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
             recalculateTarget();
         }
 
+
         ItemStack itemStack = getItem(0);
         if (!itemStack.is(Items.FILLED_MAP) || itemStack.isEmpty() || level == null) return;
 
+        assemblyPanel = (AssemblyPanelBlockEntity) MultiblockHelper.findEdgeBlock(
+                this,
+                getLevel(),
+                BlockEntities.ASSEMBLY_PANEL.get()
+        );
     }
 
     public void fuelClicked(double fuelPercent) {
-        this.fuelPercent = fuelPercent;
+        this.thrustDurationPercent = fuelPercent;
     }
 
     public void mapClicked(double mapCrosshairX, double mapCrosshairZ) {
         this.mapCrosshairX = mapCrosshairX;
         this.mapCrosshairZ = mapCrosshairZ;
         recalculateTarget();
+
+        ItemStack warheadItem = assemblyPanel.getItem(0);
+        ItemStack chassisItem = assemblyPanel.getItem(1);
+        ItemStack thrusterItem = assemblyPanel.getItem(2);
+
+        MissilePartType warheadType = PartTypes.get(warheadItem);
+        ChassisType chassisType = (ChassisType) PartTypes.get(chassisItem);
+        ThrusterType thrusterType = (ThrusterType) PartTypes.get(thrusterItem);
+
+        double mass = warheadType.getMass() + chassisType.getMass() + thrusterType.getMass();
+        double targetDistance = Vector3d.distance(target.getX(), 0, target.getZ(), this.getBlockPos().getX(), 0, this.getBlockPos().getZ());
+
+        TrajectoryHelper.LaunchSolution solution = findMinLaunchSolution(targetDistance, thrusterType.getThrust(), 50, 45, 90, mass);
+        if(solution != null)
+        {
+            System.out.println(solution.thrustDuration);
+        }else
+        {
+            System.out.println("No Solution");
+        }
     }
 
     public BlockPos getTarget() {
@@ -107,8 +141,8 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
     }
 
     @SuppressWarnings("unused")
-    public double getFuelPercent() {
-        return fuelPercent;
+    public double getThrustDurationPercent() {
+        return thrustDurationPercent;
     }
 
     private void recalculateTarget() {
@@ -155,7 +189,7 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
 
         this.mapCrosshairX = compoundTag.getDouble("MapCrosshairX");
         this.mapCrosshairZ = compoundTag.getDouble("MapCrosshairZ");
-        this.fuelPercent = compoundTag.getDouble("FuelPercent");
+        this.thrustDurationPercent = compoundTag.getDouble("FuelPercent");
     }
 
     @Override
@@ -164,7 +198,7 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
 
         compoundTag.putDouble("MapCrosshairX", this.mapCrosshairX);
         compoundTag.putDouble("MapCrosshairZ", this.mapCrosshairZ);
-        compoundTag.putDouble("FuelPercent", this.fuelPercent);
+        compoundTag.putDouble("FuelPercent", this.thrustDurationPercent);
 
         ContainerHelper.saveAllItems(compoundTag, this.items);
     }

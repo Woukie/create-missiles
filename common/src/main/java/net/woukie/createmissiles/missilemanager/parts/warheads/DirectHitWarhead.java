@@ -24,7 +24,7 @@ public class DirectHitWarhead extends WarheadType {
     private final MissilePartModel model = new DirectHitWarheadModel();
 
     @Override
-    public float getWeight() {
+    public float getMass() {
         return 100;
     }
 

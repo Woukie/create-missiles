@@ -21,7 +21,7 @@ public class DragonWarhead extends WarheadType {
     private final MissilePartModel model = new DragonWarheadModel();
 
     @Override
-    public float getWeight() {
+    public float getMass() {
         return 50;
     }
 
