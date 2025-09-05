@@ -1,0 +1,25 @@
+{
+  "type": "createmissiles:nbt_crafting_shaped",
+  "category": "misc",
+  "key": {
+    "@": {
+      "item": "createmissiles:warhead_assembly",
+      "nbt": "{PartType:\"createmissiles:firework_warhead\"}"
+    },
+    "#": {
+      "item": "createmissiles:firework_upgrade_core"
+    },
+    "S": {
+      "item": "minecraft:wither_rose"
+    }
+  },
+  "pattern": [
+    "S@S",
+    "@#@",
+    "S@S"
+  ],
+  "result": {
+    "item": "createmissiles:warhead_assembly",
+    "nbt": "{PartType:\"createmissiles:withered_warhead\"}"
+  }
+}
