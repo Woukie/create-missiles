@@ -29,7 +29,7 @@ public class TrajectoryHelper {
     private static double getDistance(double angle, double thrust, double thrustDuration, double minHeight, double mass)
     {
         double angleRad = Math.toRadians(angle);
-        Vector2d velocity = new Vector2d(Math.cos(angleRad), Math.sin(angleRad)).mul(thrust).div(mass);
+        Vector2d velocity = new Vector2d();
         Vector2d position = new Vector2d();
 
         double time = 0;
