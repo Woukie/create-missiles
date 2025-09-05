@@ -5,6 +5,8 @@ import com.google.common.base.Suppliers;
 import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.render.CustomRenderedItems;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.event.events.common.LootEvent;
 import dev.architectury.event.events.common.TickEvent;
@@ -13,8 +15,12 @@ import dev.architectury.registry.level.entity.EntityAttributeRegistry;
 import dev.architectury.registry.level.entity.trade.TradeRegistry;
 import dev.architectury.registry.menu.MenuRegistry;
 import dev.architectury.registry.registries.RegistrarManager;
+import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -68,7 +74,8 @@ public class CreateMissiles {
         ));
 
         LootEvent.MODIFY_LOOT_TABLE.register((lootDataManager, id, context, builtin) -> {
-            if (builtin && id.equals(new ResourceLocation("minecraft:chests/abandoned_mineshaft"))) {
+            if (!builtin) return;
+            if (id.equals(new ResourceLocation("minecraft:chests/abandoned_mineshaft"))) {
                 LootPool.Builder poolBuilder = LootPool.lootPool();
                 var warheadItem = LootItem.lootTableItem(Items.WARHEAD_ASSEMBLY.get());
                 warheadItem.when(LootItemRandomChanceCondition.randomChance(0.1f));
@@ -78,6 +85,16 @@ public class CreateMissiles {
 
                 poolBuilder.add(warheadItem);
 
+                context.addPool(poolBuilder);
+            }
+
+            if (id.equals(new ResourceLocation("minecraft:entities/ender_dragon"))) {
+                LootPool.Builder poolBuilder = LootPool.lootPool();
+                var warheadItem = LootItem.lootTableItem(Items.WARHEAD_ASSEMBLY.get());
+                var data = new CompoundTag();
+                data.putString("PartType", "createmissiles:dragon_warhead");
+                warheadItem.apply(SetNbtFunction.setTag(data));
+                poolBuilder.add(warheadItem);
                 context.addPool(poolBuilder);
             }
         });
