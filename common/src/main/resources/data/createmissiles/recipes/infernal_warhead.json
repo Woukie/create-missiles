@@ -1,0 +1,25 @@
+{
+  "type": "createmissiles:nbt_crafting_shaped",
+  "category": "misc",
+  "key": {
+    "@": {
+      "item": "createmissiles:warhead_assembly",
+      "nbt": "{PartType:\"createmissiles:blazing_warhead\"}"
+    },
+    "#": {
+      "item": "minecraft:lava_bucket"
+    },
+    "F": {
+      "item": "createmissiles:flaming_upgrade_core"
+    }
+  },
+  "pattern": [
+    "#@#",
+    "@F@",
+    "#@#"
+  ],
+  "result": {
+    "item": "createmissiles:warhead_assembly",
+    "nbt": "{PartType:\"createmissiles:infernal_warhead\"}"
+  }
+}

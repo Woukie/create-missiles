@@ -4,19 +4,22 @@
   "key": {
     "@": {
       "item": "createmissiles:warhead_assembly",
-      "nbt": "{PartType:\"createmissiles:excavator_warhead\"}"
+      "nbt": "{PartType:\"createmissiles:flaming_warhead\"}"
+    },
+    "R": {
+      "item": "minecraft:blaze_rod"
     },
     "#": {
-      "item": "createmissiles:excavator_upgrade_core"
+      "item": "createmissiles:flaming_upgrade_core"
     }
   },
   "pattern": [
-    " @ ",
+    "R@R",
     "@#@",
-    " @ "
+    "R@R"
   ],
   "result": {
     "item": "createmissiles:warhead_assembly",
-    "nbt": "{PartType:\"createmissiles:tunneler_warhead\"}"
+    "nbt": "{PartType:\"createmissiles:blazing_warhead\"}"
   }
 }
