@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:yellow_wool"
+          "name": "createmissiles:flaming_upgrade_core"
         }
       ]
     },

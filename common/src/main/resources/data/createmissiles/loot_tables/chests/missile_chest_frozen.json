@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:light_blue_wool"
+          "name": "createmissiles:frost_upgrade_core"
         }
       ]
     },

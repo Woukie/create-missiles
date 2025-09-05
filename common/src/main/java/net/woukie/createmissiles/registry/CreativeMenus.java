@@ -34,6 +34,10 @@ public class CreativeMenus {
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(BIOME_VIAL.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(DRONE_BOX_ITEM.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(REINFORCED_DRONE_BOX.get()));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(FIREWORK_UPGRADE_CORE.get()));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(EXCAVATOR_UPGRADE_CORE.get()));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(FROST_UPGRADE_CORE.get()));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(FLAMING_UPGRADE_CORE.get()));
 
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("biome_brush_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("ancient_warhead"), WARHEAD_ASSEMBLY.get()));
@@ -51,6 +55,7 @@ public class CreativeMenus {
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("shulker_box_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("teleportation_warhead"), WARHEAD_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("excavator_warhead"), WARHEAD_ASSEMBLY.get()));
+        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("tunneler_warhead"), WARHEAD_ASSEMBLY.get()));
 
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("flaming_chassis"), CHASSIS_ASSEMBLY.get()));
         CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> AssemblyItem.createWith(id("firework_chassis"), CHASSIS_ASSEMBLY.get()));

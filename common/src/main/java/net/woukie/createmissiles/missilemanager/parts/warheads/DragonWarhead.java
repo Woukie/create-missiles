@@ -1,10 +1,12 @@
 package net.woukie.createmissiles.missilemanager.parts.warheads;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.Container;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
@@ -27,7 +29,8 @@ public class DragonWarhead extends WarheadType {
     public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
-        ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 70));
+        ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 90));
+        level.setBlock(BlockPos.containing(hitPosition), Blocks.DRAGON_EGG.defaultBlockState(), 3);
     }
 
     @Override

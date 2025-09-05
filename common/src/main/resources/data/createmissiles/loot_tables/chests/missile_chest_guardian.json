@@ -6,7 +6,8 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:cyan_wool"
+          "name": "createmissiles:warhead_assembly",
+          "nbt": "{PartType:\"createmissiles:guardian_warhead\"}"
         }
       ]
     },
