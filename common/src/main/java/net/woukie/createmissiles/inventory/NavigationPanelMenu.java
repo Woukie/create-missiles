@@ -25,7 +25,7 @@ public class NavigationPanelMenu extends AbstractBasicMenu {
     public NavigationPanelMenu(int id, Inventory playerInventory, Container container, ContainerData containerData, Container assemblyPanelContainer) {
         super(NAVIGATION_PANEL.get(), id, container);
         checkContainerSize(container, 1);
-        checkContainerDataCount(containerData, 12);
+        checkContainerDataCount(containerData, 13);
         this.containerData = containerData;
         this.assemblyPanelContainer = assemblyPanelContainer;
 
@@ -63,7 +63,7 @@ public class NavigationPanelMenu extends AbstractBasicMenu {
     }
 
     public NavigationPanelMenu(int id, Inventory inventory) {
-        this(id, inventory, new SimpleContainer(1), new SimpleContainerData(12), new SimpleContainer(3));
+        this(id, inventory, new SimpleContainer(1), new SimpleContainerData(13), new SimpleContainer(3));
     }
 
     public int getMapCrosshairX() {
@@ -96,6 +96,10 @@ public class NavigationPanelMenu extends AbstractBasicMenu {
 
     public double getFuelPercent() {
         return containerData.get(9) / 100.0;
+    }
+
+    public double getMinThrustDuration() {
+        return this.containerData.get(12) / 100.0;
     }
 
     public boolean launchPadExists() {

@@ -44,6 +44,7 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
     private BlockPos target;
     private final ContainerData dataAccess;
     private AssemblyPanelBlockEntity assemblyPanel;
+    private int relativeMinThrustDuration = 0;
 
     public NavigationPanelBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -75,6 +76,7 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
                             getLevel(),
                             BlockEntities.ASSEMBLY_PANEL.get()
                     ) == null ? 0 : 1;
+                    case 12 -> relativeMinThrustDuration;
                     default -> 0;
                 };
             }
@@ -82,7 +84,7 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
             public void set(int i, int j) {}
 
             public int getCount() {
-                return 12;
+                return 13;
             }
         };
     }
@@ -125,10 +127,11 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
         double mass = warheadType.getMass() + chassisType.getMass() + thrusterType.getMass();
         double targetDistance = Vector3d.distance(target.getX(), 0, target.getZ(), this.getBlockPos().getX(), 0, this.getBlockPos().getZ());
 
-        TrajectoryHelper.LaunchSolution solution = findMinLaunchSolution(targetDistance, thrusterType.getThrust(), 50, 45, 90, mass);
+        TrajectoryHelper.LaunchSolution solution = findMinLaunchSolution(targetDistance, thrusterType.getThrust(), 50, 30, 90, mass);
         if(solution != null)
         {
             System.out.println(solution.thrustDuration);
+            relativeMinThrustDuration = (int)(solution.thrustDuration / (chassisType.getFuelCapacity() / thrusterType.getBurnRate()) * 100);
         }else
         {
             System.out.println("No Solution");
