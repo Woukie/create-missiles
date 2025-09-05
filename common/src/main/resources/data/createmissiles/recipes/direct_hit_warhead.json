@@ -4,22 +4,22 @@
   "key": {
     "@": {
       "item": "createmissiles:warhead_assembly",
-      "nbt": "{PartType:\"createmissiles:excavator_warhead\"}"
+      "nbt": "{PartType:\"createmissiles:firework_warhead\"}"
     },
     "#": {
-      "item": "createmissiles:excavator_upgrade_core"
+      "item": "minecraft:anvil"
     },
-    "S": {
-      "item": "minecraft:cobblestone"
+    "F": {
+      "item": "createmissiles:firework_upgrade_core"
     }
   },
   "pattern": [
-    "S@S",
-    "@#@",
-    "S@S"
+    "#@#",
+    "@F@",
+    "#@#"
   ],
   "result": {
     "item": "createmissiles:warhead_assembly",
-    "nbt": "{PartType:\"createmissiles:tunneler_warhead\"}"
+    "nbt": "{PartType:\"createmissiles:direct_hit_warhead\"}"
   }
 }

@@ -6,7 +6,13 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:green_wool"
+          "name": "createmissiles:warhead_assembly"
+        }
+      ],
+      "functions": [
+        {
+          "function": "minecraft:set_nbt",
+          "tag": "{PartType:\"createmissiles:biome_brush_warhead\"}"
         }
       ]
     },

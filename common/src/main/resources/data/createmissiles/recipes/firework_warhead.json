@@ -5,14 +5,17 @@
     "@": {
       "item": "minecraft:paper"
     },
+    "G": {
+      "item": "minecraft:gunpowder"
+    },
     "#": {
       "item": "minecraft:firework_rocket"
     }
   },
   "pattern": [
-    "@@@",
+    "G@G",
     "@#@",
-    "@@@"
+    "G@G"
   ],
   "result": {
     "item": "createmissiles:warhead_assembly",

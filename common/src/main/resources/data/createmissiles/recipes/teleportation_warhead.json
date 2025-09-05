@@ -4,22 +4,19 @@
   "key": {
     "@": {
       "item": "createmissiles:warhead_assembly",
-      "nbt": "{PartType:\"createmissiles:excavator_warhead\"}"
+      "nbt": "{PartType:\"createmissiles:dragon_warhead\"}"
     },
     "#": {
-      "item": "createmissiles:excavator_upgrade_core"
-    },
-    "S": {
-      "item": "minecraft:cobblestone"
+      "item": "minecraft:ender_pearl"
     }
   },
   "pattern": [
-    "S@S",
+    "#@#",
     "@#@",
-    "S@S"
+    "#@#"
   ],
   "result": {
     "item": "createmissiles:warhead_assembly",
-    "nbt": "{PartType:\"createmissiles:tunneler_warhead\"}"
+    "nbt": "{PartType:\"createmissiles:teleportation_warhead\"}"
   }
 }
