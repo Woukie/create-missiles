@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:orange_wool"
+          "name": "createmissiles:excavator_upgrade_core"
         }
       ]
     },

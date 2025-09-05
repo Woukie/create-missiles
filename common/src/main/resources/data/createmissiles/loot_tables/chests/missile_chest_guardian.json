@@ -7,7 +7,18 @@
         {
           "type": "minecraft:item",
           "name": "createmissiles:warhead_assembly",
-          "nbt": "{PartType:\"createmissiles:guardian_warhead\"}"
+          "conditions": [
+            {
+              "condition": "minecraft:random_chance",
+              "chance": 0.25
+            }
+          ]
+        }
+      ],
+      "functions": [
+        {
+          "function": "minecraft:set_nbt",
+          "tag": "{PartType:\"createmissiles:guardian_warhead\"}"
         }
       ]
     },
