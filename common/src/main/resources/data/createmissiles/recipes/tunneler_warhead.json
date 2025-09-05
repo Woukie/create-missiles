@@ -1,0 +1,22 @@
+{
+  "type": "createmissiles:nbt_crafting_shaped",
+  "category": "misc",
+  "key": {
+    "@": {
+      "item": "createmissiles:warhead_assembly",
+      "nbt": "{PartType:\"createmissiles:excavator_warhead\"}"
+    },
+    "#": {
+      "item": "createmissiles:excavator_upgrade_core"
+    }
+  },
+  "pattern": [
+    "@@@",
+    "@#@",
+    "@@@"
+  ],
+  "result": {
+    "item": "createmissiles:warhead_assembly",
+    "nbt": "{PartType:\"createmissiles:tunneler_warhead\"}"
+  }
+}

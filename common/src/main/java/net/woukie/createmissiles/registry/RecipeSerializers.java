@@ -8,11 +8,13 @@ import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.recipe.MissilePartRecipe;
 import net.woukie.createmissiles.recipe.AssemblyCloningRecipe;
+import net.woukie.createmissiles.recipe.NbtShapedRecipe;
 
 public class RecipeSerializers {
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(CreateMissiles.MOD_ID, Registries.RECIPE_SERIALIZER);
 
     public static final RegistrySupplier<SimpleCraftingRecipeSerializer<?>> ASSEMBLY_CLONING = RECIPE_SERIALIZERS.register("assembly_cloning", () -> new SimpleCraftingRecipeSerializer<>(AssemblyCloningRecipe::new));
+    public static final RegistrySupplier<NbtShapedRecipe.Serializer> NBT_CRAFTING_SHAPED = RECIPE_SERIALIZERS.register("nbt_crafting_shaped", NbtShapedRecipe.Serializer::new);
     public static final RegistrySupplier<MissilePartRecipe.Serializer> MISSILE_PART = RECIPE_SERIALIZERS.register("missile_part", MissilePartRecipe.Serializer::new);
 
     public static void init() {

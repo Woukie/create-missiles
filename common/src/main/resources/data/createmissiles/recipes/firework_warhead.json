@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "@": {
+      "item": "minecraft:paper"
+    },
+    "#": {
+      "item": "minecraft:firework_rocket"
+    }
+  },
+  "pattern": [
+    "@@@",
+    "@#@",
+    "@@@"
+  ],
+  "result": {
+    "item": "createmissiles:warhead_assembly",
+    "nbt": "{PartType:\"createmissiles:firework_warhead\"}"
+  }
+}

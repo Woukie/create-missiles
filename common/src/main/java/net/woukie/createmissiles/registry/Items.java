@@ -47,6 +47,22 @@ public abstract class Items {
             "incomplete_reinforced_drone_box",
             () -> new Item(new Item.Properties())
     );
+    public static final RegistrySupplier<Item> FIREWORK_UPGRADE_CORE = ITEMS.register(
+            "firework_upgrade_core",
+            () -> new Item(new Item.Properties())
+    );
+    public static final RegistrySupplier<Item> FLAMING_UPGRADE_CORE = ITEMS.register(
+            "flaming_upgrade_core",
+            () -> new Item(new Item.Properties())
+    );
+    public static final RegistrySupplier<Item> EXCAVATOR_UPGRADE_CORE = ITEMS.register(
+            "excavator_upgrade_core",
+            () -> new Item(new Item.Properties())
+    );
+    public static final RegistrySupplier<Item> FROST_UPGRADE_CORE = ITEMS.register(
+            "frost_upgrade_core",
+            () -> new Item(new Item.Properties())
+    );
 
     protected abstract RegistrySupplier<Item> getWarheadAssembly();
     protected abstract RegistrySupplier<Item> getChassisAssembly();

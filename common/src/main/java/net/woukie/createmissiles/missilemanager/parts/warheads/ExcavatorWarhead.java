@@ -19,9 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
 
 public class ExcavatorWarhead extends WarheadType {
-    private final MissilePartModel model = new ExcavatorWarheadModel();
-    private final double stepSize = 1.5d;
-    private final int initialCharges = 40;
+    protected final MissilePartModel model = new ExcavatorWarheadModel();
 
     @Override
     public float getWeight() {
@@ -35,7 +33,7 @@ public class ExcavatorWarhead extends WarheadType {
 
     @Override
     public CompoundTag saveTo(Container container, CompoundTag data) {
-        data.putInt("Charges", initialCharges);
+        data.putInt("Charges", getInitialCharges());
         data.putDouble("DetonationGap", 0);
         return data;
     }
@@ -56,7 +54,7 @@ public class ExcavatorWarhead extends WarheadType {
         if (level == null || trajectory.getTick() <= 40) return;
 
         Vector3d end = trajectory.getPosition();
-        if (trajectory.getWarheadData().getInt("Charges") != initialCharges) {
+        if (trajectory.getWarheadData().getInt("Charges") != getInitialCharges()) {
             Vector3d start = trajectory.getLastPosition();
             detonateLine(new Vec3(start.x, start.y, start.z), new Vec3(end.x, end.y, end.z), level, trajectory);
         } else {
@@ -75,12 +73,12 @@ public class ExcavatorWarhead extends WarheadType {
         int charges = trajectory.getWarheadData().getInt("Charges");
         double detonationGap = trajectory.getWarheadData().getDouble("DetonationGap");
         Vec3 totalDistance = end.subtract(start);
-        Vec3 stepOffset = totalDistance.normalize().scale(stepSize);
+        Vec3 stepOffset = totalDistance.normalize().scale(getStepSize());
 
         Vec3 currentDistance = stepOffset.normalize().scale(detonationGap);
         while (currentDistance.length() < totalDistance.length() && charges > 0) {
             Vec3 globalPosition = currentDistance.add(start);
-            ExplosionHandler.get().createExplosion(new Explosion(level, globalPosition, 5));
+            ExplosionHandler.get().createExplosion(new Explosion(level, globalPosition, getExplosionPower()));
             charges--;
             trajectory.getWarheadData().putInt("Charges", charges);
 
@@ -90,5 +88,17 @@ public class ExcavatorWarhead extends WarheadType {
 //        Offset the next to keep a constant step size across line detonations
         detonationGap = totalDistance.subtract(currentDistance).length();
         trajectory.getWarheadData().putDouble("DetonationGap", detonationGap);
+    }
+
+    protected int getInitialCharges() {
+        return 30;
+    }
+
+    protected float getStepSize() {
+        return 1.5f;
+    }
+
+    protected double getExplosionPower() {
+        return 5;
     }
 }

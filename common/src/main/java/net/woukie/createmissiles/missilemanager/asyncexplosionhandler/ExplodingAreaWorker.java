@@ -3,6 +3,7 @@ package net.woukie.createmissiles.missilemanager.asyncexplosionhandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import org.joml.Vector3d;
 
 import java.util.Arrays;
@@ -147,7 +148,9 @@ public class ExplodingAreaWorker implements Runnable {
         if (endEarly) return false;
         BlockPos blockPos = brokenBlocks.poll();
         if (blockPos != null) {
-            level.destroyBlock(blockPos, true);
+            if (!level.getBlockState(blockPos).is(Blocks.DRAGON_EGG)) {
+                level.destroyBlock(blockPos, true);
+            }
             return true;
         }
         return false;

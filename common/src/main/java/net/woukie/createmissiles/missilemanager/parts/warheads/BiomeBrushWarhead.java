@@ -83,7 +83,7 @@ public class BiomeBrushWarhead extends WarheadType {
                     Math.random() * radius * 2
             ).add(hitPosition).subtract(radius, radius, radius);
 
-            level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, pos.x, pos.y, pos.z, 3, 2, 0, 0, 0);
+            level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, pos.x, pos.y, pos.z, 3, 0, 0, 0, 2);
         }
     }
 
