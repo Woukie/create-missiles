@@ -6,14 +6,21 @@ import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.render.CustomRenderedItems;
 import dev.architectury.event.events.common.LifecycleEvent;
+import dev.architectury.event.events.common.LootEvent;
 import dev.architectury.event.events.common.TickEvent;
 import dev.architectury.registry.item.ItemPropertiesRegistry;
 import dev.architectury.registry.level.entity.EntityAttributeRegistry;
 import dev.architectury.registry.level.entity.trade.TradeRegistry;
 import dev.architectury.registry.menu.MenuRegistry;
 import dev.architectury.registry.registries.RegistrarManager;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.SetNbtFunction;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.woukie.createmissiles.client.screens.AssemblyPanelScreen;
 import net.woukie.createmissiles.client.screens.ControlPanelScreen;
 import net.woukie.createmissiles.client.screens.DroneScreen;
@@ -59,6 +66,20 @@ public class CreateMissiles {
                 6,
                 4
         ));
+
+        LootEvent.MODIFY_LOOT_TABLE.register((lootDataManager, id, context, builtin) -> {
+            if (builtin && id.equals(new ResourceLocation("minecraft:chests/abandoned_mineshaft"))) {
+                LootPool.Builder poolBuilder = LootPool.lootPool();
+
+                var warheadItem = LootItem.lootTableItem(Items.WARHEAD_ASSEMBLY.get());
+                warheadItem.when(LootItemRandomChanceCondition.randomChance(0.1f));
+                var data = new CompoundTag();
+                data.putString("PartType", "createmissiles:excavator_warhead");
+                warheadItem.apply(SetNbtFunction.setTag(data));
+
+                context.addPool(poolBuilder);
+            }
+        });
 
         StructurePoolElementTypes.init();
         Blocks.init();
