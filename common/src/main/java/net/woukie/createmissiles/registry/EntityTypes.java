@@ -63,6 +63,5 @@ public class EntityTypes {
     public static void init() {
         CreateMissiles.LOGGER.info("Registering entity types for " + CreateMissiles.NAME);
         ENTITY_TYPES.register();
-        FabricDefaultAttributeRegistry.register(DRONE.get(), DroneEntity.createMobAttributes());
     }
 }

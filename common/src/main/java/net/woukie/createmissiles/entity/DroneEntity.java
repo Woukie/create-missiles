@@ -3,12 +3,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedHashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Multisets;
-import com.ibm.icu.impl.ValidIdentifiers;
 import net.minecraft.core.*;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -21,8 +20,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.FlyingMob;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.ambient.Bat;
-import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -136,8 +133,6 @@ public class DroneEntity extends FlyingMob{
     }
 
     private void handleComplete() {
-
-
         if(mapItemStack != null)
         {
             DefaultDispenseItemBehavior.spawnItem(this.level(), mapItemStack, 1, Direction.UP, this.position());

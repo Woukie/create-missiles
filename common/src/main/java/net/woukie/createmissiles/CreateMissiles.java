@@ -63,7 +63,7 @@ public class CreateMissiles {
         SoundEvents.init();
         ParticleTypes.init();
 
-
+        EntityAttributeRegistry.register(EntityTypes.BASIC_DRONE, DroneEntity::createMobAttributes);
     }
 
     public static CreateRegistrate registrate() {
@@ -79,8 +79,6 @@ public class CreateMissiles {
         CustomRenderedItems.register(Items.WARHEAD_ASSEMBLY.get());
         CustomRenderedItems.register(Items.CHASSIS_ASSEMBLY.get());
         CustomRenderedItems.register(Items.THRUSTER_ASSEMBLY.get());
-
-        EntityAttributeRegistry.register(EntityTypes.BASIC_DRONE, DroneEntity::createMobAttributes);
 
         ItemPropertiesRegistry.register(Items.BIOME_VIAL.get(), new ResourceLocation("full"), (itemStack, clientLevel, livingEntity, i) -> {
             if (livingEntity == null) return 0.0F;
