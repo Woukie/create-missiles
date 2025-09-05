@@ -6,13 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "createmissiles:warhead_assembly",
-          "conditions": [
-            {
-              "condition": "minecraft:random_chance",
-              "chance": 0.25
-            }
-          ]
+          "name": "createmissiles:warhead_assembly"
         }
       ],
       "functions": [
