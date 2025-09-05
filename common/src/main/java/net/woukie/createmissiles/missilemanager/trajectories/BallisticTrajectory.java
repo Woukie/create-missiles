@@ -25,10 +25,10 @@ public class BallisticTrajectory extends Trajectory {
     protected Vector3d acceleration;
     protected Vector3d rotation;
 
-    private double thrust = 5;
-    private double thrustDuration = 2.5d;
-    private double launchAngle = 90;
-    private double mass = 1;
+    private double thrust;
+    private double thrustDuration;
+    private double launchAngle;
+    private double mass;
     private Vector3d launchDirection;
 
 
