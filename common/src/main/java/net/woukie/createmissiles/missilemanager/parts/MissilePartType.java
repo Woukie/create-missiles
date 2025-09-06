@@ -2,6 +2,7 @@ package net.woukie.createmissiles.missilemanager.parts;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -36,5 +37,10 @@ public abstract class MissilePartType {
 
     public float getMass() {
         return 1;
+    }
+
+    public void registerJEIStats(MutableComponent component) {
+        component.append(Component.translatable("description.jei.createmissiles.generic.mass", Float.toString(getMass())));
+        component.append("\n");
     }
 }
