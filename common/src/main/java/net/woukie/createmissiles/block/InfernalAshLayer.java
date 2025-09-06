@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -41,9 +42,10 @@ public class InfernalAshLayer extends Block {
 
     @Override
     public void stepOn(Level level, BlockPos blockPos, BlockState blockState, Entity entity) {
-        int damage = blockState.getValue(FrostSnowLayer.LAYERS) * 2 / MAX_HEIGHT;
-        entity.hurt(level.damageSources().generic(), damage);
-        super.stepOn(level, blockPos, blockState, entity);
+        if (!entity.getType().equals(EntityType.BLAZE)) {
+            int damage = blockState.getValue(FrostSnowLayer.LAYERS) * 2 / MAX_HEIGHT;
+            entity.hurt(level.damageSources().generic(), damage);
+        }
     }
 
     @Override
@@ -66,7 +68,7 @@ public class InfernalAshLayer extends Block {
 
     @Override
     public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        return SHAPE_BY_LAYER[blockState.getValue(LAYERS) - 1];
+        return SHAPE_BY_LAYER[blockState.getValue(LAYERS)];
     }
 
     @Override
