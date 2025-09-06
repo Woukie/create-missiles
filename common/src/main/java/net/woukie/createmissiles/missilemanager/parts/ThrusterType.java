@@ -1,6 +1,8 @@
 package net.woukie.createmissiles.missilemanager.parts;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.Level;
@@ -25,4 +27,13 @@ public abstract class ThrusterType extends MissilePartType {
 
     public abstract float getThrust();
     public abstract float getBurnRate();
+
+    @Override
+    public void registerJEIStats(MutableComponent component) {
+        super.registerJEIStats(component);
+        component.append(Component.translatable("description.jei.createmissiles.generic.thrust", Float.toString(getThrust())));
+        component.append("\n");
+        component.append(Component.translatable("description.jei.createmissiles.generic.burn_rate", Float.toString(getBurnRate())));
+        component.append("\n");
+    }
 }

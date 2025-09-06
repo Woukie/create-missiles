@@ -13,7 +13,9 @@ import net.woukie.createmissiles.missilemanager.parts.thrusters.FireworkThruster
 import net.woukie.createmissiles.missilemanager.parts.thrusters.FlamingThruster;
 import net.woukie.createmissiles.missilemanager.parts.warheads.*;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 public class PartTypes {
     private static final HashMap<ResourceLocation, MissilePartType> missilePartTypes = new HashMap<>();
@@ -22,6 +24,10 @@ public class PartTypes {
         PartTypes.missilePartTypes.put(missileType.getResourceLocation(), missileType);
     }
 
+    public static Collection<MissilePartType> getMissilePartTypes() {
+        return missilePartTypes.values();
+    }
+    
     public static MissilePartType get(ResourceLocation location) {
         return missilePartTypes.get(location);
     }

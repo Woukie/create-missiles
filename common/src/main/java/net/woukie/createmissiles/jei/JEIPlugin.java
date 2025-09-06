@@ -10,7 +10,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.item.assembly.AssemblyItem;
+import net.woukie.createmissiles.missilemanager.parts.ChassisType;
+import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.registry.Items;
+import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
@@ -30,11 +33,26 @@ public class JEIPlugin implements IModPlugin {
     public void registerRecipes(IRecipeRegistration registration) {
         IModPlugin.super.registerRecipes(registration);
 
-        registration.addItemStackInfo(makeStack("firework_thruster", Items.THRUSTER_ASSEMBLY.get()), Component.translatable("description.jei.firework_thruster"));
-        registration.addItemStackInfo(makeStack("firework_chassis", Items.CHASSIS_ASSEMBLY.get()), Component.translatable("description.jei.firework_chassis"));
-    }
+        PartTypes.getMissilePartTypes().forEach(partType -> {
+            ResourceLocation location = partType.getResourceLocation();
+            ItemLike item = Items.WARHEAD_ASSEMBLY.get();
+            if (partType instanceof ThrusterType) {
+                item = Items.THRUSTER_ASSEMBLY.get();
+            } else if (partType instanceof ChassisType) {
+                item = Items.CHASSIS_ASSEMBLY.get();
+            }
+            ItemStack stack = AssemblyItem.createWith(location, item);
 
-    private ItemStack makeStack(String name, ItemLike item) {
-        return AssemblyItem.createWith(new ResourceLocation(CreateMissiles.MOD_ID, name), item);
+            var description = Component.empty();
+            partType.registerJEIStats(description);
+            description.append("\n");
+            description.append(Component.translatable("description.jei." + location.getNamespace() + "." + location.getPath()));
+            registration.addItemStackInfo(stack, description);
+        });
+
+        registration.addItemStackInfo(Items.EXCAVATOR_UPGRADE_CORE.get().getDefaultInstance(), Component.translatable("description.jei.createmissiles.generic.upgrade_core"));
+        registration.addItemStackInfo(Items.FIREWORK_UPGRADE_CORE.get().getDefaultInstance(), Component.translatable("description.jei.createmissiles.generic.upgrade_core"));
+        registration.addItemStackInfo(Items.FLAMING_UPGRADE_CORE.get().getDefaultInstance(), Component.translatable("description.jei.createmissiles.generic.upgrade_core"));
+        registration.addItemStackInfo(Items.FROST_UPGRADE_CORE.get().getDefaultInstance(), Component.translatable("description.jei.createmissiles.generic.upgrade_core"));
     }
 }
