@@ -8,7 +8,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
-import net.woukie.createmissiles.client.models.warheads.FlamingWarheadModel;
+import net.woukie.createmissiles.client.models.warheads.BlazingWarheadModel;
 import net.woukie.createmissiles.entity.BlazingballEntity;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.Explosion;
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Random;
 
 public class BlazingWarhead extends WarheadType {
-    private final MissilePartModel model = new FlamingWarheadModel();
+    private final MissilePartModel model = new BlazingWarheadModel();
     private static final float fireballVelocity = 3;
     private static final float fireballSlowVelocity = 1.5f;
 

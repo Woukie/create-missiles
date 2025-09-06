@@ -20,7 +20,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
-import net.woukie.createmissiles.client.models.warheads.FlamingWarheadModel;
+import net.woukie.createmissiles.client.models.warheads.BiomeBrushWarheadModel;
 import net.woukie.createmissiles.item.BiomeVialItem;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.parts.WarheadType;
@@ -33,7 +33,7 @@ import java.util.function.Predicate;
 
 // A lot of cross-over with net.minecraft.server.commands.FillBiomeCommand
 public class BiomeBrushWarhead extends WarheadType {
-    private final MissilePartModel model = new FlamingWarheadModel();
+    private final MissilePartModel model = new BiomeBrushWarheadModel();
     private final int radius = 16;
 
     @Override
