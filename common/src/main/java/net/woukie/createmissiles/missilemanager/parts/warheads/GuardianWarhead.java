@@ -12,7 +12,7 @@ import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.Util;
 import net.woukie.createmissiles.client.MissilePartModel;
-import net.woukie.createmissiles.client.models.warheads.FireworkWarheadModel;
+import net.woukie.createmissiles.client.models.warheads.GuardianWarheadModel;
 import net.woukie.createmissiles.entity.GuardianballEntity;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.Explosion;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Random;
 
 public class GuardianWarhead extends WarheadType {
-    private final MissilePartModel model = new FireworkWarheadModel();
+    private final MissilePartModel model = new GuardianWarheadModel();
     private static final float ballVelocity = 3;
     private static final float slowBallVelocity = 1.5f;
 

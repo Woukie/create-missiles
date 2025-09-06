@@ -8,7 +8,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
-import net.woukie.createmissiles.client.models.warheads.FireworkWarheadModel;
+import net.woukie.createmissiles.client.models.warheads.MessyWarheadModel;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.Explosion;
 import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplosionHandler;
@@ -17,7 +17,7 @@ import net.woukie.createmissiles.registry.EntityTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class MessyWarhead extends WarheadType {
-    private final MissilePartModel model = new FireworkWarheadModel();
+    private final MissilePartModel model = new MessyWarheadModel();
 
     @Override
     public float getWeight() {

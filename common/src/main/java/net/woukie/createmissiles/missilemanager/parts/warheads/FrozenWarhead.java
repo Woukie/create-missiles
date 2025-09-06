@@ -6,7 +6,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
-import net.woukie.createmissiles.client.models.warheads.FireworkWarheadModel;
+import net.woukie.createmissiles.client.models.warheads.FrozenWarheadModel;
 import net.woukie.createmissiles.entity.FrozenballEntity;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.Explosion;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Random;
 
 public class FrozenWarhead extends WarheadType {
-    private final MissilePartModel model = new FireworkWarheadModel();
+    private final MissilePartModel model = new FrozenWarheadModel();
     private static final float snowballVelocity = 3;
     private static final float snowballSlowVelocity = 1.5f;
 
