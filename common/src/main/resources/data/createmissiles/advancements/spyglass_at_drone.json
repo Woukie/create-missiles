@@ -1,0 +1,75 @@
+{
+  "parent": "createmissiles:root",
+  "criteria": {
+    "spyglass_at_basic_drone": {
+      "conditions": {
+        "item": {
+          "items": [
+            "minecraft:spyglass"
+          ]
+        },
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type_specific": {
+                "type": "player",
+                "looking_at": {
+                  "type": "createmissiles:basic_drone"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:using_item"
+    },
+    "spyglass_at_reinforced_drone": {
+      "conditions": {
+        "item": {
+          "items": [
+            "minecraft:spyglass"
+          ]
+        },
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type_specific": {
+                "type": "player",
+                "looking_at": {
+                  "type": "createmissiles:reinforced_drone"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:using_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.createmissiles.spyglass_at_drone.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "minecraft:spyglass"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.createmissiles.spyglass_at_drone.title"
+    }
+  },
+  "requirements": [
+    [
+      "spyglass_at_basic_drone",
+      "spyglass_at_reinforced_drone"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

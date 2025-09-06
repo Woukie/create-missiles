@@ -117,6 +117,8 @@
   "advancements.createmissiles.launch_pad.description": "Obtain nine Launch Pads",
   "advancements.createmissiles.spyglass_at_missile.title":  "Is it pointed at us?",
   "advancements.createmissiles.spyglass_at_missile.description": "Look at a Missile through a Spyglass",
+  "advancements.createmissiles.spyglass_at_drone.title":  "That bird has wheels...",
+  "advancements.createmissiles.spyglass_at_drone.description": "Look at a Drone through a Spyglass",
   "advancements.createmissiles.assembly_panel.title":  "AutoCAD Extraordinaire",
   "advancements.createmissiles.assembly_panel.description": "Obtain an Assembly Panel",
   "advancements.createmissiles.navigation_panel.title":  "Plotting Course",
