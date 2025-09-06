@@ -65,7 +65,7 @@ public class EntityTypes {
     );
     public static final RegistrySupplier<EntityType<DroneEntity>> BASIC_DRONE = ENTITY_TYPES.register(
             "basic_drone",
-            () -> EntityType.Builder.of(DroneEntity::new, MobCategory.MISC).noSummon().fireImmune().sized(2f, 1f).clientTrackingRange(4).updateInterval(20).build(new ResourceLocation(CreateMissiles.MOD_ID, "basic_drone").toString())
+            () -> EntityType.Builder.of(DroneEntity::new, MobCategory.MISC).noSummon().sized(2f, 1f).clientTrackingRange(4).updateInterval(20).build(new ResourceLocation(CreateMissiles.MOD_ID, "basic_drone").toString())
     );
 
     public static void init() {

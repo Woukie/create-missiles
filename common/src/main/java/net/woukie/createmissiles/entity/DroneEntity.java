@@ -18,9 +18,6 @@ import net.minecraft.world.*;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.FlyingMob;
-import net.minecraft.world.entity.ai.control.FlyingMoveControl;
-import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -34,14 +31,13 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.inventory.DroneMenu;
 import net.woukie.createmissiles.registry.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class DroneEntity extends FlyingMob{
+public class DroneEntity extends FlyingMob {
     public DroneEntity(EntityType<? extends DroneEntity> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(true);
