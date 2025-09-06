@@ -18,6 +18,9 @@ import net.minecraft.world.*;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.FlyingMob;
+import net.minecraft.world.entity.ai.control.FlyingMoveControl;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -39,18 +42,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class DroneEntity extends FlyingMob{
-    private enum Stage { IDLE, ASCENDING, TO_TARGET, RETURNING, DESCENDING }
-    private Stage stage = Stage.IDLE;
-    private Vec3 homePos;
-    private Vec3 targetPos;
-    private final double cruiseAltitude = 120.0;
-    private final double speed = 0.1;
-
     public DroneEntity(EntityType<? extends DroneEntity> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(true);
-        this.noPhysics = true;
-        startJourney();
     }
 
     protected float getStandingEyeHeight(@NotNull Pose pose, EntityDimensions entityDimensions) {
@@ -60,53 +54,7 @@ public class DroneEntity extends FlyingMob{
     @Override
     public void tick() {
         super.tick();
-        Vec3 current = position();
-
-        switch (stage) {
-            case ASCENDING -> {
-                if (current.y < cruiseAltitude) {
-                    setDeltaMovement(0, speed, 0);
-                } else {
-                    stage = Stage.TO_TARGET;
-                }
-            }
-
-            case TO_TARGET -> {
-                flyToward(targetPos);
-                if (current.distanceTo(targetPos) < 2.0) stage = Stage.RETURNING;
-            }
-
-            case RETURNING -> {
-                flyToward(homePos);
-                if (current.distanceTo(homePos) < 2.0) stage = Stage.DESCENDING;
-            }
-
-            case DESCENDING -> {
-                if (current.y > homePos.y) {
-                    setDeltaMovement(0, -speed, 0);
-                } else {
-                    stage = Stage.IDLE;
-                    setDeltaMovement(Vec3.ZERO);
-                }
-            }
-
-            default -> setDeltaMovement(Vec3.ZERO);
-        }
-
-        move(MoverType.SELF, getDeltaMovement());
-
         //mapItemStack = createAndFillMap(this.level(), (int)this.getX(), (int)this.getZ(), 0);
-    }
-
-    private void flyToward(Vec3 dest) {
-        Vec3 dir = new Vec3(dest.x - position().x, 0, dest.z - position().z).normalize();
-        setDeltaMovement(dir.scale(speed));
-    }
-
-    public void startJourney() {
-        this.homePos = this.position();
-        this.targetPos = new Vec3(homePos.x + 50, cruiseAltitude, homePos.z + 50);
-        this.stage = Stage.ASCENDING;
     }
 
     private static final EntityDataAccessor<Rotations> ROTATION =
@@ -120,7 +68,7 @@ public class DroneEntity extends FlyingMob{
 
     @Override
     public boolean isAttackable() {
-        return false;
+        return true;
     }
 
     public void aiStep() {
