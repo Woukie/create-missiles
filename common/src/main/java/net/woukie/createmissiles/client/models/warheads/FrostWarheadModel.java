@@ -46,16 +46,8 @@ public class FrostWarheadModel implements MissilePartModel {
 				return bb_main;
 			},
 			partDefinition -> {
-				PartDefinition bb_main = partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-				bb_main.addOrReplaceChild("plate_r1", CubeListBuilder.create().texOffs(0, 12).addBox(-1.5F, -0.5F, -3.5F, 3.0F, 1.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.5F, 0.0F, 3.1416F, 0.7854F, 0.0F));
-				bb_main.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(26, 20).addBox(-1.5F, -2.5F, 0.0F, 3.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.5456F, 2.5F, 2.5456F, -3.1416F, -0.7854F, 3.1416F));
-				bb_main.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(26, 23).addBox(-1.5F, -1.0F, 0.0F, 3.0F, 2.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0679F, 5.7373F, 2.0679F, -2.3998F, -0.7854F, -3.1416F));
-				bb_main.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(20, 20).addBox(-1.5F, -3.0F, 0.0F, 3.0F, 6.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.5456F, 3.0F, 2.5456F, 0.0F, -1.5708F, 0.0F));
-				bb_main.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(26, 23).addBox(-1.5F, -1.0F, 0.0F, 3.0F, 2.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.0679F, 5.7373F, -2.0679F, 2.3998F, -0.7854F, 3.1416F));
-				bb_main.addOrReplaceChild("cube_r5", CubeListBuilder.create().texOffs(20, 20).addBox(-1.5F, -3.0F, 0.0F, 3.0F, 6.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.5456F, 3.0F, -2.5456F, 0.0F, -1.5708F, 0.0F));
-				bb_main.addOrReplaceChild("cube_r6", CubeListBuilder.create().texOffs(26, 20).addBox(-1.5F, -2.5F, 0.0F, 3.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.5456F, 2.5F, -2.5456F, -3.1416F, -0.7854F, 3.1416F));
-				bb_main.addOrReplaceChild("insides_r1", CubeListBuilder.create().texOffs(0, 20).addBox(-2.5F, -2.5F, -2.5F, 5.0F, 5.0F, 5.0F, new CubeDeformation(0.0F))
-						.texOffs(0, 0).addBox(-3.0F, -3.0F, -3.0F, 6.0F, 6.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 3.6F, 0.0F, 3.1416F, 0.7854F, 0.0F));
+				PartDefinition bb_main = partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(0, 29).addBox(-1.0F, 3.0F, -8.0F, 2.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+				PartDefinition cube_r1 = bb_main.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 13).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 4.0F, 0.0F, 0.0F, 0.0F, -3.1416F));
 				return bb_main;
 			}
 	);
@@ -70,12 +62,12 @@ public class FrostWarheadModel implements MissilePartModel {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 		layers.get(stage).apply(partdefinition);
-		return LayerDefinition.create(meshdefinition, 72, 32);
+		return LayerDefinition.create(meshdefinition, 64, 64);
 	}
 
 	@Override
 	public ResourceLocation getTexture(int stage) {
-		return new ResourceLocation(CreateMissiles.MOD_ID,"textures/entity/flaming_warhead.png");
+		return new ResourceLocation(CreateMissiles.MOD_ID,"textures/entity/frost_warhead.png");
 	}
 
 	@Override
