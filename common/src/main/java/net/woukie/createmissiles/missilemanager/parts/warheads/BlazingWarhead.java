@@ -25,7 +25,7 @@ public class BlazingWarhead extends WarheadType {
     private static final float fireballSlowVelocity = 1.5f;
 
     @Override
-    public float getWeight() {
+    public float getMass() {
         return 20;
     }
 

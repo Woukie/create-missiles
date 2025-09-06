@@ -1,13 +1,11 @@
 package net.woukie.createmissiles.missilemanager.trajectories;
 
-import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
-import net.minecraft.client.particle.SuspendedParticle;
-import net.minecraft.core.Position;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.Level;
+import net.woukie.createmissiles.block.navigationpanel.NavigationPanelBlockEntity;
 import net.woukie.createmissiles.entity.MissileEntity;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
@@ -17,7 +15,8 @@ import org.joml.*;
 
 import java.lang.Math;
 
-import static net.woukie.createmissiles.missilemanager.trajectories.TrajectoryHelper.findLaunchSolution;
+import static net.woukie.createmissiles.missilemanager.trajectories.TrajectoryHelper.findLaunchAngle;
+import static net.woukie.createmissiles.missilemanager.trajectories.TrajectoryHelper.findMinLaunchSolution;
 
 public class BallisticTrajectory extends Trajectory {
     public final Vector3d gravity = new Vector3d(0, -9.81, 0);
@@ -26,8 +25,10 @@ public class BallisticTrajectory extends Trajectory {
     protected Vector3d acceleration;
     protected Vector3d rotation;
 
-    private double initialThrust = 5;
-    private double launchAngle = 90;
+    private double thrust;
+    private double thrustDuration;
+    private double launchAngle;
+    private double mass;
     private Vector3d launchDirection;
 
 
@@ -35,26 +36,21 @@ public class BallisticTrajectory extends Trajectory {
     public void tick(MinecraftServer server) {
         super.tick(server);
 
-        double tickLength = 0.05d;
+        double tickLength = 1 / tickSpeed;
         double elapsedTime = this.tick * tickLength;
-//
-//        double thrust = thrusterType.getThrust();
-//        double weight = warheadType.getWeight() + chassisType.getWeight() + thrusterType.getWeight();
-//        double fuel = chassisType.getFuelCapacity();
-//        double timeSinceLastTick = 1.0f / tickSpeed;
 
-        double forceHorizontal = initialThrust * Math.cos(Math.toRadians(launchAngle));
+        double forceHorizontal = thrust * Math.cos(Math.toRadians(launchAngle)) / mass;
 
         if(launchDirection == null)
         {
             launchDirection = new Vector3d(0, 0, 0);
         }
 
-        acceleration = elapsedTime >= 2.5d ?
+        acceleration = elapsedTime >= thrustDuration ?
                 new Vector3d(0, gravity.y, 0) :
                 new Vector3d(
                         launchDirection.x * forceHorizontal,
-                        initialThrust * Math.sin(Math.toRadians(launchAngle)) + gravity.y,
+                        thrust * Math.sin(Math.toRadians(launchAngle)) / mass + gravity.y,
                         launchDirection.z * forceHorizontal
                 );
 
@@ -72,20 +68,22 @@ public class BallisticTrajectory extends Trajectory {
     }
 
     //    Called when launching a missile from the console panel
-    public BallisticTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
+    public BallisticTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container, NavigationPanelBlockEntity navPanel) {
         super(level.dimension(), start, target, warheadType, chassisType, thrusterType, container);
         rotation = new Vector3d(0, 0, 0);
         velocity = new Vector3d(0, 0, 0);
 
         double targetDistance = Vector3d.distance(target.x, 0, target.z, start.x, 0, start.z);
-
-        double thrustDuration = 2.5d;
         double minHeight = 50;
         launchDirection = new Vector3d(target.x - start.x, 0, target.z - start.z).normalize();
 
-        TrajectoryHelper.LaunchSolution solution = findLaunchSolution(targetDistance, thrustDuration, minHeight, 80, 90);
-        launchAngle = solution.angle;
-        initialThrust = solution.thrust * 1.46d; //WTFFFFFFFFFFFFFF
+        thrust = thrusterType.getThrust();
+        mass = warheadType.getMass() + chassisType.getMass() + thrusterType.getMass();
+        thrustDuration = (chassisType.getFuelCapacity() / thrusterType.getBurnRate()) * navPanel.getThrustDurationPercent();
+        launchAngle = findLaunchAngle(targetDistance, thrust, thrustDuration, minHeight, 45, 90, mass);
+
+        System.out.println(thrustDuration);
+        System.out.println(launchAngle);
     }
 
     //    Called when deserialising trajectories

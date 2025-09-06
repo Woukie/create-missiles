@@ -26,7 +26,7 @@ public class WitheredWarhead extends WarheadType {
     private static final float slowBallVelocity = 1.5f;
 
     @Override
-    public float getWeight() {
+    public float getMass() {
         return 10;
     }
 

@@ -25,6 +25,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
     private static final ResourceLocation MAP_TARGET = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_marker.png");
     private static final ResourceLocation FUEL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel.png");
     private static final ResourceLocation FUEL_GAUGE = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel_gauge.png");
+    private static final ResourceLocation MIN_THRUST_DURATION = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/min_thrust_duration.png");
 
     private static final int mapLeft = 8;
     private static final int mapTop = 16;
@@ -45,6 +46,8 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
     private double currentMapCrosshairZ = 0;
     private double currentFuel2 = 0;
     private double currentFuel1 = 0;
+    private double currentMinThrustDuration1 = 0;
+    private double currentMinThrustDuration2 = 0;
 
     private final ArrayList<String> errors = new ArrayList<>();
 
@@ -72,7 +75,6 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         renderFuel(gui);
         renderTrajectory(gui);
         renderErrors(gui);
-
         gui.pose().popPose();
     }
 
@@ -229,13 +231,20 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         currentFuel1 += (getMenu().getFuelPercent() - currentFuel2) * 0.1F;
         currentFuel2 += (currentFuel1 - currentFuel2) * 0.1F;
 
+        currentMinThrustDuration1 += (getMenu().getMinThrustDuration() - currentMinThrustDuration2) * 0.1F;
+        currentMinThrustDuration2 += (currentMinThrustDuration1 - currentMinThrustDuration2) * 0.1F;
+
         int barHeight = fuelHeight - (int)(currentFuel2 * fuelHeight);
         barHeight = Math.min(Math.max(barHeight, 0), fuelHeight);
+
+        int barHeightThrust = fuelHeight - (int)(currentMinThrustDuration2 * fuelHeight);
+        barHeightThrust = Math.min(Math.max(barHeightThrust, 0), fuelHeight);
 
         gui.pose().pushPose();
         gui.pose().translate(fuelLeft, fuelTop, 0);
         gui.blit(FUEL, 0, barHeight, 0, 0, barHeight, fuelWidth, fuelHeight - barHeight, fuelWidth, barHeight);
         gui.blit(FUEL_GAUGE, -2, barHeight - 2, 1, 0, 0, 9, 5, 9, 5);
+        gui.blit(MIN_THRUST_DURATION, -2, barHeightThrust - 2, 1, 0, 0, 9, 5, 9, 5);
         gui.pose().popPose();
     }
 }

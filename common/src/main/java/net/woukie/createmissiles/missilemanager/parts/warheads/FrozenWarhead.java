@@ -23,7 +23,7 @@ public class FrozenWarhead extends WarheadType {
     private static final float snowballSlowVelocity = 1.5f;
 
     @Override
-    public float getWeight() {
+    public float getMass() {
         return 10;
     }
 

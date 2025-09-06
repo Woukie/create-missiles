@@ -34,7 +34,7 @@ public abstract class MissilePartType {
         return data;
     }
 
-    public float getWeight() {
+    public float getMass() {
         return 1;
     }
 }

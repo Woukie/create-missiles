@@ -11,7 +11,7 @@ public class TunnelerWarhead extends ExcavatorWarhead {
     private final MissilePartModel model = new TunnelerWarheadModel();
 
     @Override
-    public float getWeight() {
+    public float getMass() {
         return 11;
     }
 

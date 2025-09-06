@@ -14,7 +14,12 @@ public class ExcavatorChassis extends ChassisType {
 
     @Override
     public float getFuelCapacity() {
-        return 2;
+        return 10;
+    }
+
+    @Override
+    public float getMass() {
+        return 10;
     }
 
     @Override

@@ -22,7 +22,7 @@ public class ExcavatorWarhead extends WarheadType {
     protected final MissilePartModel model = new ExcavatorWarheadModel();
 
     @Override
-    public float getWeight() {
+    public float getMass() {
         return 9;
     }
 
