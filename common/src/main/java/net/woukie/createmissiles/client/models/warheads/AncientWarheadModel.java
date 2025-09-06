@@ -121,12 +121,18 @@ public class AncientWarheadModel implements MissilePartModel {
 			},
 			partDefinition -> {
 				PartDefinition bb_main = partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-				PartDefinition ribon3_r1 = bb_main.addOrReplaceChild("ribon3_r1", CubeListBuilder.create().texOffs(52, 25).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 10.0F, 0.0F, 2.7489F, 0.0F, 3.1416F));
-				PartDefinition ribon2_r1 = bb_main.addOrReplaceChild("ribon2_r1", CubeListBuilder.create().texOffs(52, 25).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 10.0F, 0.0F, 0.0F, 1.5708F, 0.3927F));
-				PartDefinition cube_r1 = bb_main.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 50).addBox(-5.0F, -5.0F, -5.0F, 10.0F, 10.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 5.0F, 0.0F, -3.1416F, 0.0F, 0.0F));
-				PartDefinition ribon1_r1 = bb_main.addOrReplaceChild("ribon1_r1", CubeListBuilder.create().texOffs(52, 25).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 10.0F, 0.0F, -0.3927F, 0.0F, 0.0F));
-				PartDefinition ribon2_r2 = bb_main.addOrReplaceChild("ribon2_r2", CubeListBuilder.create().texOffs(40, 25).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 10.0F, 0.0F, 0.0F, -1.5708F, -0.3927F));
-				return partDefinition;
+				PartDefinition cube_r1 = bb_main.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(8, 6).addBox(-5.0F, -5.0F, -0.5F, 10.0F, 10.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(5.3033F, 5.0F, 6.0104F, 3.1416F, -0.7854F, 0.0F));
+				PartDefinition cube_r2 = bb_main.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(8, 6).addBox(-5.0F, -5.0F, -0.5F, 10.0F, 10.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-6.0104F, 5.0F, 5.3033F, 0.0F, -0.7854F, 3.1416F));
+				PartDefinition cube_r3 = bb_main.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(8, 6).addBox(-5.0F, -5.0F, -0.5F, 10.0F, 10.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-5.3033F, 5.0F, -6.0104F, 0.0F, 0.7854F, 3.1416F));
+				PartDefinition cube_r4 = bb_main.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(8, 6).addBox(-5.0F, -5.0F, -0.5F, 10.0F, 10.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(6.0104F, 5.0F, -5.3033F, 3.1416F, 0.7854F, 0.0F));
+				PartDefinition cube_r5 = bb_main.addOrReplaceChild("cube_r5", CubeListBuilder.create().texOffs(0, 6).addBox(-1.0F, -1.5F, -1.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(0.0F))
+						.texOffs(0, 6).addBox(-1.0F, -1.5F, 3.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.0F, 1.5F, -2.0F, 0.0F, 0.0F, -3.1416F));
+				PartDefinition cube_r6 = bb_main.addOrReplaceChild("cube_r6", CubeListBuilder.create().texOffs(0, 6).addBox(-1.0F, -1.5F, -1.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 1.5F, -2.0F, 0.0F, 0.0F, -3.1416F));
+				PartDefinition cube_r7 = bb_main.addOrReplaceChild("cube_r7", CubeListBuilder.create().texOffs(0, 6).addBox(-1.0F, -1.5F, -1.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(0.0F))
+						.texOffs(0, 6).addBox(-1.0F, -1.5F, 3.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.0F, 1.5F, -2.0F, 0.0F, 0.0F, -3.1416F));
+				PartDefinition cube_r8 = bb_main.addOrReplaceChild("cube_r8", CubeListBuilder.create().texOffs(0, 6).addBox(-1.0F, -1.5F, -1.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 1.5F, 2.0F, 0.0F, 0.0F, -3.1416F));
+				PartDefinition cube_r9 = bb_main.addOrReplaceChild("cube_r9", CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, -1.0F, -2.0F, 6.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 1.0F, 0.0F, 0.0F, 0.0F, -3.1416F));
+				return bb_main;
 			}
 	);
 
@@ -140,12 +146,12 @@ public class AncientWarheadModel implements MissilePartModel {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 		layers.get(stage).apply(partdefinition);
-		return LayerDefinition.create(meshdefinition, 64, 70);
+		return LayerDefinition.create(meshdefinition, 32, 32);
 	}
 
 	@Override
 	public ResourceLocation getTexture(int stage) {
-		return new ResourceLocation(CreateMissiles.MOD_ID,"textures/entity/annoying_warhead.png");
+		return new ResourceLocation(CreateMissiles.MOD_ID,"textures/entity/ancient_warhead.png");
 	}
 
 	@Override
