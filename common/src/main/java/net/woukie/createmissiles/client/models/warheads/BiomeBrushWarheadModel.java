@@ -20,10 +20,6 @@ public class BiomeBrushWarheadModel implements MissilePartModel {
 			}},
 			new HashMap<>() {{
 				put("bottom", new Vector3f(0, 0, 0));
-				put("top", new Vector3f(0, 2, 0));
-			}},
-			new HashMap<>() {{
-				put("bottom", new Vector3f(0, 0, 0));
 				put("top", new Vector3f(0, 4, 0));
 			}},
 			new HashMap<>() {{
@@ -32,23 +28,27 @@ public class BiomeBrushWarheadModel implements MissilePartModel {
 			}},
 			new HashMap<>() {{
 				put("bottom", new Vector3f(0, 0, 0));
-				put("top", new Vector3f(0, 8, 0));
+				put("top", new Vector3f(0, 7, 0));
 			}}
 	);
 
 	private final List<Function<PartDefinition, PartDefinition>> layers = List.of(
 			partDefinition -> partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create(), PartPose.ZERO),
-			partDefinition -> partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, 0.0F, -4.0F, 8.0F, 2.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F)),
-			partDefinition -> partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, 0.0F, -4.0F, 8.0F, 2.0F, 8.0F, new CubeDeformation(0.0F))
-					.texOffs(0, 10).addBox(-3.0F, 2.0F, -3.0F, 6.0F, 2.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F)),
-			partDefinition -> partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, 0.0F, -4.0F, 8.0F, 2.0F, 8.0F, new CubeDeformation(0.0F))
-					.texOffs(0, 10).addBox(-3.0F, 2.0F, -3.0F, 6.0F, 2.0F, 6.0F, new CubeDeformation(0.0F))
-					.texOffs(0, 18).addBox(-2.0F, 4.0F, -2.0F, 4.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F)),
+			partDefinition -> {
+				PartDefinition bb_main = partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(4, 4).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+				PartDefinition cube_r1 = bb_main.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 4).addBox(-0.5F, -1.5F, -0.5F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0772F, 3.1121F, 0.0F, -3.1416F, 0.0F, 1.1781F));
+				return bb_main;
+			},
+			partDefinition -> {
+				PartDefinition bb_main = partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(4, 4).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.0F))
+						.texOffs(4, 8).addBox(-3.5782F, 3.6069F, -0.5F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+				PartDefinition cube_r1 = bb_main.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 4).addBox(-0.5F, -2.0F, -0.5F, 1.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.5391F, 3.3034F, 0.0F, -3.1416F, 0.0F, 1.1781F));
+				return bb_main;
+			},
 			partDefinition -> {
 				PartDefinition bb_main = partDefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(4, 4).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.0F))
 						.texOffs(4, 8).addBox(-3.5782F, 3.6069F, -0.5F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.0F))
 						.texOffs(0, 0).addBox(-3.0F, 5.0F, -1.0F, 6.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
-
 				PartDefinition cube_r1 = bb_main.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 4).addBox(-0.5F, -2.0F, -0.5F, 1.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.5391F, 3.3034F, 0.0F, -3.1416F, 0.0F, 1.1781F));
 				return bb_main;
 			}
