@@ -34,6 +34,8 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
 
         poseStack.pushPose();
 
+        poseStack.scale(2, 2, 2);
+
         Vector3f offset = new Vector3f(0, 5, 0);
 
         if (thrusterType != null)
@@ -50,9 +52,8 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
 //            lastTickTime = System.currentTimeMillis();
 //        }
 
-        poseStack.popPose();
-
         super.render(entity, f, g, poseStack, multiBufferSource, i);
+        poseStack.popPose();
     }
 
     private static void renderPart(@NotNull MissileEntity entity, @NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i, MissilePartModel model, int buildPercent, Vector3f offset) {

@@ -81,9 +81,6 @@ public class BallisticTrajectory extends Trajectory {
         mass = warheadType.getMass() + chassisType.getMass() + thrusterType.getMass();
         thrustDuration = (chassisType.getFuelCapacity() / thrusterType.getBurnRate()) * navPanel.getThrustDurationPercent();
         launchAngle = findLaunchAngle(targetDistance, thrust, thrustDuration, minHeight, 45, 90, mass);
-
-        System.out.println(thrustDuration);
-        System.out.println(launchAngle);
     }
 
     //    Called when deserialising trajectories
