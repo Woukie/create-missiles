@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -19,15 +20,19 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.woukie.createmissiles.inventory.DroneMenu;
 import net.woukie.createmissiles.registry.Items;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 
 public class Drone extends FlyingMob {
+    private final ContainerData dataAccess;
+
     BlockPos targetBlock;
     BlockPos originBlock;
 
@@ -35,6 +40,33 @@ public class Drone extends FlyingMob {
         super(entityType, level);
         this.moveControl = new DroneMoveControl(this, this);
         this.lookControl = new EmptyLookControl(this, this);
+        this.dataAccess = new ContainerData() {
+            @Override
+            public int get(int i) {
+                long mostSigBits = getUUID().getMostSignificantBits();
+                long leastSigBits = getUUID().getLeastSignificantBits();
+                return switch (i) {
+                    case 0 -> (int) (mostSigBits >>> 32);
+                    case 1 -> (int) mostSigBits;
+                    case 2 -> (int) (leastSigBits >>> 32);
+                    case 3 -> (int) leastSigBits;
+                    case 4 -> blockPosition().getX();
+                    case 5 -> blockPosition().getZ();
+                    case 7 -> targetBlock != null || originBlock != null ? 1 : 0;
+                    default -> 0;
+                };
+            }
+
+            @Override
+            public void set(int i, int j) {
+
+            }
+
+            @Override
+            public int getCount() {
+                return 7;
+            }
+        };
     }
 
     @Override
@@ -161,9 +193,9 @@ public class Drone extends FlyingMob {
             return InteractionResult.FAIL;
         }
 
-        startMission(blockPosition().relative(Direction.EAST, 1000).relative(Direction.NORTH, 500));
         if (!this.level().isClientSide) {
-//            player.openMenu(new SimpleMenuProvider((ix, inventory, playerx) -> new DroneMenu(ix, inventory), Component.literal("")));
+            player.openMenu(new SimpleMenuProvider((ix, inventory, playerx) -> new DroneMenu(ix, inventory, this.dataAccess), Component.literal("")));
+            return InteractionResult.SUCCESS;
         }
         return super.mobInteract(player, interactionHand);
     }

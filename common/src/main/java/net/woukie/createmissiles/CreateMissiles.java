@@ -119,7 +119,7 @@ public class CreateMissiles {
         MenuRegistry.registerScreenFactory(Menus.CONTROL_PANEL.get(), ControlPanelScreen::new);
         MenuRegistry.registerScreenFactory(Menus.NAVIGATION_PANEL.get(), NavigationPanelScreen::new);
         MenuRegistry.registerScreenFactory(Menus.ASSEMBLY_PANEL.get(), AssemblyPanelScreen::new);
-        MenuRegistry.registerScreenFactory(Menus.DRONE_PANEL.get(), DroneScreen::new);
+        MenuRegistry.registerScreenFactory(Menus.DRONE.get(), DroneScreen::new);
 
         CustomRenderedItems.register(Items.WARHEAD_ASSEMBLY.get());
         CustomRenderedItems.register(Items.CHASSIS_ASSEMBLY.get());
