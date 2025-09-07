@@ -194,7 +194,7 @@ public class Drone extends FlyingMob {
         }
 
         if (!this.level().isClientSide) {
-            player.openMenu(new SimpleMenuProvider((ix, inventory, playerx) -> new DroneMenu(ix, inventory, this.dataAccess), Component.literal("")));
+            player.openMenu(new SimpleMenuProvider((ix, inventory, playerx) -> new DroneMenu(ix, inventory, this.dataAccess), getDisplayName()));
         }
         return InteractionResult.SUCCESS;
     }
