@@ -7,7 +7,7 @@ import net.woukie.createmissiles.block.controlpanel.messages.ClickLaunchMessage;
 import net.woukie.createmissiles.block.navigationpanel.messages.ClickFuelMessage;
 import net.woukie.createmissiles.block.navigationpanel.messages.ClickMapMessage;
 import net.woukie.createmissiles.block.navigationpanel.messages.UpdateMapDataMessage;
-import net.woukie.createmissiles.entity.messages.SendDroneMessage;
+import net.woukie.createmissiles.entity.drone.SendDroneMessage;
 import net.woukie.createmissiles.missilemanager.parts.warheads.messages.ExplodeFireworkMessage;
 
 public class Packets {

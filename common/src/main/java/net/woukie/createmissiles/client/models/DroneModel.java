@@ -10,7 +10,7 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.entity.Drone;
+import net.woukie.createmissiles.entity.drone.Drone;
 import org.jetbrains.annotations.NotNull;
 
 public class DroneModel<T extends Drone> extends EntityModel<T> {

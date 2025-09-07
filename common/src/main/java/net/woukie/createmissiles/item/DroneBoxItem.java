@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.woukie.createmissiles.entity.drone.Drone;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,9 +24,9 @@ import java.util.List;
 import java.util.function.Function;
 
 public class DroneBoxItem extends Item {
-    private final Function<Level, Entity> entityConstructor;
+    private final Function<Level, Drone> entityConstructor;
 
-    public DroneBoxItem(Properties properties, Function<Level, Entity> entityConstructor) {
+    public DroneBoxItem(Properties properties, Function<Level, Drone> entityConstructor) {
         super(properties);
         this.entityConstructor = entityConstructor;
     }
@@ -38,7 +39,6 @@ public class DroneBoxItem extends Item {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand interactionHand) {
-
         ItemStack itemStack = player.getItemInHand(interactionHand);
         BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
         if (blockHitResult.getType() != HitResult.Type.BLOCK) {
@@ -48,9 +48,10 @@ public class DroneBoxItem extends Item {
         } else {
             BlockPos blockPos = blockHitResult.getBlockPos();
             if (level.mayInteract(player, blockPos) && player.mayUseItemAt(blockPos, blockHitResult.getDirection(), itemStack)) {
-                Entity droneEntity =  entityConstructor.apply(level);
+                Drone droneEntity =  entityConstructor.apply(level);
                 droneEntity.setPos(blockPos.getX() + 0.5f, blockPos.getY() + 1, blockPos.getZ() + 0.5f);
                 droneEntity.setYRot(player.getYRot());
+                droneEntity.setPersistenceRequired();
                 level.addFreshEntity(droneEntity);
 
                 if (!player.getAbilities().instabuild) {

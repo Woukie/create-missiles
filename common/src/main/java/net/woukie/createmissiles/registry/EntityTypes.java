@@ -8,6 +8,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.entity.*;
+import net.woukie.createmissiles.entity.drone.Drone;
+import net.woukie.createmissiles.entity.drone.ReinforcedDrone;
 
 public class EntityTypes {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =

@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.entity.messages;
+package net.woukie.createmissiles.entity.drone;
 
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.core.BlockPos;
@@ -6,7 +6,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.woukie.createmissiles.entity.Drone;
 import net.woukie.createmissiles.registry.EntityTypes;
 
 import java.util.UUID;

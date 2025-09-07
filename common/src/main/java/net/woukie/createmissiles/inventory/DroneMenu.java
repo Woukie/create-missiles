@@ -10,7 +10,7 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.woukie.createmissiles.entity.messages.SendDroneMessage;
+import net.woukie.createmissiles.entity.drone.SendDroneMessage;
 import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;
 

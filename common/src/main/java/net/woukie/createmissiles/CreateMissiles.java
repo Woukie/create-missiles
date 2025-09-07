@@ -24,7 +24,8 @@ import net.woukie.createmissiles.client.screens.AssemblyPanelScreen;
 import net.woukie.createmissiles.client.screens.ControlPanelScreen;
 import net.woukie.createmissiles.client.screens.DroneScreen;
 import net.woukie.createmissiles.client.screens.NavigationPanelScreen;
-import net.woukie.createmissiles.entity.Drone;
+import net.woukie.createmissiles.entity.drone.Drone;
+import net.woukie.createmissiles.entity.drone.DroneHandler;
 import net.woukie.createmissiles.item.BiomeVialItem;
 import net.woukie.createmissiles.item.assembly.AssemblyItem;
 import net.woukie.createmissiles.missilemanager.Trajectories;
@@ -47,14 +48,17 @@ public class CreateMissiles {
         LifecycleEvent.SERVER_STARTED.register(server -> {
             Trajectories.get().init(server);
             ExplosionHandler.get().init(server);
+            DroneHandler.get().init(server);
         });
         LifecycleEvent.SERVER_STOPPING.register(server -> {
             Trajectories.get().stop();
             ExplosionHandler.get().stop();
+            DroneHandler.get().stop();
         });
         TickEvent.SERVER_PRE.register(server -> {
             Trajectories.get().serverTick(server);
             ExplosionHandler.get().serverTick(server);
+            DroneHandler.get().serverTick(server);
         });
 
         TradeRegistry.registerTradeForWanderingTrader(true, (entity, randomSource) -> new MerchantOffer(

@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.models.DroneModel;
-import net.woukie.createmissiles.entity.Drone;
+import net.woukie.createmissiles.entity.drone.Drone;
 import org.jetbrains.annotations.NotNull;
 
 public class DroneRenderer extends MobRenderer<Drone, DroneModel<Drone>> {

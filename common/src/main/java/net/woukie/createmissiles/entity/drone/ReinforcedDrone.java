@@ -1,4 +1,4 @@
-package net.woukie.createmissiles.entity;
+package net.woukie.createmissiles.entity.drone;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;

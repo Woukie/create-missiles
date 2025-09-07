@@ -1,11 +1,10 @@
-package net.woukie.createmissiles.entity;
+package net.woukie.createmissiles.entity.drone;
 import net.minecraft.core.*;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -76,6 +75,11 @@ public class Drone extends FlyingMob {
     @Override
     public boolean isPersistenceRequired() {
         return true;
+    }
+
+    @Override
+    public boolean removeWhenFarAway(double d) {
+        return false;
     }
 
     @Override
@@ -162,6 +166,11 @@ public class Drone extends FlyingMob {
     }
 
     @Override
+    public boolean isAlwaysTicking() {
+        return true;
+    }
+
+    @Override
     public boolean hurt(DamageSource damageSource, float f) {
         Entity entity = damageSource.getEntity();
         if (!level().isClientSide() && entity != null && entity.getType().equals(EntityType.PLAYER)) {
@@ -204,6 +213,7 @@ public class Drone extends FlyingMob {
         level().playSound(null, position().x, position().y, position().z, SoundEvents.PHANTOM_SWOOP, SoundSource.PLAYERS, 1, 1);
         this.targetBlock = destination;
         this.originBlock = blockPosition();
+        DroneHandler.get().trackDrone(this);
     }
 
     @Override
