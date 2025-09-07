@@ -195,9 +195,8 @@ public class Drone extends FlyingMob {
 
         if (!this.level().isClientSide) {
             player.openMenu(new SimpleMenuProvider((ix, inventory, playerx) -> new DroneMenu(ix, inventory, this.dataAccess), Component.literal("")));
-            return InteractionResult.SUCCESS;
         }
-        return super.mobInteract(player, interactionHand);
+        return InteractionResult.SUCCESS;
     }
 
     public void startMission(BlockPos destination) {
