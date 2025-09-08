@@ -1,6 +1,8 @@
 package net.woukie.createmissiles.missilemanager;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -14,10 +16,14 @@ import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class Trajectories extends SavedData {
     private final List<Trajectory> activeTrajectories = new ArrayList<>();
+    private final HashMap<UUID, Entity> entityCache = new HashMap<>();
+    private final List<UUID> killEntityWhenever = new ArrayList<>();
 
     private static Trajectories instance;
     private static boolean initialized = false;
@@ -51,12 +57,25 @@ public class Trajectories extends SavedData {
     }
 
     public void serverTick(MinecraftServer server) {
+        killEntityWhenever.removeIf(uuid -> {
+            var levels = server.getAllLevels();
+            for (ServerLevel level : levels) {
+                Entity e = level.getEntity(uuid);
+                if (e == null) return false;
+                e.discard();
+                entityCache.remove(e.getUUID());
+                return true;
+            }
+            return false;
+        });
+
         activeTrajectories.forEach(trajectory -> {
             ServerLevel level = server.getLevel(trajectory.getLevelKey());
             if (level == null) return;
 
             if (trajectory.getEntityId() == null) {
                 MissileEntity entity = new MissileEntity(EntityTypes.MISSILE.get(), level);
+                entityCache.put(entity.getUUID(), entity);
                 trajectory.updateEntityModel(entity);
                 level.addFreshEntity(entity);
                 trajectory.setEntityId(entity.getUUID());
@@ -64,13 +83,21 @@ public class Trajectories extends SavedData {
                 return;
             }
 
+            UUID uuid = trajectory.getEntityId();
+            Entity entity = entityCache.computeIfAbsent(uuid, uuid1 -> level.getEntity(uuid));
+
+//            Entity has likely been serialised TODO: unless it's been /killed
+            if (entity == null) {
+                killEntityWhenever.add(uuid);
+                trajectory.setEntityId(null); // To create a new entity for it next tick
+            }
+
             trajectory.tick(server);
             trajectory.warheadType.onTick(trajectory, server);
             trajectory.chassisType.onTick(trajectory, server);
             trajectory.thrusterType.onTick(trajectory, server);
 
-            MissileEntity entity = (MissileEntity) level.getEntity(trajectory.getEntityId());
-            trajectory.updateEntityModel(entity);
+            trajectory.updateEntityModel((MissileEntity)entity);
         });
 
         activeTrajectories.removeIf(trajectory -> {
@@ -93,27 +120,39 @@ public class Trajectories extends SavedData {
     }
 
     public Trajectories load(CompoundTag nbt) {
-        for (int i = 0; i < nbt.size(); i++) {
-            CompoundTag savedData = nbt.getCompound("" + i);
+        ListTag trajectories = nbt.getList("Trajectories", 10);
+        trajectories.forEach(tag -> {
+            CompoundTag savedData = (CompoundTag) tag;
             ThrusterType thrusterType = (ThrusterType) PartTypes.get(new ResourceLocation(savedData.getString("ThrusterType")));
             launch(thrusterType.serializeTrajectory(savedData, server));
-        }
+        });
+
+        ListTag hitList = nbt.getList("HitList", 10);
+        killEntityWhenever.addAll(hitList.stream().map(tag -> UUID.fromString(tag.toString())).toList());
 
         return this;
     }
 
     @Override
     public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag) {
-        for (int i = 0; i < activeTrajectories.size(); i++) {
-            Trajectory trajectory = activeTrajectories.get(i);
-            compoundTag.put("" + i, trajectory.saveTo(new CompoundTag()));
+        ListTag trajectories = new ListTag();
+        for (Trajectory trajectory : activeTrajectories) {
+            trajectories.add(trajectory.saveTo(new CompoundTag()));
         }
+
+        ListTag hitList = new ListTag();
+        hitList.addAll(killEntityWhenever.stream().map(uuid -> StringTag.valueOf(uuid.toString())).toList());
+
+        compoundTag.put("Trajectories", trajectories);
+        compoundTag.put("HitList", hitList);
 
         if (destroyOnSave) {
             destroyOnSave = false;
             initialized = false;
             server = null;
             activeTrajectories.clear();
+            entityCache.clear();
+            killEntityWhenever.clear();
             instance = null;
         }
 
