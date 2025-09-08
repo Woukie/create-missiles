@@ -53,15 +53,15 @@ public class EntityTypes {
     );
     public static final RegistrySupplier<EntityType<FrozenAreaEntity>> FROZEN_AREA = ENTITY_TYPES.register(
             "frozen_area",
-            () -> EntityType.Builder.of(FrozenAreaEntity::new, MobCategory.MISC).sized(6.0F, 1.2F).fireImmune().clientTrackingRange(10).build(new ResourceLocation(CreateMissiles.MOD_ID, "frozen_area").toString())
+            () -> EntityType.Builder.of(FrozenAreaEntity::new, MobCategory.MISC).sized(6.0F, 1.2F).fireImmune().build(new ResourceLocation(CreateMissiles.MOD_ID, "frozen_area").toString())
     );
     public static final RegistrySupplier<EntityType<InfernalAreaEntity>> INFERNAL_AREA = ENTITY_TYPES.register(
             "infernal_area",
-            () -> EntityType.Builder.of(InfernalAreaEntity::new, MobCategory.MISC).sized(6.0F, 1.2F).fireImmune().clientTrackingRange(10).build(new ResourceLocation(CreateMissiles.MOD_ID, "infernal_area").toString())
+            () -> EntityType.Builder.of(InfernalAreaEntity::new, MobCategory.MISC).sized(6.0F, 1.2F).fireImmune().build(new ResourceLocation(CreateMissiles.MOD_ID, "infernal_area").toString())
     );
     public static final RegistrySupplier<EntityType<MessyEntity>> MESSY = ENTITY_TYPES.register(
             "messy",
-            () -> EntityType.Builder.of(MessyEntity::new, MobCategory.MISC).sized(1.2F, 1.2F).fireImmune().clientTrackingRange(10).build(new ResourceLocation(CreateMissiles.MOD_ID, "messy").toString())
+            () -> EntityType.Builder.of(MessyEntity::new, MobCategory.MISC).sized(1.2F, 1.2F).fireImmune().build(new ResourceLocation(CreateMissiles.MOD_ID, "messy").toString())
     );
     public static final RegistrySupplier<EntityType<Drone>> BASIC_DRONE = ENTITY_TYPES.register(
             "basic_drone",

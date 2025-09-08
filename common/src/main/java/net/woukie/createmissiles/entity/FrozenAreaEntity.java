@@ -2,13 +2,14 @@ package net.woukie.createmissiles.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -16,36 +17,22 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.block.FrostSnowLayer;
-import org.joml.Vector3d;
 
 import static net.minecraft.world.level.block.SnowLayerBlock.LAYERS;
 
-public class FrozenAreaEntity extends Entity {
-    public final int radius = 5;
-    public final int frostsPerTick = 5;
-
+public class FrozenAreaEntity extends AreaEntity {
     public FrozenAreaEntity(EntityType<? extends Entity> entityType, Level level) {
         super(entityType, level);
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        if (level().isClientSide()) {
-            Vec3 pos = blockPosition().getCenter().add(random.nextGaussian() * 3, -0.5, random.nextGaussian() * 3);
-            level().addParticle(ParticleTypes.SNOWFLAKE, pos.x, pos.y, pos.z, 0, random.nextFloat() * 0.2 + 0.1, 0);
-            return;
-        }
+    public ParticleOptions getParticle() {
+        return ParticleTypes.SNOWFLAKE;
+    }
 
-        for (int i = 0; i < frostsPerTick; i++) {
-            double distance = level().random.nextGaussian() * radius;
-            double yaw = level().random.nextFloat() * Math.PI * 2;
-            double pitch = level().random.nextGaussian() * Math.PI / 4;
-            Vector3d offset = new Vector3d(distance, 0, 0);
-            offset.rotateZ(pitch);
-            offset.rotateY(yaw);
-            applyFrost(BlockPos.containing(position().add(offset.x, offset.y, offset.z)), level());
-        }
+    @Override
+    public void apply(BlockPos blockPos, ServerLevel level) {
+        applyFrost(blockPos, level);
     }
 
     public void flintAndSteeled() {
@@ -58,28 +45,7 @@ public class FrozenAreaEntity extends Entity {
         level().playSound(null, BlockPos.containing(position()), SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.NEUTRAL);
     }
 
-    @Override
-    protected void defineSynchedData() {
-
-    }
-
-    @Override
-    protected void readAdditionalSaveData(CompoundTag compoundTag) {
-
-    }
-
-    @Override
-    protected void addAdditionalSaveData(CompoundTag compoundTag) {
-
-    }
-
-//    pushEntitiesUp causes this to go up
-    @Override
-    public void teleportRelative(double d, double e, double f) {
-    }
-
     public static void applyFrost(BlockPos blockPos, Level level) {
-//        Can't use switch because Java 17 said so
         BlockState blockState = level.getBlockState(blockPos);
         BlockState blockStateBelow = level.getBlockState(blockPos.below());
         Block block = blockState.getBlock();
