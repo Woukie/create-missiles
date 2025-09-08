@@ -33,8 +33,8 @@ public class Menus {
             () -> new MenuType<>(NavigationPanelMenu::new, FeatureFlags.VANILLA_SET)
     );
 
-    public static final RegistrySupplier<MenuType<DroneMenu>> DRONE_PANEL = MENUS.register(
-            new ResourceLocation(MOD_ID, "drone_panel"),
+    public static final RegistrySupplier<MenuType<DroneMenu>> DRONE = MENUS.register(
+            new ResourceLocation(MOD_ID, "drone"),
             () -> new MenuType<>(DroneMenu::new, FeatureFlags.VANILLA_SET)
     );
 

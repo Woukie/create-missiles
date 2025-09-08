@@ -10,10 +10,10 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.entity.DroneEntity;
+import net.woukie.createmissiles.entity.drone.Drone;
 import org.jetbrains.annotations.NotNull;
 
-public class DroneModel<T extends DroneEntity> extends EntityModel<T> {
+public class DroneModel<T extends Drone> extends EntityModel<T> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(CreateMissiles.MOD_ID, "drone"), "main");
 

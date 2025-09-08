@@ -5,7 +5,8 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.entity.DroneEntity;
+import net.woukie.createmissiles.entity.drone.Drone;
+import net.woukie.createmissiles.entity.drone.ReinforcedDrone;
 import net.woukie.createmissiles.item.BiomeVialItem;
 import net.woukie.createmissiles.item.BoundEnderPearlItem;
 import net.woukie.createmissiles.item.DroneBoxItem;
@@ -25,8 +26,8 @@ public abstract class Items {
             "bound_ender_pearl",
             () -> new BoundEnderPearlItem(new Item.Properties())
     );
-    public static final RegistrySupplier<Item> DRONE_BOX_ITEM = ITEMS.register("basic_drone_box", () -> new DroneBoxItem(new Item.Properties(), level -> new DroneEntity(EntityTypes.BASIC_DRONE.get(), level)));
-    public static final RegistrySupplier<Item> REINFORCED_DRONE_BOX = ITEMS.register("reinforced_drone_box", () -> new DroneBoxItem(new Item.Properties(), level -> new DroneEntity(EntityTypes.BASIC_DRONE.get(), level)));
+    public static final RegistrySupplier<Item> DRONE_BOX_ITEM = ITEMS.register("basic_drone_box", () -> new DroneBoxItem(new Item.Properties(), level -> new Drone(EntityTypes.BASIC_DRONE.get(), level)));
+    public static final RegistrySupplier<Item> REINFORCED_DRONE_BOX = ITEMS.register("reinforced_drone_box", () -> new DroneBoxItem(new Item.Properties(), level -> new ReinforcedDrone(EntityTypes.REINFORCED_DRONE.get(), level)));
     public static final RegistrySupplier<Item> DRAGON_EGG_SHELL = ITEMS.register(
             "dragon_egg_shell",
             () -> new Item(new Item.Properties())

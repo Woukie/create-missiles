@@ -8,6 +8,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.entity.*;
+import net.woukie.createmissiles.entity.drone.Drone;
+import net.woukie.createmissiles.entity.drone.ReinforcedDrone;
 
 public class EntityTypes {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
@@ -61,9 +63,13 @@ public class EntityTypes {
             "messy",
             () -> EntityType.Builder.of(MessyEntity::new, MobCategory.MISC).sized(1.2F, 1.2F).fireImmune().clientTrackingRange(10).build(new ResourceLocation(CreateMissiles.MOD_ID, "messy").toString())
     );
-    public static final RegistrySupplier<EntityType<DroneEntity>> BASIC_DRONE = ENTITY_TYPES.register(
+    public static final RegistrySupplier<EntityType<Drone>> BASIC_DRONE = ENTITY_TYPES.register(
             "basic_drone",
-            () -> EntityType.Builder.of(DroneEntity::new, MobCategory.MISC).noSummon().fireImmune().sized(2f, 1f).clientTrackingRange(4).updateInterval(20).build(new ResourceLocation(CreateMissiles.MOD_ID, "basic_drone").toString())
+            () -> EntityType.Builder.of(Drone::new, MobCategory.MISC).sized(0.9F, 0.5F).clientTrackingRange(8).build(new ResourceLocation(CreateMissiles.MOD_ID, "basic_drone").toString())
+    );
+    public static final RegistrySupplier<EntityType<ReinforcedDrone>> REINFORCED_DRONE = ENTITY_TYPES.register(
+            "reinforced_drone",
+            () -> EntityType.Builder.of(ReinforcedDrone::new, MobCategory.MISC).sized(0.9F, 0.5F).clientTrackingRange(8).fireImmune().build(new ResourceLocation(CreateMissiles.MOD_ID, "reinforced_drone").toString())
     );
 
     public static void init() {
