@@ -25,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.inventory.DroneMenu;
+import net.woukie.createmissiles.registry.EntityTypes;
 import net.woukie.createmissiles.registry.Items;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,6 +54,7 @@ public class Drone extends FlyingMob {
                     case 4 -> blockPosition().getX();
                     case 5 -> blockPosition().getZ();
                     case 7 -> targetBlock != null || originBlock != null ? 1 : 0;
+                    case 8 -> getType().equals(EntityTypes.BASIC_DRONE.get()) ? 0 : 1; // TODO: Find a better way of passing what the entity is
                     default -> 0;
                 };
             }
@@ -64,7 +66,7 @@ public class Drone extends FlyingMob {
 
             @Override
             public int getCount() {
-                return 7;
+                return 8;
             }
         };
     }

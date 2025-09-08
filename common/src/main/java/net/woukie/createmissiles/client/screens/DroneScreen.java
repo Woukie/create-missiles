@@ -33,6 +33,7 @@ public class DroneScreen extends AbstractContainerScreen<DroneMenu> {
     private int sendButtonHeight = 18;
 
     private final ItemStack droneStack = new ItemStack(Items.DRONE_BOX_ITEM.get());
+    private final ItemStack reinforcedDroneStack = new ItemStack(Items.REINFORCED_DRONE_BOX.get());
 
     public DroneScreen(DroneMenu abstractContainerMenu, Inventory inventory, Component component) {
         super(abstractContainerMenu, inventory, component);
@@ -168,7 +169,7 @@ public class DroneScreen extends AbstractContainerScreen<DroneMenu> {
         float scale = 3F;
         poseStack.scale(scale, scale, scale);
         poseStack.translate(-8.0F, -8.0F, 0.0F);
-        guiGraphics.renderItem(droneStack, 0, 0);
+        guiGraphics.renderItem(getMenu().isBasic() ? droneStack : reinforcedDroneStack, 0, 0);
         poseStack.popPose();
     }
 

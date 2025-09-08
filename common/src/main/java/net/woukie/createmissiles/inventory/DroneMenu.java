@@ -25,7 +25,7 @@ public class DroneMenu extends AbstractBasicMenu {
     public DroneMenu(int id, Inventory inventory, ContainerData dataAccess) {
         super(DRONE.get(), id, new SimpleContainer(1));
         checkContainerSize(container, 1);
-        checkContainerDataCount(dataAccess, 7);
+        checkContainerDataCount(dataAccess, 8);
         this.dataAccess = dataAccess;
 
         this.addSlot(new Slot(container, 0, 66, 54) {
@@ -47,7 +47,11 @@ public class DroneMenu extends AbstractBasicMenu {
     }
 
     public DroneMenu(int id, Inventory inventory) {
-        this(id, inventory, new SimpleContainerData(7));
+        this(id, inventory, new SimpleContainerData(8));
+    }
+
+    public boolean isBasic() {
+        return dataAccess.get(8) == 0;
     }
 
     public boolean hasEmptyMap() {
