@@ -51,7 +51,7 @@ public class DroneMenu extends AbstractBasicMenu {
     }
 
     public boolean isBasic() {
-        return dataAccess.get(8) == 0;
+        return dataAccess.get(7) == 0;
     }
 
     public boolean hasEmptyMap() {
@@ -60,7 +60,7 @@ public class DroneMenu extends AbstractBasicMenu {
 
     @Override
     public boolean stillValid(@NotNull Player player) {
-        return dataAccess.get(7) == 0;
+        return dataAccess.get(6) == 0;
     }
 
     @Override

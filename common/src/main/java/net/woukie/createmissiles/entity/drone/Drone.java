@@ -53,8 +53,8 @@ public class Drone extends FlyingMob {
                     case 3 -> (int) leastSigBits;
                     case 4 -> blockPosition().getX();
                     case 5 -> blockPosition().getZ();
-                    case 7 -> targetBlock != null || originBlock != null ? 1 : 0;
-                    case 8 -> getType().equals(EntityTypes.BASIC_DRONE.get()) ? 0 : 1; // TODO: Find a better way of passing what the entity is
+                    case 6 -> targetBlock != null || originBlock != null ? 1 : 0;
+                    case 7 -> getType().equals(EntityTypes.BASIC_DRONE.get()) ? 0 : 1; // TODO: Find a better way of passing what the entity is
                     default -> 0;
                 };
             }
