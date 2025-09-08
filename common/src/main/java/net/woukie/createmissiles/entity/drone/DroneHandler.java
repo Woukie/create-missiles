@@ -231,11 +231,14 @@ public class DroneHandler extends SavedData {
     }
 
     public DroneHandler load(CompoundTag nbt) {
-        CompoundTag list = nbt.getCompound("Drones");
-        list.getAllKeys().forEach(dimensionKey -> {
+        CompoundTag levels = nbt.getCompound("Drones");
+        levels.getAllKeys().forEach(dimensionKey -> {
+            ListTag drones = levels.getList(dimensionKey, 10);
             Level level = server.getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimensionKey)));
-            CompoundTag droneData = nbt.getCompound(dimensionKey);
-            drones.get(level).put(droneData.getUUID("UUID"), droneData);
+            drones.forEach(tag -> {
+                CompoundTag drone = (CompoundTag) tag;
+                DroneHandler.drones.get(level).put(drone.getUUID("UUID"), drone);
+            });
         });
         CreateMissiles.LOGGER.info("Drones loaded");
         ListTag hitList = nbt.getList("HitList", 10);
@@ -254,7 +257,7 @@ public class DroneHandler extends SavedData {
         server.getAllLevels().forEach(serverLevel -> {
             var droneListData = new ListTag();
             droneListData.addAll(drones.get(serverLevel).values());
-            data.put(serverLevel.dimension().toString(), droneListData);
+            data.put(serverLevel.dimension().location().getPath(), droneListData);
         });
 
         compoundTag.put("Drones", data);
