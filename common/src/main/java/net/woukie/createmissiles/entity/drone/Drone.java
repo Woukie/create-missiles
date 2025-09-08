@@ -183,6 +183,14 @@ public class Drone extends FlyingMob {
         return super.hurt(damageSource, f);
     }
 
+    @Override
+    public void die(DamageSource damageSource) {
+        if (!level().isClientSide) {
+            DroneHandler.get().stopTrackingDrone((ServerLevel) level(), getUUID());
+        }
+        super.die(damageSource);
+    }
+
     protected void dropItem() {
         DefaultDispenseItemBehavior.spawnItem(level(), new ItemStack(Items.DRONE_BOX_ITEM.get()), 1, Direction.UP, position());
     }
