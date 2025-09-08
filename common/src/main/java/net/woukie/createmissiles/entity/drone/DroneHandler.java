@@ -3,29 +3,32 @@ package net.woukie.createmissiles.entity.drone;
 import com.simibubi.create.foundation.utility.WorldAttached;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.phys.Vec3;
+import net.woukie.createmissiles.CreateMissiles;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-// Solves a few problems:
-// Tracking entities when unloaded
-// Handles entities in non-ticking chunks
 public class DroneHandler extends SavedData {
     private static WorldAttached<HashMap<UUID, CompoundTag>> drones = new WorldAttached<>(l -> new HashMap<>()) {};
     private static HashMap<UUID, Entity> entityCache = new HashMap<>();
     private static Set<UUID> killEntityWhenever = new HashSet<>();
-    private static Set<UUID> stopTrackingWhenever = new HashSet<>();
+    private static Set<UUID> stopTrackingNextTick = new HashSet<>();
 
     private static MinecraftServer server;
     private static DroneHandler instance;
@@ -68,7 +71,7 @@ public class DroneHandler extends SavedData {
                 return false;
             });
 
-            stopTrackingWhenever.forEach(uuid -> {
+            stopTrackingNextTick.forEach(uuid -> {
                 stopTrackingDrone(serverLevel, uuid);
             });
 
@@ -162,7 +165,7 @@ public class DroneHandler extends SavedData {
         Vec3 currentPosition = new Vec3(posList.getDouble(0), posList.getDouble(1), posList.getDouble(2));
         BlockPos currentTarget = targetBlock != null ? targetBlock : originBlock;
         if (currentTarget == null) {
-            stopTrackingWhenever.add(drone.getUUID("UUID"));
+            stopTrackingNextTick.add(drone.getUUID("UUID"));
             return;
         };
 
@@ -228,37 +231,47 @@ public class DroneHandler extends SavedData {
     }
 
     public DroneHandler load(CompoundTag nbt) {
-//        nbt.getAllKeys().forEach(dimensionKey -> {
-//            Level level = server.getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimensionKey)));
-//            ListTag droneData = (ListTag) nbt.get(dimensionKey);
-//            if (droneData != null) {
-//                droneData.forEach(tag -> {
-//                    drones.get(level).add(DroneTrackingData.load((CompoundTag)tag));
-//                });
-//            }
-//        });
-//        CreateMissiles.LOGGER.info("Drones loaded");
+        CompoundTag list = nbt.getCompound("Drones");
+        list.getAllKeys().forEach(dimensionKey -> {
+            Level level = server.getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimensionKey)));
+            CompoundTag droneData = nbt.getCompound(dimensionKey);
+            drones.get(level).put(droneData.getUUID("UUID"), droneData);
+        });
+        CreateMissiles.LOGGER.info("Drones loaded");
+        ListTag hitList = nbt.getList("HitList", 10);
+
+        hitList.forEach(tag -> {
+            killEntityWhenever.add(UUID.fromString(tag.getAsString()));
+        });
+
         return this;
     }
 
     @Override
     public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag) {
-//        CreateMissiles.LOGGER.info("Saving drones");
-//        var data = new CompoundTag();
-//        server.getAllLevels().forEach(serverLevel -> {
-//            var droneListData = new ListTag();
-//            droneListData.addAll(drones.get(serverLevel).stream().map(DroneTrackingData::save).toList());
-//            data.put(serverLevel.dimension().toString(), droneListData);
-//        });
-//
-//        if (destroyOnSave) {
-//            destroyOnSave = false;
-//            initialized = false;
-//            drones = new WorldAttached<>(l -> new WeakHashMap<>()) {};
-//            killThisDroneWhenever = new HashSet<>();
-//            server = null;
-//            instance = null;
-//        }
+        CreateMissiles.LOGGER.info("Saving drones");
+        var data = new CompoundTag();
+        server.getAllLevels().forEach(serverLevel -> {
+            var droneListData = new ListTag();
+            droneListData.addAll(drones.get(serverLevel).values());
+            data.put(serverLevel.dimension().toString(), droneListData);
+        });
+
+        compoundTag.put("Drones", data);
+        ListTag hitList = new ListTag();
+        hitList.addAll(killEntityWhenever.stream().map(uuid -> StringTag.valueOf(uuid.toString())).toList());
+        compoundTag.put("HitList", hitList);
+
+        if (destroyOnSave) {
+            destroyOnSave = false;
+            initialized = false;
+            drones = new WorldAttached<>(l -> new HashMap<>()) {};
+            entityCache = new HashMap<>();
+            killEntityWhenever = new HashSet<>();
+            stopTrackingNextTick = new HashSet<>();
+            server = null;
+            instance = null;
+        }
 
         return compoundTag;
     }
