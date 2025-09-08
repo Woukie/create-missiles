@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 import static net.woukie.createmissiles.Util.traverseSupercover;
 
@@ -22,6 +21,7 @@ public class ExplodingAreaWorker implements Runnable {
     private final ConcurrentHashMap<BlockPos, Float> hardnessMap;
     private final double maxDistance;
 
+    private PriorityBlockingQueue<BlockPos> removeBlocks;
     private PriorityBlockingQueue<BlockPos> brokenBlocks;
     private boolean calculatedBlocks = false;
     private boolean doneX = false;
@@ -46,6 +46,7 @@ public class ExplodingAreaWorker implements Runnable {
         this.hardnessMap = hardnessMap;
         this.maxDistance = (this.power - this.decay - HARDNESS_OFFSET) / HARDNESS_OFFSET;
         brokenBlocks = new PriorityBlockingQueue<>();
+        removeBlocks = new PriorityBlockingQueue<>();
     }
 
     public void run() {
@@ -130,7 +131,11 @@ public class ExplodingAreaWorker implements Runnable {
                 final double averageHardness = totalHardness.get() / (double) passedBlocks;
                 final double powerLeft = startPower - ((HARDNESS_MULTIPLIER * averageHardness + HARDNESS_OFFSET + this.decay) * distance);
                 if (powerLeft > 0) {
-                    brokenBlocks.offer(traversedBlockPos);
+                    if (Math.random() > 1 / startPower) {
+                        removeBlocks.offer(traversedBlockPos);
+                    } else {
+                        brokenBlocks.offer(traversedBlockPos);
+                    }
                 } else {
                     return true;
                 }
@@ -141,15 +146,26 @@ public class ExplodingAreaWorker implements Runnable {
     }
 
     public boolean isComplete() {
-        return calculatedBlocks && brokenBlocks.isEmpty();
+        return calculatedBlocks && brokenBlocks.isEmpty() && removeBlocks.isEmpty();
     }
 
-    public boolean destroyBlock(Level level) {
+    public boolean processBlock(Level level) {
         if (endEarly) return false;
-        BlockPos blockPos = brokenBlocks.poll();
+//        Prioritize less laggy first
+        BlockPos blockPos = removeBlocks.poll();
+        boolean dropBlock = false;
+        if (blockPos == null) {
+            blockPos = brokenBlocks.poll();
+            dropBlock = true;
+        }
+
         if (blockPos != null) {
             if (!level.getBlockState(blockPos).is(Blocks.DRAGON_EGG)) {
-                level.destroyBlock(blockPos, true);
+                if (dropBlock) {
+                    level.destroyBlock(blockPos, true);
+                } else {
+                    level.removeBlock(blockPos, true);
+                }
             }
             return true;
         }
@@ -166,7 +182,7 @@ public class ExplodingAreaWorker implements Runnable {
         data.putInt("CountY", countY);
         data.putInt("CountZ", countZ);
         data.putLongArray("BrokenBlocks", brokenBlocks.stream().map(BlockPos::asLong).toList());
-        System.out.println(brokenBlocks.size());
+        data.putLongArray("RemoveBlocks", removeBlocks.stream().map(BlockPos::asLong).toList());
         return data;
     }
 
@@ -175,6 +191,6 @@ public class ExplodingAreaWorker implements Runnable {
         countY = data.getInt("CountY");
         countZ = data.getInt("CountZ");
         brokenBlocks = new PriorityBlockingQueue<>(Arrays.stream(data.getLongArray("BrokenBlocks")).mapToObj(BlockPos::of).toList());
-        System.out.println(brokenBlocks.size());
+        removeBlocks = new PriorityBlockingQueue<>(Arrays.stream(data.getLongArray("RemoveBlocks")).mapToObj(BlockPos::of).toList());
     }
 }

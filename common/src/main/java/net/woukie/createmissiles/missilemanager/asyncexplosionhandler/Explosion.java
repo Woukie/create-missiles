@@ -9,9 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.item.PrimedTnt;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.ProtectionEnchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -140,7 +137,7 @@ public class Explosion {
                 if (!worker.isComplete()) {
                     complete = false;
                     if (endEarly) return;
-                    if (worker.destroyBlock(level)) {
+                    if (worker.processBlock(level)) {
                         keepDestroying = true;
                     }
                 }
