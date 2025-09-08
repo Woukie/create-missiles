@@ -2,8 +2,11 @@ package net.woukie.createmissiles.missilemanager.asyncexplosionhandler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.joml.Vector3d;
 
 import java.util.Arrays;
@@ -159,17 +162,22 @@ public class ExplodingAreaWorker implements Runnable {
             dropBlock = true;
         }
 
-        if (blockPos != null) {
-            if (!level.getBlockState(blockPos).is(Blocks.DRAGON_EGG)) {
-                if (dropBlock) {
-                    level.destroyBlock(blockPos, true);
-                } else {
-                    level.removeBlock(blockPos, true);
-                }
-            }
+        if ((blockPos == null)) return false;
+
+        if (level.getBlockState(blockPos).is(Blocks.DRAGON_EGG)) return true;
+
+        if (!dropBlock) {
+            level.removeBlock(blockPos, true);
             return true;
         }
-        return false;
+
+        var state = level.getBlockState(blockPos);
+        if (state.isAir()) return true;
+        var blockEntity = state.hasBlockEntity() ? level.getBlockEntity(blockPos) : null;
+        Block.dropResources(state, level, blockPos, blockEntity, null, ItemStack.EMPTY);
+        level.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 2);
+
+        return true;
     }
 
     public void endEarly() {
