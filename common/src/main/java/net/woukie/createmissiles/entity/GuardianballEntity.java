@@ -35,7 +35,8 @@ public class GuardianballEntity extends BallEntity {
     protected void explode(BlockPos position) {
         int entityCount = (int)(Math.random() * 2);
         for (int i = 0; i < entityCount + 1; i++) {
-            EntityType.GUARDIAN.spawn((ServerLevel) level(), position, MobSpawnType.MOB_SUMMONED);
+            var entity = EntityType.GUARDIAN.spawn((ServerLevel) level(), position, MobSpawnType.MOB_SUMMONED);
+            if (entity != null) entity.setPersistenceRequired();
         }
 
         for (int i = 0; i < 100; i++) {

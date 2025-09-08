@@ -32,7 +32,8 @@ public class FrostballEntity extends BallEntity {
         BlockPos spawnPos = Util.locateNearestMatchingBlock(hitResult.getLocation(), blockPos -> level().getBlockState(blockPos).canBeReplaced(Fluids.WATER), 20);
         spawnPos = spawnPos == null ? BlockPos.containing(hitResult.getLocation()) : spawnPos;
         if (random.nextFloat() > 0.5) {
-            EntityType.SNOW_GOLEM.spawn((ServerLevel) level(), spawnPos, MobSpawnType.MOB_SUMMONED);
+            var entity = EntityType.SNOW_GOLEM.spawn((ServerLevel) level(), spawnPos, MobSpawnType.MOB_SUMMONED);
+            if (entity != null) entity.setPersistenceRequired();
         }
         for (int i = 0; i < 1400; i++) {
             double distance = level().random.nextGaussian() * 5;

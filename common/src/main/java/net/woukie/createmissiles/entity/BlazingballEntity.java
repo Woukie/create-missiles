@@ -16,7 +16,8 @@ public class BlazingballEntity extends FlamingballEntity {
     protected void explode(BlockPos position) {
         int blazeCount = (int)(Math.random() * 3);
         for (int i = 0; i < blazeCount + 1; i++) {
-            EntityType.BLAZE.spawn((ServerLevel) level(), position, MobSpawnType.MOB_SUMMONED);
+            var entity = EntityType.BLAZE.spawn((ServerLevel) level(), position, MobSpawnType.MOB_SUMMONED);
+            if (entity != null) entity.setPersistenceRequired();
         }
 
         super.explode(position);
