@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -277,6 +278,7 @@ public class Drone extends FlyingMob {
             if (!hasTarget && hasOigin) {
                 Vector2i originPos = new Vector2i(originBlock.getX(), originBlock.getZ());
                 if (originPos.distance(currentPos) < 25) {
+                    DroneHandler.get().stopTrackingDrone((ServerLevel) level(), uuid);
                     originBlock = null;
                 }
             }

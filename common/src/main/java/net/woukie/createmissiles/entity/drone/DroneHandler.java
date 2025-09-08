@@ -3,27 +3,30 @@ package net.woukie.createmissiles.entity.drone;
 import com.simibubi.create.foundation.utility.WorldAttached;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.phys.Vec3;
-import net.woukie.createmissiles.CreateMissiles;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+// Solves a few problems:
+// Tracking entities when unloaded
+// Handles entities in non-ticking chunks
 public class DroneHandler extends SavedData {
-    private static WorldAttached<HashSet<CompoundTag>> drones = new WorldAttached<>(l -> new HashSet<>()) {};
-    Set<UUID> loadChunkAtLastPosition = new HashSet<>();
+    private static WorldAttached<HashMap<UUID, CompoundTag>> drones = new WorldAttached<>(l -> new HashMap<>()) {};
+    private static HashMap<UUID, Entity> entityCache = new HashMap<>();
+    private static Set<UUID> killEntityWhenever = new HashSet<>();
+    private static Set<UUID> stopTrackingWhenever = new HashSet<>();
+
     private static MinecraftServer server;
     private static DroneHandler instance;
     private static boolean initialized = false;
@@ -38,9 +41,12 @@ public class DroneHandler extends SavedData {
     }
 
     public void trackDrone(Drone drone) {
-        System.out.println("TRACKING DRONE " + drone.getUUID());
-        System.out.println(drone);
+        drones.get(drone.level()).put(drone.getUUID(), drone.saveWithoutId(new CompoundTag()));
         setDirty();
+    }
+
+    public void stopTrackingDrone(ServerLevel level, UUID uuid) {
+        drones.get(level).remove(uuid);
     }
 
     public void stop() {
@@ -52,72 +58,138 @@ public class DroneHandler extends SavedData {
 
     public void serverTick(MinecraftServer server) {
         server.getAllLevels().forEach(serverLevel -> {
-            drones.get(serverLevel).forEach(drone -> {
-                tickDrone(serverLevel, drone);
+            killEntityWhenever.removeIf(uuid -> {
+                Entity e = serverLevel.getEntity(uuid);
+                if (e != null) {
+                    e.discard();
+                    entityCache.remove(e.getUUID());
+                    return true;
+                }
+                return false;
+            });
+
+            stopTrackingWhenever.forEach(uuid -> {
+                stopTrackingDrone(serverLevel, uuid);
+            });
+
+            List<UUID> changedUUID = new ArrayList<>();
+            drones.get(serverLevel).forEach((uuid, tag) -> {
+                if (tickDrone(serverLevel, uuid, tag)) {
+                    changedUUID.add(uuid);
+                }
+            });
+
+            changedUUID.forEach(uuid -> {
+                var levelData = drones.get(serverLevel);
+                var data = levelData.get(uuid);
+                levelData.remove(uuid);
+                levelData.put(data.getUUID("UUID"), data);
             });
         });
     }
 
-    private void tickDrone(ServerLevel level, DroneTrackingData drone) {
-        Entity entity = level.getEntity(drone.getUuid());
-
-        boolean foundEntity = entity != null;
-        boolean ticking = foundEntity && level.isPositionEntityTicking(entity.blockPosition());
+//    True if uuid changed
+    private boolean tickDrone(ServerLevel level, UUID uuid, CompoundTag drone) {
+        Entity entity = entityCache.computeIfAbsent(uuid, uuid1 -> level.getEntity(uuid));
+        boolean entityLoaded = entity != null;
+        boolean ticking = entityLoaded && level.isPositionEntityTicking(entity.blockPosition());
 
         if (ticking) {
-
+            CompoundTag updatedData = entity.saveWithoutId(new CompoundTag());
+            updatedData.putBoolean("Simulated", false);
+            updatedData.putString("id", EntityType.getKey(entity.getType()).toString());
+            drones.get(level).put(uuid, updatedData);
+            return false;
         }
+
+//        Not ticking, or suddenly became unloaded, i.e player teleported away
+        if ((entityLoaded || !drone.contains("Simulated") || !drone.getBoolean("Simulated"))) {
+            killEntityWhenever.add(drone.getUUID("UUID"));
+            entityCache.remove(uuid);
+            drone.putUUID("UUID", UUID.randomUUID());
+            drone.putBoolean("Simulated", true);
+            return true;
+        }
+
+        simulateDroneMovement(drone);
+        if (shouldBeReal(level, drone)) {
+            makeReal(level, drone);
+        }
+
+        return false;
     }
 
-    private void tickDrone(ServerLevel level, DroneTrackingData drone, int a) {
-        Entity entity = level.getEntity(drone.getUuid());
-        boolean foundEntity = entity != null;
-        boolean inStasis = foundEntity && !level.isPositionEntityTicking(entity.blockPosition());
-
-        if (loadChunkAtLastPosition.contains(drone.getUuid()) && level.isLoaded(BlockPos.containing(drone.getPosition()))) {
-            var chunk = new ChunkPos(BlockPos.containing(drone.getPosition()));
-            level.setChunkForced(chunk.x, chunk.z, false);
-            loadChunkAtLastPosition.remove(drone.getUuid());
-            System.out.println("TELEPORTED!!!");
-        }
-
-        if (foundEntity && !inStasis) {
-            var dronePos = entity.position();
-            if (drone.isSimulatingPosition()) {
-                dronePos = getAdjustedLoadPosition(level, drone.getSimulatedPosition());
-                entity.setPos(dronePos);
-                drone.setSimulatingPosition(false);
-            }
-
-            drone.setPosition(dronePos);
-            drone.setSimulatedPosition(dronePos);
-
-            System.out.println("REAL: " + entity.position());
-        } else {
-            drone.setSimulatingPosition(true);
-            boolean teleportToSimulated = simulateDroneMovement(drone) || inStasis || level.isLoaded(BlockPos.containing(drone.getSimulatedPosition()));
-            if (teleportToSimulated) {
-                loadChunkAtLastPosition.add(drone.getUuid());
-                var chunk = new ChunkPos(BlockPos.containing(drone.getPosition()));
-                level.setChunkForced(chunk.x, chunk.z, true);
-                System.out.println("needs teleporting (still?)");
-            }
-            System.out.println("SIMULATED: " + drone.getSimulatedPosition());
-        }
+    private static boolean shouldBeReal(ServerLevel level, CompoundTag drone) {
+        ListTag posList = drone.getList("Pos", 6);
+        BlockPos currentBlockPosition = BlockPos.containing(new Vec3(posList.getDouble(0), posList.getDouble(1), posList.getDouble(2)));
+        return drone.contains("Simulated") && drone.getBoolean("Simulated") && level.isLoaded(currentBlockPosition) && level.isPositionEntityTicking(currentBlockPosition);
     }
 
-    private static boolean simulateDroneMovement(DroneTrackingData drone) {
-        BlockPos target = drone.getTargetPosition() != null ? drone.getTargetPosition() : drone.getOriginPosition();
-        if (target == null) return false;
+    private static void makeReal(ServerLevel level, CompoundTag drone) {
+        ListTag posList = drone.getList("Pos", 6);
+        Vec3 currentPosition = new Vec3(posList.getDouble(0), posList.getDouble(1), posList.getDouble(2));
+        BlockPos target = null;
+        if (drone.contains("TargetBlockX")) {
+            target = new BlockPos(drone.getInt("TargetBlockX"), drone.getInt("TargetBlockY"), drone.getInt("TargetBlockZ"));
+        } else if (drone.contains("OriginBlockX")) {
+            target = new BlockPos(drone.getInt("OriginBlockX"), drone.getInt("OriginBlockY"), drone.getInt("OriginBlockZ"));
+        }
 
-        Vec3 flatTarget = target.getCenter().multiply(1, 0, 1);
-        Vec3 flatPosition = new Vec3(drone.getSimulatedPosition().toVector3f()).multiply(1, 0, 1);
+        EntityType<?> entityType = EntityType.by(drone).get();
+        Entity entity = entityType.create(level);
+        entity.load(drone);
+        entity.setUUID(drone.getUUID("UUID"));
+        if (target != null) {
+            double dX = target.getX() - currentPosition.x;
+            double dZ = target.getZ() - currentPosition.z;
+            float angle = (float)Mth.atan2(dZ, dX);
+            float targetYRot = Mth.wrapDegrees(angle * (180F / (float)Math.PI));
+            entity.setYRot(targetYRot - 90.0F);
+            entity.setYBodyRot(entity.getYRot());
+        }
+        level.addFreshEntity(entity);
+        entityCache.put(drone.getUUID("UUID"), entity);
+        entity.setPos(getAdjustedLoadPosition(level, currentPosition));
+    }
 
-        float speed = 10f;
+    private static void simulateDroneMovement(CompoundTag drone) {
+        BlockPos originBlock = null;
+        BlockPos targetBlock = null;
+        if (drone.contains("OriginBlockX")) originBlock = new BlockPos(drone.getInt("OriginBlockX"), drone.getInt("OriginBlockY"), drone.getInt("OriginBlockZ"));
+        if (drone.contains("TargetBlockX")) targetBlock = new BlockPos(drone.getInt("TargetBlockX"), drone.getInt("TargetBlockY"), drone.getInt("TargetBlockZ"));
+
+        ListTag posList = drone.getList("Pos", 6);
+        Vec3 currentPosition = new Vec3(posList.getDouble(0), posList.getDouble(1), posList.getDouble(2));
+        BlockPos currentTarget = targetBlock != null ? targetBlock : originBlock;
+        if (currentTarget == null) {
+            stopTrackingWhenever.add(drone.getUUID("UUID"));
+            return;
+        };
+
+        Vec3 flatTarget = currentTarget.getCenter().multiply(1, 0, 1);
+        Vec3 flatPosition = currentPosition.multiply(1, 0, 1);
+
+        float speed = 5f;
         var delta = flatTarget.subtract(flatPosition).normalize().scale(speed);
-        drone.setSimulatedPosition(drone.getSimulatedPosition().add(delta));
+        currentPosition = currentPosition.add(delta);
+        drone.put("Pos", newDoubleList(currentPosition.x, currentPosition.y, currentPosition.z));
 
-        return flatPosition.distanceTo(flatTarget) < 10;
+        if (targetBlock != null && flatPosition.distanceTo(targetBlock.getCenter().multiply(1, 0, 1)) < 5) {
+            drone.remove("TargetBlockX");
+            drone.remove("TargetBlockY");
+            drone.remove("TargetBlockZ");
+        }
+        if (originBlock != null && flatPosition.distanceTo(originBlock.getCenter().multiply(1, 0, 1)) < 5) {
+            drone.remove("OriginBlockX");
+            drone.remove("OriginBlockY");
+            drone.remove("OriginBlockZ");
+        }
+    }
+
+    private static ListTag newDoubleList(double... ds) {
+        ListTag listTag = new ListTag();
+        for(double d : ds) listTag.add(DoubleTag.valueOf(d));
+        return listTag;
     }
 
     private static Vec3 getAdjustedLoadPosition(ServerLevel level, Vec3 position) {
@@ -156,37 +228,37 @@ public class DroneHandler extends SavedData {
     }
 
     public DroneHandler load(CompoundTag nbt) {
-        nbt.getAllKeys().forEach(dimensionKey -> {
-            Level level = server.getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimensionKey)));
-            ListTag droneData = (ListTag) nbt.get(dimensionKey);
-            if (droneData != null) {
-                droneData.forEach(tag -> {
-                    drones.get(level).add(DroneTrackingData.load((CompoundTag)tag));
-                });
-            }
-        });
-        CreateMissiles.LOGGER.info("Drones loaded");
+//        nbt.getAllKeys().forEach(dimensionKey -> {
+//            Level level = server.getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimensionKey)));
+//            ListTag droneData = (ListTag) nbt.get(dimensionKey);
+//            if (droneData != null) {
+//                droneData.forEach(tag -> {
+//                    drones.get(level).add(DroneTrackingData.load((CompoundTag)tag));
+//                });
+//            }
+//        });
+//        CreateMissiles.LOGGER.info("Drones loaded");
         return this;
     }
 
     @Override
     public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag) {
-        CreateMissiles.LOGGER.info("Saving drones");
-        var data = new CompoundTag();
-        server.getAllLevels().forEach(serverLevel -> {
-            var droneListData = new ListTag();
-            droneListData.addAll(drones.get(serverLevel).stream().map(DroneTrackingData::save).toList());
-            data.put(serverLevel.dimension().toString(), droneListData);
-        });
-
-        if (destroyOnSave) {
-            destroyOnSave = false;
-            initialized = false;
-            drones = new WorldAttached<>(l -> new HashSet<>()) {};
-            loadChunkAtLastPosition = new HashSet<>();
-            server = null;
-            instance = null;
-        }
+//        CreateMissiles.LOGGER.info("Saving drones");
+//        var data = new CompoundTag();
+//        server.getAllLevels().forEach(serverLevel -> {
+//            var droneListData = new ListTag();
+//            droneListData.addAll(drones.get(serverLevel).stream().map(DroneTrackingData::save).toList());
+//            data.put(serverLevel.dimension().toString(), droneListData);
+//        });
+//
+//        if (destroyOnSave) {
+//            destroyOnSave = false;
+//            initialized = false;
+//            drones = new WorldAttached<>(l -> new WeakHashMap<>()) {};
+//            killThisDroneWhenever = new HashSet<>();
+//            server = null;
+//            instance = null;
+//        }
 
         return compoundTag;
     }
