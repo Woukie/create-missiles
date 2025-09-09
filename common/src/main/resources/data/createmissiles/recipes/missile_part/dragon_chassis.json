@@ -1,0 +1,10 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "items": ["minecraft:obsidian"],
+      "count": 3
+    }
+  ],
+  "assembly": "createmissiles:dragon_chassis"
+}
