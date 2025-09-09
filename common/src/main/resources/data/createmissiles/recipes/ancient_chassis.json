@@ -1,0 +1,22 @@
+{
+  "type": "createmissiles:nbt_crafting_shaped",
+  "category": "misc",
+  "key": {
+    "@": {
+      "item": "createmissiles:warhead_assembly",
+      "nbt": "{PartType:\"createmissiles:ancient_warhead\"}"
+    },
+    "S": {
+      "item": "minecraft:sculk"
+    }
+  },
+  "pattern": [
+    "S S",
+    "S@S",
+    "S S"
+  ],
+  "result": {
+    "item": "createmissiles:chassis_assembly",
+    "nbt": "{PartType:\"createmissiles:ancient_chassis\"}"
+  }
+}

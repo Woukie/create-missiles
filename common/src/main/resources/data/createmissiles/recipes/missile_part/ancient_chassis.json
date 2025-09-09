@@ -1,0 +1,10 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "items": ["minecraft:sculk"],
+      "count": 16
+    }
+  ],
+  "assembly": "createmissiles:ancient_chassis"
+}
