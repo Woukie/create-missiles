@@ -2,6 +2,7 @@ package net.woukie.createmissiles.inventory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -22,8 +23,8 @@ public class DroneMenu extends AbstractBasicMenu {
 //    First 4 integers each represent 32 bits of the entity UUID
     private final ContainerData dataAccess;
 
-    public DroneMenu(int id, Inventory inventory, ContainerData dataAccess) {
-        super(DRONE.get(), id, new SimpleContainer(1));
+    public DroneMenu(int id, Inventory inventory, ContainerData dataAccess, Container container) {
+        super(DRONE.get(), id, container);
         checkContainerSize(container, 1);
         checkContainerDataCount(dataAccess, 8);
         this.dataAccess = dataAccess;
@@ -47,7 +48,7 @@ public class DroneMenu extends AbstractBasicMenu {
     }
 
     public DroneMenu(int id, Inventory inventory) {
-        this(id, inventory, new SimpleContainerData(8));
+        this(id, inventory, new SimpleContainerData(8), new SimpleContainer(1));
     }
 
     public boolean isBasic() {
@@ -61,22 +62,6 @@ public class DroneMenu extends AbstractBasicMenu {
     @Override
     public boolean stillValid(@NotNull Player player) {
         return dataAccess.get(6) == 0;
-    }
-
-    @Override
-    public void removed(@NotNull Player player) {
-        super.removed(player);
-        if (!player.level().isClientSide) {
-            if (!player.isAlive() || player instanceof ServerPlayer && ((ServerPlayer)player).hasDisconnected()) {
-                ItemStack itemStack = this.container.removeItemNoUpdate(0);
-                if (!itemStack.isEmpty()) {
-                    player.drop(itemStack, false);
-                }
-            } else if (player instanceof ServerPlayer) {
-                player.getInventory().placeItemBackInInventory(this.container.removeItemNoUpdate(0));
-            }
-
-        }
     }
 
     public int getInitialX() {

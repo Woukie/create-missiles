@@ -21,6 +21,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -34,13 +36,17 @@ import org.joml.Vector2i;
 public class Drone extends FlyingMob {
     private final ContainerData dataAccess;
 
+    BlockPos storedMapPos;
     BlockPos targetBlock;
     BlockPos originBlock;
+
+    protected SimpleContainer mapContainer;
 
     public Drone(EntityType<? extends Drone> entityType, Level level) {
         super(entityType, level);
         this.moveControl = new DroneMoveControl(this, this);
         this.lookControl = new EmptyLookControl(this, this);
+        this.mapContainer = new SimpleContainer(1);
         this.dataAccess = new ContainerData() {
             @Override
             public int get(int i) {
@@ -102,17 +108,29 @@ public class Drone extends FlyingMob {
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
 
+        if (compoundTag.contains("StoredMapPosX")) {
+            this.storedMapPos = new BlockPos(compoundTag.getInt("StoredMapPosX"), compoundTag.getInt("StoredMapPosY"), compoundTag.getInt("StoredMapPosZ"));
+        }
         if (compoundTag.contains("TargetBlockX")) {
             this.targetBlock = new BlockPos(compoundTag.getInt("TargetBlockX"), compoundTag.getInt("TargetBlockY"), compoundTag.getInt("TargetBlockZ"));
         }
         if (compoundTag.contains("OriginBlockX")) {
             this.originBlock = new BlockPos(compoundTag.getInt("OriginBlockX"), compoundTag.getInt("OriginBlockY"), compoundTag.getInt("OriginBlockZ"));
         }
+
+        if (compoundTag.contains("MapItem")) {
+            mapContainer = new SimpleContainer(ItemStack.of(compoundTag.getCompound("MapItem")));
+        }
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
+        if (this.storedMapPos != null) {
+            compoundTag.putInt("StoredMapPosX", this.storedMapPos.getX());
+            compoundTag.putInt("StoredMapPosY", this.storedMapPos.getY());
+            compoundTag.putInt("StoredMapPosZ", this.storedMapPos.getZ());
+        }
         if (this.targetBlock != null) {
             compoundTag.putInt("TargetBlockX", this.targetBlock.getX());
             compoundTag.putInt("TargetBlockY", this.targetBlock.getY());
@@ -123,6 +141,8 @@ public class Drone extends FlyingMob {
             compoundTag.putInt("OriginBlockY", this.originBlock.getY());
             compoundTag.putInt("OriginBlockZ", this.originBlock.getZ());
         }
+
+        compoundTag.put("MapItem", mapContainer.getItem(0).save(new CompoundTag()));
     }
 
     @Override
@@ -178,6 +198,7 @@ public class Drone extends FlyingMob {
         Entity entity = damageSource.getEntity();
         if (!level().isClientSide() && entity != null && entity.getType().equals(EntityType.PLAYER)) {
             level().playSound(null, blockPosition(), SoundEvents.SCAFFOLDING_BREAK, SoundSource.NEUTRAL);
+            popMap((ServerLevel) level());
             dropItem();
             this.discard();
             return true;
@@ -188,9 +209,22 @@ public class Drone extends FlyingMob {
     @Override
     public void die(DamageSource damageSource) {
         if (!level().isClientSide) {
+            popMap((ServerLevel) level());
             DroneHandler.get().stopTrackingDrone((ServerLevel) level(), getUUID());
         }
         super.die(damageSource);
+    }
+
+    public void popMap(ServerLevel level) {
+        if (storedMapPos != null) {
+            ItemStack stack = MapUtils.createAndFillMap(level, storedMapPos.getX(), storedMapPos.getZ(), 1);
+            DefaultDispenseItemBehavior.spawnItem(level(), stack, 1, Direction.UP, position());
+            level.playSound(null, position().x, position().y, position().z, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, SoundSource.PLAYERS, 1, 1);
+            storedMapPos = null;
+        } else {
+            DefaultDispenseItemBehavior.spawnItem(level(), mapContainer.getItem(0), 1, Direction.UP, position());
+        }
+        mapContainer.clearContent();
     }
 
     protected void dropItem() {
@@ -209,19 +243,24 @@ public class Drone extends FlyingMob {
 
     @Override
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand interactionHand) {
+        if (storedMapPos != null) {
+            popMap((ServerLevel) level());
+            return InteractionResult.SUCCESS;
+        }
+
         if (targetBlock != null || originBlock != null) {
             return InteractionResult.FAIL;
         }
 
         if (!this.level().isClientSide) {
-            player.openMenu(new SimpleMenuProvider((ix, inventory, playerx) -> new DroneMenu(ix, inventory, this.dataAccess), getDisplayName()));
+            player.openMenu(new SimpleMenuProvider((ix, inventory, playerx) -> new DroneMenu(ix, inventory, this.dataAccess, mapContainer), getDisplayName()));
         }
         return InteractionResult.SUCCESS;
     }
 
     public void startMission(BlockPos destination) {
-        level().playSound(null, position().x, position().y, position().z, SoundEvents.ANVIL_PLACE, SoundSource.PLAYERS, 1, 1);
-        level().playSound(null, position().x, position().y, position().z, SoundEvents.PHANTOM_SWOOP, SoundSource.PLAYERS, 1, 1);
+        if (mapContainer.getItem(0).isEmpty()) return;
+        level().playSound(null, position().x, position().y, position().z, SoundEvents.NOTE_BLOCK_CHIME.value(), SoundSource.PLAYERS, 1, 1);
         this.targetBlock = destination;
         this.originBlock = blockPosition();
         DroneHandler.get().trackDrone(this);
@@ -256,32 +295,20 @@ public class Drone extends FlyingMob {
         public DroneMoveControl(Drone drone, Mob mob) {
             super(mob);
         }
+        private boolean hasOigin, hasTarget;
 
         public void tick() {
             if (Drone.this.horizontalCollision) {
                 setYRot(getYRot() + 180.0F);
             }
-
-            boolean hasOigin = Drone.this.originBlock != null;
-            boolean hasTarget = Drone.this.targetBlock != null;
-            if (hasTarget && !hasOigin) {
-                Drone.this.originBlock = Drone.this.targetBlock;
-            }
-
-            if (hasTarget) {
-                tickTravel(Drone.this.targetBlock);
-            } else if (hasOigin) {
-                tickTravel(Drone.this.originBlock);
-            } else {
-                tickWait();
-            }
-
+            updateTargetStatus();
+            tickTravelOrWait();
             Vector2i currentPos = new Vector2i(blockPosition().getX(), blockPosition().getZ());
             if (hasTarget) {
                 Vector2i targetPos = new Vector2i(targetBlock.getX(), targetBlock.getZ());
                 if (targetPos.distance(currentPos) < 25) {
+                    storedMapPos = targetBlock;
                     targetBlock = null;
-//                    fillMap()
                 }
             }
 
@@ -291,6 +318,26 @@ public class Drone extends FlyingMob {
                     DroneHandler.get().stopTrackingDrone((ServerLevel) level(), uuid);
                     originBlock = null;
                 }
+            }
+        }
+
+        private void tickTravelOrWait() {
+            if (hasTarget) {
+                tickTravel(Drone.this.targetBlock);
+            } else if (hasOigin) {
+                tickTravel(Drone.this.originBlock);
+            } else {
+                tickWait();
+            }
+
+            updateTargetStatus();
+        }
+
+        private void updateTargetStatus() {
+            hasOigin = Drone.this.originBlock != null;
+            hasTarget = Drone.this.targetBlock != null;
+            if (hasTarget && !hasOigin) {
+                Drone.this.originBlock = Drone.this.targetBlock;
             }
         }
 

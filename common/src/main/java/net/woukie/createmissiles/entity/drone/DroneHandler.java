@@ -167,17 +167,20 @@ public class DroneHandler extends SavedData {
         if (currentTarget == null) {
             stopTrackingNextTick.add(drone.getUUID("UUID"));
             return;
-        };
+        }
 
         Vec3 flatTarget = currentTarget.getCenter().multiply(1, 0, 1);
         Vec3 flatPosition = currentPosition.multiply(1, 0, 1);
 
-        float speed = 5f;
+        float speed = 2.4f;
         var delta = flatTarget.subtract(flatPosition).normalize().scale(speed);
         currentPosition = currentPosition.add(delta);
         drone.put("Pos", newDoubleList(currentPosition.x, currentPosition.y, currentPosition.z));
 
         if (targetBlock != null && flatPosition.distanceTo(targetBlock.getCenter().multiply(1, 0, 1)) < 5) {
+            drone.putInt("StoredMapPosX", targetBlock.getX());
+            drone.putInt("StoredMapPosY", targetBlock.getY());
+            drone.putInt("StoredMapPosZ", targetBlock.getZ());
             drone.remove("TargetBlockX");
             drone.remove("TargetBlockY");
             drone.remove("TargetBlockZ");
