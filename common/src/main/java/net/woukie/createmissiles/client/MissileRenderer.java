@@ -33,9 +33,6 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
         ThrusterType thrusterType = (ThrusterType) PartTypes.get(entity.getThrusterType());
 
         poseStack.pushPose();
-
-        poseStack.scale(2, 2, 2);
-
         Vector3f offset = new Vector3f(0, 5, 0);
 
         if (thrusterType != null)
