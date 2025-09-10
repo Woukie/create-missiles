@@ -314,7 +314,7 @@ public class Drone extends FlyingMob {
 
             if (!hasTarget && hasOigin) {
                 Vector2i originPos = new Vector2i(originBlock.getX(), originBlock.getZ());
-                if (originPos.distance(currentPos) < 25) {
+                if (originPos.distance(currentPos) < 3) {
                     DroneHandler.get().stopTrackingDrone((ServerLevel) level(), uuid);
                     originBlock = null;
                 }
