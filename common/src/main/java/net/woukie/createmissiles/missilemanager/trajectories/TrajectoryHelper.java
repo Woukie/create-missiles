@@ -30,9 +30,9 @@ public class TrajectoryHelper {
         return result;
     }
 
-    private static double getDistance(double angle, double thrust, double thrustDuration, double minHeight, double mass)
+    private static double getDistance(double angle, double thrust, double thrustDuration, double minHeight, double mass, double targetY, double sourceY)
     {
-        List<Vector2d> simulation = simulate(angle, thrust, thrustDuration, mass);
+        List<Vector2d> simulation = simulate(angle, thrust, thrustDuration, mass, targetY, sourceY);
 
         double maxHeight = 0;
         for (int i = 0; i < simulation.size(); i++) {
@@ -42,13 +42,13 @@ public class TrajectoryHelper {
         return (maxHeight < minHeight) ? 0 : simulation.get(simulation.size() - 1).x;
     }
 
-    public static List<Vector2d> simulate(double angle, double thrust, double thrustDuration, double mass){
+    public static List<Vector2d> simulate(double angle, double thrust, double thrustDuration, double mass, double targetY, double sourceY){
         Vector2d velocity = new Vector2d();
         Vector2d position = new Vector2d();
         List<Vector2d> missilePositions = new ArrayList<>();
         double time = 0;
 
-        while (position.y >= 0) {
+        while (position.y >= targetY - sourceY || velocity.y >= 0) {
 
             double currentFlightAngle = Math.atan2(velocity.y, Math.sqrt(velocity.x * velocity.x));
             double approximateForceDueToAirResistance = 0.03d * (velocity.x * velocity.x + velocity.y * velocity.y); //0.031
@@ -74,9 +74,9 @@ public class TrajectoryHelper {
         return missilePositions;
     }
 
-    private static boolean isValidTrajectory(double thrust, double angleDeg, double thrustDuration, double targetX, double minHeight, double mass) {
+    private static boolean isValidTrajectory(double thrust, double angleDeg, double thrustDuration, double targetX, double minHeight, double mass, double targetY, double sourceY) {
 
-        double x = getDistance(angleDeg, thrust, thrustDuration, minHeight, mass);
+        double x = getDistance(angleDeg, thrust, thrustDuration, minHeight, mass, targetY, sourceY);
 
         if(x != 0)
         {
@@ -85,7 +85,7 @@ public class TrajectoryHelper {
         return false;
     }
 
-    public static LaunchSolution findMinLaunchSolution(double targetX, double thrust, double minHeight, int angleStart, int angleEnd, double mass) {
+    public static LaunchSolution findMinLaunchSolution(double targetX, double thrust, double minHeight, int angleStart, int angleEnd, double mass, double targetY, double sourceY) {
         double[] angleRange = generateRange(angleStart, angleEnd, 100);
         for(double angle : angleRange) {
             double low = 0;
@@ -93,11 +93,11 @@ public class TrajectoryHelper {
 
             for (int i = 0; i < 20; i++) {
                 double mid = (low + high) / 2;
-                if (isValidTrajectory(thrust, angle, mid, targetX, minHeight, mass)) {
+                if (isValidTrajectory(thrust, angle, mid, targetX, minHeight, mass, targetY, sourceY)) {
                     return new LaunchSolution(mid, angle);
                 }
 
-                double x = getDistance(angle, thrust, mid, minHeight, mass);
+                double x = getDistance(angle, thrust, mid, minHeight, mass, targetY, sourceY);
 
                 if (x < targetX) {
                     low = mid;
@@ -109,16 +109,16 @@ public class TrajectoryHelper {
         return null;
     }
 
-    public static double findLaunchAngle(double targetX, double thrust, double thrustDuration, double minHeight, int angleStart, int angleEnd, double mass) {
+    public static double findLaunchAngle(double targetX, double thrust, double thrustDuration, double minHeight, int angleStart, int angleEnd, double mass, double targetY, double sourceY) {
         double low = angleStart;
         double high = angleEnd;
         for (int i = 0; i < 50; i++) {
             double mid = (low + high) / 2;
-            if (isValidTrajectory(thrust, mid, thrustDuration, targetX, minHeight, mass)) {
+            if (isValidTrajectory(thrust, mid, thrustDuration, targetX, minHeight, mass, targetY, sourceY)) {
                 return mid;
             }
 
-            double x = getDistance(mid, thrust, thrustDuration, minHeight, mass);
+            double x = getDistance(mid, thrust, thrustDuration, minHeight, mass, targetY, sourceY);
             if (x > targetX) {
                 low = mid;
             } else {

@@ -136,7 +136,7 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
         double mass = warheadType.getMass() + chassisType.getMass() + thrusterType.getMass();
         double targetDistance = Vector3d.distance(target.getX(), 0, target.getZ(), this.getBlockPos().getX(), 0, this.getBlockPos().getZ());
 
-        TrajectoryHelper.LaunchSolution minSolution = findMinLaunchSolution(targetDistance, thrusterType.getThrust(), 50, 30, 90, mass);
+        TrajectoryHelper.LaunchSolution minSolution = findMinLaunchSolution(targetDistance, thrusterType.getThrust(), 50, 30, 90, mass, target.getY(), worldPosition.getY());
         if(minSolution != null)
         {
             maxThrustDuration = chassisType.getFuelCapacity() / thrusterType.getBurnRate();

@@ -297,9 +297,9 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         double targetDistance = Vector3d.distance(target.getX(), 0, target.getZ(), source.getX(), 0, source.getZ());
         double maxThrustDuration = chassisType.getFuelCapacity() / thrusterType.getBurnRate();
 
-        double angle = findLaunchAngle(targetDistance, thrusterType.getThrust(), maxThrustDuration * menu.getFuelPercent(), 50, 30, 90, mass);
-        missilePositions = TrajectoryHelper.simulate(angle, thrusterType.getThrust(), maxThrustDuration * menu.getFuelPercent(), mass);
-        List<Vector2d> maxData = TrajectoryHelper.simulate(angle, thrusterType.getThrust(), maxThrustDuration, mass);
+        double angle = findLaunchAngle(targetDistance, thrusterType.getThrust(), maxThrustDuration * menu.getFuelPercent(), 50, 30, 90, mass, target.getY(), source.getY());
+        missilePositions = TrajectoryHelper.simulate(angle, thrusterType.getThrust(), maxThrustDuration * menu.getFuelPercent(), mass, target.getY(), source.getY());
+        List<Vector2d> maxData = TrajectoryHelper.simulate(angle, thrusterType.getThrust(), maxThrustDuration, mass, target.getY(), source.getY());
 
         for (int g = 0; g < maxData.size(); g++) {
             maxHeight = Math.max(maxHeight, maxData.get(g).y);
