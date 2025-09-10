@@ -39,7 +39,7 @@ public class TrajectoryHelper {
             maxHeight = Math.max(maxHeight, simulation.get(i).y);
         }
 
-        return (maxHeight < minHeight) ? 0 : simulation.getLast().x;
+        return (maxHeight < minHeight) ? 0 : simulation.get(simulation.size() - 1).x;
     }
 
     public static List<Vector2d> simulate(double angle, double thrust, double thrustDuration, double mass){
