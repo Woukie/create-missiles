@@ -31,7 +31,6 @@ public class BallisticTrajectory extends Trajectory {
     private double mass;
     private Vector3d launchDirection;
 
-
     @Override
     public void tick(MinecraftServer server) {
         super.tick(server);
@@ -39,19 +38,28 @@ public class BallisticTrajectory extends Trajectory {
         double tickLength = 1 / tickSpeed;
         double elapsedTime = this.tick * tickLength;
 
-        double forceHorizontal = thrust * Math.cos(Math.toRadians(launchAngle)) / mass;
 
         if(launchDirection == null)
         {
             launchDirection = new Vector3d(0, 0, 0);
         }
 
+        double currentFlightAngle = Math.atan2(velocity.y, Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z));
+        double approximateForceDueToAirResistance = 0.03d * (velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z); //0.031
+        double horizontalForceDueToAirResistance = Math.cos(currentFlightAngle) * approximateForceDueToAirResistance;
+        double verticalForceDueToAirResistance = -getSign(velocity.y) * Math.sin(currentFlightAngle) * approximateForceDueToAirResistance;
+        double forceHorizontal = thrust * Math.cos(Math.toRadians(launchAngle)) / mass;
+
         acceleration = elapsedTime >= thrustDuration ?
-                new Vector3d(0, gravity.y, 0) :
                 new Vector3d(
-                        launchDirection.x * forceHorizontal,
-                        thrust * Math.sin(Math.toRadians(launchAngle)) / mass + gravity.y,
-                        launchDirection.z * forceHorizontal
+                        -getSign(velocity.x) * horizontalForceDueToAirResistance * launchDirection.x / mass,
+                        verticalForceDueToAirResistance / mass + gravity.y,
+                        -getSign(velocity.z) * horizontalForceDueToAirResistance * launchDirection.z / mass
+                ) :
+                new Vector3d(
+                        (-getSign(velocity.x) * horizontalForceDueToAirResistance * launchDirection.x / mass) + (launchDirection.x * forceHorizontal),
+                        (verticalForceDueToAirResistance / mass) + (thrust * Math.sin(Math.toRadians(launchAngle)) / mass) + gravity.y,
+                        (-getSign(velocity.z) * horizontalForceDueToAirResistance * launchDirection.z / mass) + (launchDirection.z * forceHorizontal)
                 );
 
         velocity.add(acceleration.mul(tickLength));
@@ -81,9 +89,6 @@ public class BallisticTrajectory extends Trajectory {
         mass = warheadType.getMass() + chassisType.getMass() + thrusterType.getMass();
         thrustDuration = (chassisType.getFuelCapacity() / thrusterType.getBurnRate()) * navPanel.getThrustDurationPercent();
         launchAngle = findLaunchAngle(targetDistance, thrust, thrustDuration, minHeight, 45, 90, mass);
-
-        System.out.println(thrustDuration);
-        System.out.println(launchAngle);
     }
 
     //    Called when deserialising trajectories
@@ -111,5 +116,9 @@ public class BallisticTrajectory extends Trajectory {
         super.updateEntityModel(entity);
         if (entity == null) return;
         entity.setRotation(new Rotations((float) rotation.x, (float) rotation.y, (float) rotation.z));
+    }
+
+    private int getSign(double val){
+        return val >= 0 ? 1 : -1;
     }
 }
