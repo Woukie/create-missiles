@@ -227,7 +227,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         gui.pose().pushPose();
         gui.pose().translate(trajectoryLeft, trajectoryTop, 0);
         double targetDistance = Vector3d.distance(target.getX(), 0, target.getZ(), source.getX(), 0, source.getZ());
-        double xScale = trajectoryWidth / Math.max(targetDistance, missilePositions.getLast().x);
+        double xScale = trajectoryWidth / Math.max(targetDistance, missilePositions.get(missilePositions.size() - 1).x);
         double yScale = trajectoryHeight / maxHeight;
 
         Vector2d prevPixel = new Vector2d(0, 0);
