@@ -1,0 +1,10 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "items": ["minecraft:wither_rose"],
+      "count": 6
+    }
+  ],
+  "assembly": "createmissiles:withered_chassis"
+}

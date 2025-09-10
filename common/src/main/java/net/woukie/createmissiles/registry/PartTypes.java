@@ -55,11 +55,13 @@ public class PartTypes {
         PartTypes.register(new ShulkerBoxWarhead());
         PartTypes.register(new TeleportationWarhead());
         PartTypes.register(new ExcavatorWarhead());
+        PartTypes.register(new WitheredChassis());
         PartTypes.register(new AncientChassis());
         PartTypes.register(new DragonChassis());
         PartTypes.register(new FireworkChassis());
         PartTypes.register(new FlamingChassis());
         PartTypes.register(new ExcavatorChassis());
+        PartTypes.register(new WitheredThruster());
         PartTypes.register(new AncientThruster());
         PartTypes.register(new DragonThruster());
         PartTypes.register(new FireworkThruster());
