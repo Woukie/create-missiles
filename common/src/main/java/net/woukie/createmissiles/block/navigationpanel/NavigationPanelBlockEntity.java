@@ -32,7 +32,11 @@ import net.woukie.createmissiles.registry.BlockEntities;
 import net.woukie.createmissiles.registry.Packets;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector2d;
 import org.joml.Vector3d;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static net.woukie.createmissiles.missilemanager.trajectories.TrajectoryHelper.findMinLaunchSolution;
 
@@ -45,6 +49,7 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
     private final ContainerData dataAccess;
     private AssemblyPanelBlockEntity assemblyPanel;
     private int relativeMinThrustDuration = 0;
+    private double maxThrustDuration = 0;
 
     public NavigationPanelBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -77,6 +82,7 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
                             BlockEntities.ASSEMBLY_PANEL.get()
                     ) == null ? 0 : 1;
                     case 12 -> relativeMinThrustDuration;
+                    case 13 -> (int)maxThrustDuration;
                     default -> 0;
                 };
             }
@@ -84,7 +90,7 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
             public void set(int i, int j) {}
 
             public int getCount() {
-                return 13;
+                return 14;
             }
         };
     }
@@ -120,18 +126,21 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
         ItemStack chassisItem = assemblyPanel.getItem(1);
         ItemStack thrusterItem = assemblyPanel.getItem(2);
 
+
         MissilePartType warheadType = PartTypes.get(warheadItem);
         ChassisType chassisType = (ChassisType) PartTypes.get(chassisItem);
         ThrusterType thrusterType = (ThrusterType) PartTypes.get(thrusterItem);
 
+        if(warheadType == null || chassisType == null || thrusterType == null) return;
+
         double mass = warheadType.getMass() + chassisType.getMass() + thrusterType.getMass();
         double targetDistance = Vector3d.distance(target.getX(), 0, target.getZ(), this.getBlockPos().getX(), 0, this.getBlockPos().getZ());
 
-        TrajectoryHelper.LaunchSolution solution = findMinLaunchSolution(targetDistance, thrusterType.getThrust(), 50, 30, 90, mass);
-        if(solution != null)
+        TrajectoryHelper.LaunchSolution minSolution = findMinLaunchSolution(targetDistance, thrusterType.getThrust(), 50, 30, 90, mass);
+        if(minSolution != null)
         {
-            System.out.println(solution.thrustDuration);
-            relativeMinThrustDuration = (int)(solution.thrustDuration / (chassisType.getFuelCapacity() / thrusterType.getBurnRate()) * 100);
+            maxThrustDuration = chassisType.getFuelCapacity() / thrusterType.getBurnRate();
+            relativeMinThrustDuration = (int)(minSolution.thrustDuration / maxThrustDuration * 100);
         }else
         {
             System.out.println("No Solution");

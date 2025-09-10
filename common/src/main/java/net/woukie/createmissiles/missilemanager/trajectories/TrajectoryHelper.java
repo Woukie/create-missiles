@@ -1,8 +1,12 @@
 package net.woukie.createmissiles.missilemanager.trajectories;
 import org.joml.Vector2d;
+import org.joml.Vector3d;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TrajectoryHelper {
-    private static final double gravity = 9.81;
+    private static final Vector2d gravity = new Vector2d(0, -9.81);
     private static final double deltaTime = 0.05;
 
     public static class LaunchSolution {
@@ -28,30 +32,46 @@ public class TrajectoryHelper {
 
     private static double getDistance(double angle, double thrust, double thrustDuration, double minHeight, double mass)
     {
-        double angleRad = Math.toRadians(angle);
+        List<Vector2d> simulation = simulate(angle, thrust, thrustDuration, mass);
+
+        double maxHeight = 0;
+        for (int i = 0; i < simulation.size(); i++) {
+            maxHeight = Math.max(maxHeight, simulation.get(i).y);
+        }
+
+        return (maxHeight < minHeight) ? 0 : simulation.getLast().x;
+    }
+
+    public static List<Vector2d> simulate(double angle, double thrust, double thrustDuration, double mass){
         Vector2d velocity = new Vector2d();
         Vector2d position = new Vector2d();
-
+        List<Vector2d> missilePositions = new ArrayList<>();
         double time = 0;
-        double maxHeight = position.y;
 
         while (position.y >= 0) {
-            Vector2d acceleration = new Vector2d(
-                    (time >= thrustDuration) ? 0 : thrust * Math.cos(angleRad) / mass,
-                    (time >= thrustDuration) ? -gravity : thrust * Math.sin(angleRad) / mass - gravity
-            );
+
+            double currentFlightAngle = Math.atan2(velocity.y, Math.sqrt(velocity.x * velocity.x));
+            double approximateForceDueToAirResistance = 0.03d * (velocity.x * velocity.x + velocity.y * velocity.y); //0.031
+            double horizontalForceDueToAirResistance = Math.cos(currentFlightAngle) * approximateForceDueToAirResistance;
+            double verticalForceDueToAirResistance = -getSign(velocity.y) * Math.sin(currentFlightAngle) * approximateForceDueToAirResistance;
+            double forceHorizontal = thrust * Math.cos(Math.toRadians(angle)) / mass;
+
+            Vector2d acceleration = time >= thrustDuration ?
+                    new Vector2d(
+                            -getSign(velocity.x) * horizontalForceDueToAirResistance / mass,
+                            verticalForceDueToAirResistance / mass + gravity.y
+                    ) :
+                    new Vector2d(
+                            (-getSign(velocity.x) * horizontalForceDueToAirResistance / mass) + forceHorizontal,
+                            (verticalForceDueToAirResistance / mass) + (thrust * Math.sin(Math.toRadians(angle)) / mass) + gravity.y
+                    );
 
             velocity.add(acceleration.mul(deltaTime));
             position.add(velocity.x * deltaTime, velocity.y * deltaTime);
-            maxHeight = Math.max(maxHeight, position.y);
+            missilePositions.add(new Vector2d(position.x, position.y));
             time += deltaTime;
         }
-
-        if(maxHeight < minHeight)
-        {
-            return 0;
-        }
-        return position.x;
+        return missilePositions;
     }
 
     private static boolean isValidTrajectory(double thrust, double angleDeg, double thrustDuration, double targetX, double minHeight, double mass) {
@@ -106,5 +126,9 @@ public class TrajectoryHelper {
             }
         }
         return angleStart;
+    }
+
+    private static int getSign(double val){
+        return val >= 0 ? 1 : -1;
     }
 }

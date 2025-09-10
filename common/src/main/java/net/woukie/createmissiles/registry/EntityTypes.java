@@ -15,7 +15,7 @@ public class EntityTypes {
 
     public static final RegistrySupplier<EntityType<MissileEntity>> MISSILE = ENTITY_TYPES.register(
             "missile_entity",
-            () -> EntityType.Builder.of(MissileEntity::new, MobCategory.MISC).noSummon().fireImmune().sized(1.5F, 5F).clientTrackingRange(32).updateInterval(20).build(new ResourceLocation(CreateMissiles.MOD_ID, "missile_entity").toString())
+            () -> EntityType.Builder.of(MissileEntity::new, MobCategory.MISC).noSummon().fireImmune().sized(1.5F, 5F).clientTrackingRange(32).build(new ResourceLocation(CreateMissiles.MOD_ID, "missile_entity").toString())
     );
     public static final RegistrySupplier<EntityType<FlamingballEntity>> FLAMINGBALL = ENTITY_TYPES.register(
             "flamingball",
