@@ -14,12 +14,12 @@ public class FrostChassis extends ChassisType {
 
     @Override
     public float getFuelCapacity() {
-        return 40;
+        return 25;
     }
 
     @Override
     public float getMass() {
-        return 10;
+        return 35;
     }
 
     @Override

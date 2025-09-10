@@ -27,7 +27,7 @@ public class AncientWarhead extends WarheadType {
 
     @Override
     public float getMass() {
-        return 10;
+        return 5;
     }
 
     @Override

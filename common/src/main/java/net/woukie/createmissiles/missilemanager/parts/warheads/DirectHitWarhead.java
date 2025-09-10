@@ -25,7 +25,7 @@ public class DirectHitWarhead extends WarheadType {
 
     @Override
     public float getMass() {
-        return 100;
+        return 50;
     }
 
     @Override

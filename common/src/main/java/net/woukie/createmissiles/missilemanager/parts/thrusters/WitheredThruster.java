@@ -46,17 +46,17 @@ public class WitheredThruster extends ThrusterType {
 
     @Override
     public float getThrust() {
-        return 600;
+        return 12600;
     }
 
     @Override
     public float getBurnRate() {
-        return 1;
+        return 3.25f;
     }
 
     @Override
     public float getMass() {
-        return 10;
+        return 40;
     }
 
     @Override

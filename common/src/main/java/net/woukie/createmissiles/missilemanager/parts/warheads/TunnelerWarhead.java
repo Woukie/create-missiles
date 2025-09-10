@@ -12,7 +12,7 @@ public class TunnelerWarhead extends ExcavatorWarhead {
 
     @Override
     public float getMass() {
-        return 11;
+        return 28;
     }
 
     @Override

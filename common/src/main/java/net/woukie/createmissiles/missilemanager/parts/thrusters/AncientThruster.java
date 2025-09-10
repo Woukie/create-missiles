@@ -45,17 +45,17 @@ public class AncientThruster extends ThrusterType {
 
     @Override
     public float getThrust() {
-        return 600;
+        return 16000;
     }
 
     @Override
     public float getBurnRate() {
-        return 1;
+        return 3;
     }
 
     @Override
     public float getMass() {
-        return 10;
+        return 45;
     }
 
     @Override

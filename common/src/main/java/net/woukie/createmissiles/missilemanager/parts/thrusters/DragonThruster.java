@@ -46,17 +46,17 @@ public class DragonThruster extends ThrusterType {
 
     @Override
     public float getThrust() {
-        return 600;
+        return 22000;
     }
 
     @Override
     public float getBurnRate() {
-        return 1;
+        return 4;
     }
 
     @Override
     public float getMass() {
-        return 10;
+        return 50;
     }
 
     @Override

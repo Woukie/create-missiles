@@ -13,12 +13,12 @@ public class FireworkChassis extends ChassisType {
 
     @Override
     public float getFuelCapacity() {
-        return 10;
+        return 15;
     }
 
     @Override
     public float getMass() {
-        return 10;
+        return 30;
     }
 
     @Override

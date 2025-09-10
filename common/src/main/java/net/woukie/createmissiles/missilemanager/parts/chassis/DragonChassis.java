@@ -14,12 +14,12 @@ public class DragonChassis extends ChassisType {
 
     @Override
     public float getFuelCapacity() {
-        return 40;
+        return 120;
     }
 
     @Override
     public float getMass() {
-        return 10;
+        return 100;
     }
 
     @Override

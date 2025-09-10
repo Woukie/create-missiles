@@ -23,7 +23,7 @@ public class ExcavatorWarhead extends WarheadType {
 
     @Override
     public float getMass() {
-        return 9;
+        return 18;
     }
 
     @Override

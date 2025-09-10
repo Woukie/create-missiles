@@ -22,7 +22,7 @@ public class DragonWarhead extends WarheadType {
 
     @Override
     public float getMass() {
-        return 50;
+        return 40;
     }
 
     @Override

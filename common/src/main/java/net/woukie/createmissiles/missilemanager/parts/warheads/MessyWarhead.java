@@ -21,7 +21,7 @@ public class MessyWarhead extends WarheadType {
 
     @Override
     public float getMass() {
-        return 10;
+        return 50;
     }
 
     @Override

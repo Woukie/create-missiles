@@ -25,7 +25,7 @@ public class InfernalWarhead extends WarheadType {
 
     @Override
     public float getMass() {
-        return 20;
+        return 25;
     }
 
     @Override

@@ -38,7 +38,7 @@ public class BiomeBrushWarhead extends WarheadType {
 
     @Override
     public float getMass() {
-        return 20;
+        return 12;
     }
 
     @Override

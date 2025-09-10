@@ -14,12 +14,12 @@ public class FlamingChassis extends ChassisType {
 
     @Override
     public float getFuelCapacity() {
-        return 10;
+        return 30;
     }
 
     @Override
     public float getMass() {
-        return 10;
+        return 40;
     }
 
     @Override

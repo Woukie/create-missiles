@@ -14,12 +14,12 @@ public class WitheredChassis extends ChassisType {
 
     @Override
     public float getFuelCapacity() {
-        return 40;
+        return 65;
     }
 
     @Override
     public float getMass() {
-        return 10;
+        return 80;
     }
 
     @Override

@@ -13,12 +13,12 @@ public class AncientChassis extends ChassisType {
 
     @Override
     public float getFuelCapacity() {
-        return 40;
+        return 75;
     }
 
     @Override
     public float getMass() {
-        return 10;
+        return 90;
     }
 
     @Override

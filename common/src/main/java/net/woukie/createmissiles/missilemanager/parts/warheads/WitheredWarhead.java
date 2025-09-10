@@ -27,7 +27,7 @@ public class WitheredWarhead extends WarheadType {
 
     @Override
     public float getMass() {
-        return 10;
+        return 30;
     }
 
     @Override
