@@ -38,8 +38,7 @@ public class BallisticTrajectory extends Trajectory {
         double tickLength = 1 / tickSpeed;
         double elapsedTime = this.tick * tickLength;
 
-
-        if(launchDirection == null)
+        if (launchDirection == null)
         {
             launchDirection = new Vector3d(0, 0, 0);
         }

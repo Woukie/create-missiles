@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.entity.MissileEntity;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
 import net.woukie.createmissiles.registry.EntityTypes;
@@ -123,12 +124,14 @@ public class Trajectories extends SavedData {
         ListTag trajectories = nbt.getList("Trajectories", 10);
         trajectories.forEach(tag -> {
             CompoundTag savedData = (CompoundTag) tag;
+            System.out.println(savedData);
             ThrusterType thrusterType = (ThrusterType) PartTypes.get(new ResourceLocation(savedData.getString("ThrusterType")));
-            launch(thrusterType.serializeTrajectory(savedData, server));
+            launch(thrusterType.constructTrajectory(savedData, server));
         });
 
         ListTag hitList = nbt.getList("HitList", 10);
         killEntityWhenever.addAll(hitList.stream().map(tag -> UUID.fromString(tag.toString())).toList());
+        CreateMissiles.LOGGER.info("Trajectories loaded");
 
         return this;
     }
@@ -137,6 +140,7 @@ public class Trajectories extends SavedData {
     public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag) {
         ListTag trajectories = new ListTag();
         for (Trajectory trajectory : activeTrajectories) {
+            CreateMissiles.LOGGER.info("Saving trajectory at {}", trajectory.position);
             trajectories.add(trajectory.saveTo(new CompoundTag()));
         }
 

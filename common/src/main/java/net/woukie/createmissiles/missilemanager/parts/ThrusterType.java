@@ -21,7 +21,7 @@ public abstract class ThrusterType extends MissilePartType {
         return 96;
     }
 
-    public abstract Trajectory serializeTrajectory(CompoundTag data, MinecraftServer server);
+    public abstract Trajectory constructTrajectory(CompoundTag data, MinecraftServer server);
 
     public abstract Trajectory createTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container, NavigationPanelBlockEntity navPanel);
 

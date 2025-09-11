@@ -27,7 +27,7 @@ public class ExcavatorThruster extends ThrusterType {
     MissilePartModel model = new ExcavatorThrusterModel();
 
     @Override
-    public Trajectory serializeTrajectory(CompoundTag data, MinecraftServer server) {
+    public Trajectory constructTrajectory(CompoundTag data, MinecraftServer server) {
         return new BallisticTrajectory(data, server);
     }
 

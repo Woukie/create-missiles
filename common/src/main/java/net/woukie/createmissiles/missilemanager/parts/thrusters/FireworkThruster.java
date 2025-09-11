@@ -26,7 +26,7 @@ public class FireworkThruster extends ThrusterType {
     MissilePartModel model = new FireworkThrusterModel();
 
     @Override
-    public Trajectory serializeTrajectory(CompoundTag data, MinecraftServer server) {
+    public Trajectory constructTrajectory(CompoundTag data, MinecraftServer server) {
         return new BallisticTrajectory(data, server);
     }
 

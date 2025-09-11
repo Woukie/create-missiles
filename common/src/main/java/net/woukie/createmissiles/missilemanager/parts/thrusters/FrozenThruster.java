@@ -27,7 +27,7 @@ public class FrozenThruster extends ThrusterType {
     MissilePartModel model = new FrozenThrusterModel();
 
     @Override
-    public Trajectory serializeTrajectory(CompoundTag data, MinecraftServer server) {
+    public Trajectory constructTrajectory(CompoundTag data, MinecraftServer server) {
         return new BallisticTrajectory(data, server);
     }
 
