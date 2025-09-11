@@ -16,7 +16,6 @@ import org.joml.*;
 import java.lang.Math;
 
 import static net.woukie.createmissiles.missilemanager.trajectories.TrajectoryHelper.findLaunchAngle;
-import static net.woukie.createmissiles.missilemanager.trajectories.TrajectoryHelper.findMinLaunchSolution;
 
 public class BallisticTrajectory extends Trajectory {
     public final Vector3d gravity = new Vector3d(0, -9.81, 0);
@@ -69,6 +68,7 @@ public class BallisticTrajectory extends Trajectory {
         direction.normalize();
         Vector3d forward = new Vector3d(0, 1, 0);
         Quaterniond q = new Quaterniond().rotateTo(forward, direction);
+
         Vector3d euler = q.getEulerAnglesZYX(new Vector3d());
 
         rotation.set(euler.x, euler.y, euler.z);
@@ -81,13 +81,13 @@ public class BallisticTrajectory extends Trajectory {
         velocity = new Vector3d(0, 0, 0);
 
         double targetDistance = Vector3d.distance(target.x, 0, target.z, start.x, 0, start.z);
-        double minHeight = 50;
+        double minHeight = 0;
         launchDirection = new Vector3d(target.x - start.x, 0, target.z - start.z).normalize();
 
         thrust = thrusterType.getThrust();
         mass = warheadType.getMass() + chassisType.getMass() + thrusterType.getMass();
         thrustDuration = (chassisType.getFuelCapacity() / thrusterType.getBurnRate()) * navPanel.getThrustDurationPercent();
-        launchAngle = findLaunchAngle(targetDistance, thrust, thrustDuration, minHeight, 45, 90, mass, target.y, start.y());
+        launchAngle = findLaunchAngle(targetDistance, thrust, thrustDuration, minHeight, 0, 90, mass, target.y, start.y());
     }
 
     //    Called when deserialising trajectories

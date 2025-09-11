@@ -1,4 +1,5 @@
 package net.woukie.createmissiles.missilemanager.trajectories;
+import org.apache.commons.lang3.ArrayUtils;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
 
@@ -86,28 +87,35 @@ public class TrajectoryHelper {
     }
 
     public static LaunchSolution findMinLaunchSolution(double targetX, double thrust, double minHeight, int angleStart, int angleEnd, double mass, double targetY, double sourceY) {
-        double[] angleRange = generateRange(angleStart, angleEnd, 100);
-        for(double angle : angleRange) {
-            double low = 0;
-            double high = 30;
+        double[] angleRange = generateRange(angleEnd, angleStart, 100);
+        double[] thrustDurationRange = generateRange(0, 30, 100);
 
-            for (int i = 0; i < 20; i++) {
-                double mid = (low + high) / 2;
-                if (isValidTrajectory(thrust, angle, mid, targetX, minHeight, mass, targetY, sourceY)) {
-                    return new LaunchSolution(mid, angle);
-                }
+        for(int i = 1; i < thrustDurationRange.length - 1; i++){
+            for(double angle : angleRange) {
+                double low = thrustDurationRange[i-1];
+                double high = thrustDurationRange[i+1];
 
-                double x = getDistance(angle, thrust, mid, minHeight, mass, targetY, sourceY);
+                for (int j = 0; j < 5; j++) {
+                    double mid = (low + high) / 2;
+                    if (isValidTrajectory(thrust, angle, mid, targetX, minHeight, mass, targetY, sourceY)) {
+                        System.out.println(angle);
+                        System.out.println(mid);
+                        return new LaunchSolution(mid, angle);
+                    }
 
-                if (x < targetX) {
-                    low = mid;
-                } else {
-                    high = mid;
+                    double x = getDistance(angle, thrust, mid, minHeight, mass, targetY, sourceY);
+
+                    if (x < targetX) {
+                        low = mid;
+                    } else {
+                        high = mid;
+                    }
                 }
             }
         }
         return null;
     }
+
 
     public static double findLaunchAngle(double targetX, double thrust, double thrustDuration, double minHeight, int angleStart, int angleEnd, double mass, double targetY, double sourceY) {
         double low = angleStart;
@@ -125,6 +133,7 @@ public class TrajectoryHelper {
                 high = mid;
             }
         }
+        System.out.println(angleStart);
         return angleStart;
     }
 
