@@ -11,6 +11,7 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.entity.drone.SendDroneMessage;
 import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;
@@ -89,6 +90,9 @@ public class DroneMenu extends AbstractBasicMenu {
                 ((long) uuid5 << 32) |
                 ((long) uuid6 << 16) |
                 ((long) uuid7);
+        CreateMissiles.LOGGER.info("CLICK LAUNCH");
+        CreateMissiles.LOGGER.info(new UUID(mostSigBits, leastSigBits).toString());
+        CreateMissiles.LOGGER.info(desination.toString());
         Packets.SEND_DRONE.sendToServer(new SendDroneMessage(new UUID(mostSigBits, leastSigBits), desination));
     }
 }

@@ -1,11 +1,13 @@
 package net.woukie.createmissiles.entity.drone;
 
+import com.simibubi.create.Create;
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.registry.EntityTypes;
 
 import java.util.UUID;
@@ -30,6 +32,9 @@ public class SendDroneMessage {
     }
 
     public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {
+        CreateMissiles.LOGGER.info("SERVER GOT DRONE LAUNCH REQUEST");
+        CreateMissiles.LOGGER.info(entityUUID.toString());
+        CreateMissiles.LOGGER.info(desination.toString());
         Player player = contextSupplier.get().getPlayer();
         Entity entity = ((ServerLevel)player.level()).getEntity(entityUUID);
         if (entity != null && (entity.getType() == EntityTypes.BASIC_DRONE.get() || entity.getType() == EntityTypes.REINFORCED_DRONE.get())) {
