@@ -24,6 +24,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.inventory.DroneMenu;
@@ -217,8 +218,7 @@ public class Drone extends FlyingMob {
 
     public void popMap(ServerLevel level) {
         if (storedMapPos != null) {
-            ItemStack stack = MapUtils.createAndFillMap(level, storedMapPos.getX(), storedMapPos.getZ(), 1);
-            DefaultDispenseItemBehavior.spawnItem(level(), stack, 1, Direction.UP, position());
+            MapUtils.spawnMapAt(level, position(), storedMapPos);
             level.playSound(null, position().x, position().y, position().z, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, SoundSource.PLAYERS, 1, 1);
             storedMapPos = null;
         } else {

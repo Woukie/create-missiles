@@ -35,6 +35,7 @@ import net.woukie.createmissiles.client.screens.DroneScreen;
 import net.woukie.createmissiles.client.screens.NavigationPanelScreen;
 import net.woukie.createmissiles.entity.drone.Drone;
 import net.woukie.createmissiles.entity.drone.DroneHandler;
+import net.woukie.createmissiles.entity.drone.MapUtils;
 import net.woukie.createmissiles.item.BiomeVialItem;
 import net.woukie.createmissiles.item.assembly.AssemblyItem;
 import net.woukie.createmissiles.missilemanager.Trajectories;
@@ -68,6 +69,7 @@ public class CreateMissiles {
             Trajectories.get().serverTick(server);
             ExplosionHandler.get().serverTick(server);
             DroneHandler.get().serverTick(server);
+            MapUtils.serverTick();
         });
 
         TradeRegistry.registerTradeForWanderingTrader(true, (entity, randomSource) -> new MerchantOffer(
