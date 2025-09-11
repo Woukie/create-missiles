@@ -54,14 +54,18 @@ public class Drone extends FlyingMob {
                 long mostSigBits = getUUID().getMostSignificantBits();
                 long leastSigBits = getUUID().getLeastSignificantBits();
                 return switch (i) {
-                    case 0 -> (int) (mostSigBits >>> 32);
-                    case 1 -> (int) mostSigBits;
-                    case 2 -> (int) (leastSigBits >>> 32);
-                    case 3 -> (int) leastSigBits;
-                    case 4 -> blockPosition().getX();
-                    case 5 -> blockPosition().getZ();
-                    case 6 -> targetBlock != null || originBlock != null ? 1 : 0;
-                    case 7 -> getType().equals(EntityTypes.BASIC_DRONE.get()) ? 0 : 1; // TODO: Find a better way of passing what the entity is
+                    case 0 -> (int) ((mostSigBits >>> 48) & 0xFFFF);
+                    case 1 -> (int) ((mostSigBits >>> 32) & 0xFFFF);
+                    case 2 -> (int) ((mostSigBits >>> 16) & 0xFFFF);
+                    case 3 -> (int) (mostSigBits & 0xFFFF);
+                    case 4 -> (int) ((leastSigBits >>> 48) & 0xFFFF);
+                    case 5 -> (int) ((leastSigBits >>> 32) & 0xFFFF);
+                    case 6 -> (int) ((leastSigBits >>> 16) & 0xFFFF);
+                    case 7 -> (int) (leastSigBits & 0xFFFF);
+                    case 8 -> blockPosition().getX();
+                    case 9 -> blockPosition().getZ();
+                    case 10 -> targetBlock != null || originBlock != null ? 1 : 0;
+                    case 11 -> getType().equals(EntityTypes.BASIC_DRONE.get()) ? 0 : 1; // TODO: Find a better way of passing what the entity is
                     default -> 0;
                 };
             }
@@ -73,7 +77,7 @@ public class Drone extends FlyingMob {
 
             @Override
             public int getCount() {
-                return 8;
+                return 12;
             }
         };
     }
