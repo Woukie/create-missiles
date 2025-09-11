@@ -1,0 +1,22 @@
+{
+  "type": "createmissiles:nbt_crafting_shaped",
+  "category": "misc",
+  "key": {
+    "@": {
+      "item": "createmissiles:warhead_assembly",
+      "nbt": "{PartType:\"createmissiles:frozen_warhead\"}"
+    },
+    "S": {
+      "item": "minecraft:blue_ice"
+    }
+  },
+  "pattern": [
+    "S S",
+    "S@S",
+    " S "
+  ],
+  "result": {
+    "item": "createmissiles:thruster_assembly",
+    "nbt": "{PartType:\"createmissiles:frozen_thruster\"}"
+  }
+}

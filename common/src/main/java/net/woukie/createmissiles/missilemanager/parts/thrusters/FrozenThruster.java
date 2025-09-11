@@ -13,8 +13,8 @@ import net.minecraft.world.level.Level;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.navigationpanel.NavigationPanelBlockEntity;
 import net.woukie.createmissiles.client.MissilePartModel;
-import net.woukie.createmissiles.client.models.thrusters.AncientThrusterModel;
 import net.woukie.createmissiles.client.models.thrusters.FrostThrusterModel;
+import net.woukie.createmissiles.client.models.thrusters.FrozenThrusterModel;
 import net.woukie.createmissiles.missilemanager.Trajectory;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
@@ -23,8 +23,8 @@ import net.woukie.createmissiles.missilemanager.trajectories.BallisticTrajectory
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
 
-public class FrostThruster extends ThrusterType {
-    MissilePartModel model = new FrostThrusterModel();
+public class FrozenThruster extends ThrusterType {
+    MissilePartModel model = new FrozenThrusterModel();
 
     @Override
     public Trajectory serializeTrajectory(CompoundTag data, MinecraftServer server) {
@@ -36,6 +36,7 @@ public class FrostThruster extends ThrusterType {
         super.onTick(trajectory, server);
         var p = trajectory.getPosition();
         ServerLevel level = server.getLevel(trajectory.getLevelKey());
+        if (level != null) level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, p.x, p.y, p.z, 5, 0.1, 0, 0, 0);
         if (level != null) level.sendParticles(ParticleTypes.SNOWFLAKE, p.x, p.y, p.z, 5, 0.1, 0, 0, 0);
     }
 
@@ -73,11 +74,11 @@ public class FrostThruster extends ThrusterType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "frost_thruster");
+        return new ResourceLocation(CreateMissiles.MOD_ID, "frozen_thruster");
     }
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("thrusters.createmissiles.frost_thruster");
+        return Component.translatable("thrusters.createmissiles.frozen_thruster");
     }
 }

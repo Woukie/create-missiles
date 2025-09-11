@@ -1,0 +1,10 @@
+{
+  "type": "createmissiles:missile_part",
+  "ingredients": [
+    {
+      "items": ["minecraft:blue_ice"],
+      "count": 10
+    }
+  ],
+  "assembly": "createmissiles:frozen_chassis"
+}
