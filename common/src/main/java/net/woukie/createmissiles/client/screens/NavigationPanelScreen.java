@@ -25,8 +25,6 @@ import org.joml.Vector3d;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.woukie.createmissiles.missiles.trajectories.TrajectoryHelper.findLaunchAngle;
-
 public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPanelMenu> {
     private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/navigation_panel.png");
     private static final ResourceLocation MAP_ERROR = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/map_error.png");
@@ -296,7 +294,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         double[] launchAngleRange = {0, 90};
         TrajectoryHelper.LaunchConfig launchConfig = new TrajectoryHelper.LaunchConfig(source, target, launchAngleRange, missileConfig.maxThrustDuration * menu.getFuelPercent(), missileConfig);
 
-        double angle = findLaunchAngle(launchConfig, launchConfig.selectedThrustDuration);
+        double angle = TrajectoryHelper.findLaunchAngle(launchConfig, launchConfig.selectedThrustDuration);
         missilePositions = TrajectoryHelper.simulate(launchConfig, angle, launchConfig.selectedThrustDuration);
         List<Vector2d> maxData = TrajectoryHelper.simulate(launchConfig, angle, launchConfig.selectedThrustDuration);
 

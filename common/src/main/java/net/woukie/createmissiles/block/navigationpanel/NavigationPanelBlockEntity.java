@@ -33,6 +33,8 @@ import net.woukie.createmissiles.registry.Packets;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
 
+import static net.woukie.createmissiles.missiles.trajectories.TrajectoryHelper.findMinLaunchSolution;
+
 public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
     public static final int SLOT_MAP = 0;
 
@@ -129,7 +131,8 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
         TrajectoryHelper.MissileConfig missileConfig = new TrajectoryHelper.MissileConfig(thrusterType, chassisType, warheadType);
         double[] launchAngleRange = {0, 90};
         TrajectoryHelper.LaunchConfig launchConfig = new TrajectoryHelper.LaunchConfig(worldPosition, target, launchAngleRange, 0, missileConfig);
-        TrajectoryHelper.LaunchSolution minSolution = TrajectoryHelper.findMinLaunchSolution(launchConfig);
+        TrajectoryHelper.LaunchSolution minSolution = findMinLaunchSolution(launchConfig);
+
         if(minSolution != null)
         {
             maxThrustDuration = launchConfig.missileConfig.maxThrustDuration;
