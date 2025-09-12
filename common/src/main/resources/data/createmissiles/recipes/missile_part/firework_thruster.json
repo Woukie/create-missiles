@@ -2,12 +2,12 @@
   "type": "createmissiles:missile_part",
   "ingredients": [
     {
-      "items": ["minecraft:gunpowder"],
-      "count": 4
+      "tag": ["minecraft:planks"],
+      "count": 1
     },
     {
-      "items": ["minecraft:stick"],
-      "count": 1
+      "items": ["minecraft:paper"],
+      "count": 2
     }
   ],
   "assembly": "createmissiles:firework_thruster"
