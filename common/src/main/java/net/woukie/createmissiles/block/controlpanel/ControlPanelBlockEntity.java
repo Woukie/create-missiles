@@ -14,18 +14,20 @@ import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.woukie.createmissiles.MultiblockHelper;
+import net.woukie.createmissiles.block.controlpanel.messages.TriggerBuildParticles;
 import net.woukie.createmissiles.block.entity.AbstractBasicBlockEntity;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
@@ -49,6 +51,8 @@ import org.joml.Vector3f;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static net.woukie.createmissiles.registry.Packets.TRIGGER_BUILD_PARTICLES;
 
 // Inventory divided up into 32-slot areas representing thruster, chassis and warhead
 public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
@@ -203,7 +207,7 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
             if (oldBuildTotal < newBuildTotal) {
                 var p = soundOrigin.getCenter();
                 if (!level.isClientSide) {
-                    ((ServerLevel)level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.IRON_BLOCK.defaultBlockState()), p.x, p.y + 0.5, p.z, 10, 0.5, 0, 0.5, 45);
+                    ((ServerLevel)level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.LAUNCH_PAD.get().defaultBlockState()), p.x, p.y + 0.5, p.z, 10, 0.5, 0, 0.5, 45);
                     ((ServerLevel)level).sendParticles(ParticleTypes.LARGE_SMOKE, p.x, p.y + 0.5, p.z, 1, 0, 0, 0, 0);
 
                     boolean partComplete = (oldWarheadBuildPercent != 100 && warheadBuildPercent == 100) ||
@@ -219,44 +223,19 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
                     } else {
                         level.playSound(null, soundOrigin, SoundEvents.BUILD.get(), SoundSource.BLOCKS, 1f, pitch);
                     }
-                } else {
-                    Map<String, Vector3f> thrusterAttachments = new HashMap<>();
-                    Map<String, Vector3f> chassisAttachments = new HashMap<>();
-                    Map<String, Vector3f> warheadAttachments = new HashMap<>();
 
-                    if (thrusterType != null) {
-                        var model = PartModels.getModel(thrusterType.getResourceLocation());
-                        thrusterAttachments = model.getAttachements(model.getStage(thrusterBuildPercent));
-                    }
-
-                    if (chassisType != null) {
-                        var model = PartModels.getModel(chassisType.getResourceLocation());
-                        chassisAttachments = model.getAttachements(model.getStage(thrusterBuildPercent));
-                    }
-
-                    if (warheadType != null) {
-                        var model = PartModels.getModel(warheadType.getResourceLocation());
-                        warheadAttachments = model.getAttachements(model.getStage(thrusterBuildPercent));
-                    }
-
-                    Vector3f rocketTip = new Vector3f()
-                            .add(thrusterAttachments.getOrDefault("bottom", new Vector3f()))
-                            .add(thrusterAttachments.getOrDefault("top", new Vector3f()))
-                            .add(chassisAttachments.getOrDefault("bottom", new Vector3f()))
-                            .add(chassisAttachments.getOrDefault("top", new Vector3f()))
-                            .add(warheadAttachments.getOrDefault("bottom", new Vector3f()))
-                            .add(warheadAttachments.getOrDefault("top", new Vector3f()))
-                            .div(16);
-
-                    var r = Math.random();
-                    for (int i = 0; i < r * 2 + 1; i++) {
-                        var x = p.x + rocketTip.x * Math.random();
-                        var y = p.y + 0.5 + rocketTip.y * Math.random();
-                        var z = p.z + rocketTip.z * Math.random();
-                        for (int j = 0; j < 10; j++) {
-                            level.addParticle(net.woukie.createmissiles.registry.ParticleTypes.BUILD_SHRAPNEL.get(), x, y, z, 0, 0, 0);
-                        }
-                    }
+                    TRIGGER_BUILD_PARTICLES.sendToPlayers(
+                            ((ServerLevel) level).getPlayers(serverPlayer -> serverPlayer.position().distanceTo(p) < 128),
+                            new TriggerBuildParticles(
+                                    p.toVector3f(),
+                                    warheadType.getResourceLocation(),
+                                    chassisType.getResourceLocation(),
+                                    thrusterType.getResourceLocation(),
+                                    warheadBuildPercent,
+                                    chassisBuildPercent,
+                                    thrusterBuildPercent
+                            )
+                    );
                 }
             }
         }
