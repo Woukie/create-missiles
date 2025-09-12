@@ -92,7 +92,7 @@ public class BallisticTrajectory extends Trajectory {
         thrustDuration = (chassisType.getFuelCapacity() / thrusterType.getBurnRate()) * navPanel.getThrustDurationPercent();
         launchAngle = findLaunchAngle(launchConfig, thrustDuration);
         thrust = launchConfig.missileConfig.thrust;
-
+        mass = launchConfig.missileConfig.mass;
     }
 
     //    Called when deserialising trajectories

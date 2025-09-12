@@ -97,19 +97,13 @@ public class TrajectoryHelper {
     }
 
     private static boolean isValidTrajectory(LaunchConfig launchConfig, double newAngle, double newThrustDuration) {
-
-        double x = simulate(launchConfig, newAngle, newThrustDuration).getLast().x;
-
-        if(x != 0)
-        {
-            return (Math.abs(x - launchConfig.targetX) <= 1.0);
-        }
-        return false;
+        Vector2d finalPos = simulate(launchConfig, newAngle, newThrustDuration).getLast();
+        return finalPos.distance(new Vector2d(launchConfig.targetX, launchConfig.target.getY() - launchConfig.source.getY())) <= 1f;
     }
 
     public static LaunchSolution findMinLaunchSolution(LaunchConfig launchConfig) {
-        double[] angleRange = generateRange(launchConfig.angleRange[1], launchConfig.angleRange[0], 100);
-        double[] thrustDurationRange = generateRange(0, launchConfig.missileConfig.maxThrustDuration, 100);
+        double[] angleRange = generateRange(launchConfig.angleRange[1], launchConfig.angleRange[0], 90);
+        double[] thrustDurationRange = generateRange(0, launchConfig.missileConfig.maxThrustDuration, (int)(5 * launchConfig.missileConfig.maxThrustDuration));
 
         for(int i = 1; i < thrustDurationRange.length - 1; i++){
             for(double angle : angleRange) {
