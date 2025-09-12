@@ -38,7 +38,7 @@ public class FlamingWarhead extends WarheadType {
         for (int i = 0; i < 20; i++) {
             FlamingballEntity fireball = new FlamingballEntity(EntityTypes.FLAMINGBALL.get(), level);
             fireball.setNoGravity(false);
-            fireball.setPos(hitPosition.add(0, 0.6, 0));
+            fireball.setPos(hitPosition.add(0, 1.5, 0));
             var velocity = fireballVelocity;
             if (i >= 15) velocity = fireballSlowVelocity;
             fireball.setDeltaMovement(

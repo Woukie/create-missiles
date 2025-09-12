@@ -39,7 +39,7 @@ public class BlazingWarhead extends WarheadType {
         for (int i = 0; i < 30; i++) {
             Entity entity = new BlazingballEntity(EntityTypes.BLAZINGBALL.get(), level);
             entity.setNoGravity(false);
-            entity.setPos(hitPosition.add(0, 0.6, 0));
+            entity.setPos(hitPosition.add(0, 1.5, 0));
             var velocity = fireballVelocity;
             if (i >= 20) velocity = fireballSlowVelocity;
             entity.setDeltaMovement(

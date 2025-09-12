@@ -38,7 +38,7 @@ public class InfernalWarhead extends WarheadType {
         for (int i = 0; i < 30; i++) {
             InfernalballEntity fireball = new InfernalballEntity(EntityTypes.INFERNALBALL.get(), level);
             fireball.setNoGravity(false);
-            fireball.setPos(hitPosition.add(0, 0.6, 0));
+            fireball.setPos(hitPosition.add(0, 1.5, 0));
             var velocity = fireballVelocity;
             if (i >= 20) velocity = fireballSlowVelocity;
             fireball.setDeltaMovement(

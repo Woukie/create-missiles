@@ -43,7 +43,7 @@ public class GuardianWarhead extends WarheadType {
         for (int i = 0; i < 30; i++) {
             GuardianballEntity ball = new GuardianballEntity(EntityTypes.FROSTBALL.get(), level);
             ball.setNoGravity(false);
-            ball.setPos(hitPosition.add(0, 1, 0));
+            ball.setPos(hitPosition.add(0, 1.5, 0));
             var velocity = ballVelocity;
             if (i >= 20) velocity = slowBallVelocity;
             ball.setDeltaMovement(

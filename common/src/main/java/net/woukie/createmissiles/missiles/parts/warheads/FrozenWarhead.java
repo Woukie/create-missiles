@@ -37,7 +37,7 @@ public class FrozenWarhead extends WarheadType {
         for (int i = 0; i < 30; i++) {
             FrozenballEntity ball = new FrozenballEntity(EntityTypes.FROZENBALL.get(), level);
             ball.setNoGravity(false);
-            ball.setPos(hitPosition.add(0, 1, 0));
+            ball.setPos(hitPosition.add(0, 1.5, 0));
             var velocity = snowballVelocity;
             if (i >= 20) velocity = snowballSlowVelocity;
             ball.setDeltaMovement(
