@@ -32,6 +32,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 
+import java.util.Arrays;
+import java.util.UUID;
+
 public class Drone extends FlyingMob {
     private final ContainerData dataAccess;
 
@@ -49,12 +52,16 @@ public class Drone extends FlyingMob {
         this.dataAccess = new ContainerData() {
             @Override
             public int get(int i) {
-                var nbtInts = NbtUtils.createUUID(getUUID());
+                var uuidArray = uuidToShortArray(getUUID());
                 return switch (i) {
-                    case 0 -> nbtInts.get(0).getAsInt();
-                    case 1 -> nbtInts.get(1).getAsInt();
-                    case 2 -> nbtInts.get(2).getAsInt();
-                    case 3 -> nbtInts.get(3).getAsInt();
+                    case 0 -> uuidArray[0];
+                    case 1 -> uuidArray[1];
+                    case 2 -> uuidArray[2];
+                    case 3 -> uuidArray[3];
+                    case 4 -> uuidArray[4];
+                    case 5 -> uuidArray[5];
+                    case 6 -> uuidArray[6];
+                    case 7 -> uuidArray[7];
                     case 8 -> blockPosition().getX();
                     case 9 -> blockPosition().getZ();
                     case 10 -> targetBlock != null || originBlock != null ? 1 : 0;
@@ -70,7 +77,22 @@ public class Drone extends FlyingMob {
 
             @Override
             public int getCount() {
-                return 8;
+                return 12;
+            }
+
+            private static int[] uuidToShortArray(UUID uUID) {
+                long mostSig = uUID.getMostSignificantBits();
+                long leastSig = uUID.getLeastSignificantBits();
+                return new int[]{
+                        (int)((mostSig >> 48) & 0xFFFF),  // bits 63-48
+                        (int)((mostSig >> 32) & 0xFFFF),  // bits 47-32
+                        (int)((mostSig >> 16) & 0xFFFF),  // bits 31-16
+                        (int)(mostSig & 0xFFFF),          // bits 15-0
+                        (int)((leastSig >> 48) & 0xFFFF), // bits 63-48
+                        (int)((leastSig >> 32) & 0xFFFF), // bits 47-32
+                        (int)((leastSig >> 16) & 0xFFFF), // bits 31-16
+                        (int)(leastSig & 0xFFFF)          // bits 15-0
+                };
             }
         };
     }

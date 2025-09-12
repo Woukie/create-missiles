@@ -17,6 +17,9 @@ import net.woukie.createmissiles.entity.drone.SendDroneMessage;
 import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.UUID;
+
 import static net.woukie.createmissiles.registry.Menus.DRONE;
 
 public class DroneMenu extends AbstractBasicMenu {
@@ -25,7 +28,7 @@ public class DroneMenu extends AbstractBasicMenu {
     public DroneMenu(int id, Inventory inventory, ContainerData dataAccess, Container container) {
         super(DRONE.get(), id, container);
         checkContainerSize(container, 1);
-        checkContainerDataCount(dataAccess, 8);
+        checkContainerDataCount(dataAccess, 12);
         this.dataAccess = dataAccess;
 
         this.addSlot(new Slot(container, 0, 66, 54) {
@@ -47,35 +50,49 @@ public class DroneMenu extends AbstractBasicMenu {
     }
 
     public DroneMenu(int id, Inventory inventory) {
-        this(id, inventory, new SimpleContainerData(8), new SimpleContainer(1));
-    }
-
-    public boolean isBasic() {
-        return dataAccess.get(7) == 0;
+        this(id, inventory, new SimpleContainerData(12), new SimpleContainer(1));
     }
 
     public boolean hasEmptyMap() {
         return getSlot(0).getItem().is(Items.MAP);
     }
 
-    @Override
-    public boolean stillValid(@NotNull Player player) {
-        return dataAccess.get(6) == 0;
+    public void clickLaunch(BlockPos desination) {
+        var shorts = new int[]{
+                dataAccess.get(0),
+                dataAccess.get(1),
+                dataAccess.get(2),
+                dataAccess.get(3),
+                dataAccess.get(4),
+                dataAccess.get(5),
+                dataAccess.get(6),
+                dataAccess.get(7)
+        };
+        long mostSigBits = ((long)(shorts[0] & 0xFFFF) << 48) |
+                ((long)(shorts[1] & 0xFFFF) << 32) |
+                ((long)(shorts[2] & 0xFFFF) << 16) |
+                ((long)(shorts[3] & 0xFFFF));
+        long leastSigBits = ((long)(shorts[4] & 0xFFFF) << 48) |
+                ((long)(shorts[5] & 0xFFFF) << 32) |
+                ((long)(shorts[6] & 0xFFFF) << 16) |
+                ((long)(shorts[7] & 0xFFFF));
+        Packets.SEND_DRONE.sendToServer(new SendDroneMessage(new UUID(mostSigBits, leastSigBits), desination));
     }
 
     public int getInitialX() {
-        return dataAccess.get(4);
+        return dataAccess.get(8);
     }
 
     public int getInitialZ() {
-        return dataAccess.get(5);
+        return dataAccess.get(9);
     }
 
-    public void clickLaunch(BlockPos desination) {
-        var intArray = new IntArrayTag(new int[]{dataAccess.get(0), dataAccess.get(1), dataAccess.get(2), dataAccess.get(3)});
-        CreateMissiles.LOGGER.info("CLICK LAUNCH CLIENT");
-        CreateMissiles.LOGGER.info(NbtUtils.loadUUID(intArray).toString());
-        CreateMissiles.LOGGER.info(desination.toString());
-        Packets.SEND_DRONE.sendToServer(new SendDroneMessage(NbtUtils.loadUUID(intArray), desination));
+    public boolean isBasic() {
+        return dataAccess.get(11) == 0;
+    }
+
+    @Override
+    public boolean stillValid(@NotNull Player player) {
+        return dataAccess.get(10) == 0;
     }
 }
