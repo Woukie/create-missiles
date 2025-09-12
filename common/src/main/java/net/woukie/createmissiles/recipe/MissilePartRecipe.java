@@ -11,7 +11,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
+import net.woukie.createmissiles.missiles.parts.MissilePartType;
 import net.woukie.createmissiles.registry.PartTypes;
 import net.woukie.createmissiles.registry.RecipeSerializers;
 import net.woukie.createmissiles.registry.RecipeTypes;

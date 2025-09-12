@@ -12,9 +12,10 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.entity.MissileEntity;
-import net.woukie.createmissiles.missilemanager.parts.ChassisType;
-import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
-import net.woukie.createmissiles.missilemanager.parts.WarheadType;
+import net.woukie.createmissiles.missiles.parts.ChassisType;
+import net.woukie.createmissiles.missiles.parts.ThrusterType;
+import net.woukie.createmissiles.missiles.parts.WarheadType;
+import net.woukie.createmissiles.registry.PartModels;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
@@ -36,13 +37,13 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
         Vector3f offset = new Vector3f(0, 4, 0);
 
         if (thrusterType != null)
-            renderPart(entity, poseStack, multiBufferSource, i, thrusterType.getModel(), entity.getThrusterBuildPercent(), offset);
+            renderPart(entity, poseStack, multiBufferSource, i, PartModels.getModel(thrusterType.getResourceLocation()), entity.getThrusterBuildPercent(), offset);
 
         if (chassisType != null)
-            renderPart(entity, poseStack, multiBufferSource, i, chassisType.getModel(), entity.getChassisBuildPercent(), offset);
+            renderPart(entity, poseStack, multiBufferSource, i, PartModels.getModel(chassisType.getResourceLocation()), entity.getChassisBuildPercent(), offset);
 
         if (warheadType != null)
-            renderPart(entity, poseStack, multiBufferSource, i, warheadType.getModel(), entity.getWarheadBuildPercent(), offset);
+            renderPart(entity, poseStack, multiBufferSource, i, PartModels.getModel(warheadType.getResourceLocation()), entity.getWarheadBuildPercent(), offset);
 
 //        if (lastTick != entity.tickCount) {
 //            lastTick = entity.tickCount;

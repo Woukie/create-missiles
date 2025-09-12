@@ -8,7 +8,7 @@ import net.woukie.createmissiles.block.navigationpanel.messages.ClickFuelMessage
 import net.woukie.createmissiles.block.navigationpanel.messages.ClickMapMessage;
 import net.woukie.createmissiles.block.navigationpanel.messages.UpdateMapDataMessage;
 import net.woukie.createmissiles.entity.drone.SendDroneMessage;
-import net.woukie.createmissiles.missilemanager.parts.warheads.messages.ExplodeFireworkMessage;
+import net.woukie.createmissiles.missiles.parts.warheads.messages.ExplodeFireworkMessage;
 
 public class Packets {
     public static final NetworkChannel NAVIGATION_PANEL_CLICK_MAP = NetworkChannel.create(new ResourceLocation(CreateMissiles.MOD_ID, "navigation_panel_click_map"));

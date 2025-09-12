@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
-import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
+import net.woukie.createmissiles.missiles.parts.MissilePartType;
 
 public class MissileEntity extends Entity {
     private static final EntityDataAccessor<String> WARHEAD_TYPE =

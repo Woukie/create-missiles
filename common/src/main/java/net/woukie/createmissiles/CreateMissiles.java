@@ -5,8 +5,6 @@ import com.google.common.base.Suppliers;
 import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.render.CustomRenderedItems;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.event.events.common.LootEvent;
 import dev.architectury.event.events.common.TickEvent;
@@ -17,17 +15,10 @@ import dev.architectury.registry.menu.MenuRegistry;
 import dev.architectury.registry.registries.RegistrarManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.Direction;
-import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetNbtFunction;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.woukie.createmissiles.client.screens.AssemblyPanelScreen;
 import net.woukie.createmissiles.client.screens.ControlPanelScreen;
@@ -38,8 +29,8 @@ import net.woukie.createmissiles.entity.drone.DroneHandler;
 import net.woukie.createmissiles.entity.drone.MapUtils;
 import net.woukie.createmissiles.item.BiomeVialItem;
 import net.woukie.createmissiles.item.assembly.AssemblyItem;
-import net.woukie.createmissiles.missilemanager.Trajectories;
-import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplosionHandler;
+import net.woukie.createmissiles.missiles.Trajectories;
+import net.woukie.createmissiles.missiles.asyncexplosionhandler.ExplosionHandler;
 import net.woukie.createmissiles.registry.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,6 +174,7 @@ public class CreateMissiles {
             return 0.0F;
         });
 
+        PartModels.init();
         PonderIndex.register();
     }
 }
