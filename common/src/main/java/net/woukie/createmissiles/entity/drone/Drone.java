@@ -382,11 +382,11 @@ public class Drone extends FlyingMob {
 
                 float targetXRot = 0;
                 for (int i = 0; i < 50; i++) {
-                    if (!level().isEmptyBlock(blockPosition().above(i))) {
-                        targetXRot = 70;
-                        break;
-                    } else if (!level().isEmptyBlock(blockPosition().below(i))) {
+                    if (!level().isEmptyBlock(blockPosition().below(i))) {
                         targetXRot = -70;
+                        break;
+                    } else if (!level().isEmptyBlock(blockPosition().above(i))) {
+                        targetXRot = 70;
                         break;
                     }
                 }
