@@ -14,11 +14,11 @@ import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.inventory.NavigationPanelMenu;
-import net.woukie.createmissiles.missilemanager.parts.ChassisType;
-import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
-import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
-import net.woukie.createmissiles.missilemanager.parts.WarheadType;
-import net.woukie.createmissiles.missilemanager.trajectories.TrajectoryHelper;
+import net.woukie.createmissiles.missiles.parts.ChassisType;
+import net.woukie.createmissiles.missiles.parts.MissilePartType;
+import net.woukie.createmissiles.missiles.parts.ThrusterType;
+import net.woukie.createmissiles.missiles.parts.WarheadType;
+import net.woukie.createmissiles.missiles.trajectories.TrajectoryHelper;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2d;
@@ -27,7 +27,7 @@ import org.joml.Vector3d;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.woukie.createmissiles.missilemanager.trajectories.TrajectoryHelper.findLaunchAngle;
+import static net.woukie.createmissiles.missiles.trajectories.TrajectoryHelper.findLaunchAngle;
 
 public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPanelMenu> {
     private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/navigation_panel.png");

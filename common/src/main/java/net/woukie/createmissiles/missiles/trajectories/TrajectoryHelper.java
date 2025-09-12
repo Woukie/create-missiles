@@ -1,9 +1,8 @@
-package net.woukie.createmissiles.missilemanager.trajectories;
+package net.woukie.createmissiles.missiles.trajectories;
 import net.minecraft.core.BlockPos;
-import net.woukie.createmissiles.missilemanager.parts.ChassisType;
-import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
-import net.woukie.createmissiles.missilemanager.parts.WarheadType;
-import org.apache.commons.lang3.ArrayUtils;
+import net.woukie.createmissiles.missiles.parts.ChassisType;
+import net.woukie.createmissiles.missiles.parts.ThrusterType;
+import net.woukie.createmissiles.missiles.parts.WarheadType;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
 

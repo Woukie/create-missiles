@@ -24,11 +24,14 @@ import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
 import net.woukie.createmissiles.block.navigationpanel.messages.UpdateMapDataMessage;
 import net.woukie.createmissiles.inventory.NavigationPanelMenu;
-import net.woukie.createmissiles.missilemanager.parts.ChassisType;
-import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
-import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
-import net.woukie.createmissiles.missilemanager.parts.WarheadType;
-import net.woukie.createmissiles.missilemanager.trajectories.TrajectoryHelper;
+import net.woukie.createmissiles.missiles.parts.ChassisType;
+import net.woukie.createmissiles.missiles.parts.MissilePartType;
+import net.woukie.createmissiles.missiles.parts.ThrusterType;
+import net.woukie.createmissiles.missiles.parts.WarheadType;
+import net.woukie.createmissiles.missiles.trajectories.TrajectoryHelper;
+import net.woukie.createmissiles.missiles.parts.ChassisType;
+import net.woukie.createmissiles.missiles.parts.ThrusterType;
+import net.woukie.createmissiles.missiles.parts.WarheadType;
 import net.woukie.createmissiles.registry.BlockEntities;
 import net.woukie.createmissiles.registry.Packets;
 import net.woukie.createmissiles.registry.PartTypes;
@@ -39,7 +42,7 @@ import org.joml.Vector3d;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.woukie.createmissiles.missilemanager.trajectories.TrajectoryHelper.findMinLaunchSolution;
+import static net.woukie.createmissiles.missiles.trajectories.TrajectoryHelper.findMinLaunchSolution;
 
 public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
     public static final int SLOT_MAP = 0;
