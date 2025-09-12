@@ -54,6 +54,7 @@ public class Explosion {
         this.decay = decay;
         maxRadius = (int)((this.power - this.decay - HARDNESS_OFFSET) / HARDNESS_OFFSET);
         this.hardnessMap = new ConcurrentHashMap<>((int) (4.0/3.0 * Math.PI * maxRadius * maxRadius * maxRadius), 0.75f, EXPLOSION_CHUNKS * EXPLOSION_CHUNKS * EXPLOSION_CHUNKS);
+        this.hardnessMap.put(originBlockPosition, level.getBlockState(originBlockPosition).getBlock().getExplosionResistance());
     }
 
     public void damageEntities() {
