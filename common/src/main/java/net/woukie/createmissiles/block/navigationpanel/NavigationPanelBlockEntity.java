@@ -139,7 +139,7 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
             relativeMinThrustDuration = (int)(minSolution.thrustDuration / maxThrustDuration * 100);
         }else
         {
-            System.out.println("No Solution");
+            System.out.println("No Solution" + System.currentTimeMillis());
         }
     }
 
