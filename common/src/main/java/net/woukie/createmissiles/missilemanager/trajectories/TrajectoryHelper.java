@@ -1,4 +1,8 @@
 package net.woukie.createmissiles.missilemanager.trajectories;
+import net.minecraft.core.BlockPos;
+import net.woukie.createmissiles.missilemanager.parts.ChassisType;
+import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
+import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import org.apache.commons.lang3.ArrayUtils;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
@@ -20,6 +24,36 @@ public class TrajectoryHelper {
         }
     }
 
+    public static class MissileConfig{
+        public double thrust;
+        public double mass;
+        public double maxThrustDuration;
+
+        public MissileConfig(ThrusterType thruster, ChassisType chassis, WarheadType warhead){
+            this.thrust = thruster.getThrust();
+            this.mass = thruster.getMass() + chassis.getMass() + warhead.getMass();
+            this.maxThrustDuration = chassis.getFuelCapacity() / thruster.getBurnRate();
+        }
+    }
+
+    public static class LaunchConfig{
+        public BlockPos source;
+        public BlockPos target;
+        public double[] angleRange;
+        public MissileConfig missileConfig;
+        public double targetX;
+        public double selectedThrustDuration;
+
+        public LaunchConfig(BlockPos source, BlockPos target, double[] angleRange, double selectedThrustDuration, MissileConfig missileConfig){
+            this.source = source;
+            this.target = target;
+            this.angleRange = angleRange;
+            this.missileConfig = missileConfig;
+            this.targetX = Vector3d.distance(target.getX(), 0, target.getZ(), source.getX(), 0, source.getZ());
+            this.selectedThrustDuration = selectedThrustDuration;
+        }
+    }
+
     public static double[] generateRange(double start, double end, int size) {
         double[] result = new double[size];
         double step = (end - start) / (size - 1);
@@ -31,40 +65,28 @@ public class TrajectoryHelper {
         return result;
     }
 
-    private static double getDistance(double angle, double thrust, double thrustDuration, double minHeight, double mass, double targetY, double sourceY)
-    {
-        List<Vector2d> simulation = simulate(angle, thrust, thrustDuration, mass, targetY, sourceY);
-
-        double maxHeight = 0;
-        for (int i = 0; i < simulation.size(); i++) {
-            maxHeight = Math.max(maxHeight, simulation.get(i).y);
-        }
-
-        return (maxHeight < minHeight) ? 0 : simulation.get(simulation.size() - 1).x;
-    }
-
-    public static List<Vector2d> simulate(double angle, double thrust, double thrustDuration, double mass, double targetY, double sourceY){
+    public static List<Vector2d> simulate(LaunchConfig launchConfig, double newAngle, double newThrustDuration){
         Vector2d velocity = new Vector2d();
         Vector2d position = new Vector2d();
         List<Vector2d> missilePositions = new ArrayList<>();
         double time = 0;
 
-        while (position.y >= targetY - sourceY || velocity.y >= 0) {
+        while (position.y >= launchConfig.target.getY() - launchConfig.source.getY() || velocity.y >= 0) {
 
             double currentFlightAngle = Math.atan2(velocity.y, Math.sqrt(velocity.x * velocity.x));
             double approximateForceDueToAirResistance = 0.03d * (velocity.x * velocity.x + velocity.y * velocity.y); //0.031
             double horizontalForceDueToAirResistance = Math.cos(currentFlightAngle) * approximateForceDueToAirResistance;
             double verticalForceDueToAirResistance = -getSign(velocity.y) * Math.sin(currentFlightAngle) * approximateForceDueToAirResistance;
-            double forceHorizontal = thrust * Math.cos(Math.toRadians(angle)) / mass;
+            double forceHorizontal = launchConfig.missileConfig.thrust * Math.cos(Math.toRadians(newAngle)) / launchConfig.missileConfig.mass;
 
-            Vector2d acceleration = time >= thrustDuration ?
+            Vector2d acceleration = time >= newThrustDuration ?
                     new Vector2d(
-                            -getSign(velocity.x) * horizontalForceDueToAirResistance / mass,
-                            verticalForceDueToAirResistance / mass + gravity.y
+                            -getSign(velocity.x) * horizontalForceDueToAirResistance / launchConfig.missileConfig.mass,
+                            verticalForceDueToAirResistance / launchConfig.missileConfig.mass + gravity.y
                     ) :
                     new Vector2d(
-                            (-getSign(velocity.x) * horizontalForceDueToAirResistance / mass) + forceHorizontal,
-                            (verticalForceDueToAirResistance / mass) + (thrust * Math.sin(Math.toRadians(angle)) / mass) + gravity.y
+                            (-getSign(velocity.x) * horizontalForceDueToAirResistance / launchConfig.missileConfig.mass) + forceHorizontal,
+                            (verticalForceDueToAirResistance / launchConfig.missileConfig.mass) + (launchConfig.missileConfig.thrust * Math.sin(Math.toRadians(newAngle)) / launchConfig.missileConfig.mass) + gravity.y
                     );
 
             velocity.add(acceleration.mul(deltaTime));
@@ -75,20 +97,20 @@ public class TrajectoryHelper {
         return missilePositions;
     }
 
-    private static boolean isValidTrajectory(double thrust, double angleDeg, double thrustDuration, double targetX, double minHeight, double mass, double targetY, double sourceY) {
+    private static boolean isValidTrajectory(LaunchConfig launchConfig, double newAngle, double newThrustDuration) {
 
-        double x = getDistance(angleDeg, thrust, thrustDuration, minHeight, mass, targetY, sourceY);
+        double x = simulate(launchConfig, newAngle, newThrustDuration).getLast().x;
 
         if(x != 0)
         {
-            return (Math.abs(x - targetX) <= 1.0);
+            return (Math.abs(x - launchConfig.targetX) <= 1.0);
         }
         return false;
     }
 
-    public static LaunchSolution findMinLaunchSolution(double targetX, double thrust, double minHeight, int angleStart, int angleEnd, double mass, double targetY, double sourceY) {
-        double[] angleRange = generateRange(angleEnd, angleStart, 100);
-        double[] thrustDurationRange = generateRange(0, 30, 100);
+    public static LaunchSolution findMinLaunchSolution(LaunchConfig launchConfig) {
+        double[] angleRange = generateRange(launchConfig.angleRange[1], launchConfig.angleRange[0], 100);
+        double[] thrustDurationRange = generateRange(0, launchConfig.missileConfig.maxThrustDuration, 100);
 
         for(int i = 1; i < thrustDurationRange.length - 1; i++){
             for(double angle : angleRange) {
@@ -97,15 +119,13 @@ public class TrajectoryHelper {
 
                 for (int j = 0; j < 5; j++) {
                     double mid = (low + high) / 2;
-                    if (isValidTrajectory(thrust, angle, mid, targetX, minHeight, mass, targetY, sourceY)) {
-                        System.out.println(angle);
-                        System.out.println(mid);
+                    if (isValidTrajectory(launchConfig, angle, mid)) {
                         return new LaunchSolution(mid, angle);
                     }
 
-                    double x = getDistance(angle, thrust, mid, minHeight, mass, targetY, sourceY);
+                    double x = simulate(launchConfig, angle, mid).getLast().x;
 
-                    if (x < targetX) {
+                    if (x < launchConfig.targetX) {
                         low = mid;
                     } else {
                         high = mid;
@@ -117,24 +137,23 @@ public class TrajectoryHelper {
     }
 
 
-    public static double findLaunchAngle(double targetX, double thrust, double thrustDuration, double minHeight, int angleStart, int angleEnd, double mass, double targetY, double sourceY) {
-        double low = angleStart;
-        double high = angleEnd;
+    public static double findLaunchAngle(LaunchConfig launchConfig, double thrustDuration) {
+        double low = launchConfig.angleRange[0];
+        double high = launchConfig.angleRange[1];
         for (int i = 0; i < 50; i++) {
             double mid = (low + high) / 2;
-            if (isValidTrajectory(thrust, mid, thrustDuration, targetX, minHeight, mass, targetY, sourceY)) {
+            if (isValidTrajectory(launchConfig, mid, thrustDuration)) {
                 return mid;
             }
 
-            double x = getDistance(mid, thrust, thrustDuration, minHeight, mass, targetY, sourceY);
-            if (x > targetX) {
+            double x = simulate(launchConfig, mid, thrustDuration).getLast().x;;
+            if (x > launchConfig.targetX) {
                 low = mid;
             } else {
                 high = mid;
             }
         }
-        System.out.println(angleStart);
-        return angleStart;
+        return (low + high) / 2;
     }
 
     private static int getSign(double val){

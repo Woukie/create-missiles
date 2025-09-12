@@ -1,5 +1,6 @@
 package net.woukie.createmissiles.missilemanager.trajectories;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -72,6 +73,8 @@ public class BallisticTrajectory extends Trajectory {
         Vector3d euler = q.getEulerAnglesZYX(new Vector3d());
 
         rotation.set(euler.x, euler.y, euler.z);
+
+        System.out.println(position.y);
     }
 
     //    Called when launching a missile from the console panel
@@ -80,14 +83,18 @@ public class BallisticTrajectory extends Trajectory {
         rotation = new Vector3d(0, 0, 0);
         velocity = new Vector3d(0, 0, 0);
 
-        double targetDistance = Vector3d.distance(target.x, 0, target.z, start.x, 0, start.z);
-        double minHeight = 0;
         launchDirection = new Vector3d(target.x - start.x, 0, target.z - start.z).normalize();
 
-        thrust = thrusterType.getThrust();
-        mass = warheadType.getMass() + chassisType.getMass() + thrusterType.getMass();
+        TrajectoryHelper.MissileConfig missileConfig = new TrajectoryHelper.MissileConfig(thrusterType, chassisType, warheadType);
+        double[] launchAngleRange = {0, 90};
+        TrajectoryHelper.LaunchConfig launchConfig = new TrajectoryHelper.LaunchConfig(
+                new BlockPos((int) start.x, (int) start.y, (int) start.z),
+                new BlockPos((int) target.x, (int) target.y, (int) target.z),
+                launchAngleRange, 0, missileConfig);
         thrustDuration = (chassisType.getFuelCapacity() / thrusterType.getBurnRate()) * navPanel.getThrustDurationPercent();
-        launchAngle = findLaunchAngle(targetDistance, thrust, thrustDuration, minHeight, 0, 90, mass, target.y, start.y());
+        launchAngle = findLaunchAngle(launchConfig, thrustDuration);
+        thrust = launchConfig.missileConfig.thrust;
+
     }
 
     //    Called when deserialising trajectories

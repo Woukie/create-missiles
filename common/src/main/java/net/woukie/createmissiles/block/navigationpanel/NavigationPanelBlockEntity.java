@@ -27,6 +27,7 @@ import net.woukie.createmissiles.inventory.NavigationPanelMenu;
 import net.woukie.createmissiles.missilemanager.parts.ChassisType;
 import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
 import net.woukie.createmissiles.missilemanager.parts.ThrusterType;
+import net.woukie.createmissiles.missilemanager.parts.WarheadType;
 import net.woukie.createmissiles.missilemanager.trajectories.TrajectoryHelper;
 import net.woukie.createmissiles.registry.BlockEntities;
 import net.woukie.createmissiles.registry.Packets;
@@ -127,19 +128,20 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
         ItemStack thrusterItem = assemblyPanel.getItem(2);
 
 
-        MissilePartType warheadType = PartTypes.get(warheadItem);
+        WarheadType warheadType = (WarheadType) PartTypes.get(warheadItem);
         ChassisType chassisType = (ChassisType) PartTypes.get(chassisItem);
         ThrusterType thrusterType = (ThrusterType) PartTypes.get(thrusterItem);
 
         if(warheadType == null || chassisType == null || thrusterType == null) return;
 
-        double mass = warheadType.getMass() + chassisType.getMass() + thrusterType.getMass();
-        double targetDistance = Vector3d.distance(target.getX(), 0, target.getZ(), this.getBlockPos().getX(), 0, this.getBlockPos().getZ());
+        TrajectoryHelper.MissileConfig missileConfig = new TrajectoryHelper.MissileConfig(thrusterType, chassisType, warheadType);
+        double[] launchAngleRange = {0, 90};
+        TrajectoryHelper.LaunchConfig launchConfig = new TrajectoryHelper.LaunchConfig(worldPosition, target, launchAngleRange, 0, missileConfig);
+        TrajectoryHelper.LaunchSolution minSolution = findMinLaunchSolution(launchConfig);
 
-        TrajectoryHelper.LaunchSolution minSolution = findMinLaunchSolution(targetDistance, thrusterType.getThrust(), 0, 0, 90, mass, target.getY(), worldPosition.getY());
         if(minSolution != null)
         {
-            maxThrustDuration = chassisType.getFuelCapacity() / thrusterType.getBurnRate();
+            maxThrustDuration = launchConfig.missileConfig.maxThrustDuration;
             relativeMinThrustDuration = (int)(minSolution.thrustDuration / maxThrustDuration * 100);
         }else
         {
