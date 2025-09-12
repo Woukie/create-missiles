@@ -43,7 +43,7 @@ public class ExcavatorWarhead extends WarheadType {
     @Override
     public void onTick(Trajectory trajectory, MinecraftServer server) {
         ServerLevel level = server.getLevel(trajectory.getLevelKey());
-        if (level == null || trajectory.getTick() <= 40) return;
+        if (level == null || trajectory.getTick() <= 20) return;
 
         Vector3d end = trajectory.getPosition();
         if (trajectory.getWarheadData().getInt("Charges") != getInitialCharges()) {
@@ -51,6 +51,9 @@ public class ExcavatorWarhead extends WarheadType {
             detonateLine(new Vec3(start.x, start.y, start.z), new Vec3(end.x, end.y, end.z), level, trajectory);
         } else {
             Vec3 hitPosition = hitPosition(trajectory, server);
+            if (trajectory.getPosition().y < level.getMinBuildHeight()) {
+                hitPosition = new Vec3(trajectory.getPosition().x, trajectory.getPosition().y, trajectory.getPosition().z);
+            }
             if (hitPosition != null) {
                 detonateLine(hitPosition, new Vec3(end.x, end.y, end.z), level, trajectory);
             }

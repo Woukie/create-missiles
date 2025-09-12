@@ -26,7 +26,9 @@ public abstract class WarheadType extends MissilePartType {
     public void onTick(Trajectory trajectory, MinecraftServer server) {
         ServerLevel level = server.getLevel(trajectory.getLevelKey());
         Vec3 hitPosition = hitPosition(trajectory, server);
-        if (level != null && trajectory.getTick() > 40 && hitPosition != null) {
+
+        if (level == null) return;
+        if ((trajectory.getTick() > 20 && hitPosition != null) || trajectory.getPosition().y < level.getMinBuildHeight()) {
             onDetonate(hitPosition, trajectory, server);
             trajectory.setSpent(true);
         }
