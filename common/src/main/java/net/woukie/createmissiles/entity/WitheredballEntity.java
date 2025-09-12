@@ -13,13 +13,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.WitherRoseBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.HitResult;
 import net.woukie.createmissiles.Util;
-import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.Explosion;
-import net.woukie.createmissiles.missilemanager.asyncexplosionhandler.ExplosionHandler;
+import net.woukie.createmissiles.missiles.asyncexplosionhandler.Explosion;
+import net.woukie.createmissiles.missiles.asyncexplosionhandler.ExplosionHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class WitheredballEntity extends BallEntity {

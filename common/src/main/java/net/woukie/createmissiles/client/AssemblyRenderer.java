@@ -14,7 +14,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
+import net.woukie.createmissiles.missiles.parts.MissilePartType;
+import net.woukie.createmissiles.registry.PartModels;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.joml.Vector3f;
 
@@ -48,7 +49,7 @@ public class AssemblyRenderer extends CustomRenderedItemModelRenderer {
     }
 
     private static void renderMissilePart(PoseStack poseStack, MultiBufferSource multiBufferSource, int overlay, int light, MissilePartType partType, ItemDisplayContext transformType) {
-        MissilePartModel model = partType.getModel();
+        MissilePartModel model = PartModels.getModel(partType.getResourceLocation());
 
         poseStack.pushPose();
         long deg = ((System.currentTimeMillis() / 10L) % 360);

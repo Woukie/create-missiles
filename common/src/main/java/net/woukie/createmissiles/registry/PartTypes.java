@@ -4,10 +4,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.missilemanager.parts.MissilePartType;
-import net.woukie.createmissiles.missilemanager.parts.chassis.*;
-import net.woukie.createmissiles.missilemanager.parts.thrusters.*;
-import net.woukie.createmissiles.missilemanager.parts.warheads.*;
+import net.woukie.createmissiles.missiles.parts.MissilePartType;
+import net.woukie.createmissiles.missiles.parts.chassis.*;
+import net.woukie.createmissiles.missiles.parts.thrusters.*;
+import net.woukie.createmissiles.missiles.parts.warheads.*;
 
 import java.util.Collection;
 import java.util.HashMap;
