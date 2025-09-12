@@ -1,5 +1,6 @@
 package net.woukie.createmissiles.missiles.parts.warheads;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -56,6 +57,7 @@ public class TeleportationWarhead extends WarheadType {
                     serverPlayer.teleportTo(impactPos.x(), impactPos.y(), impactPos.z());
                 }
 
+                level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE);
                 level.playSound(null, impactPos.x(), impactPos.y(), impactPos.z(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1, 1);
 
                 serverPlayer.resetFallDistance();

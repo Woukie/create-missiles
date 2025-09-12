@@ -1,10 +1,13 @@
 package net.woukie.createmissiles.missiles.parts.warheads;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
@@ -67,6 +70,7 @@ public class ExcavatorWarhead extends WarheadType {
         Vec3 currentDistance = stepOffset.normalize().scale(detonationGap);
         while (currentDistance.length() < totalDistance.length() && charges > 0) {
             Vec3 globalPosition = currentDistance.add(start);
+            level.playSound(null, BlockPos.containing(globalPosition), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE);
             ExplosionHandler.get().createExplosion(new Explosion(level, globalPosition, getExplosionPower()));
             charges--;
             trajectory.getWarheadData().putInt("Charges", charges);

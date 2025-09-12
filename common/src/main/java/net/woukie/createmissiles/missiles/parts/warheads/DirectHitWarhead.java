@@ -6,6 +6,8 @@ import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -32,6 +34,8 @@ public class DirectHitWarhead extends WarheadType {
             level.destroyBlock(dragonEgg, false);
             DefaultDispenseItemBehavior.spawnItem(level, new ItemStack(Items.DRAGON_EGG_SHELL.get(), 3), 1, Direction.UP, dragonEgg.getCenter());
         }
+        level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE);
+        level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.ANVIL_PLACE, SoundSource.HOSTILE);
         ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 150, 30));
     }
 

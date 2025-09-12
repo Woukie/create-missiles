@@ -4,6 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
@@ -23,6 +25,7 @@ public class MessyWarhead extends WarheadType {
     public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
+        level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE);
         ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 20));
         EntityTypes.MESSY.get().spawn(level, BlockPos.containing(hitPosition), MobSpawnType.MOB_SUMMONED);
     }
