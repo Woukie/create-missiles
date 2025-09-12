@@ -131,7 +131,7 @@ public class ExplodingAreaWorker implements Runnable {
             if (!alreadyCalculated) {
                 final int passedBlocks = Math.max(passedCount.get(), 1);
                 final double averageHardness = totalHardness.get() / (double) passedBlocks;
-                final double powerLeft = startPower - ((HARDNESS_MULTIPLIER * averageHardness + HARDNESS_OFFSET + this.decay) * distance);
+                final double powerLeft = startPower - ((HARDNESS_MULTIPLIER * averageHardness + HARDNESS_OFFSET + this.decay) * (distance + 0.3));
                 if (powerLeft > 0) {
                     if (Math.random() > 1 / startPower) {
                         removeBlocks.offer(traversedBlockPos);
