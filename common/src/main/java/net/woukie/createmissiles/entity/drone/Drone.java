@@ -237,7 +237,7 @@ public class Drone extends FlyingMob {
 
     public void popMap(ServerLevel level) {
         if (storedMapPos != null) {
-            MapUtils.spawnMapAt(level, position(), storedMapPos);
+            MapUtils.spawnMapAt(level, position().add(0, 0.5, 0), storedMapPos);
             level.playSound(null, position().x, position().y, position().z, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, SoundSource.PLAYERS, 1, 1);
             storedMapPos = null;
         } else {
