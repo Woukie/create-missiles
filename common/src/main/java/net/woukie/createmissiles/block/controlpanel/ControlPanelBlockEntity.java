@@ -8,15 +8,14 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.BlockItem;
@@ -228,9 +227,9 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
                             ((ServerLevel) level).getPlayers(serverPlayer -> serverPlayer.position().distanceTo(p) < 128),
                             new TriggerBuildParticles(
                                     p.toVector3f(),
-                                    warheadType.getResourceLocation(),
-                                    chassisType.getResourceLocation(),
-                                    thrusterType.getResourceLocation(),
+                                    warheadType == null ? new ResourceLocation("") : warheadType.getResourceLocation(),
+                                    chassisType == null ? new ResourceLocation("") : chassisType.getResourceLocation(),
+                                    thrusterType == null ? new ResourceLocation("") : thrusterType.getResourceLocation(),
                                     warheadBuildPercent,
                                     chassisBuildPercent,
                                     thrusterBuildPercent
