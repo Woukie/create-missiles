@@ -73,8 +73,6 @@ public class BallisticTrajectory extends Trajectory {
         Vector3d euler = q.getEulerAnglesZYX(new Vector3d());
 
         rotation.set(euler.x, euler.y, euler.z);
-
-        System.out.println(position.y);
     }
 
     //    Called when launching a missile from the console panel
@@ -90,8 +88,11 @@ public class BallisticTrajectory extends Trajectory {
         TrajectoryHelper.LaunchConfig launchConfig = new TrajectoryHelper.LaunchConfig(
                 new BlockPos((int) start.x, (int) start.y, (int) start.z),
                 new BlockPos((int) target.x, (int) target.y, (int) target.z),
-                launchAngleRange, 0, missileConfig);
-        thrustDuration = (chassisType.getFuelCapacity() / thrusterType.getBurnRate()) * navPanel.getThrustDurationPercent();
+                launchAngleRange,
+                (chassisType.getFuelCapacity() / thrusterType.getBurnRate()) * navPanel.getThrustDurationPercent(),
+                missileConfig
+        );
+        thrustDuration = launchConfig.selectedThrustDuration;
         launchAngle = findLaunchAngle(launchConfig, thrustDuration);
         thrust = launchConfig.missileConfig.thrust;
 
