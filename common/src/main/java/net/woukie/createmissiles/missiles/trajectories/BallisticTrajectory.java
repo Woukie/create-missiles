@@ -95,7 +95,9 @@ public class BallisticTrajectory extends Trajectory {
         thrustDuration = launchConfig.selectedThrustDuration;
         launchAngle = findLaunchAngle(launchConfig, thrustDuration);
         thrust = launchConfig.missileConfig.thrust;
-
+        System.out.println(thrust);
+        System.out.println(launchAngle);
+        System.out.println(thrustDuration);
     }
 
     //    Called when deserialising trajectories
