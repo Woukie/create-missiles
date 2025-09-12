@@ -93,20 +93,36 @@ public class BallisticTrajectory extends Trajectory {
     //    Called when deserialising trajectories
     public BallisticTrajectory(CompoundTag data, MinecraftServer server) {
         super(data, server);
-        this.rotation = new Vector3d(data.getDouble("RotationX"), data.getDouble("RotationY"), data.getDouble("RotationZ"));
         this.velocity = new Vector3d(data.getDouble("VelocityX"), data.getDouble("VelocityY"), data.getDouble("VelocityZ"));
+        this.acceleration = new Vector3d(data.getDouble("AccelerationX"), data.getDouble("AccelerationY"), data.getDouble("AccelerationZ"));
+        this.rotation = new Vector3d(data.getDouble("RotationX"), data.getDouble("RotationY"), data.getDouble("RotationZ"));
+        this.thrust = data.getDouble("Thrust");
+        this.thrustDuration = data.getDouble("ThrustDuration");
+        this.launchAngle = data.getDouble("LaunchAngle");
+        this.mass = data.getDouble("Mass");
+        this.launchDirection = new Vector3d(data.getDouble("LaunchDirectionX"), data.getDouble("LaunchDirectionY"), data.getDouble("LaunchDirectionZ"));
     }
 
     //    Called when serializing a trajectory when exiting the world
     @Override
     public CompoundTag saveTo(CompoundTag data) {
         CompoundTag superData = super.saveTo(data);
-        superData.putDouble("RotationX", rotation.x);
-        superData.putDouble("RotationY", rotation.y);
-        superData.putDouble("RotationZ", rotation.z);
         superData.putDouble("VelocityX", velocity.x);
         superData.putDouble("VelocityY", velocity.y);
         superData.putDouble("VelocityZ", velocity.z);
+        superData.putDouble("AccelerationX", acceleration.x);
+        superData.putDouble("AccelerationY", acceleration.y);
+        superData.putDouble("AccelerationZ", acceleration.z);
+        superData.putDouble("RotationX", rotation.x);
+        superData.putDouble("RotationY", rotation.y);
+        superData.putDouble("RotationZ", rotation.z);
+        superData.putDouble("Thrust", thrust);
+        superData.putDouble("ThrustDuration", thrustDuration);
+        superData.putDouble("LaunchAngle", launchAngle);
+        superData.putDouble("Mass", mass);
+        superData.putDouble("LaunchDirectionX", launchDirection.x);
+        superData.putDouble("LaunchDirectionY", launchDirection.y);
+        superData.putDouble("LaunchDirectionZ", launchDirection.z);
         return superData;
     }
 
