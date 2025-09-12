@@ -1,0 +1,44 @@
+SLUG
+Adds realistically physically simulated missiles to Create, assemble missiles with over 30 different interchangeable parts
+
+
+DESCRIPTION
+<p><img src="https://media.forgecdn.net/attachments/description/null/description_653313ca-7ae1-42ac-8ae9-a8fb81ab8ec2.png" width="100%"></p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="https://media.forgecdn.net/attachments/description/null/description_6c44bef4-d16f-4c39-894d-1f3a77ce1ce6.png" width="850" height="263"></p>
+<p><img src="https://media.forgecdn.net/attachments/description/null/description_653313ca-7ae1-42ac-8ae9-a8fb81ab8ec2.png" width="100%"></p>
+<h1>Welcome!</h1>
+<p>Create Missiles is a light-hearted missile mod that adds realistically physically simulated missiles to Create. Has JEI and Ponder integration to help you get started.</p>
+<p>Currently available for&nbsp;<strong>1.20.1</strong> <strong>Forge</strong> and <strong>Fabric</strong>, and requires both <strong>Create 5.0.1</strong> and <strong>Architectury API</strong>.</p>
+<p><img src="https://media.forgecdn.net/attachments/description/null/description_653313ca-7ae1-42ac-8ae9-a8fb81ab8ec2.png" width="100%"></p>
+<h1>Features</h1>
+<p>Here's a list of some of the features in the mod if you don't know where to start</p>
+<ul>
+<li><strong>Clone assemblies with paper</strong>&nbsp;<span class="spoiler">(writing this first because there's currently no JEI for this recipe)</span></li>
+<li>Launch a <del>phantom</del> 'Drone' that flies to a specific coordinate and makes a map of the area</li>
+<li>Assemble a Launch Pad multi-block structure with a Control Panel, Assembly Panel and a Navigation Panel</li>
+<li>Missiles and drones can travel across unloaded chunks</li>
+<li>Explosions are handled asynchronously&nbsp;and utilise multiple threads, meaning we can afford to have more complex destruction calulations including the ability for blast-resistant blocks to protect other blocks</li>
+<li>Customize your missiles by combining different Warheads, Chassis and Thrusters</li>
+<li>Find upgrade cores in Bunkers across the world that make missiles more powerfull</li>
+<li>Plot a target in the Navigation Panel by clicking on a map and setting the burn duration</li>
+<li>Unique warheads like the Biome Brush that modifies biomes</li>
+</ul>
+<p><img src="https://media.forgecdn.net/attachments/description/null/description_653313ca-7ae1-42ac-8ae9-a8fb81ab8ec2.png" width="100%"></p>
+<h1>Contributors</h1>
+<p>I would like to thank these amazing people for lending me their time and skill to help with the project. Without them, this mod would be a fraction of the size &lt;3</p>
+<ul>
+<li><strong>ExpertSalad:</strong> Help with coding, including the entire&nbsp;physics simulation for the&nbsp;ballistic trajectory</li>
+<li><strong>Diomorphus:</strong> Many many many different structures and variants of structures, many not implemented because he's such a perfectionist</li>
+</ul>
+<p><img src="https://media.forgecdn.net/attachments/description/null/description_653313ca-7ae1-42ac-8ae9-a8fb81ab8ec2.png" width="100%"></p>
+<h1>Misc</h1>
+<p>There is a <a href="https://createmissiles.com/">website</a> but it's a bit unfinished.</p>
+<p>I welcome comments as long as bug reports stay on <a href="https://github.com/Woukie/create-missiles/issues">GitHub</a>.</p>
+<p>There are currently no plans to downgrade the Minecraft version.</p>
+<p>If you see the mod anywhere other than GitHub, Modrinth or CurseForge it's not me and it's probably a re-upload.</p>
+<p><img src="https://media.forgecdn.net/attachments/description/null/description_653313ca-7ae1-42ac-8ae9-a8fb81ab8ec2.png" width="100%"></p>
+
+ATTRIBUTION
+ezgif.com
+Blender
+easings.net
