@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -21,10 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.SimpleContainerData;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.inventory.DroneMenu;
@@ -51,17 +49,12 @@ public class Drone extends FlyingMob {
         this.dataAccess = new ContainerData() {
             @Override
             public int get(int i) {
-                long mostSigBits = getUUID().getMostSignificantBits();
-                long leastSigBits = getUUID().getLeastSignificantBits();
+                var nbtInts = NbtUtils.createUUID(getUUID());
                 return switch (i) {
-                    case 0 -> (int) ((mostSigBits >>> 48) & 0xFFFF);
-                    case 1 -> (int) ((mostSigBits >>> 32) & 0xFFFF);
-                    case 2 -> (int) ((mostSigBits >>> 16) & 0xFFFF);
-                    case 3 -> (int) (mostSigBits & 0xFFFF);
-                    case 4 -> (int) ((leastSigBits >>> 48) & 0xFFFF);
-                    case 5 -> (int) ((leastSigBits >>> 32) & 0xFFFF);
-                    case 6 -> (int) ((leastSigBits >>> 16) & 0xFFFF);
-                    case 7 -> (int) (leastSigBits & 0xFFFF);
+                    case 0 -> nbtInts.get(0).getAsInt();
+                    case 1 -> nbtInts.get(1).getAsInt();
+                    case 2 -> nbtInts.get(2).getAsInt();
+                    case 3 -> nbtInts.get(3).getAsInt();
                     case 8 -> blockPosition().getX();
                     case 9 -> blockPosition().getZ();
                     case 10 -> targetBlock != null || originBlock != null ? 1 : 0;
@@ -77,7 +70,7 @@ public class Drone extends FlyingMob {
 
             @Override
             public int getCount() {
-                return 12;
+                return 8;
             }
         };
     }
