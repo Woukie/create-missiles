@@ -8,19 +8,22 @@
     "C": {
       "item": "create:cogwheel"
     },
+    "E": {
+      "item": "create:electron_tube"
+    },
     "I": {
-      "item": "minecraft:iron_block"
+      "item": "create:brass_casing"
     }
   },
   "pattern": [
     "S",
     "I",
     "C",
-    "I",
+    "E",
     "I"
   ],
   "result": {
-    "count": 1,
+    "count": 3,
     "item": "createmissiles:launch_pad"
   }
 }

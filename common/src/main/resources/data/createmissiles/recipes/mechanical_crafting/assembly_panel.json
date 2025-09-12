@@ -2,30 +2,27 @@
   "type": "create:mechanical_crafting",
   "acceptMirrored": false,
   "key": {
-    "S": {
-      "item": "create:iron_sheet"
+    "B": {
+      "item": "create:brass_sheet"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
     },
     "C": {
-      "item": "create:cogwheel"
-    },
-    "I": {
-      "item": "minecraft:iron_block"
+      "item": "minecraft:writable_book"
     },
     "T": {
       "item": "minecraft:tinted_glass"
     },
-    "R": {
-      "item": "minecraft:paper"
+    "F": {
+      "item": "create:brass_casing"
     }
   },
   "pattern": [
-    "RSR",
-    " R ",
-    " T ",
-    " I ",
-    " C ",
-    " I ",
-    " I "
+    "BTB",
+    "BCB",
+    " F ",
+    "BPB"
   ],
   "result": {
     "count": 1,
