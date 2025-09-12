@@ -14,8 +14,8 @@ import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.inventory.NavigationPanelMenu;
 import net.woukie.createmissiles.missiles.parts.ChassisType;
-import net.woukie.createmissiles.missiles.parts.MissilePartType;
 import net.woukie.createmissiles.missiles.parts.ThrusterType;
+import net.woukie.createmissiles.missiles.parts.WarheadType;
 import net.woukie.createmissiles.missiles.trajectories.TrajectoryHelper;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
@@ -288,20 +288,20 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
     }
 
     private void reCalculateTrajectory(GuiGraphics gui, BlockPos target, BlockPos source, ItemStack warhead, ItemStack chassis, ItemStack thruster){
-        MissilePartType warheadType = PartTypes.get(warhead);
+        WarheadType warheadType = (WarheadType) PartTypes.get(warhead);
         ChassisType chassisType = (ChassisType) PartTypes.get(chassis);
         ThrusterType thrusterType = (ThrusterType) PartTypes.get(thruster);
 
-        double mass = warheadType.getMass() + chassisType.getMass() + thrusterType.getMass();
-        double targetDistance = Vector3d.distance(target.getX(), 0, target.getZ(), source.getX(), 0, source.getZ());
-        double maxThrustDuration = chassisType.getFuelCapacity() / thrusterType.getBurnRate();
+        TrajectoryHelper.MissileConfig missileConfig = new TrajectoryHelper.MissileConfig(thrusterType, chassisType, warheadType);
+        double[] launchAngleRange = {0, 90};
+        TrajectoryHelper.LaunchConfig launchConfig = new TrajectoryHelper.LaunchConfig(source, target, launchAngleRange, missileConfig.maxThrustDuration * menu.getFuelPercent(), missileConfig);
 
-        double angle = findLaunchAngle(targetDistance, thrusterType.getThrust(), maxThrustDuration * menu.getFuelPercent(), 0, 0, 90, mass, target.getY(), source.getY());
-        missilePositions = TrajectoryHelper.simulate(angle, thrusterType.getThrust(), maxThrustDuration * menu.getFuelPercent(), mass, target.getY(), source.getY());
-        List<Vector2d> maxData = TrajectoryHelper.simulate(angle, thrusterType.getThrust(), maxThrustDuration, mass, target.getY(), source.getY());
+        double angle = findLaunchAngle(launchConfig, launchConfig.selectedThrustDuration);
+        missilePositions = TrajectoryHelper.simulate(launchConfig, angle, launchConfig.selectedThrustDuration);
+        List<Vector2d> maxData = TrajectoryHelper.simulate(launchConfig, angle, launchConfig.selectedThrustDuration);
 
-        for (int g = 0; g < maxData.size(); g++) {
-            maxHeight = Math.max(maxHeight, maxData.get(g).y);
+        for (Vector2d maxDatum : maxData) {
+            maxHeight = Math.max(maxHeight, maxDatum.y);
         }
     }
 }

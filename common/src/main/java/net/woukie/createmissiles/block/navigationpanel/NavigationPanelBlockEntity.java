@@ -25,16 +25,13 @@ import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
 import net.woukie.createmissiles.block.navigationpanel.messages.UpdateMapDataMessage;
 import net.woukie.createmissiles.inventory.NavigationPanelMenu;
 import net.woukie.createmissiles.missiles.parts.ChassisType;
-import net.woukie.createmissiles.missiles.parts.MissilePartType;
 import net.woukie.createmissiles.missiles.parts.ThrusterType;
+import net.woukie.createmissiles.missiles.parts.WarheadType;
 import net.woukie.createmissiles.missiles.trajectories.TrajectoryHelper;
 import net.woukie.createmissiles.registry.BlockEntities;
 import net.woukie.createmissiles.registry.Packets;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3d;
-
-import static net.woukie.createmissiles.missiles.trajectories.TrajectoryHelper.findMinLaunchSolution;
 
 public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
     public static final int SLOT_MAP = 0;
@@ -123,19 +120,19 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
         ItemStack thrusterItem = assemblyPanel.getItem(2);
 
 
-        MissilePartType warheadType = PartTypes.get(warheadItem);
+        WarheadType warheadType = (WarheadType) PartTypes.get(warheadItem);
         ChassisType chassisType = (ChassisType) PartTypes.get(chassisItem);
         ThrusterType thrusterType = (ThrusterType) PartTypes.get(thrusterItem);
 
         if(warheadType == null || chassisType == null || thrusterType == null) return;
 
-        double mass = warheadType.getMass() + chassisType.getMass() + thrusterType.getMass();
-        double targetDistance = Vector3d.distance(target.getX(), 0, target.getZ(), this.getBlockPos().getX(), 0, this.getBlockPos().getZ());
-
-        TrajectoryHelper.LaunchSolution minSolution = findMinLaunchSolution(targetDistance, thrusterType.getThrust(), 0, 0, 90, mass, target.getY(), worldPosition.getY());
+        TrajectoryHelper.MissileConfig missileConfig = new TrajectoryHelper.MissileConfig(thrusterType, chassisType, warheadType);
+        double[] launchAngleRange = {0, 90};
+        TrajectoryHelper.LaunchConfig launchConfig = new TrajectoryHelper.LaunchConfig(worldPosition, target, launchAngleRange, 0, missileConfig);
+        TrajectoryHelper.LaunchSolution minSolution = TrajectoryHelper.findMinLaunchSolution(launchConfig);
         if(minSolution != null)
         {
-            maxThrustDuration = chassisType.getFuelCapacity() / thrusterType.getBurnRate();
+            maxThrustDuration = launchConfig.missileConfig.maxThrustDuration;
             relativeMinThrustDuration = (int)(minSolution.thrustDuration / maxThrustDuration * 100);
         }else
         {
