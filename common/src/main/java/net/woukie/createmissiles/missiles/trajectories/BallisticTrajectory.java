@@ -88,16 +88,11 @@ public class BallisticTrajectory extends Trajectory {
         TrajectoryHelper.LaunchConfig launchConfig = new TrajectoryHelper.LaunchConfig(
                 new BlockPos((int) start.x, (int) start.y, (int) start.z),
                 new BlockPos((int) target.x, (int) target.y, (int) target.z),
-                launchAngleRange,
-                (chassisType.getFuelCapacity() / thrusterType.getBurnRate()) * navPanel.getThrustDurationPercent(),
-                missileConfig
-        );
-        thrustDuration = launchConfig.selectedThrustDuration;
+                launchAngleRange, 0, missileConfig);
+        thrustDuration = (chassisType.getFuelCapacity() / thrusterType.getBurnRate()) * navPanel.getThrustDurationPercent();
         launchAngle = findLaunchAngle(launchConfig, thrustDuration);
         thrust = launchConfig.missileConfig.thrust;
-        System.out.println(thrust);
-        System.out.println(launchAngle);
-        System.out.println(thrustDuration);
+
     }
 
     //    Called when deserialising trajectories
