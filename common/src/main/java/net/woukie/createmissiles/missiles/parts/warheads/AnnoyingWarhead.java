@@ -29,7 +29,7 @@ public class AnnoyingWarhead extends WarheadType {
         if (level == null) return;
         var emptyBlock = locateAir(hitPosition.add(0, 1, 0), level, 100);
         if (emptyBlock != null) {
-            level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE);
+            level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 10, 1);
             level.setBlock(emptyBlock, Blocks.ANNOYING_JUKEBOX.get().defaultBlockState(), 3);
         } else {
             DefaultDispenseItemBehavior.spawnItem(level, Blocks.ANNOYING_JUKEBOX.get().asItem().getDefaultInstance(), 1, Direction.UP, hitPosition.add(0, 1, 0));

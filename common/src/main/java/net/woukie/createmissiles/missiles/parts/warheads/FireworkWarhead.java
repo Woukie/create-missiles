@@ -37,7 +37,7 @@ public class FireworkWarhead extends WarheadType {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
 
-        level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE);
+        level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 10, 1);
         ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 4));
 
         CompoundTag explosions = trajectory.getWarheadData();

@@ -34,8 +34,8 @@ public class DirectHitWarhead extends WarheadType {
             level.destroyBlock(dragonEgg, false);
             DefaultDispenseItemBehavior.spawnItem(level, new ItemStack(Items.DRAGON_EGG_SHELL.get(), 3), 1, Direction.UP, dragonEgg.getCenter());
         }
-        level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE);
-        level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.ANVIL_PLACE, SoundSource.HOSTILE);
+        level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 10, 1);
+        level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.ANVIL_PLACE, SoundSource.HOSTILE, 10, 1);
         ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 150, 30));
     }
 

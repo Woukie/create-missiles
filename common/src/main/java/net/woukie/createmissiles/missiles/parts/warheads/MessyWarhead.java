@@ -25,7 +25,7 @@ public class MessyWarhead extends WarheadType {
     public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
-        level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE);
+        level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 10, 1);
         ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 20));
         EntityTypes.MESSY.get().spawn(level, BlockPos.containing(hitPosition), MobSpawnType.MOB_SUMMONED);
     }
