@@ -3,7 +3,8 @@
   "ingredients": [
     {
       "items": ["minecraft:snow_block"],
-      "count": 16,
+      "count": 16
+    },
     {
       "items": ["minecraft:iron"],
       "count": 6
