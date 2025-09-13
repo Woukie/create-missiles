@@ -14,18 +14,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class FlashHandler {
     private static final ConcurrentLinkedQueue<Flash> flashes = new ConcurrentLinkedQueue<>();
-    private static final List<Vec3> shakeSamples = new ArrayList<>();
 
     public static void addFlash(Flash flash) {
         flashes.add(flash);
-        shakeSamples.clear();
-        for (int i = 0; i < 20; i++) {
-            shakeSamples.add(new Vec3(
-                    Math.random() * 2 - 0.5,
-                    Math.random() * 2 - 0.5,
-                    Math.random() * 2 - 0.5
-            ));
-        }
     }
 
     public static void cleanUp() {
@@ -55,9 +46,9 @@ public class FlashHandler {
             double x = (System.currentTimeMillis() - (double) flash.startTime) / (double) flash.length;
             if (x >= 1) continue;
 
-            double shakeIndex = x * (shakeSamples.size() - 2);
-            Vec3 shake1 = shakeSamples.get((int)shakeIndex);
-            Vec3 shake2 = shakeSamples.get((int)shakeIndex + 1);
+            double shakeIndex = x * (flash.shakeSamples.size() - 2);
+            Vec3 shake1 = flash.shakeSamples.get((int)shakeIndex);
+            Vec3 shake2 = flash.shakeSamples.get((int)shakeIndex + 1);
             Vec3 shake = shake1.lerp(shake2, shakeIndex % 1);
 
             double scale = 0.8;
@@ -76,6 +67,7 @@ public class FlashHandler {
         public Integer colour;
         public Integer radius;
         public long startTime, length;
+        public List<Vec3> shakeSamples = new ArrayList<>();
 
         public Flash(Integer colour, BlockPos origin, Integer radius, long length) {
             this.colour = colour;
@@ -83,6 +75,14 @@ public class FlashHandler {
             this.radius = radius;
             this.startTime = System.currentTimeMillis();
             this.length = length;
+
+            for (int i = 0; i < 20 * length / 1000; i++) {
+                shakeSamples.add(new Vec3(
+                        Math.random() * 2 - 0.5,
+                        Math.random() * 2 - 0.5,
+                        Math.random() * 2 - 0.5
+                ));
+            }
         }
     }
 }
