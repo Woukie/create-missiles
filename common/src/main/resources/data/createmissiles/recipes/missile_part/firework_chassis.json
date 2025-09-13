@@ -3,7 +3,11 @@
   "ingredients": [
     {
       "items": ["minecraft:paper"],
-      "count": 16
+      "count": 2
+    },
+    {
+      "items": ["minecraft:gunpowder"],
+      "count": 3
     }
   ],
   "assembly": "createmissiles:firework_chassis"
