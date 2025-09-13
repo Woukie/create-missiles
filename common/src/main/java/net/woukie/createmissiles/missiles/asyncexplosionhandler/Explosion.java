@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.ExplosionResistanceOverrides;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class Explosion {
                 if (distance > maxRadius) return true;
 
                 final BlockPos traversedBlockPos = BlockPos.containing(traversedPos.x, traversedPos.y, traversedPos.z);
-                final float hardness = level.getBlockState(traversedBlockPos).getBlock().getExplosionResistance();
+                final float hardness = ExplosionResistanceOverrides.getResistance(level.getBlockState(traversedBlockPos).getBlock());
                 totalHardness.updateAndGet(current -> current + hardness);
                 passedCount.updateAndGet(a -> ++a);
 

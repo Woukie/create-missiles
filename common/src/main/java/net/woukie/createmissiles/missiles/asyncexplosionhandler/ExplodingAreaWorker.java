@@ -6,6 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.woukie.createmissiles.ExplosionResistanceOverrides;
 import org.joml.Vector3d;
 
 import java.util.Arrays;
@@ -124,7 +125,7 @@ public class ExplodingAreaWorker implements Runnable {
             final BlockPos traversedBlockPos = BlockPos.containing(traversedPos.x, traversedPos.y, traversedPos.z);
             final boolean alreadyCalculated = hardnessMap.containsKey(traversedBlockPos);
             final float hardness = hardnessMap.computeIfAbsent(traversedBlockPos,
-                    p -> level.getBlockState(p).getBlock().getExplosionResistance());
+                    p -> ExplosionResistanceOverrides.getResistance(level.getBlockState(p).getBlock()));
             totalHardness.updateAndGet(current -> current + hardness);
             passedCount.updateAndGet(a -> ++a);
 

@@ -153,6 +153,7 @@ public class CreateMissiles {
         EntityTypes.init();
         SoundEvents.init();
         ParticleTypes.init();
+        ExplosionResistanceOverrides.init();
 
         EntityAttributeRegistry.register(EntityTypes.BASIC_DRONE, Drone::createMobAttributes);
         EntityAttributeRegistry.register(EntityTypes.REINFORCED_DRONE, Drone::createMobAttributes);
