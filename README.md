@@ -9,39 +9,28 @@
 
 <p>This is a Minecraft mod for Forge and Fabric that adds missiles to the game, built as an addon for the Create mod.</p>
 
-<h1>Features</h1>
-
-<ul>
-    <li>Launch missiles by inserting a map into your launch pad and selecting a destination</li>
-    <li>Use a drone to fly to and make a map of specific coordinates, but be carefull not to let it get intercepted on its journey</li>
-    <li>Integrates into survival gameplay by gating progress through finding assemblies which are used to make missile parts</li>
-    <li>Mix and match unique warheads, chassis and thrusters</li>
-    <li>View a simulated trajectory in the navigation panel</li>
-    <li>Includes full Ponder and JEI integration, which provides information about how to set up a launch pad and how to obtain missile assemblies</li>
-</ul>
-
 <h1>Contributors</h1>
 <ul>
-    <li>Woukie (framework, content, modelling)</li>
+    <li>Woukie</li>
     <li>ExpertSalad (missile mechanics)</li>
-    <li>Bert (structures)</li>
-    <li>Translators</li>    
+    <li>Diomorphus (structures)</li>
 </ul>
 
 <h1>Attribution</h1>
 <ul>
-    <li>BlockBench (Every model in the mod)</li>
-    <li>Easings.net (UI animation curve implementations)</li>
+    <li>BlockBench (models)</li>
+    <li>Easings.net (some UI animations)</li>
+    <li>Blender (icon)</li>
+    <li>ezgif.com</li>
 </ul>
 
 <p>Implementation details</p>
 
 <ul>
     <li>Built on Architectury, for Fabric and Forge</li>
-    <li>Development starts with 1.20.1</li>
+    <li>Compiled with Java 21</li>
+    <li>Development starting at 1.20.1 for Create 5</li>
     <li>Distributed on GitHub, CurseForge and Modrinth</li>
     <li>Licenced under `GNU GENERAL PUBLIC LICENSE V3`</li>
-    <li>Uses the hybrid versioning style defined [here](https://forge.gemwire.uk/wiki/Semantic_Versioning)</li>
-    <li>A new branch is created for each version of Minecraft</li>
     <li>If you see another site distributing the mod, it's not me. Lmk if you want me to consider distributing elsewhere</li>
 </ul>
