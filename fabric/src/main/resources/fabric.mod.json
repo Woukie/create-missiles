@@ -13,7 +13,7 @@
     "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
   "license": "Insert License Here",
-  "icon": "assets/createmissiles/icon.png",
+  "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "client": ["net.woukie.createmissiles.fabric.CreateMissilesClientFabric"],
