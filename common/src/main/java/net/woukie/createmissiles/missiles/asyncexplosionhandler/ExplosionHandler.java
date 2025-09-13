@@ -3,9 +3,13 @@ package net.woukie.createmissiles.missiles.asyncexplosionhandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.client.CreateFlashMessage;
+import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -27,9 +31,19 @@ public class ExplosionHandler extends SavedData {
     }
 
     public void createExplosion(Explosion explosion) {
+        this.createExplosion(explosion, FastColor.ARGB32.color(255, 255, 255, 251), 1000);
+    }
+
+    public void createExplosion(Explosion explosion, Integer colour, Integer length) {
         this.explosions.add(explosion);
         explosion.damageEntities();
         explosion.startCrunching();
+        explosion.getLevel().players().forEach(player -> {
+            double distance = player.position().distanceTo(explosion.getOrigin().getCenter());
+            if (distance < explosion.getMaxRadius() * 4) {
+                Packets.CREATE_FLASH.sendToPlayer((ServerPlayer) player, new CreateFlashMessage(colour, explosion.getOrigin(), explosion.getMaxRadius(), length));
+            }
+        });
         setDirty();
     }
 

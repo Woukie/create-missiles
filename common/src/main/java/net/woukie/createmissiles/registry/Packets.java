@@ -8,6 +8,7 @@ import net.woukie.createmissiles.block.controlpanel.messages.TriggerBuildParticl
 import net.woukie.createmissiles.block.navigationpanel.messages.ClickFuelMessage;
 import net.woukie.createmissiles.block.navigationpanel.messages.ClickMapMessage;
 import net.woukie.createmissiles.block.navigationpanel.messages.UpdateMapDataMessage;
+import net.woukie.createmissiles.client.CreateFlashMessage;
 import net.woukie.createmissiles.entity.drone.SendDroneMessage;
 import net.woukie.createmissiles.missiles.parts.warheads.messages.ExplodeFireworkMessage;
 
@@ -19,6 +20,7 @@ public class Packets {
     public static final NetworkChannel UPDATE_MAP_DATA = NetworkChannel.create(new ResourceLocation(CreateMissiles.MOD_ID, "update_map_data"));
     public static final NetworkChannel SEND_DRONE = NetworkChannel.create(new ResourceLocation(CreateMissiles.MOD_ID, "send_drone"));
     public static final NetworkChannel TRIGGER_BUILD_PARTICLES = NetworkChannel.create(new ResourceLocation(CreateMissiles.MOD_ID, "trigger_build_particles"));
+    public static final NetworkChannel CREATE_FLASH = NetworkChannel.create(new ResourceLocation(CreateMissiles.MOD_ID, "create_flash"));
 
     public static void init() {
         CreateMissiles.LOGGER.info("Registering packet resource locations for " + CreateMissiles.NAME);
@@ -30,5 +32,6 @@ public class Packets {
         UPDATE_MAP_DATA.register(UpdateMapDataMessage.class, UpdateMapDataMessage::encode, UpdateMapDataMessage::new, UpdateMapDataMessage::apply);
         SEND_DRONE.register(SendDroneMessage.class, SendDroneMessage::encode, SendDroneMessage::new, SendDroneMessage::apply);
         TRIGGER_BUILD_PARTICLES.register(TriggerBuildParticles.class, TriggerBuildParticles::encode, TriggerBuildParticles::new, TriggerBuildParticles::apply);
+        CREATE_FLASH.register(CreateFlashMessage.class, CreateFlashMessage::encode, CreateFlashMessage::new, CreateFlashMessage::apply);
     }
 }
