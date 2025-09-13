@@ -2,8 +2,12 @@
   "type": "createmissiles:missile_part",
   "ingredients": [
     {
+      "items": ["minecraft:iron_ingot"],
+      "count": 25
+    },
+    {
       "items": ["minecraft:blue_ice"],
-      "count": 10
+      "count": 30
     }
   ],
   "assembly": "createmissiles:frozen_chassis"

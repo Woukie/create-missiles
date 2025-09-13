@@ -2,8 +2,20 @@
   "type": "createmissiles:missile_part",
   "ingredients": [
     {
+      "items": ["minecraft:tadpole_bucket"],
+      "count": 1
+    },
+    {
       "items": ["minecraft:cod"],
-      "count": 10
+      "count": 32
+    },
+    {
+      "items": ["minecraft:prismarine_crystals"],
+      "count": 20
+    },
+    {
+      "items": ["minecraft:gunpowder"],
+      "count": 25
     }
   ],
   "assembly": "createmissiles:guardian_warhead"

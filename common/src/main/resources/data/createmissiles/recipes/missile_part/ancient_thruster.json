@@ -2,8 +2,16 @@
   "type": "createmissiles:missile_part",
   "ingredients": [
     {
-      "items": ["minecraft:sculk"],
-      "count": 8
+      "items": ["minecraft:sculk_catalyst"],
+      "count": 2
+    },
+    {
+      "items": ["minecraft:echo_shard"],
+      "count": 2
+    },
+    {
+      "items": ["minecraft:iron_ingot"],
+      "count": 20
     }
   ],
   "assembly": "createmissiles:ancient_thruster"

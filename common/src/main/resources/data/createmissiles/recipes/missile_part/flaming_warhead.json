@@ -4,6 +4,18 @@
     {
       "items": ["minecraft:blaze_rod"],
       "count": 6
+    },
+    {
+      "items": ["minecraft:iron_ingot"],
+      "count": 5
+    },
+    {
+      "items": ["minecraft:flint"],
+      "count": 5
+    },
+    {
+      "items": ["minecraft:gunpowder"],
+      "count": 10
     }
   ],
   "assembly": "createmissiles:flaming_warhead"

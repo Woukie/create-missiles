@@ -2,8 +2,20 @@
   "type": "createmissiles:missile_part",
   "ingredients": [
     {
+      "items": ["minecraft:sculk"],
+      "count": 32
+    },
+    {
+      "items": ["minecraft:sculk_shrieker"],
+      "count": 1
+    },
+    {
       "items": ["minecraft:echo_shard"],
-      "count": 8
+      "count": 12
+    },
+    {
+      "items": ["minecraft:gunpowder"],
+      "count": 25
     }
   ],
   "assembly": "createmissiles:ancient_warhead"

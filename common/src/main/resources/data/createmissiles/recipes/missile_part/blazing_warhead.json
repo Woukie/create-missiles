@@ -3,7 +3,19 @@
   "ingredients": [
     {
       "items": ["minecraft:blaze_rod"],
-      "count": 6
+      "count": 20
+    },
+    {
+      "items": ["minecraft:iron_ingot"],
+      "count": 10
+    },
+    {
+      "items": ["minecraft:flint"],
+      "count": 10
+    },
+    {
+      "items": ["minecraft:gunpowder"],
+      "count": 15
     }
   ],
   "assembly": "createmissiles:blazing_warhead"

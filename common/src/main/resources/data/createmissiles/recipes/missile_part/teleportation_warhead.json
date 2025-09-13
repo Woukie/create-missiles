@@ -2,12 +2,8 @@
   "type": "createmissiles:missile_part",
   "ingredients": [
     {
-      "items": ["minecraft:end_stone"],
+      "items": ["minecraft:gunpowder"],
       "count": 3
-    },
-    {
-      "items": ["minecraft:glass"],
-      "count": 1
     },
     {
       "items": ["createmissiles:bound_ender_pearl"],

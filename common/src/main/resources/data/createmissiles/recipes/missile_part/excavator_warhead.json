@@ -2,8 +2,12 @@
   "type": "createmissiles:missile_part",
   "ingredients": [
     {
-      "tags": ["minecraft:planks"],
-      "count": 10
+      "items": ["minecraft:gunpowder"],
+      "count": 20
+    },
+    {
+      "items": ["minecraft:iron_ingot"],
+      "count": 20
     }
   ],
   "assembly": "createmissiles:excavator_warhead"

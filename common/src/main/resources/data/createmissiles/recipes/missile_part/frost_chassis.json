@@ -2,8 +2,16 @@
   "type": "createmissiles:missile_part",
   "ingredients": [
     {
-      "items": ["minecraft:snowball"],
-      "count": 16
+      "items": ["minecraft:snow_block"],
+      "count": 32
+    },
+    {
+      "items": ["minecraft:iron"],
+      "count": 12
+    },
+    {
+      "items": ["minecraft:stick"],
+      "count": 2
     }
   ],
   "assembly": "createmissiles:frost_chassis"

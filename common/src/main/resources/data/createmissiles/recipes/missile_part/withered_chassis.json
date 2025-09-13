@@ -2,8 +2,12 @@
   "type": "createmissiles:missile_part",
   "ingredients": [
     {
-      "items": ["minecraft:wither_rose"],
-      "count": 6
+      "items": ["minecraft:soul_sand", "minecraft:soul_soil"],
+      "count": 12
+    },
+    {
+      "items": ["minecraft:iron_ingot"],
+      "count": 25
     }
   ],
   "assembly": "createmissiles:withered_chassis"

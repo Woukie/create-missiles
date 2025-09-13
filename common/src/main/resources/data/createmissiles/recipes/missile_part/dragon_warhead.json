@@ -4,6 +4,10 @@
     {
       "items": ["createmissiles:reinforced_dragon_egg_shell"],
       "count": 3
+    },
+    {
+      "items": ["minecraft:gunpowder"],
+      "count": 40
     }
   ],
   "assembly": "createmissiles:dragon_warhead"

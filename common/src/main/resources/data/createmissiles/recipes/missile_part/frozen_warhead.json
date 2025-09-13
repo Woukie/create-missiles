@@ -2,8 +2,16 @@
   "type": "createmissiles:missile_part",
   "ingredients": [
     {
-      "items": ["minecraft:blue_ice"],
+      "items": ["minecraft:carved_pumpkin"],
       "count": 10
+    },
+    {
+      "items": ["minecraft:blue_ice"],
+      "count": 30
+    },
+    {
+      "items": ["minecraft:gunpowder"],
+      "count": 25
     }
   ],
   "assembly": "createmissiles:frozen_warhead"

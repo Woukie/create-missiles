@@ -3,7 +3,11 @@
   "ingredients": [
     {
       "items": ["minecraft:obsidian"],
-      "count": 3
+      "count": 32
+    },
+    {
+      "items": ["minecraft:iron_ingot"],
+      "count": 30
     }
   ],
   "assembly": "createmissiles:dragon_chassis"

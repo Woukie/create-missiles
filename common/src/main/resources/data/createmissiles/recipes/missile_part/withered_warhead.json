@@ -2,12 +2,20 @@
   "type": "createmissiles:missile_part",
   "ingredients": [
     {
-      "items": ["minecraft:wither_rose"],
-      "count": 8
+      "items": ["minecraft:soul_sand", "minecraft:soul_soil"],
+      "count": 4
     },
     {
       "items": ["minecraft:nether_star"],
       "count": 1
+    },
+    {
+      "items": ["minecraft:wither_skeleton_skull"],
+      "count": 3
+    },
+    {
+      "items": ["minecraft:gunpowder"],
+      "count": 30
     }
   ],
   "assembly": "createmissiles:withered_warhead"

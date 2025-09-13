@@ -3,7 +3,15 @@
   "ingredients": [
     {
       "items": ["minecraft:blaze_rod"],
-      "count": 6
+      "count": 25
+    },
+    {
+      "items": ["minecraft:lava_bucket"],
+      "count": 10
+    },
+    {
+      "items": ["minecraft:gunpowder"],
+      "count": 25
     }
   ],
   "assembly": "createmissiles:infernal_warhead"

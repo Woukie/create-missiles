@@ -3,7 +3,11 @@
   "ingredients": [
     {
       "items": ["minecraft:obsidian"],
-      "count": 3
+      "count": 16
+    },
+    {
+      "items": ["minecraft:iron_ingot"],
+      "count": 15
     }
   ],
   "assembly": "createmissiles:dragon_thruster"

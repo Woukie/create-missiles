@@ -3,7 +3,11 @@
   "ingredients": [
     {
       "items": ["minecraft:ender_pearl"],
-      "count": 8
+      "count": 64
+    },
+    {
+      "items": ["minecraft:gunpowder"],
+      "count": 20
     }
   ],
   "assembly": "createmissiles:messy_warhead"

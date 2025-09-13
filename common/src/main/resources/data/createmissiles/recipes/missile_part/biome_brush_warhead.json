@@ -6,6 +6,14 @@
       "count": 1
     },
     {
+      "items": ["minecraft:brush"],
+      "count": 1
+    },
+    {
+      "items": ["minecraft:totem_of_undying"],
+      "count": 1
+    },
+    {
       "tags": ["minecraft:dirt"],
       "count": 8
     }
