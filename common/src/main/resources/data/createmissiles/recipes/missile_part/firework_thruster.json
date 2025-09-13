@@ -2,7 +2,7 @@
   "type": "createmissiles:missile_part",
   "ingredients": [
     {
-      "tag": ["minecraft:planks"],
+      "tags": ["minecraft:planks"],
       "count": 1
     },
     {
