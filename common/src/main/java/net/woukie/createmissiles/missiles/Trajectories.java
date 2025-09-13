@@ -65,6 +65,7 @@ public class Trajectories extends SavedData {
                 if (e == null) return false;
                 e.discard();
                 entityCache.remove(e.getUUID());
+                System.out.println("KILLED");
                 return true;
             }
             return false;
@@ -76,10 +77,11 @@ public class Trajectories extends SavedData {
 
             if (trajectory.getEntityId() == null) {
                 MissileEntity entity = new MissileEntity(EntityTypes.MISSILE.get(), level);
-                entityCache.put(entity.getUUID(), entity);
                 trajectory.updateEntityModel(entity);
                 level.addFreshEntity(entity);
                 trajectory.setEntityId(entity.getUUID());
+                entityCache.put(entity.getUUID(), entity);
+                System.out.println("CREATED NEW ENTITY");
                 setDirty();
                 return;
             }
@@ -90,7 +92,9 @@ public class Trajectories extends SavedData {
 //            Entity has likely been serialised TODO: unless it's been /killed
             if (entity == null) {
                 killEntityWhenever.add(uuid);
+                entityCache.remove(uuid);
                 trajectory.setEntityId(null); // To create a new entity for it next tick
+                System.out.println("NO ENTITY FOUND, RESETTING");
             }
 
             trajectory.tick(server);

@@ -26,6 +26,7 @@ public class ClickLaunchMessage {
 
     public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {
         Player player = contextSupplier.get().getPlayer();
+        if (player == null) return;
         ControlPanelBlockEntity controlPanel = ControlPanelInstanceTracker.get(player.level(), pos);
 
         if (controlPanel == null)

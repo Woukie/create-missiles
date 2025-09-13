@@ -31,10 +31,8 @@ public class SendDroneMessage {
     }
 
     public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {
-        CreateMissiles.LOGGER.info("SERVER GOT DRONE LAUNCH REQUEST");
-        CreateMissiles.LOGGER.info(entityUUID.toString());
-        CreateMissiles.LOGGER.info(desination.toString());
         Player player = contextSupplier.get().getPlayer();
+        if (player == null) return;
         Entity entity = ((ServerLevel)player.level()).getEntity(entityUUID);
         if (entity != null && (entity.getType() == EntityTypes.BASIC_DRONE.get() || entity.getType() == EntityTypes.REINFORCED_DRONE.get())) {
             ((Drone) entity).startMission(desination);

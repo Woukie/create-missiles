@@ -82,7 +82,9 @@ public class TriggerBuildParticles {
             x += Math.random() * 0.1 - 0.05;
             z += Math.random() * 0.1 - 0.05;
             for (int j = 0; j < 10; j++) {
-                contextSupplier.get().getPlayer().level().addParticle(net.woukie.createmissiles.registry.ParticleTypes.BUILD_SHRAPNEL.get(), x, y, z, 0, 0, 0);
+                var player = contextSupplier.get().getPlayer();
+                if (player == null) return;
+                player.level().addParticle(net.woukie.createmissiles.registry.ParticleTypes.BUILD_SHRAPNEL.get(), x, y, z, 0, 0, 0);
             }
         }
     }

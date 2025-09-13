@@ -29,6 +29,7 @@ public class ClickFuelMessage {
 
     public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {
         Player player = contextSupplier.get().getPlayer();
+        if (player == null) return;
         NavigationPanelBlockEntity blockEntity = NavigationPanelInstanceTracker.get(player.level(), source);
 
         if (blockEntity == null)
