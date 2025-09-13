@@ -374,10 +374,13 @@ public class Drone extends FlyingMob {
             double dZ = destination.getZ() - getZ();
             double distance = Math.sqrt(dX * dX + dZ * dZ);
             if (Math.abs(distance) > (double)1.0E-5F) {
+                float yTurnSpeed = 1.0F;
+                if (distance < 30) yTurnSpeed = 10F;
+
                 float angle = (float)Mth.atan2(dZ, dX);
                 float currentYRot = Mth.wrapDegrees(getYRot() + 90.0F);
                 float targetYRot = Mth.wrapDegrees(angle * (180F / (float)Math.PI));
-                setYRot(Mth.approachDegrees(currentYRot, targetYRot, 1.0F) - 90.0F);
+                setYRot(Mth.approachDegrees(currentYRot, targetYRot, yTurnSpeed) - 90.0F);
                 yBodyRot = getYRot();
 
                 float targetXRot = 0;
