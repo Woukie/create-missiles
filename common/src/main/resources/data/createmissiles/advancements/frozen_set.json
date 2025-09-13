@@ -1,0 +1,66 @@
+{
+  "parent": "createmissiles:assembly_set",
+  "criteria": {
+    "0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "createmissiles:warhead_assembly"
+            ],
+            "nbt": "{PartType:\"createmissiles:frozen_warhead\"}"
+          }
+        ]
+      }
+    },
+    "1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "createmissiles:chassis_assembly"
+            ],
+            "nbt": "{PartType:\"createmissiles:frozen_chassis\"}"
+          }
+        ]
+      }
+    },
+    "2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "createmissiles:thruster_assembly"
+            ],
+            "nbt": "{PartType:\"createmissiles:frozen_thruster\"}"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.createmissiles.frozen_set.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "createmissiles:chassis_assembly",
+      "nbt": "{PartType:\"createmissiles:frozen_chassis\"}"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.createmissiles.frozen_set.title"
+    }
+  },
+  "requirements": [
+    ["0"],
+    ["1"],
+    ["2"]
+  ],
+  "sends_telemetry_event": true
+}
