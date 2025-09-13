@@ -137,10 +137,10 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
         {
             maxThrustDuration = launchConfig.missileConfig.maxThrustDuration;
             relativeMinThrustDuration = (int)(minSolution.thrustDuration / maxThrustDuration * 100);
-        }else
-        {
-            System.out.println("No Solution" + System.currentTimeMillis());
         }
+//        else {
+//            System.out.println("No Solution" + System.currentTimeMillis());
+//        }
     }
 
     public BlockPos getTarget() {
