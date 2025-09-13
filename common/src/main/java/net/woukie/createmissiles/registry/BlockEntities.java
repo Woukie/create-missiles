@@ -14,7 +14,7 @@ public class BlockEntities {
 
     public static final BlockEntityEntry<LaunchPadBlockEntity> LAUNCH_PAD = REGISTRATE
             .blockEntity("launch_pad", LaunchPadBlockEntity::new)
-            .instance(() -> LaunchPadCogInstance::new, false)
+            .instance(() -> LaunchPadCogInstance::new, true)
             .validBlock(Blocks.LAUNCH_PAD)
             .register();
 
