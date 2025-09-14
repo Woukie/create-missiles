@@ -12,6 +12,7 @@ import org.joml.Vector3d;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static net.woukie.createmissiles.Util.traverseSupercover;
@@ -33,6 +34,7 @@ public class ExplodingAreaWorker implements Runnable {
     private int countX = 0;
     private int countY = 0;
     private int countZ = 0;
+    private int deadRayCount = 0;
 
     private boolean endEarly = false;
 
@@ -62,6 +64,13 @@ public class ExplodingAreaWorker implements Runnable {
 
         while ((!this.doneX || !this.doneY || !this.doneZ)) {
             if (endEarly) return;
+            if (deadRayCount > 20) {
+                this.doneX = true;
+                this.doneY = true;
+                this.doneZ = true;
+                break;
+            }
+
             processX(includeLowerX, includeUpperX);
             processY(includeLowerY, includeUpperY);
             processZ(includeLowerZ, includeUpperZ);
@@ -117,6 +126,8 @@ public class ExplodingAreaWorker implements Runnable {
         final double startPower = (0.8 + Math.random() * 0.2) * this.power;
         final AtomicReference<Float> totalHardness = new AtomicReference<>(0f);
         final AtomicReference<Integer> passedCount = new AtomicReference<>(0);
+        deadRayCount ++;
+        AtomicInteger blocksRemoved = new AtomicInteger();
         traverseSupercover(origin, new Vector3d(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5), traversedPos -> {
             if (endEarly) return true;
             double distance = traversedPos.distance(origin);
@@ -134,6 +145,7 @@ public class ExplodingAreaWorker implements Runnable {
                 final double averageHardness = totalHardness.get() / (double) passedBlocks;
                 final double powerLeft = startPower - ((HARDNESS_MULTIPLIER * averageHardness + HARDNESS_OFFSET + this.decay) * (distance + 0.3));
                 if (powerLeft > 0) {
+                    blocksRemoved.getAndIncrement();
                     if (Math.random() > 1 / startPower) {
                         removeBlocks.offer(traversedBlockPos);
                     } else {
@@ -146,6 +158,10 @@ public class ExplodingAreaWorker implements Runnable {
 
             return false;
         });
+
+        if ((double)blocksRemoved.get() / (double)passedCount.get() != 0) {
+            deadRayCount = 0;
+        }
     }
 
     public boolean isComplete() {
