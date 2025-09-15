@@ -28,7 +28,7 @@ public class NavigationPanelMenu extends AbstractBasicMenu {
     public NavigationPanelMenu(int id, Inventory playerInventory, Container container, ContainerData containerData, Container assemblyPanelContainer) {
         super(NAVIGATION_PANEL.get(), id, container);
         checkContainerSize(container, 1);
-        checkContainerDataCount(containerData, 14);
+        checkContainerDataCount(containerData, 12);
         this.containerData = containerData;
         this.assemblyPanelContainer = assemblyPanelContainer;
 
@@ -66,7 +66,7 @@ public class NavigationPanelMenu extends AbstractBasicMenu {
     }
 
     public NavigationPanelMenu(int id, Inventory inventory) {
-        this(id, inventory, new SimpleContainer(1), new SimpleContainerData(14), new SimpleContainer(3));
+        this(id, inventory, new SimpleContainer(1), new SimpleContainerData(12), new SimpleContainer(3));
     }
 
     public int getMapCrosshairX() {
@@ -98,15 +98,7 @@ public class NavigationPanelMenu extends AbstractBasicMenu {
     }
 
     public double getFuelPercent() {
-        return containerData.get(9) / 100.0;
-    }
-
-    public double getMinThrustDuration() {
-        return this.containerData.get(12) / 100.0;
-    }
-
-    public int getMaxThrustDuration(){
-        return this.containerData.get(13);
+        return Float.intBitsToFloat(containerData.get(9));
     }
 
     public boolean launchPadExists() {
@@ -152,7 +144,7 @@ public class NavigationPanelMenu extends AbstractBasicMenu {
         Packets.NAVIGATION_PANEL_CLICK_MAP.sendToServer(new ClickMapMessage(getSource(), x, z));
     }
 
-    public void clickFuel(double fuelClickZ) {
+    public void clickFuel(float fuelClickZ) {
         Packets.NAVIGATION_PANEL_CLICK_FUEL.sendToServer(new ClickFuelMessage(getSource(), fuelClickZ));
     }
 }

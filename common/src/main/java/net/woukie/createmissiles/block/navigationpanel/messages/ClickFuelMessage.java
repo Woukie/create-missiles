@@ -11,20 +11,20 @@ import java.util.function.Supplier;
 
 public class ClickFuelMessage {
     public final BlockPos source;
-    public final double fuelPercent;
+    public final float fuelPercent;
 
     public ClickFuelMessage(FriendlyByteBuf buf) {
-        this(buf.readBlockPos(), buf.readDouble());
+        this(buf.readBlockPos(), buf.readFloat());
     }
 
-    public ClickFuelMessage(BlockPos source, double fuelPercent) {
+    public ClickFuelMessage(BlockPos source, float fuelPercent) {
         this.source = source;
         this.fuelPercent = fuelPercent;
     }
 
     public void encode(FriendlyByteBuf buf) {
         buf.writeBlockPos(source);
-        buf.writeDouble(fuelPercent);
+        buf.writeFloat(fuelPercent);
     }
 
     public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {

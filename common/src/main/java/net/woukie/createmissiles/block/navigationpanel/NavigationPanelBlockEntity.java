@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;
@@ -14,6 +15,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,34 +26,25 @@ import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
 import net.woukie.createmissiles.block.navigationpanel.messages.UpdateMapDataMessage;
 import net.woukie.createmissiles.inventory.NavigationPanelMenu;
-import net.woukie.createmissiles.missiles.parts.ChassisType;
-import net.woukie.createmissiles.missiles.parts.ThrusterType;
-import net.woukie.createmissiles.missiles.parts.WarheadType;
-import net.woukie.createmissiles.missiles.trajectories.TrajectoryHelper;
 import net.woukie.createmissiles.registry.BlockEntities;
 import net.woukie.createmissiles.registry.Packets;
-import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
-
-import static net.woukie.createmissiles.missiles.trajectories.TrajectoryHelper.findMinLaunchSolution;
 
 public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
     public static final int SLOT_MAP = 0;
 
-    private double mapCrosshairX, mapCrosshairZ, thrustDurationPercent;
+    private double mapCrosshairX, mapCrosshairZ;
+    private float thrustDurationPercent;
     private boolean initialized;
     private BlockPos target;
     private final ContainerData dataAccess;
-    private AssemblyPanelBlockEntity assemblyPanel;
-    private int relativeMinThrustDuration = 0;
-    private double maxThrustDuration = 0;
 
     public NavigationPanelBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
         this.items = NonNullList.withSize(1, ItemStack.EMPTY);
         this.mapCrosshairX = 64;
         this.mapCrosshairZ = 64;
-        this.thrustDurationPercent = 0;
+        this.thrustDurationPercent = 0.5f;
         this.dataAccess = new ContainerData() {
             public int get(int i) {
                 return switch (i) {
@@ -61,10 +54,10 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
                     case 3 -> target == null ? 0 : target.getX();
                     case 4 -> target == null ? 0 : target.getY();
                     case 5 -> target == null ? 0 : target.getZ();
-                    case 6 -> getBlockPos().getX();
+                    case 6 -> getBlockPos().getX(); // TODO: replace with actual source pos (middle of launch pad)
                     case 7 -> getBlockPos().getY();
                     case 8 -> getBlockPos().getZ();
-                    case 9 -> (int) (thrustDurationPercent * 100D);
+                    case 9 -> Float.floatToIntBits(thrustDurationPercent);
                     case 10 -> MultiblockHelper.findCorner(
                             blockPos,
                             blockState.getValue(AssemblyPanelBlock.FACING).getOpposite(),
@@ -76,8 +69,6 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
                             getLevel(),
                             BlockEntities.ASSEMBLY_PANEL.get()
                     ) == null ? 0 : 1;
-                    case 12 -> relativeMinThrustDuration;
-                    case 13 -> (int)maxThrustDuration;
                     default -> 0;
                 };
             }
@@ -85,7 +76,7 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
             public void set(int i, int j) {}
 
             public int getCount() {
-                return 14;
+                return 12;
             }
         };
     }
@@ -94,66 +85,26 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
         if (!initialized && hasLevel()) {
             initialized = true;
             NavigationPanelInstanceTracker.add(this);
-            recalculateTarget();
         }
 
-
-        ItemStack itemStack = getItem(0);
-        if (!itemStack.is(Items.FILLED_MAP) || itemStack.isEmpty() || level == null) return;
-
-        assemblyPanel = (AssemblyPanelBlockEntity) MultiblockHelper.findEdgeBlock(
-                this,
-                getLevel(),
-                BlockEntities.ASSEMBLY_PANEL.get()
-        );
+        tickTarget();
     }
 
-    public void fuelClicked(double fuelPercent) {
+    public void fuelClicked(float fuelPercent) {
         this.thrustDurationPercent = fuelPercent;
     }
 
     public void mapClicked(double mapCrosshairX, double mapCrosshairZ) {
         this.mapCrosshairX = mapCrosshairX;
         this.mapCrosshairZ = mapCrosshairZ;
-        recalculateTarget();
-
-        ItemStack warheadItem = assemblyPanel.getItem(0);
-        ItemStack chassisItem = assemblyPanel.getItem(1);
-        ItemStack thrusterItem = assemblyPanel.getItem(2);
-
-
-        WarheadType warheadType = (WarheadType) PartTypes.get(warheadItem);
-        ChassisType chassisType = (ChassisType) PartTypes.get(chassisItem);
-        ThrusterType thrusterType = (ThrusterType) PartTypes.get(thrusterItem);
-
-        if(warheadType == null || chassisType == null || thrusterType == null) return;
-
-        TrajectoryHelper.MissileConfig missileConfig = new TrajectoryHelper.MissileConfig(thrusterType, chassisType, warheadType);
-        double[] launchAngleRange = {0, 90};
-        TrajectoryHelper.LaunchConfig launchConfig = new TrajectoryHelper.LaunchConfig(worldPosition, target, launchAngleRange, 0, missileConfig);
-        TrajectoryHelper.LaunchSolution minSolution = findMinLaunchSolution(launchConfig);
-
-        if(minSolution != null)
-        {
-            maxThrustDuration = launchConfig.missileConfig.maxThrustDuration;
-            relativeMinThrustDuration = (int)(minSolution.thrustDuration / maxThrustDuration * 100);
-        }
-//        else {
-//            System.out.println("No Solution" + System.currentTimeMillis());
-//        }
+        this.target = null;
     }
 
     public BlockPos getTarget() {
-        recalculateTarget();
         return this.target;
     }
 
-    @SuppressWarnings("unused")
-    public double getThrustDurationPercent() {
-        return thrustDurationPercent;
-    }
-
-    private void recalculateTarget() {
+    private void tickTarget() {
         ItemStack mapItem = getItem(SLOT_MAP);
         if (!mapItem.is(Items.FILLED_MAP) || level == null) {
             target = null;
@@ -170,6 +121,12 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
         int blockX = (int)(mapData.centerX - 64 * multiplier + (multiplier * mapCrosshairX));
         int blockZ = (int)(mapData.centerZ - 64 * multiplier + (multiplier * mapCrosshairZ));
 
+        ChunkPos chunkPos = new ChunkPos(new BlockPos(blockX, 0, blockZ));
+        if (!level.isLoaded(new BlockPos(blockX, 0, blockZ))) {
+            ((ServerLevel) level).setChunkForced(chunkPos.x,  chunkPos.z, true);
+            return;
+        }
+
         int scan = level.getMaxBuildHeight();
         BlockPos impactPos = new BlockPos(blockX, scan, blockZ);
         while (scan >= level.getMinBuildHeight()) {
@@ -178,8 +135,8 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
                 break;
             scan--;
         }
-
         target = impactPos;
+        ((ServerLevel) level).setChunkForced(chunkPos.x,  chunkPos.z, false);
     }
 
     @Override
@@ -197,7 +154,7 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
 
         this.mapCrosshairX = compoundTag.getDouble("MapCrosshairX");
         this.mapCrosshairZ = compoundTag.getDouble("MapCrosshairZ");
-        this.thrustDurationPercent = compoundTag.getDouble("FuelPercent");
+        this.thrustDurationPercent = compoundTag.getFloat("FuelPercent");
     }
 
     @Override
@@ -206,7 +163,7 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
 
         compoundTag.putDouble("MapCrosshairX", this.mapCrosshairX);
         compoundTag.putDouble("MapCrosshairZ", this.mapCrosshairZ);
-        compoundTag.putDouble("FuelPercent", this.thrustDurationPercent);
+        compoundTag.putFloat("FuelPercent", this.thrustDurationPercent);
 
         ContainerHelper.saveAllItems(compoundTag, this.items);
     }
@@ -218,9 +175,6 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
 
     @Override
     protected @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory) {
-        recalculateTarget();
-
-
         Direction facing = getBlockState().getValue(AssemblyPanelBlock.FACING).getOpposite();
         BlockPos corner = MultiblockHelper.findCorner(getBlockPos(), facing, level);
         BlockEntity assemblyPanel = MultiblockHelper.findEdgeBlock(corner, facing, getLevel(), BlockEntities.ASSEMBLY_PANEL.get());
@@ -241,5 +195,9 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
     @Override
     public boolean canPlaceItem(int i, @NotNull ItemStack itemStack) {
         return i == 0 && itemStack.is(Items.FILLED_MAP);
+    }
+
+    public float getThrustDurationPercent() {
+        return thrustDurationPercent;
     }
 }

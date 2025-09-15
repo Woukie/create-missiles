@@ -2,11 +2,8 @@ package net.woukie.createmissiles.client.screens;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -23,17 +20,18 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static net.woukie.createmissiles.missiles.trajectories.TrajectoryHelper.findLaunchAngle;
 
 public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPanelMenu> {
     private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/navigation_panel.png");
     private static final ResourceLocation MAP_ERROR = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/map_error.png");
+    private static final ResourceLocation NO_MAP = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/no_map.png");
     private static final ResourceLocation MAP_TARGET_HORIZONTAL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_horizontal.png");
     private static final ResourceLocation MAP_TARGET_VERTICAL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_vertical.png");
     private static final ResourceLocation MAP_TARGET = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_marker.png");
+    private static final ResourceLocation TRAJECTORY_NO_MAP = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/trajectory_no_map.png");
+    private static final ResourceLocation TRAJECTORY_TARGET_LOADING = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/trajectory_target_loading.png");
+    private static final ResourceLocation INVALID_SETUP = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/invalid_setup.png");
     private static final ResourceLocation FUEL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel.png");
     private static final ResourceLocation FUEL_GAUGE = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel_gauge.png");
     private static final ResourceLocation MIN_THRUST_DURATION = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/min_thrust_duration.png");
@@ -55,12 +53,13 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
 
     private double currentMapCrosshairX = 0;
     private double currentMapCrosshairZ = 0;
-    private double currentFuel2 = 0;
     private double currentFuel1 = 0;
+    private double currentFuel2 = 0;
     private double currentMinThrustDuration1 = 0;
     private double currentMinThrustDuration2 = 0;
+    private double maxThrustDuration = 0;
+    private double minThrustDuration = 0;
 
-    private final ArrayList<String> errors = new ArrayList<>();
     private List<Vector2d> missilePositions;
     private double maxHeight = 0;
     private double lastFuelPercent = 0;
@@ -80,16 +79,18 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
 
     @Override
     protected void renderBg(GuiGraphics gui, float f, int i, int j) {
-        errors.clear();
         gui.pose().pushPose();
         gui.pose().translate(leftPos, topPos, -1);
 
         gui.blit(BACKGROUND, 0, 0, 0, 0, this.imageWidth, this.imageHeight);
 
+        tickTrajectory();
+        lastTargetPos = getMenu().getTarget();
+        lastFuelPercent = getMenu().getFuelPercent();
+
         renderMap(gui);
         renderFuel(gui);
         renderTrajectory(gui);
-        renderErrors(gui);
         renderText(gui);
         gui.pose().popPose();
     }
@@ -113,7 +114,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
 
         if (isHovering(fuelLeft, fuelTop, fuelWidth, fuelHeight, x, z)) {
             double fuelClickZ = z - topPos - fuelTop;
-            getMenu().clickFuel(1 - fuelClickZ / fuelHeight);
+            getMenu().clickFuel((float) (1 - fuelClickZ / fuelHeight));
         }
 
         return super.mouseClicked(x, z, i);
@@ -124,7 +125,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
 
         ItemStack mapItem = getMenu().getMap();
         if (mapItem == null){
-            errors.add(Component.translatable("gui.createmissiles.navigation_panel.no_map").getString());
+            gui.blit(NO_MAP, mapLeft, mapTop, 5, 0, 0, mapWidth, mapHeight, mapWidth, mapHeight);
             return;
         }
 
@@ -132,7 +133,6 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         MapItemSavedData mapData = MapItem.getSavedData(mapId, minecraft.level);
         if(mapId == null || mapData == null) {
             gui.blit(MAP_ERROR, mapLeft, mapTop, 5, 0, 0, mapWidth, mapHeight, mapWidth, mapHeight);
-            errors.add(Component.translatable("gui.createmissiles.navigation_panel.no_map_data").getString());
             return;
         }
 
@@ -140,17 +140,6 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         gui.pose().translate(mapLeft, mapTop, 1);
         gui.pose().scale((float) mapWidth / 128, (float) mapHeight / 128, 1);
         this.minecraft.gameRenderer.getMapRenderer().render(gui.pose(), gui.bufferSource(), mapId, mapData, true, 15728880);
-        gui.pose().popPose();
-    }
-
-    private void renderErrors(GuiGraphics gui) {
-        if (errors.isEmpty())
-            return;
-        String errorLog = String.join("\n", errors);
-        gui.pose().pushPose();
-        gui.pose().translate(trajectoryLeft, trajectoryTop, 0);
-        gui.pose().scale(0.5F, 0.5F, 1);
-        gui.drawWordWrap(this.font, FormattedText.of(errorLog, Style.EMPTY.withColor(16777215)), 2, 2, trajectoryWidth * 2 - 4, trajectoryHeight * 2 - 4);
         gui.pose().popPose();
     }
 
@@ -187,16 +176,14 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
     private void renderTrajectory(GuiGraphics gui) {
         assert minecraft != null;
 
-        if (!errors.isEmpty())
-            return;
-
-        if (!getMenu().launchPadExists()){
-            errors.add(Component.translatable("gui.createmissiles.navigation_panel.no_launch_pad").getString());
+        if (!getMenu().launchPadExists() || getMenu().assemblyPanelAbsent()){
+            gui.blit(INVALID_SETUP, trajectoryLeft, trajectoryTop, 5, 0, 0, trajectoryWidth, trajectoryHeight, trajectoryWidth, trajectoryHeight);
             return;
         }
 
-        if (getMenu().assemblyPanelAbsent()) {
-            errors.add(Component.translatable("gui.createmissiles.navigation_panel.no_assembly_panel").getString());
+        ItemStack mapItem = getMenu().getMap();
+        if (mapItem == null){
+            gui.blit(TRAJECTORY_NO_MAP, trajectoryLeft, trajectoryTop, 5, 0, 0, trajectoryWidth, trajectoryHeight, trajectoryWidth, trajectoryHeight);
             return;
         }
 
@@ -204,7 +191,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         BlockPos target = getMenu().getTarget();
 
         if (source == null || target == null) {
-            errors.add(Component.translatable("gui.createmissiles.navigation_panel.no_target").getString());
+            gui.blit(TRAJECTORY_TARGET_LOADING, trajectoryLeft, trajectoryTop, 5, 0, 0, trajectoryWidth, trajectoryHeight, trajectoryWidth, trajectoryHeight);
             return;
         }
 
@@ -213,14 +200,8 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         ItemStack thruster = getMenu().getThruster();
 
         if (warhead == null || chassis == null || thruster == null) {
-            errors.add(Component.translatable("gui.createmissiles.navigation_panel.no_assemblies").getString());
+            gui.blit(INVALID_SETUP, trajectoryLeft, trajectoryTop, 5, 0, 0, trajectoryWidth, trajectoryHeight, trajectoryWidth, trajectoryHeight);
             return;
-        }
-
-        if(lastFuelPercent != getMenu().getFuelPercent() || !lastTargetPos.equals(getMenu().getTarget())){
-            reCalculateTrajectory(gui, target, source, warhead, chassis, thruster);
-            lastTargetPos = getMenu().getTarget();
-            lastFuelPercent = getMenu().getFuelPercent();
         }
 
         if(missilePositions == null) return;
@@ -246,7 +227,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         gui.pose().pushPose();
         float scale = 0.6f;
         gui.pose().scale(scale, scale, scale);
-        String textTime = Integer.toString(getMenu().getMaxThrustDuration());
+        String textTime = Double.toString(maxThrustDuration);
         int paddingX = 3;
         gui.drawString(
                 this.font,
@@ -268,11 +249,11 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
     }
 
     private void renderFuel(GuiGraphics gui) {
-        currentFuel1 += (getMenu().getFuelPercent() - currentFuel2) * 0.1F;
-        currentFuel2 += (currentFuel1 - currentFuel2) * 0.1F;
+        currentFuel1 += (getMenu().getFuelPercent() - currentFuel2) * 0.1;
+        currentFuel2 += (currentFuel1 - currentFuel2) * 0.1;
 
-        currentMinThrustDuration1 += (getMenu().getMinThrustDuration() - currentMinThrustDuration2) * 0.1F;
-        currentMinThrustDuration2 += (currentMinThrustDuration1 - currentMinThrustDuration2) * 0.1F;
+        currentMinThrustDuration1 += (minThrustDuration - currentMinThrustDuration2) * 0.1;
+        currentMinThrustDuration2 += (currentMinThrustDuration1 - currentMinThrustDuration2) * 0.1;
 
         int barHeight = fuelHeight - (int)(currentFuel2 * fuelHeight);
         barHeight = Math.min(Math.max(barHeight, 0), fuelHeight);
@@ -288,21 +269,40 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         gui.pose().popPose();
     }
 
-    private void reCalculateTrajectory(GuiGraphics gui, BlockPos target, BlockPos source, ItemStack warhead, ItemStack chassis, ItemStack thruster){
-        WarheadType warheadType = (WarheadType) PartTypes.get(warhead);
-        ChassisType chassisType = (ChassisType) PartTypes.get(chassis);
-        ThrusterType thrusterType = (ThrusterType) PartTypes.get(thruster);
+    private void tickTrajectory() {
+        BlockPos target = getMenu().getTarget();
+        if (target == null) return;
+        if (lastFuelPercent == getMenu().getFuelPercent() && target.equals(lastTargetPos)) {
+            return;
+        }
+
+        BlockPos source = getMenu().getSource();
+
+        WarheadType warheadType = (WarheadType) PartTypes.get(getMenu().getWarhead());
+        ChassisType chassisType = (ChassisType) PartTypes.get(getMenu().getChassis());
+        ThrusterType thrusterType = (ThrusterType) PartTypes.get(getMenu().getThruster());
+
+        if (warheadType == null || chassisType == null || thrusterType == null) return;
 
         TrajectoryHelper.MissileConfig missileConfig = new TrajectoryHelper.MissileConfig(thrusterType, chassisType, warheadType);
         double[] launchAngleRange = {0, 90};
         TrajectoryHelper.LaunchConfig launchConfig = new TrajectoryHelper.LaunchConfig(source, target, launchAngleRange, missileConfig.maxThrustDuration * menu.getFuelPercent(), missileConfig);
 
-        double angle = findLaunchAngle(launchConfig, launchConfig.selectedThrustDuration);
+        double angle = TrajectoryHelper.findLaunchAngle(launchConfig, launchConfig.selectedThrustDuration);
         missilePositions = TrajectoryHelper.simulate(launchConfig, angle, launchConfig.selectedThrustDuration);
         List<Vector2d> maxData = TrajectoryHelper.simulate(launchConfig, angle, launchConfig.selectedThrustDuration);
 
-        for (int g = 0; g < maxData.size(); g++) {
-            maxHeight = Math.max(maxHeight, maxData.get(g).y);
+        for (Vector2d maxDatum : maxData) {
+            maxHeight = Math.max(maxHeight, maxDatum.y);
+        }
+
+//        Minimum launch crap
+        TrajectoryHelper.LaunchConfig minLaunchConfig = new TrajectoryHelper.LaunchConfig(source, target, launchAngleRange, 0, missileConfig);
+        TrajectoryHelper.LaunchSolution minSolution = TrajectoryHelper.findMinLaunchSolution(minLaunchConfig);
+
+        if (minSolution != null) {
+            maxThrustDuration = (float) launchConfig.missileConfig.maxThrustDuration;
+            minThrustDuration = (float) (minSolution.thrustDuration / maxThrustDuration);
         }
     }
 }
