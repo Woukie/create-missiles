@@ -10,16 +10,18 @@ public class CreateFlashMessage {
     public final Integer  colour;
     public final BlockPos origin;
     public final Integer radius;
+    public final Double intentsity;
     public final Integer length;
 
     public CreateFlashMessage(FriendlyByteBuf buf) {
-        this(buf.readInt(), buf.readBlockPos(), buf.readInt(), buf.readInt());
+        this(buf.readInt(), buf.readBlockPos(), buf.readInt(), buf.readDouble(), buf.readInt());
     }
 
-    public CreateFlashMessage(Integer colour, BlockPos origin, Integer radius, Integer length) {
+    public CreateFlashMessage(Integer colour, BlockPos origin, Integer radius, Double intentsity, Integer length) {
         this.colour = colour;
         this.origin = origin;
         this.radius = radius;
+        this.intentsity = intentsity;
         this.length = length;
     }
 
@@ -27,6 +29,7 @@ public class CreateFlashMessage {
         buf.writeInt(colour);
         buf.writeBlockPos(origin);
         buf.writeInt(radius);
+        buf.writeDouble(intentsity);
         buf.writeInt(length);
     }
 
@@ -35,6 +38,7 @@ public class CreateFlashMessage {
                 colour,
                 origin,
                 radius,
+                intentsity,
                 length
         ));
     }

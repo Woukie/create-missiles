@@ -41,7 +41,7 @@ public class ExplosionHandler extends SavedData {
         explosion.getLevel().players().forEach(player -> {
             double distance = player.position().distanceTo(explosion.getOrigin().getCenter());
             if (distance < explosion.getMaxRadius() * 4) {
-                Packets.CREATE_FLASH.sendToPlayer((ServerPlayer) player, new CreateFlashMessage(colour, explosion.getOrigin(), explosion.getMaxRadius(), length));
+                Packets.CREATE_FLASH.sendToPlayer((ServerPlayer) player, new CreateFlashMessage(colour, explosion.getOrigin(), explosion.getMaxRadius(), explosion.getPower(), length));
             }
         });
         setDirty();

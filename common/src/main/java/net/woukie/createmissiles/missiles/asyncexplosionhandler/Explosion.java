@@ -199,4 +199,8 @@ public class Explosion {
     public int getMaxRadius() {
         return maxRadius;
     }
+
+    public double getPower() {
+        return power;
+    }
 }
