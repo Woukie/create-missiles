@@ -287,6 +287,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         TrajectoryHelper.MissileConfig missileConfig = new TrajectoryHelper.MissileConfig(thrusterType, chassisType, warheadType);
         double[] launchAngleRange = {0, 90};
         TrajectoryHelper.LaunchConfig launchConfig = new TrajectoryHelper.LaunchConfig(source, target, launchAngleRange, missileConfig.maxThrustDuration * menu.getFuelPercent(), missileConfig);
+        maxThrustDuration = (float) launchConfig.missileConfig.maxThrustDuration;
 
         double angle = TrajectoryHelper.findLaunchAngle(launchConfig, launchConfig.selectedThrustDuration);
         missilePositions = TrajectoryHelper.simulate(launchConfig, angle, launchConfig.selectedThrustDuration);
@@ -300,7 +301,6 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         TrajectoryHelper.LaunchSolution minSolution = TrajectoryHelper.findMinLaunchSolution(minLaunchConfig);
 
         if (minSolution != null) {
-            maxThrustDuration = (float) launchConfig.missileConfig.maxThrustDuration;
             minThrustDuration = (float) (minSolution.thrustDuration / maxThrustDuration);
         } else {
             minThrustDuration = maxThrustDuration;
