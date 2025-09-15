@@ -95,6 +95,7 @@
   "entity.createmissiles.messy": "Messy",
   "entity.createmissiles.basic_drone": "Basic Drone",
   "entity.createmissiles.reinforced_drone": "Reinforced Drone",
+  "description.jei.createmissiles.item.dragon_egg_shell": "Obtained by smashing a Dragon Egg with a Direct Hit Warhead",
   "description.jei.createmissiles.generic.mass": "Mass: %1$skg",
   "description.jei.createmissiles.generic.thrust": "Thrust: %1$sN",
   "description.jei.createmissiles.generic.burn_rate": "Burn rate: %1$sm^3/s",

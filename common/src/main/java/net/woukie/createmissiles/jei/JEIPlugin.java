@@ -50,6 +50,8 @@ public class JEIPlugin implements IModPlugin {
             registration.addItemStackInfo(stack, description);
         });
 
+        registration.addItemStackInfo(Items.DRAGON_EGG_SHELL.get().getDefaultInstance(), Component.translatable("description.jei.createmissiles.item.dragon_egg_shell"));
+
         registration.addItemStackInfo(Items.EXCAVATOR_UPGRADE_CORE.get().getDefaultInstance(), Component.translatable("description.jei.createmissiles.generic.upgrade_core"));
         registration.addItemStackInfo(Items.FIREWORK_UPGRADE_CORE.get().getDefaultInstance(), Component.translatable("description.jei.createmissiles.generic.upgrade_core"));
         registration.addItemStackInfo(Items.FLAMING_UPGRADE_CORE.get().getDefaultInstance(), Component.translatable("description.jei.createmissiles.generic.upgrade_core"));
