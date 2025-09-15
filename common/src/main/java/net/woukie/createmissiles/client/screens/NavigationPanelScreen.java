@@ -296,13 +296,14 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
             maxHeight = Math.max(maxHeight, maxDatum.y);
         }
 
-//        Minimum launch crap
         TrajectoryHelper.LaunchConfig minLaunchConfig = new TrajectoryHelper.LaunchConfig(source, target, launchAngleRange, 0, missileConfig);
         TrajectoryHelper.LaunchSolution minSolution = TrajectoryHelper.findMinLaunchSolution(minLaunchConfig);
 
         if (minSolution != null) {
             maxThrustDuration = (float) launchConfig.missileConfig.maxThrustDuration;
             minThrustDuration = (float) (minSolution.thrustDuration / maxThrustDuration);
+        } else {
+            minThrustDuration = maxThrustDuration;
         }
     }
 }
