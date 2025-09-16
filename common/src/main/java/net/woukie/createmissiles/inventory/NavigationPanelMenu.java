@@ -15,9 +15,6 @@ import net.woukie.createmissiles.block.navigationpanel.messages.ClickMapMessage;
 import net.woukie.createmissiles.registry.Items;
 import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector2d;
-
-import java.util.List;
 
 import static net.woukie.createmissiles.registry.Menus.NAVIGATION_PANEL;
 

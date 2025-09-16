@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
@@ -69,7 +68,6 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
     private final List<Vector2d> positions = new ArrayList<>();
     private double maxHeight = 256;
     private double lastFuelPercent = 0;
-    private ItemStack lastMap = null;
     private double distanceToTarget = 0;
     private BlockPos lastTargetPos = new BlockPos(0, 0, 0);
     private Float lastUpperLaunchAngle = null;
@@ -94,13 +92,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
 
         gui.blit(BACKGROUND, 0, 0, 0, 0, this.imageWidth, this.imageHeight);
 
-        tickTrajectory();
-        lastTargetPos = getMenu().getTarget();
-        lastFuelPercent = getMenu().getFuelPercent();
-        lastMap = getMenu().getMap();
-        lastUpperLaunchAngle = getMenu().getUpperLaunchAngle();
-        lastLowerLaunchAngle = getMenu().getLowerLaunchAngle();
-
+        simulateTrajectory();
         renderMap(gui);
         renderFuel(gui);
         renderTrajectory(gui);
@@ -306,16 +298,26 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         gui.pose().popPose();
     }
 
-    private void tickTrajectory() {
+    private void simulateTrajectory() {
         BlockPos target = getMenu().getTarget();
         if (target == null) {
             distanceToTarget = 0;
+            positions.clear();
             return;
         }
-        if (getMenu().getMap() != lastMap && lastFuelPercent == getMenu().getFuelPercent() && target.equals(lastTargetPos) && lastUpperLaunchAngle == menu.getUpperLaunchAngle() && lastLowerLaunchAngle == menu.getLowerLaunchAngle()) {
-            return;
-        }
-        
+
+        if (target.equals(lastTargetPos) &&
+                lastFuelPercent == getMenu().getFuelPercent() &&
+                lastUpperLaunchAngle == getMenu().getUpperLaunchAngle() &&
+                lastLowerLaunchAngle == getMenu().getLowerLaunchAngle()
+        ) return;
+        lastTargetPos = getMenu().getTarget();
+        lastFuelPercent = getMenu().getFuelPercent();
+        lastUpperLaunchAngle = getMenu().getUpperLaunchAngle();
+        lastLowerLaunchAngle = getMenu().getLowerLaunchAngle();
+
+        if (!positions.isEmpty()) return;
+
         WarheadType warheadType = (WarheadType) PartTypes.get(getMenu().getWarhead());
         ChassisType chassisType = (ChassisType) PartTypes.get(getMenu().getChassis());
         ThrusterType thrusterType = (ThrusterType) PartTypes.get(getMenu().getThruster());

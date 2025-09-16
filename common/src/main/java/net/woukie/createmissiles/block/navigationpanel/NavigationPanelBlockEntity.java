@@ -131,12 +131,14 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
         ItemStack mapItem = getItem(SLOT_MAP);
         if (!mapItem.is(Items.FILLED_MAP) || level == null) {
             target = null;
+            this.simulatedTrajectory = null;
             return;
         }
 
         MapItemSavedData mapData = MapItem.getSavedData(mapItem, level);
         if (mapData == null) {
             target = null;
+            this.simulatedTrajectory = null;
             return;
         }
 

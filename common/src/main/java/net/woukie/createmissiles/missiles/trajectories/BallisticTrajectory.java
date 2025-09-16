@@ -145,6 +145,7 @@ public class BallisticTrajectory extends Trajectory {
 
     public void refineLaunchAngleOnce() {
 //        Unlikely to actually do all of these unless there's no solution
+//        TODO: Make no solution simulations shorter
         int angles = 40;
 
         if (upperDistanceToTarget == null) upperDistanceToTarget = getDistanceToTarget(upperLaunchAngle);
