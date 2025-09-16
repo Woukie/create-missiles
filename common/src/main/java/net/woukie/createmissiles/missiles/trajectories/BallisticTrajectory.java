@@ -257,6 +257,14 @@ public class BallisticTrajectory extends Trajectory {
         return new Vector3d(velocity);
     }
 
+    public void setUpperLaunchAngle(Double upperLaunchAngle) {
+        this.upperLaunchAngle = upperLaunchAngle;
+    }
+
+    public void setLowerLaunchAngle(Double lowerLaunchAngle) {
+        this.lowerLaunchAngle = lowerLaunchAngle;
+    }
+
     private int getSign(double val){
         return val >= 0 ? 1 : -1;
     }

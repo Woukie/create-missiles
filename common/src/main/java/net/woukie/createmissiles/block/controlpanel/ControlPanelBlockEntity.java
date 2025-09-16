@@ -40,6 +40,7 @@ import net.woukie.createmissiles.missiles.parts.ChassisType;
 import net.woukie.createmissiles.missiles.parts.MissilePartType;
 import net.woukie.createmissiles.missiles.parts.ThrusterType;
 import net.woukie.createmissiles.missiles.parts.WarheadType;
+import net.woukie.createmissiles.missiles.trajectories.BallisticTrajectory;
 import net.woukie.createmissiles.recipe.MissileIngredient;
 import net.woukie.createmissiles.recipe.MissilePartRecipe;
 import net.woukie.createmissiles.registry.*;
@@ -419,6 +420,11 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
                 (Container)this,
                 navigationPanel
         );
+
+        if (trajectory instanceof BallisticTrajectory ballisticTrajectory) {
+            ballisticTrajectory.setLowerLaunchAngle(navigationPanel.getLowerLaunchAngle());
+            ballisticTrajectory.setUpperLaunchAngle(navigationPanel.getUpperLaunchAngle());
+        }
 
         Trajectories trajectories = Trajectories.get();
         trajectories.launch(trajectory);

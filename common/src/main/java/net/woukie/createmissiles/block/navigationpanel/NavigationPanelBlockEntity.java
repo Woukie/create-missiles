@@ -247,6 +247,20 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
         return i == 0 && itemStack.is(Items.FILLED_MAP);
     }
 
+    public double getUpperLaunchAngle() {
+        if (simulatedTrajectory instanceof BallisticTrajectory ballisticTrajectory) {
+            return ballisticTrajectory.getUpperLaunchAngle();
+        }
+        return 0;
+    }
+
+    public double getLowerLaunchAngle() {
+        if (simulatedTrajectory instanceof BallisticTrajectory ballisticTrajectory) {
+            return ballisticTrajectory.getLowerLaunchAngle();
+        }
+        return 0;
+    }
+
     public float getThrustDurationPercent() {
         return thrustDurationPercent;
     }
