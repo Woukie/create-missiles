@@ -214,7 +214,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         gui.pose().pushPose();
         gui.pose().translate(trajectoryLeft + trajectoryPadding, trajectoryTop + trajectoryPadding, 0);
 
-        double yTop = 256;
+        double yTop = maxHeight;
         double yBottom = Math.min(target.getY(), source.getY());
         double xStart = 0;
         double xEnd = Vector3d.distance(target.getX(), 0, target.getZ(), source.getX(), 0, source.getZ());
@@ -352,6 +352,21 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
             simulatedTrajectory.tick();
         }
         distanceToTarget = minDistance;
+
+        BallisticTrajectory maxFuelSimulatedTrajectory = new BallisticTrajectory(
+                new Vector3d(start),
+                new Vector3d(end),
+                warheadType,
+                chassisType,
+                thrusterType,
+                launchAngle,
+                1
+        );
+
+        while (!(maxFuelSimulatedTrajectory.getVelocity().y < 0)) {
+            maxHeight = maxFuelSimulatedTrajectory.getPosition().y;
+            maxFuelSimulatedTrajectory.tick();
+        }
     }
 
     private double mapRange(double value, double oldMin, double oldMax, double newMin, double nawMax) {
