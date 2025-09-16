@@ -316,8 +316,6 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         lastUpperLaunchAngle = getMenu().getUpperLaunchAngle();
         lastLowerLaunchAngle = getMenu().getLowerLaunchAngle();
 
-        if (!positions.isEmpty()) return;
-
         WarheadType warheadType = (WarheadType) PartTypes.get(getMenu().getWarhead());
         ChassisType chassisType = (ChassisType) PartTypes.get(getMenu().getChassis());
         ThrusterType thrusterType = (ThrusterType) PartTypes.get(getMenu().getThruster());

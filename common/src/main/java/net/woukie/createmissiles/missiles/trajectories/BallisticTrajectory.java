@@ -35,6 +35,8 @@ public class BallisticTrajectory extends Trajectory {
     protected Double lowerLaunchAngle;
     protected Double lowerDistanceToTarget;
 
+    protected boolean stopRefiningAngle = false;
+
     @Override
     public void tick() {
         super.tick();
@@ -118,6 +120,7 @@ public class BallisticTrajectory extends Trajectory {
         this.lowerLaunchAngle = data.getDouble("LowerLaunchAngle");
         this.upperDistanceToTarget = data.contains("UpperDistanceToTarget") ? data.getDouble("UpperDistanceToTarget") : null;
         this.lowerDistanceToTarget = data.contains("LowerDistanceToTarget") ? data.getDouble("LowerDistanceToTarget") : null;
+        this.stopRefiningAngle = data.getBoolean("StopRefiningAngle");
     }
 
     //    Called when serializing a trajectory when exiting the world
@@ -139,7 +142,8 @@ public class BallisticTrajectory extends Trajectory {
         superData.putDouble("UpperLaunchAngle", upperLaunchAngle);
         superData.putDouble("LowerLaunchAngle", lowerLaunchAngle);
         if (upperDistanceToTarget != null) superData.putDouble("UpperDistanceToTarget", upperDistanceToTarget);
-        if (lowerLaunchAngle != null) superData.putDouble("LowerDistanceToTarget", lowerDistanceToTarget);
+        if (lowerDistanceToTarget != null) superData.putDouble("LowerDistanceToTarget", lowerDistanceToTarget);
+        superData.putBoolean("StopRefiningAngle", stopRefiningAngle);
         return superData;
     }
 
@@ -147,6 +151,8 @@ public class BallisticTrajectory extends Trajectory {
 //        Unlikely to actually do all of these unless there's no solution
 //        TODO: Make no solution simulations shorter
         int angles = 40;
+
+        if (stopRefiningAngle) return;
 
         if (upperDistanceToTarget == null) upperDistanceToTarget = getDistanceToTarget(upperLaunchAngle);
         if (lowerDistanceToTarget == null) lowerDistanceToTarget = getDistanceToTarget(lowerLaunchAngle);
@@ -183,6 +189,7 @@ public class BallisticTrajectory extends Trajectory {
             }
         }
 
+        if ((lowerDistanceToTarget + upperDistanceToTarget) / 2 - (bestUpperDistance + bestLowerDistance) / 2 < 0.01) stopRefiningAngle = true;
         upperDistanceToTarget = bestUpperDistance;
         lowerDistanceToTarget = bestLowerDistance;
         upperLaunchAngle = bestUpperAngle;
