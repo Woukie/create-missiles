@@ -8,6 +8,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.level.Level;
 import net.woukie.createmissiles.block.navigationpanel.NavigationPanelBlockEntity;
 import net.woukie.createmissiles.missiles.Trajectory;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
 public abstract class ThrusterType extends MissilePartType {
@@ -23,7 +24,7 @@ public abstract class ThrusterType extends MissilePartType {
 
     public abstract Trajectory constructTrajectory(CompoundTag data, MinecraftServer server);
 
-    public abstract Trajectory createTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container, NavigationPanelBlockEntity navPanel);
+    public abstract Trajectory createTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, @Nullable Container container, NavigationPanelBlockEntity navPanel);
 
     public abstract float getThrust();
     public abstract float getBurnRate();

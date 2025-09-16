@@ -96,7 +96,7 @@ public class Trajectories extends SavedData {
                 trajectory.setEntityId(null); // To create a new entity for it next tick
             }
 
-            trajectory.tick(server);
+            trajectory.tick();
             trajectory.warheadType.onTick(trajectory, server);
             trajectory.chassisType.onTick(trajectory, server);
             trajectory.thrusterType.onTick(trajectory, server);
