@@ -5,6 +5,8 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
@@ -15,12 +17,12 @@ import net.woukie.createmissiles.missiles.parts.ChassisType;
 import net.woukie.createmissiles.missiles.parts.ThrusterType;
 import net.woukie.createmissiles.missiles.parts.WarheadType;
 import net.woukie.createmissiles.missiles.trajectories.BallisticTrajectory;
-import net.woukie.createmissiles.missiles.trajectories.TrajectoryHelper;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +37,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
     private static final ResourceLocation TRAJECTORY_TARGET_LOADING = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/trajectory_target_loading.png");
     private static final ResourceLocation INVALID_SETUP = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/invalid_setup.png");
     private static final ResourceLocation FUEL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel.png");
+    private static final ResourceLocation WHITE_DOT = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/white_dot.png");
     private static final ResourceLocation FUEL_GAUGE = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel_gauge.png");
     private static final ResourceLocation MIN_THRUST_DURATION = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/min_thrust_duration.png");
 
@@ -50,8 +53,9 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
 
     private static final int trajectoryLeft = 114;
     private static final int trajectoryTop = 16;
-    private static final int trajectoryWidth = 54;
-    private static final int trajectoryHeight = 54;
+    private static final int trajectoryWidth = 53;
+    private static final int trajectoryHeight = 53;
+    private static final int trajectoryPadding = 2;
 
     private double currentMapCrosshairX = 0;
     private double currentMapCrosshairZ = 0;
@@ -65,6 +69,8 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
     private final List<Vector2d> positions = new ArrayList<>();
     private double maxHeight = 256;
     private double lastFuelPercent = 0;
+    private ItemStack lastMap = null;
+    private double distanceToTarget = 0;
     private BlockPos lastTargetPos = new BlockPos(0, 0, 0);
     private Float lastUpperLaunchAngle = null;
     private Float lastLowerLaunchAngle = null;
@@ -91,6 +97,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         tickTrajectory();
         lastTargetPos = getMenu().getTarget();
         lastFuelPercent = getMenu().getFuelPercent();
+        lastMap = getMenu().getMap();
         lastUpperLaunchAngle = getMenu().getUpperLaunchAngle();
         lastLowerLaunchAngle = getMenu().getLowerLaunchAngle();
 
@@ -213,26 +220,43 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         if (positions.isEmpty()) return;
 
         gui.pose().pushPose();
-        gui.pose().translate(trajectoryLeft, trajectoryTop, 0);
-        gui.pose().scale(trajectoryWidth, trajectoryHeight, 1);
+        gui.pose().translate(trajectoryLeft + trajectoryPadding, trajectoryTop + trajectoryPadding, 0);
+
         double yTop = 256;
         double yBottom = Math.min(target.getY(), source.getY());
         double xStart = 0;
         double xEnd = Vector3d.distance(target.getX(), 0, target.getZ(), source.getX(), 0, source.getZ());
 
-        for (int i = 0; i < trajectoryWidth; i++) {
-            int index = i * positions.size() / trajectoryWidth;
-            Vector2d pos = positions.get(index);
+        int width = trajectoryWidth - trajectoryPadding * 2;
+        int height = trajectoryHeight - trajectoryPadding * 2;
 
-            int xPixel = (int) ((pos.x - xStart) * (trajectoryWidth - 1) / (xEnd - xStart));
-            int yPixel = (int) ((yTop - pos.y) * (trajectoryHeight - 1) / (yTop - yBottom));
+        int xLine = Math.max((int) mapRange(source.getY(), yBottom, yTop, 0, trajectoryHeight), 0);
+        if (xLine < height) {
+            gui.hLine(0, width, height - xLine, 0x77FFFFFF);
+        }
+        gui.vLine(0, 0, height, 0x77FFFFFF);
 
-            xPixel = Math.max(0, Math.min(trajectoryWidth - 1, xPixel));
-            yPixel = Math.max(0, Math.min(trajectoryHeight - 1, yPixel));
 
-            gui.fill(xPixel, yPixel, 1 / 54, 1 / 54, 0xFFFFFFFF);
+        for (int i = 0; i < width; i++) {
+            Vector2d pos = positions.get(i * positions.size() / width);
+            int xPixel = (int) mapRange(pos.x, xStart, xEnd, 0, width);
+            int yPixel = (int) mapRange(pos.y, yBottom, yTop, 0, height);
+            if (yPixel < 0 || yPixel > height || xPixel < 0 || xPixel > width) continue;
+            gui.hLine(xPixel, xPixel, height - yPixel, 0xFFFFFFFF);
         }
 
+        gui.pose().pushPose();
+        gui.pose().scale(0.5f, 0.5f, 1);
+        float redness = -(float) Math.pow(-(distanceToTarget / 10 + 1), -1);
+        int colour = FastColor.ARGB32.lerp(redness, 0xFF0000, 0xFFFFFF);
+        gui.drawString(
+                this.font,
+                new DecimalFormat("#0.00").format(distanceToTarget) + "m",
+                0,
+                0,
+                colour
+        );
+        gui.pose().popPose();
         gui.pose().popPose();
     }
 
@@ -284,8 +308,11 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
 
     private void tickTrajectory() {
         BlockPos target = getMenu().getTarget();
-        if (target == null) return;
-        if (lastFuelPercent == getMenu().getFuelPercent() && target.equals(lastTargetPos) && lastUpperLaunchAngle == menu.getUpperLaunchAngle() && lastLowerLaunchAngle == menu.getLowerLaunchAngle()) {
+        if (target == null) {
+            distanceToTarget = 0;
+            return;
+        }
+        if (getMenu().getMap() != lastMap && lastFuelPercent == getMenu().getFuelPercent() && target.equals(lastTargetPos) && lastUpperLaunchAngle == menu.getUpperLaunchAngle() && lastLowerLaunchAngle == menu.getLowerLaunchAngle()) {
             return;
         }
         
@@ -324,5 +351,10 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
             previousDistance = currentDistance;
             simulatedTrajectory.tick();
         }
+        distanceToTarget = minDistance;
+    }
+
+    private double mapRange(double value, double oldMin, double oldMax, double newMin, double nawMax) {
+        return newMin + (value - oldMin) * (nawMax - newMin) / (oldMax - oldMin);
     }
 }

@@ -144,8 +144,8 @@ public class BallisticTrajectory extends Trajectory {
     }
 
     public void refineLaunchAngleOnce() {
-//        Unlikely to actually do all 7
-        int angles = 20;
+//        Unlikely to actually do all of these unless there's no solution
+        int angles = 40;
 
         if (upperDistanceToTarget == null) upperDistanceToTarget = getDistanceToTarget(upperLaunchAngle);
         if (lowerDistanceToTarget == null) lowerDistanceToTarget = getDistanceToTarget(lowerLaunchAngle);
@@ -171,7 +171,6 @@ public class BallisticTrajectory extends Trajectory {
             Double lowerDistance = lower.getB() != null ? lower.getB() : getDistanceToTarget(lowerAngle);
             distances.set(i + 1, new Pair<>(lowerAngle, lowerDistance));
             double averageDistance = (upperDistance + lowerDistance) / 2;
-            System.out.println(upperAngle + ": " + averageDistance);
             if (averageDistance < (bestUpperDistance + bestLowerDistance) / 2) {
                 bestUpperDistance = upperDistance;
                 bestLowerDistance = lowerDistance;
@@ -183,7 +182,6 @@ public class BallisticTrajectory extends Trajectory {
             }
         }
 
-        System.out.println("USING: " + (bestUpperAngle + bestLowerAngle)/2);
         upperDistanceToTarget = bestUpperDistance;
         lowerDistanceToTarget = bestLowerDistance;
         upperLaunchAngle = bestUpperAngle;
