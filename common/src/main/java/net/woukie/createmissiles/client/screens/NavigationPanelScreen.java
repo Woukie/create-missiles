@@ -387,7 +387,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         Vector2d start = new Vector2d(startI.x, startI.y);
         Vector2d end = new Vector2d(endI.x, endI.y);
         Vector2d currentPos = new Vector2d(start);
-        Vector2d increment = new Vector2d(end).sub(start).normalize().mul(0.5);
+        Vector2d increment = new Vector2d(end).sub(start).normalize();
         double distanceSqr = currentPos.distanceSquared(end);
         while (currentPos.distanceSquared(start) < distanceSqr) {
             callback.accept(new Vector2d(currentPos));
