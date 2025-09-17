@@ -222,7 +222,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         int width = trajectoryWidth - trajectoryPadding * 2;
         int height = trajectoryHeight - trajectoryPadding * 2;
 
-        int xLine = Math.max((int) mapRange(source.getY(), yBottom, yTop, 0, trajectoryHeight), 0);
+        int xLine = Math.max((int) mapRange(source.getY(), yBottom, yTop, 0, height), 0);
         if (xLine < height) {
             gui.hLine(0, width, height - xLine, 0x77FFFFFF);
         }
