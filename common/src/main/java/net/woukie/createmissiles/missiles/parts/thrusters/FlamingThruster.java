@@ -40,17 +40,17 @@ public class FlamingThruster extends ThrusterType {
 
     @Override
     public float getThrust() {
-        return 3000;
+        return 1800f;
     }
 
     @Override
     public float getBurnRate() {
-        return 10;
+        return 12.5f;
     }
 
     @Override
     public float getMass() {
-        return 20;
+        return 10f;
     }
 
     @Override

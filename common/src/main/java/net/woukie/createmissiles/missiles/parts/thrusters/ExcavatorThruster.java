@@ -40,17 +40,17 @@ public class ExcavatorThruster extends ThrusterType {
 
     @Override
     public float getThrust() {
-        return 7500;
+        return 3500f;
     }
 
     @Override
     public float getBurnRate() {
-        return 3;
+        return 20f;
     }
 
     @Override
     public float getMass() {
-        return 30;
+        return 15f;
     }
 
     @Override

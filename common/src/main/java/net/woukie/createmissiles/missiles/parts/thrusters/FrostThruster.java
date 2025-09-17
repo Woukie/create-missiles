@@ -40,17 +40,17 @@ public class FrostThruster extends ThrusterType {
 
     @Override
     public float getThrust() {
-        return 2000;
+        return 1000f;
     }
 
     @Override
     public float getBurnRate() {
-        return 2.5f;
+        return 6.25f;
     }
 
     @Override
     public float getMass() {
-        return 17;
+        return 10f;
     }
 
     @Override

@@ -30,7 +30,7 @@ import static net.woukie.createmissiles.Util.locateAir;
 public class ShulkerBoxWarhead extends WarheadType {
     @Override
     public float getMass() {
-        return 10;
+        return 15f;
     }
 
     @Override

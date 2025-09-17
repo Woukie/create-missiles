@@ -28,7 +28,7 @@ public class GuardianWarhead extends WarheadType {
 
     @Override
     public float getMass() {
-        return 25;
+        return 28.5f;
     }
 
     @Override

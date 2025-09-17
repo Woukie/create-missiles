@@ -22,7 +22,7 @@ import net.woukie.createmissiles.registry.Items;
 public class DirectHitWarhead extends WarheadType {
     @Override
     public float getMass() {
-        return 50;
+        return 28.5f;
     }
 
     @Override

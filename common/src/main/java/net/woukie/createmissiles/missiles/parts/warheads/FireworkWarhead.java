@@ -29,7 +29,7 @@ import java.util.List;
 public class FireworkWarhead extends WarheadType {
     @Override
     public float getMass() {
-        return 5;
+        return 7.5f;
     }
 
     @Override

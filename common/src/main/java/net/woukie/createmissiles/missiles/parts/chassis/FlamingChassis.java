@@ -8,12 +8,12 @@ import net.woukie.createmissiles.missiles.parts.ChassisType;
 public class FlamingChassis extends ChassisType {
     @Override
     public float getFuelCapacity() {
-        return 30;
+        return 25f;
     }
 
     @Override
     public float getMass() {
-        return 40;
+        return 20f;
     }
 
     @Override

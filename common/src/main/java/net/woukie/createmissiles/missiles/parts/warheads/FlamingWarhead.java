@@ -24,7 +24,7 @@ public class FlamingWarhead extends WarheadType {
 
     @Override
     public float getMass() {
-        return 15;
+        return 15f;
     }
 
     @Override

@@ -20,7 +20,7 @@ import net.woukie.createmissiles.missiles.parts.WarheadType;
 public class DragonWarhead extends WarheadType {
     @Override
     public float getMass() {
-        return 40;
+        return 37.5f;
     }
 
     @Override
@@ -31,11 +31,6 @@ public class DragonWarhead extends WarheadType {
         level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 100, 1);
         ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 90), FastColor.ARGB32.color(255, 234, 194, 255), 15000);
         level.setBlock(BlockPos.containing(hitPosition), Blocks.DRAGON_EGG.defaultBlockState(), 3);
-    }
-
-    @Override
-    public CompoundTag saveTo(Container container, CompoundTag data) {
-        return data;
     }
 
     @Override

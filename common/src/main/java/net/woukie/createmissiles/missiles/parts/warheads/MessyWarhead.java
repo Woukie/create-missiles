@@ -18,7 +18,7 @@ import net.woukie.createmissiles.registry.EntityTypes;
 public class MessyWarhead extends WarheadType {
     @Override
     public float getMass() {
-        return 50;
+        return 37.5f;
     }
 
     @Override

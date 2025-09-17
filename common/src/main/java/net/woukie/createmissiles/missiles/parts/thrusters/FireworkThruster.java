@@ -40,17 +40,17 @@ public class FireworkThruster extends ThrusterType {
 
     @Override
     public float getThrust() {
-        return 1200;
+        return 825f;
     }
 
     @Override
     public float getBurnRate() {
-        return 7.5f;
+        return 15f;
     }
 
     @Override
     public float getMass() {
-        return 15;
+        return 5f;
     }
 
     @Override
