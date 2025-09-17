@@ -210,22 +210,13 @@ public class BallisticTrajectory extends Trajectory {
 
         double minDistance = Double.POSITIVE_INFINITY;
         double previousDistance = Double.POSITIVE_INFINITY;
-        int ticksPassedTarget = 0;
         while (true) {
             Vector3d currentPosition = new Vector3d(simulatedTrajectory.getPosition());
-            double currentDistance = targetPosition.distance(currentPosition);
+            double currentDistance = targetPosition.distanceSquared(currentPosition);
             minDistance = Math.min(minDistance, currentDistance);
 
-            if (currentDistance > previousDistance) {
-                ticksPassedTarget++;
-            } else {
-                ticksPassedTarget = 0;
-            }
-
             boolean descending = simulatedTrajectory.velocity.y < 0;
-            boolean passedTarget = ticksPassedTarget > 10; // Must be going away for a bit to account for number innacuracy
-
-            if (descending && passedTarget) {
+            if (descending && (currentDistance > previousDistance || currentPosition.y < targetPosition.y)) {
                 break;
             }
 
