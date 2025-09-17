@@ -268,7 +268,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
 
     private void renderText(GuiGraphics gui) {
         gui.pose().pushPose();
-        float scale = 0.6f;
+        float scale = 0.5f;
         gui.pose().scale(scale, scale, scale);
         String textTime = Double.toString(maxThrustDuration);
         int paddingX = 3;
@@ -295,20 +295,20 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         currentFuel1 += (getMenu().getFuelPercent() - currentFuel2) * 0.1;
         currentFuel2 += (currentFuel1 - currentFuel2) * 0.1;
 
-        currentMinThrustDuration1 += (minThrustDuration - currentMinThrustDuration2) * 0.1;
-        currentMinThrustDuration2 += (currentMinThrustDuration1 - currentMinThrustDuration2) * 0.1;
+//        currentMinThrustDuration1 += (minThrustDuration - currentMinThrustDuration2) * 0.1;
+//        currentMinThrustDuration2 += (currentMinThrustDuration1 - currentMinThrustDuration2) * 0.1;
 
         int barHeight = fuelHeight - (int)(currentFuel2 * fuelHeight);
-        barHeight = Math.min(Math.max(barHeight, 0), fuelHeight);
+        barHeight = Math.min(Math.max(barHeight, 1), fuelHeight);
 
-        int barHeightThrust = fuelHeight - (int)(currentMinThrustDuration2 * fuelHeight);
-        barHeightThrust = Math.min(Math.max(barHeightThrust, 0), fuelHeight);
+//        int barHeightThrust = fuelHeight - (int)(currentMinThrustDuration2 * fuelHeight);
+//        barHeightThrust = Math.min(Math.max(barHeightThrust, 0), fuelHeight);
 
         gui.pose().pushPose();
         gui.pose().translate(fuelLeft, fuelTop, 0);
         gui.blit(FUEL, 0, barHeight, 0, 0, barHeight, fuelWidth, fuelHeight - barHeight, fuelWidth, barHeight);
-        gui.blit(FUEL_GAUGE, -2, barHeight - 2, 1, 0, 0, 9, 5, 9, 5);
-        gui.blit(MIN_THRUST_DURATION, -7, barHeightThrust - 2, 1, 0, 0, 5, 6, 5, 6);
+        gui.blit(FUEL_GAUGE, -2, barHeight - 3, 1, 0, 0, 9, 5, 9, 5);
+//        gui.blit(MIN_THRUST_DURATION, -7, barHeightThrust - 2, 1, 0, 0, 5, 6, 5, 6);
         gui.pose().popPose();
     }
 
@@ -334,6 +334,8 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         ChassisType chassisType = (ChassisType) PartTypes.get(getMenu().getChassis());
         ThrusterType thrusterType = (ThrusterType) PartTypes.get(getMenu().getThruster());
         if (warheadType == null || chassisType == null || thrusterType == null) return;
+
+        maxThrustDuration = chassisType.getFuelCapacity() / thrusterType.getBurnRate();
 
         BlockPos source = getMenu().getSource();
         Vector3d start = new Vector3d(source.getX(), source.getY(), source.getZ()).add(.5, .5, .5);
