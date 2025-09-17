@@ -150,7 +150,7 @@ public class BallisticTrajectory extends Trajectory {
     public void refineLaunchAngleOnce() {
 //        Unlikely to actually do all of these unless there's no solution
 //        TODO: Make no solution simulations shorter
-        int angles = 40;
+        int angles = 100;
 
         if (stopRefiningAngle) return;
 
@@ -213,9 +213,11 @@ public class BallisticTrajectory extends Trajectory {
         while (true) {
             Vector3d currentPosition = new Vector3d(simulatedTrajectory.getPosition());
             double currentDistance = targetPosition.distanceSquared(currentPosition);
-            minDistance = Math.min(minDistance, currentDistance);
 
             boolean descending = simulatedTrajectory.velocity.y < 0;
+            if (descending) {
+                minDistance = Math.min(minDistance, currentDistance);
+            }
             if (descending && (currentDistance > previousDistance || currentPosition.y < targetPosition.y)) {
                 break;
             }
