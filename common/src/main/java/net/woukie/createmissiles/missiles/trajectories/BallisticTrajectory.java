@@ -3,6 +3,7 @@ package net.woukie.createmissiles.missiles.trajectories;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.Level;
 import net.woukie.createmissiles.entity.MissileEntity;
@@ -20,6 +21,7 @@ import java.util.List;
 
 public class BallisticTrajectory extends Trajectory {
     public final Vector3d gravity = new Vector3d(0, -9.81, 0);
+    public final int turnTicks = 10;
     public final double tickSpeed = 20;
     protected Vector3d velocity;
     protected Vector3d rotation;
@@ -70,7 +72,8 @@ public class BallisticTrajectory extends Trajectory {
         double horizontalForceDueToAirResistance = Math.cos(currentFlightAngle) * approximateForceDueToAirResistance;
         double verticalForceDueToAirResistance = -getSign(velocity.y) * Math.sin(currentFlightAngle) * approximateForceDueToAirResistance;
         double launchAngle = (upperLaunchAngle + lowerLaunchAngle) / 2;
-        double forceHorizontal = thrust * Math.cos(Math.toRadians(launchAngle)) / mass;
+        double angle = Mth.lerp((double) tick / (double) turnTicks, 90, launchAngle);
+        double forceHorizontal = thrust * Math.cos(Math.toRadians(angle)) / mass;
 
         if (elapsedTime >= thrustDurationPercent * chassisType.getFuelCapacity() / thrusterType.getBurnRate()) {
             return new Vector3d(
@@ -81,7 +84,7 @@ public class BallisticTrajectory extends Trajectory {
         } else {
             return new Vector3d(
                     (-getSign(velocity.x) * horizontalForceDueToAirResistance * launchDirection.x / mass) + (launchDirection.x * forceHorizontal),
-                    (verticalForceDueToAirResistance / mass) + (thrust * Math.sin(Math.toRadians(launchAngle)) / mass) + gravity.y,
+                    (verticalForceDueToAirResistance / mass) + (thrust * Math.sin(Math.toRadians(angle)) / mass) + gravity.y,
                     (-getSign(velocity.z) * horizontalForceDueToAirResistance * launchDirection.z / mass) + (launchDirection.z * forceHorizontal)
             );
         }
