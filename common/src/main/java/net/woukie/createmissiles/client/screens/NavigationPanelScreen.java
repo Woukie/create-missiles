@@ -217,8 +217,8 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         gui.pose().pushPose();
         gui.pose().translate(trajectoryLeft + trajectoryPadding, trajectoryTop + trajectoryPadding, 0);
 
-        double yTop = maxHeight;
         double yBottom = Math.min(target.getY(), source.getY());
+        double yTop = maxHeight - yBottom;
         double xStart = 0;
         double xEnd = Vector3d.distance(target.getX(), 0, target.getZ(), source.getX(), 0, source.getZ());
 
