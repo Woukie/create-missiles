@@ -1,5 +1,6 @@
 package net.woukie.createmissiles.client.screens;
 
+import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
@@ -19,11 +20,13 @@ import net.woukie.createmissiles.missiles.trajectories.BallisticTrajectory;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2d;
+import org.joml.Vector2i;
 import org.joml.Vector3d;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPanelMenu> {
     private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/navigation_panel.png");
@@ -229,12 +232,23 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         gui.vLine(0, 0, height, 0x77FFFFFF);
 
 
+        Vector2i lastPixelPos = null;
         for (int i = 0; i < width; i++) {
-            Vector2d pos = positions.get(i * positions.size() / width);
-            int xPixel = (int) mapRange(pos.x, xStart, xEnd, 0, width);
-            int yPixel = (int) mapRange(pos.y, yBottom, yTop, 0, height);
-            if (yPixel < 0 || yPixel > height || xPixel < 0 || xPixel > width) continue;
-            gui.hLine(xPixel, xPixel, height - yPixel, 0xFFFFFFFF);
+            Vector2d currentPos = positions.get(i * positions.size() / width);
+            Vector2i currentPixelPos = new Vector2i(
+                    (int) mapRange(currentPos.x, xStart, xEnd, 0, width),
+                    (int) mapRange(currentPos.y, yBottom, yTop, 0, height)
+            );
+
+            if (lastPixelPos != null) {
+                traverseLine(currentPixelPos, lastPixelPos, interpPos -> {
+                    Vector2i p = new Vector2i((int) interpPos.x, (int) interpPos.y);
+                    if (p.y < 0 || p.y > height || p.x < 0 || p.x > width) return;
+                    gui.hLine(p.x, p.x, height - p.y, 0xFFFFFFFF);
+                });
+            }
+
+            lastPixelPos = currentPixelPos;
         }
 
         gui.pose().pushPose();
@@ -366,6 +380,18 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         while (!(maxFuelSimulatedTrajectory.getVelocity().y < 0)) {
             maxHeight = maxFuelSimulatedTrajectory.getPosition().y;
             maxFuelSimulatedTrajectory.tick();
+        }
+    }
+
+    private void traverseLine(Vector2i startI, Vector2i endI, Consumer<Vector2d> callback) {
+        Vector2d start = new Vector2d(startI.x, startI.y);
+        Vector2d end = new Vector2d(endI.x, endI.y);
+        Vector2d currentPos = new Vector2d(start);
+        Vector2d increment = new Vector2d(end).sub(start).normalize();
+        double distanceSqr = currentPos.distanceSquared(end);
+        while (currentPos.distanceSquared(start) < distanceSqr) {
+            callback.accept(new Vector2d(currentPos));
+            currentPos.add(increment);
         }
     }
 
