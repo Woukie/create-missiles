@@ -179,7 +179,7 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
             var thrusterType = (ThrusterType) PartTypes.get(assemblyPanel.getItem(2));
             Vector3d start = new Vector3d(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ()).add(.5d, .5d, .5d);
             Vector3d end = new Vector3d(target.getX(), target.getY(), target.getZ()).add(.5d, .5d, .5d);
-            simulatedTrajectory = thrusterType.createTrajectory(level, start, end, warheadType, chassisType, thrusterType, null, this);
+            simulatedTrajectory = thrusterType.createTrajectory(level, new Vector3d(start), new Vector3d(end), warheadType, chassisType, thrusterType, null, this);
         }
 
         if (simulatedTrajectory instanceof BallisticTrajectory ballisticTrajectory) {
