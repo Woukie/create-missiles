@@ -20,7 +20,7 @@ import org.joml.Vector3d;
 public class ExcavatorWarhead extends WarheadType {
     @Override
     public float getMass() {
-        return 18;
+        return 22.5f;
     }
 
     @Override

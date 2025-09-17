@@ -35,22 +35,22 @@ public class ExcavatorThruster extends ThrusterType {
 
     @Override
     public Trajectory createTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container, NavigationPanelBlockEntity navPanel) {
-        return new BallisticTrajectory(level, start, target, warheadType, chassisType, thrusterType, container, navPanel);
+        return new BallisticTrajectory(level, start, target, warheadType, chassisType, thrusterType, container, navPanel.getThrustDurationPercent());
     }
 
     @Override
     public float getThrust() {
-        return 7500;
+        return 3500f;
     }
 
     @Override
     public float getBurnRate() {
-        return 3;
+        return 20f;
     }
 
     @Override
     public float getMass() {
-        return 30;
+        return 15f;
     }
 
     @Override

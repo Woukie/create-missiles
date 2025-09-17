@@ -23,7 +23,7 @@ public class FrozenWarhead extends WarheadType {
 
     @Override
     public float getMass() {
-        return 23;
+        return 28.5f;
     }
 
     @Override

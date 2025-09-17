@@ -8,12 +8,12 @@ import net.woukie.createmissiles.missiles.parts.ChassisType;
 public class DragonChassis extends ChassisType {
     @Override
     public float getFuelCapacity() {
-        return 120;
+        return 120f;
     }
 
     @Override
     public float getMass() {
-        return 100;
+        return 50f;
     }
 
     @Override

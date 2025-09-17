@@ -5,6 +5,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
@@ -14,12 +15,14 @@ import net.woukie.createmissiles.inventory.NavigationPanelMenu;
 import net.woukie.createmissiles.missiles.parts.ChassisType;
 import net.woukie.createmissiles.missiles.parts.ThrusterType;
 import net.woukie.createmissiles.missiles.parts.WarheadType;
-import net.woukie.createmissiles.missiles.trajectories.TrajectoryHelper;
+import net.woukie.createmissiles.missiles.trajectories.BallisticTrajectory;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPanelMenu> {
@@ -33,6 +36,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
     private static final ResourceLocation TRAJECTORY_TARGET_LOADING = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/trajectory_target_loading.png");
     private static final ResourceLocation INVALID_SETUP = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/invalid_setup.png");
     private static final ResourceLocation FUEL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel.png");
+    private static final ResourceLocation WHITE_DOT = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/white_dot.png");
     private static final ResourceLocation FUEL_GAUGE = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel_gauge.png");
     private static final ResourceLocation MIN_THRUST_DURATION = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/min_thrust_duration.png");
 
@@ -48,8 +52,9 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
 
     private static final int trajectoryLeft = 114;
     private static final int trajectoryTop = 16;
-    private static final int trajectoryWidth = 54;
-    private static final int trajectoryHeight = 54;
+    private static final int trajectoryWidth = 53;
+    private static final int trajectoryHeight = 53;
+    private static final int trajectoryPadding = 2;
 
     private double currentMapCrosshairX = 0;
     private double currentMapCrosshairZ = 0;
@@ -60,10 +65,13 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
     private double maxThrustDuration = 0;
     private double minThrustDuration = 0;
 
-    private List<Vector2d> missilePositions;
-    private double maxHeight = 0;
+    private final List<Vector2d> positions = new ArrayList<>();
+    private double maxHeight = 256;
     private double lastFuelPercent = 0;
+    private double distanceToTarget = 0;
     private BlockPos lastTargetPos = new BlockPos(0, 0, 0);
+    private Float lastUpperLaunchAngle = null;
+    private Float lastLowerLaunchAngle = null;
 
     public NavigationPanelScreen(NavigationPanelMenu abstractContainerMenu, Inventory inventory, Component component) {
         super(abstractContainerMenu, inventory, component);
@@ -84,10 +92,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
 
         gui.blit(BACKGROUND, 0, 0, 0, 0, this.imageWidth, this.imageHeight);
 
-        tickTrajectory();
-        lastTargetPos = getMenu().getTarget();
-        lastFuelPercent = getMenu().getFuelPercent();
-
+        simulateTrajectory();
         renderMap(gui);
         renderFuel(gui);
         renderTrajectory(gui);
@@ -204,22 +209,46 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
             return;
         }
 
-        if(missilePositions == null) return;
-        gui.pose().pushPose();
-        gui.pose().translate(trajectoryLeft, trajectoryTop, 0);
-        double targetDistance = Vector3d.distance(target.getX(), 0, target.getZ(), source.getX(), 0, source.getZ());
-        double xScale = trajectoryWidth / Math.max(targetDistance, missilePositions.get(missilePositions.size() - 1).x);
-        double yScale = trajectoryHeight / maxHeight;
+        if (positions.isEmpty()) return;
 
-        Vector2d prevPixel = new Vector2d(0, 0);
-        for (int i = 0; i < trajectoryWidth; i ++) {
-            int index = i * missilePositions.size() / trajectoryWidth;
-            int x = (int) (missilePositions.get(index).x * xScale);
-            int y = (int) (missilePositions.get(index).y * yScale);
-            int color = 0xFFFFFFFF;
-            gui.vLine(x, (int) -prevPixel.y + trajectoryHeight, -y + trajectoryHeight, color);
-            prevPixel = new Vector2d(x, y);
+        gui.pose().pushPose();
+        gui.pose().translate(trajectoryLeft + trajectoryPadding, trajectoryTop + trajectoryPadding, 0);
+
+        double yTop = maxHeight;
+        double yBottom = Math.min(target.getY(), source.getY());
+        double xStart = 0;
+        double xEnd = Vector3d.distance(target.getX(), 0, target.getZ(), source.getX(), 0, source.getZ());
+
+        int width = trajectoryWidth - trajectoryPadding * 2;
+        int height = trajectoryHeight - trajectoryPadding * 2;
+
+        int xLine = Math.max((int) mapRange(source.getY(), yBottom, yTop, 0, height), 0);
+        if (xLine < height) {
+            gui.hLine(0, width, height - xLine, 0x77FFFFFF);
         }
+        gui.vLine(0, 0, height, 0x77FFFFFF);
+
+
+        for (int i = 0; i < width; i++) {
+            Vector2d pos = positions.get(i * positions.size() / width);
+            int xPixel = (int) mapRange(pos.x, xStart, xEnd, 0, width);
+            int yPixel = (int) mapRange(pos.y, yBottom, yTop, 0, height);
+            if (yPixel < 0 || yPixel > height || xPixel < 0 || xPixel > width) continue;
+            gui.hLine(xPixel, xPixel, height - yPixel, 0xFFFFFFFF);
+        }
+
+        gui.pose().pushPose();
+        gui.pose().scale(0.5f, 0.5f, 1);
+        float redness = -(float) Math.pow(-(distanceToTarget / 10 + 1), -1);
+        int colour = FastColor.ARGB32.lerp(redness, 0xFF0000, 0xFFFFFF);
+        gui.drawString(
+                this.font,
+                new DecimalFormat("#0.00").format(distanceToTarget) + "m",
+                0,
+                0,
+                colour
+        );
+        gui.pose().popPose();
         gui.pose().popPose();
     }
 
@@ -269,41 +298,78 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         gui.pose().popPose();
     }
 
-    private void tickTrajectory() {
+    private void simulateTrajectory() {
         BlockPos target = getMenu().getTarget();
-        if (target == null) return;
-        if (lastFuelPercent == getMenu().getFuelPercent() && target.equals(lastTargetPos)) {
+        if (target == null) {
+            distanceToTarget = 0;
+            positions.clear();
             return;
         }
 
-        BlockPos source = getMenu().getSource();
+        if (target.equals(lastTargetPos) &&
+                lastFuelPercent == getMenu().getFuelPercent() &&
+                lastUpperLaunchAngle == getMenu().getUpperLaunchAngle() &&
+                lastLowerLaunchAngle == getMenu().getLowerLaunchAngle()
+        ) return;
+        lastTargetPos = getMenu().getTarget();
+        lastFuelPercent = getMenu().getFuelPercent();
+        lastUpperLaunchAngle = getMenu().getUpperLaunchAngle();
+        lastLowerLaunchAngle = getMenu().getLowerLaunchAngle();
 
         WarheadType warheadType = (WarheadType) PartTypes.get(getMenu().getWarhead());
         ChassisType chassisType = (ChassisType) PartTypes.get(getMenu().getChassis());
         ThrusterType thrusterType = (ThrusterType) PartTypes.get(getMenu().getThruster());
-
         if (warheadType == null || chassisType == null || thrusterType == null) return;
 
-        TrajectoryHelper.MissileConfig missileConfig = new TrajectoryHelper.MissileConfig(thrusterType, chassisType, warheadType);
-        double[] launchAngleRange = {0, 90};
-        TrajectoryHelper.LaunchConfig launchConfig = new TrajectoryHelper.LaunchConfig(source, target, launchAngleRange, missileConfig.maxThrustDuration * menu.getFuelPercent(), missileConfig);
-        maxThrustDuration = (float) launchConfig.missileConfig.maxThrustDuration;
+        BlockPos source = getMenu().getSource();
+        Vector3d start = new Vector3d(source.getX(), source.getY(), source.getZ()).add(.5, .5, .5);
+        Vector3d end = new Vector3d(target.getX(), target.getY(), target.getZ()).add(.5, .5, .5);
+        float launchAngle = (getMenu().getLowerLaunchAngle() + getMenu().getUpperLaunchAngle()) / 2;
 
-        double angle = TrajectoryHelper.findLaunchAngle(launchConfig, launchConfig.selectedThrustDuration);
-        missilePositions = TrajectoryHelper.simulate(launchConfig, angle, launchConfig.selectedThrustDuration);
-        List<Vector2d> maxData = TrajectoryHelper.simulate(launchConfig, angle, launchConfig.selectedThrustDuration);
+        positions.clear();
+        BallisticTrajectory simulatedTrajectory = new BallisticTrajectory(
+                new Vector3d(start),
+                new Vector3d(end),
+                warheadType,
+                chassisType,
+                thrusterType,
+                launchAngle,
+                getMenu().getFuelPercent()
+        );
 
-        for (Vector2d maxDatum : maxData) {
-            maxHeight = Math.max(maxHeight, maxDatum.y);
+        double minDistance = Double.POSITIVE_INFINITY;
+        double previousDistance = Double.POSITIVE_INFINITY;
+        while (true) {
+            Vector3d currentPosition = new Vector3d(simulatedTrajectory.getPosition());
+            Vector2d currentPosition2D = new Vector2d(new Vector2d(currentPosition.x, currentPosition.z).distance(new Vector2d(start.x, start.z)), currentPosition.y);
+            positions.add(currentPosition2D);
+
+            double currentDistance = end.distance(currentPosition);
+            minDistance = Math.min(minDistance, currentDistance);
+            boolean descending = simulatedTrajectory.getVelocity().y < 0;
+            if (descending && currentDistance > previousDistance) break;
+            previousDistance = currentDistance;
+            simulatedTrajectory.tick();
         }
+        distanceToTarget = minDistance;
 
-        TrajectoryHelper.LaunchConfig minLaunchConfig = new TrajectoryHelper.LaunchConfig(source, target, launchAngleRange, 0, missileConfig);
-        TrajectoryHelper.LaunchSolution minSolution = TrajectoryHelper.findMinLaunchSolution(minLaunchConfig);
+        BallisticTrajectory maxFuelSimulatedTrajectory = new BallisticTrajectory(
+                new Vector3d(start),
+                new Vector3d(end),
+                warheadType,
+                chassisType,
+                thrusterType,
+                launchAngle,
+                1
+        );
 
-        if (minSolution != null) {
-            minThrustDuration = (float) (minSolution.thrustDuration / maxThrustDuration);
-        } else {
-            minThrustDuration = maxThrustDuration;
+        while (!(maxFuelSimulatedTrajectory.getVelocity().y < 0)) {
+            maxHeight = maxFuelSimulatedTrajectory.getPosition().y;
+            maxFuelSimulatedTrajectory.tick();
         }
+    }
+
+    private double mapRange(double value, double oldMin, double oldMax, double newMin, double nawMax) {
+        return newMin + (value - oldMin) * (nawMax - newMin) / (oldMax - oldMin);
     }
 }

@@ -38,7 +38,7 @@ public class TeleportationWarhead extends WarheadType {
 
     @Override
     public float getMass() {
-        return 10;
+        return 15f;
     }
 
     @Override

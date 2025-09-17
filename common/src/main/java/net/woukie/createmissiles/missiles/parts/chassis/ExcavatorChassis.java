@@ -8,12 +8,12 @@ import net.woukie.createmissiles.missiles.parts.ChassisType;
 public class ExcavatorChassis extends ChassisType {
     @Override
     public float getFuelCapacity() {
-        return 45;
+        return 40f;
     }
 
     @Override
     public float getMass() {
-        return 60;
+        return 30f;
     }
 
     @Override

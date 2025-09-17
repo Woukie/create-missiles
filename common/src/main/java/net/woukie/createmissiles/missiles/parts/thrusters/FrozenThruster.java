@@ -36,22 +36,22 @@ public class FrozenThruster extends ThrusterType {
 
     @Override
     public Trajectory createTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container, NavigationPanelBlockEntity navPanel) {
-        return new BallisticTrajectory(level, start, target, warheadType, chassisType, thrusterType, container, navPanel);
+        return new BallisticTrajectory(level, start, target, warheadType, chassisType, thrusterType, container, navPanel.getThrustDurationPercent());
     }
 
     @Override
     public float getThrust() {
-        return 2000;
+        return 3500f;
     }
 
     @Override
     public float getBurnRate() {
-        return 2.5f;
+        return 15f;
     }
 
     @Override
     public float getMass() {
-        return 17;
+        return 19f;
     }
 
     @Override

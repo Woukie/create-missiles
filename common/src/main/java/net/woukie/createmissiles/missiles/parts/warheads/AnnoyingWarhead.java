@@ -20,7 +20,7 @@ import static net.woukie.createmissiles.Util.locateAir;
 public class AnnoyingWarhead extends WarheadType {
     @Override
     public float getMass() {
-        return 10;
+        return 7.5f;
     }
 
     @Override

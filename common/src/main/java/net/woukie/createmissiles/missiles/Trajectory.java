@@ -39,17 +39,19 @@ public abstract class Trajectory {
 
     public Trajectory(ResourceKey<Level> levelKey, Vector3d initialPosition, Vector3d targetPosition, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container) {
         this.levelKey = levelKey;
-        this.initialPosition = initialPosition;
-        this.position = initialPosition;
-        this.targetPosition = targetPosition;
-        this.lastPosition = initialPosition;
+        this.initialPosition = new Vector3d(initialPosition);
+        this.position = new Vector3d(initialPosition);
+        this.targetPosition = new Vector3d(targetPosition);
+        this.lastPosition = new Vector3d(initialPosition);
         this.tick = 0;
         this.warheadType = warheadType;
         this.chassisType = chassisType;
         this.thrusterType = thrusterType;
-        this.warheadData = warheadType.saveTo(container, new CompoundTag());
-        this.chassisData = chassisType.saveTo(container, new CompoundTag());
-        this.thrusterData = thrusterType.saveTo(container, new CompoundTag());
+        if (container != null) {
+            this.warheadData = warheadType.saveTo(container, new CompoundTag());
+            this.chassisData = chassisType.saveTo(container, new CompoundTag());
+            this.thrusterData = thrusterType.saveTo(container, new CompoundTag());
+        }
     }
 
     public Trajectory(CompoundTag data, MinecraftServer server) {
@@ -61,9 +63,8 @@ public abstract class Trajectory {
      * <br>
      * This method is followed by MissilePartType ticks (and if spent, entity removal, then trajectory removal)
      * @implNote in simulated approaches, here is where you tick the simulation
-     * @see Trajectories#serverTick(MinecraftServer)
      */
-    public void tick(MinecraftServer server) {
+    public void tick() {
         tick++;
     }
 

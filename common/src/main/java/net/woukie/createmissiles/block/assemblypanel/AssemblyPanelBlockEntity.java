@@ -35,6 +35,10 @@ public class AssemblyPanelBlockEntity extends AbstractBasicBlockEntity {
         return new AssemblyPanelMenu(id, playerInventory, this);
     }
 
+    public boolean hasAllAssemblies() {
+        return items.get(0).is(Items.WARHEAD_ASSEMBLY.get()) && items.get(1).is(Items.CHASSIS_ASSEMBLY.get()) && items.get(2).is(Items.THRUSTER_ASSEMBLY.get());
+    }
+
     @Override
     public int getMaxStackSize() {
         return 1;

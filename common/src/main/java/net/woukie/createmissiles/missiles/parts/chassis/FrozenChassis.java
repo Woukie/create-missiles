@@ -8,12 +8,12 @@ import net.woukie.createmissiles.missiles.parts.ChassisType;
 public class FrozenChassis extends ChassisType {
     @Override
     public float getFuelCapacity() {
-        return 65;
+        return 60f;
     }
 
     @Override
     public float getMass() {
-        return 80;
+        return 38f;
     }
 
     @Override

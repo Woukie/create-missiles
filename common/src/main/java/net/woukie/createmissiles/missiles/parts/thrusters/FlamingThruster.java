@@ -35,22 +35,22 @@ public class FlamingThruster extends ThrusterType {
 
     @Override
     public Trajectory createTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container, NavigationPanelBlockEntity navPanel) {
-        return new BallisticTrajectory(level, start, target, warheadType, chassisType, thrusterType, container, navPanel);
+        return new BallisticTrajectory(level, start, target, warheadType, chassisType, thrusterType, container, navPanel.getThrustDurationPercent());
     }
 
     @Override
     public float getThrust() {
-        return 3000;
+        return 1800f;
     }
 
     @Override
     public float getBurnRate() {
-        return 10;
+        return 12.5f;
     }
 
     @Override
     public float getMass() {
-        return 20;
+        return 10f;
     }
 
     @Override

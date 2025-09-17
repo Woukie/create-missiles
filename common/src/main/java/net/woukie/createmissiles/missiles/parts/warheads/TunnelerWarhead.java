@@ -7,7 +7,7 @@ import net.woukie.createmissiles.CreateMissiles;
 public class TunnelerWarhead extends ExcavatorWarhead {
     @Override
     public float getMass() {
-        return 28;
+        return 28.5f;
     }
 
     @Override

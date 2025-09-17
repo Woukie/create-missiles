@@ -35,22 +35,22 @@ public class DragonThruster extends ThrusterType {
 
     @Override
     public Trajectory createTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container, NavigationPanelBlockEntity navPanel) {
-        return new BallisticTrajectory(level, start, target, warheadType, chassisType, thrusterType, container, navPanel);
+        return new BallisticTrajectory(level, start, target, warheadType, chassisType, thrusterType, container, navPanel.getThrustDurationPercent());
     }
 
     @Override
     public float getThrust() {
-        return 22000;
+        return 5925f;
     }
 
     @Override
     public float getBurnRate() {
-        return 4;
+        return 24f;
     }
 
     @Override
     public float getMass() {
-        return 50;
+        return 25f;
     }
 
     @Override

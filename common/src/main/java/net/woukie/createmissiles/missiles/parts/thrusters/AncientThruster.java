@@ -35,22 +35,22 @@ public class AncientThruster extends ThrusterType {
 
     @Override
     public Trajectory createTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container, NavigationPanelBlockEntity navPanel) {
-        return new BallisticTrajectory(level, start, target, warheadType, chassisType, thrusterType, container, navPanel);
+        return new BallisticTrajectory(level, start, target, warheadType, chassisType, thrusterType, container, navPanel.getThrustDurationPercent());
     }
 
     @Override
     public float getThrust() {
-        return 16000;
+        return 4800f;
     }
 
     @Override
     public float getBurnRate() {
-        return 3;
+        return 20f;
     }
 
     @Override
     public float getMass() {
-        return 45;
+        return 22.5f;
     }
 
     @Override

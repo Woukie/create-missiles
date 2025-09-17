@@ -15,9 +15,6 @@ import net.woukie.createmissiles.block.navigationpanel.messages.ClickMapMessage;
 import net.woukie.createmissiles.registry.Items;
 import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector2d;
-
-import java.util.List;
 
 import static net.woukie.createmissiles.registry.Menus.NAVIGATION_PANEL;
 
@@ -28,7 +25,7 @@ public class NavigationPanelMenu extends AbstractBasicMenu {
     public NavigationPanelMenu(int id, Inventory playerInventory, Container container, ContainerData containerData, Container assemblyPanelContainer) {
         super(NAVIGATION_PANEL.get(), id, container);
         checkContainerSize(container, 1);
-        checkContainerDataCount(containerData, 12);
+        checkContainerDataCount(containerData, 14);
         this.containerData = containerData;
         this.assemblyPanelContainer = assemblyPanelContainer;
 
@@ -66,7 +63,7 @@ public class NavigationPanelMenu extends AbstractBasicMenu {
     }
 
     public NavigationPanelMenu(int id, Inventory inventory) {
-        this(id, inventory, new SimpleContainer(1), new SimpleContainerData(12), new SimpleContainer(3));
+        this(id, inventory, new SimpleContainer(1), new SimpleContainerData(14), new SimpleContainer(3));
     }
 
     public int getMapCrosshairX() {
@@ -146,5 +143,13 @@ public class NavigationPanelMenu extends AbstractBasicMenu {
 
     public void clickFuel(float fuelClickZ) {
         Packets.NAVIGATION_PANEL_CLICK_FUEL.sendToServer(new ClickFuelMessage(getSource(), fuelClickZ));
+    }
+
+    public float getUpperLaunchAngle() {
+        return Float.intBitsToFloat(containerData.get(12));
+    }
+
+    public float getLowerLaunchAngle() {
+        return Float.intBitsToFloat(containerData.get(13));
     }
 }

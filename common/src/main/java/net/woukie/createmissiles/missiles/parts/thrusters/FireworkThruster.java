@@ -35,22 +35,22 @@ public class FireworkThruster extends ThrusterType {
 
     @Override
     public Trajectory createTrajectory(Level level, Vector3d start, Vector3d target, WarheadType warheadType, ChassisType chassisType, ThrusterType thrusterType, Container container, NavigationPanelBlockEntity navPanel) {
-        return new BallisticTrajectory(level, start, target, warheadType, chassisType, thrusterType, container, navPanel);
+        return new BallisticTrajectory(level, start, target, warheadType, chassisType, thrusterType, container, navPanel.getThrustDurationPercent());
     }
 
     @Override
     public float getThrust() {
-        return 1200;
+        return 825f;
     }
 
     @Override
     public float getBurnRate() {
-        return 7.5f;
+        return 15f;
     }
 
     @Override
     public float getMass() {
-        return 15;
+        return 5f;
     }
 
     @Override

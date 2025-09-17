@@ -8,12 +8,12 @@ import net.woukie.createmissiles.missiles.parts.ChassisType;
 public class WitheredChassis extends ChassisType {
     @Override
     public float getFuelCapacity() {
-        return 65;
+        return 80f;
     }
 
     @Override
     public float getMass() {
-        return 80;
+        return 40f;
     }
 
     @Override
