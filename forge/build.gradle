@@ -107,8 +107,6 @@ sourcesJar {
     from commonSources.archiveFile.map { zipTree(it) }
 }
 
-components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
+shadow {
+    addShadowVariantIntoJavaComponent = false
 }
