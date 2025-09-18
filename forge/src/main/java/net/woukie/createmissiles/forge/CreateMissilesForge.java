@@ -16,25 +16,22 @@ import net.woukie.createmissiles.registry.ParticleTypes;
 @Mod(CreateMissiles.MOD_ID)
 public class CreateMissilesForge {
     public CreateMissilesForge() {
-        // registrate must be given the mod event bus on forge before registration
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.addListener(this::clientSetup);
-        eventBus.addListener(this::registerParticles);
 
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> EntityRenderers::init);
-
         EventBuses.registerModEventBus(CreateMissiles.MOD_ID, eventBus);
-
         CreateMissiles.registrate().registerEventListeners(eventBus);
         CreateMissiles.init();
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(this::registerParticles));
         ArmInteractionPointsForge.init();
     }
 
-    private void clientSetup (final FMLClientSetupEvent event) {
+    private void clientSetup(final FMLClientSetupEvent event) {
         CreateMissiles.initClient();
     }
 
-    private void registerParticles(RegisterParticleProvidersEvent event) {
+    public void registerParticles(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(ParticleTypes.BUILD_SHRAPNEL.get(), BuildShrapnel.Provider::new);
     }
 }
