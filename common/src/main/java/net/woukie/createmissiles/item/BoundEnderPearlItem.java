@@ -95,7 +95,8 @@ public class BoundEnderPearlItem extends Item {
             level.playSound((Player)null, throwingPlayer.getX(), throwingPlayer.getY(), throwingPlayer.getZ(), SoundEvents.CHAIN_BREAK, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 1.2F));
             level.playSound((Player)null, throwingPlayer.getX(), throwingPlayer.getY(), throwingPlayer.getZ(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
             if (!level.isClientSide) {
-                ThrownEnderpearl thrownEnderpearl = new ThrownEnderpearl(level, targetPlayer);
+                ThrownEnderpearl thrownEnderpearl = new ThrownEnderpearl(level, throwingPlayer);
+                thrownEnderpearl.setOwner(targetPlayer);
                 thrownEnderpearl.setItem(itemStack);
                 thrownEnderpearl.shootFromRotation(throwingPlayer, throwingPlayer.getXRot(), throwingPlayer.getYRot(), 0.0F, 1.5F, 1.0F);
                 level.addFreshEntity(thrownEnderpearl);
