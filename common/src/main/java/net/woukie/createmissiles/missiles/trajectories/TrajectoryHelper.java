@@ -97,7 +97,8 @@ public class TrajectoryHelper {
     }
 
     private static boolean isValidTrajectory(LaunchConfig launchConfig, double newAngle, double newThrustDuration) {
-        Vector2d finalPos = simulate(launchConfig, newAngle, newThrustDuration).getLast();
+        var positions = simulate(launchConfig, newAngle, newThrustDuration);
+        Vector2d finalPos = positions.get(positions.size() - 1);
         return finalPos.distance(new Vector2d(launchConfig.targetX, launchConfig.target.getY() - launchConfig.source.getY())) <= 1f;
     }
 
@@ -116,7 +117,8 @@ public class TrajectoryHelper {
                         return new LaunchSolution(mid, angle);
                     }
 
-                    double x = simulate(launchConfig, angle, mid).getLast().x;
+                    var positions = simulate(launchConfig, angle, mid);
+                    double x = positions.get(positions.size() - 1).x;
 
                     if (x < launchConfig.targetX) {
                         low = mid;
@@ -139,7 +141,8 @@ public class TrajectoryHelper {
                 return mid;
             }
 
-            double x = simulate(launchConfig, mid, thrustDuration).getLast().x;;
+            var positions = simulate(launchConfig, mid, thrustDuration);
+            double x = positions.get(positions.size() - 1).x;;
             if (x > launchConfig.targetX) {
                 low = mid;
             } else {
