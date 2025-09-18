@@ -2,7 +2,7 @@
     <img src="./assets/icons/icon_256.gif" alt="Logo" width="256"><br>
     <img src="https://github.com/Woukie/create-missiles/actions/workflows/build.yml/badge.svg" alt="Build Status" href="https://github.com/Woukie/create-missiles/actions/workflows/build.yml">
     <img alt="Static Badge" src="https://img.shields.io/badge/latest-modrinth?logo=modrinth&label=modrinth&color=%2300AF5C&link=https%3A%2F%2Fmodrinth.com%2F">
-    <img src="https://cf.way2muchnoise.eu/author/woukie.svg" alt="Curseforge Downloads" href="https://github.com/Woukie/create-missiles/actions/workflows/build.yml">
+    <img src="https://cf.way2muchnoise.eu/1345893.svg" alt="Curseforge Downloads">
 </div>
 
 <h1>Create Missiles</h1>
