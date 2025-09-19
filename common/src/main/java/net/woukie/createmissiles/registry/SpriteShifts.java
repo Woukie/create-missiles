@@ -9,8 +9,7 @@ import net.woukie.createmissiles.CreateMissiles;
 
 public class SpriteShifts {
     public static final CTSpriteShiftEntry LAUNCH_PAD_SIDE = horizontal("launch_pad_side"),
-            LAUNCH_PAD_TOP = omni("launch_pad_top"),
-            LAUNCH_PAD_BOTTOM = omni("launch_pad_bottom");
+            LAUNCH_PAD_TOP = omni("launch_pad_top");
 
     private static CTSpriteShiftEntry horizontal(String name) {
         return getCT(AllCTTypes.HORIZONTAL, name);
