@@ -25,7 +25,7 @@ public class NavigationPanelMenu extends AbstractBasicMenu {
     public NavigationPanelMenu(int id, Inventory playerInventory, Container container, ContainerData containerData, Container assemblyPanelContainer) {
         super(NAVIGATION_PANEL.get(), id, container);
         checkContainerSize(container, 1);
-        checkContainerDataCount(containerData, 14);
+        checkContainerDataCount(containerData, 17);
         this.containerData = containerData;
         this.assemblyPanelContainer = assemblyPanelContainer;
 
@@ -63,7 +63,7 @@ public class NavigationPanelMenu extends AbstractBasicMenu {
     }
 
     public NavigationPanelMenu(int id, Inventory inventory) {
-        this(id, inventory, new SimpleContainer(1), new SimpleContainerData(14), new SimpleContainer(3));
+        this(id, inventory, new SimpleContainer(1), new SimpleContainerData(17), new SimpleContainer(3));
     }
 
     public int getMapCrosshairX() {
@@ -95,15 +95,16 @@ public class NavigationPanelMenu extends AbstractBasicMenu {
     }
 
     public double getFuelPercent() {
-        return Float.intBitsToFloat(containerData.get(9));
+        int combinedBits = (containerData.get(9) << 16) | (containerData.get(10) & 0xFFFF);
+        return Float.intBitsToFloat(combinedBits);
     }
 
     public boolean launchPadExists() {
-        return containerData.get(10) == 1;
+        return containerData.get(11) == 1;
     }
 
     public boolean assemblyPanelAbsent() {
-        return containerData.get(11) != 1;
+        return containerData.get(12) != 1;
     }
 
     public ItemStack getMap() {
@@ -146,10 +147,12 @@ public class NavigationPanelMenu extends AbstractBasicMenu {
     }
 
     public float getUpperLaunchAngle() {
-        return Float.intBitsToFloat(containerData.get(12));
+        int combinedBits = (containerData.get(13) << 16) | (containerData.get(14) & 0xFFFF);
+        return Float.intBitsToFloat(combinedBits);
     }
 
     public float getLowerLaunchAngle() {
-        return Float.intBitsToFloat(containerData.get(13));
+        int combinedBits = (containerData.get(15) << 16) | (containerData.get(16) & 0xFFFF);
+        return Float.intBitsToFloat(combinedBits);
     }
 }

@@ -65,27 +65,40 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
                     case 6 -> getBlockPos().getX();
                     case 7 -> getBlockPos().getY();
                     case 8 -> getBlockPos().getZ();
-                    case 9 -> Float.floatToIntBits(thrustDurationPercent);
-                    case 10 -> MultiblockHelper.findCorner( // Whether launch pad exists
+                    case 9 -> Float.floatToIntBits(thrustDurationPercent) >> 16;
+                    case 10 -> Float.floatToIntBits(thrustDurationPercent) & 0xFFFF;
+                    case 11 -> MultiblockHelper.findCorner( // Whether launch pad exists
                             blockPos,
                             blockState.getValue(AssemblyPanelBlock.FACING).getOpposite(),
                             level
                     ) == null ? 0 : 1;
 //                    TODO: Keep track of multiblock instead of searching for it every tick, but this isnt actually expensive. worst case 38 blocks searched
-                    case 11 -> MultiblockHelper.findEdgeBlock(
+                    case 12 -> MultiblockHelper.findEdgeBlock(
                             NavigationPanelBlockEntity.this,
                             getLevel(),
                             BlockEntities.ASSEMBLY_PANEL.get()
                     ) == null ? 0 : 1;
-                    case 12 -> {
+                    case 13 -> {
                         if (simulatedTrajectory instanceof BallisticTrajectory ballisticTrajectory) {
-                            yield Float.floatToIntBits((float)((double)ballisticTrajectory.getUpperLaunchAngle()));
+                            yield Float.floatToIntBits((float) (double) ballisticTrajectory.getUpperLaunchAngle()) >> 16;
                         }
                         yield 90;
                     }
-                    case 13 -> {
+                    case 14 -> {
                         if (simulatedTrajectory instanceof BallisticTrajectory ballisticTrajectory) {
-                            yield Float.floatToIntBits((float)((double)ballisticTrajectory.getLowerLaunchAngle()));
+                            yield Float.floatToIntBits((float) (double) ballisticTrajectory.getUpperLaunchAngle()) & 0xFFFF;
+                        }
+                        yield 90;
+                    }
+                    case 15 -> {
+                        if (simulatedTrajectory instanceof BallisticTrajectory ballisticTrajectory) {
+                            yield Float.floatToIntBits((float) (double) ballisticTrajectory.getLowerLaunchAngle()) >> 16;
+                        }
+                        yield 0;
+                    }
+                    case 16 -> {
+                        if (simulatedTrajectory instanceof BallisticTrajectory ballisticTrajectory) {
+                            yield Float.floatToIntBits((float) (double) ballisticTrajectory.getLowerLaunchAngle()) & 0xFFFF;
                         }
                         yield 0;
                     }
@@ -96,7 +109,7 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
             public void set(int i, int j) {}
 
             public int getCount() {
-                return 14;
+                return 17;
             }
         };
     }

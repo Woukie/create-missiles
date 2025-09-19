@@ -357,6 +357,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
         double previousDistance = Double.POSITIVE_INFINITY;
         while (true) {
             Vector3d currentPosition = new Vector3d(simulatedTrajectory.getPosition());
+            if (Double.isNaN(currentPosition.x)) break;
             Vector2d currentPosition2D = new Vector2d(new Vector2d(currentPosition.x, currentPosition.z).distance(new Vector2d(start.x, start.z)), currentPosition.y);
             positions.add(currentPosition2D);
 
@@ -381,6 +382,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
 
         while (!(maxFuelSimulatedTrajectory.getVelocity().y < 0)) {
             maxHeight = maxFuelSimulatedTrajectory.getPosition().y;
+            if (Double.isNaN(maxHeight)) break;
             maxFuelSimulatedTrajectory.tick();
         }
     }
