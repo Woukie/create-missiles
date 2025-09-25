@@ -30,6 +30,7 @@ public abstract class MixinBucketItem extends Item {
 
     @Inject(method = "use", at = @At("HEAD"), cancellable = true)
     public void use(Level level, Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
+        if (this.content == null) return;
         if (this.content.isSame(Fluids.WATER)) {
             List<InfernalAreaEntity> list = level.getEntitiesOfClass(InfernalAreaEntity.class, player.getBoundingBox().inflate(2.0F), Objects::nonNull);
             list.forEach(InfernalAreaEntity::extingish);
