@@ -1,6 +1,5 @@
 package net.woukie.createmissiles.registry;
 
-import com.simibubi.create.content.kinetics.BlockStressDefaults;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -28,7 +27,6 @@ public class Blocks {
             .initialProperties(SharedProperties::softMetal)
             .properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY))
             .properties(BlockBehaviour.Properties::noOcclusion)
-            .transform(BlockStressDefaults.setImpact(4))
             .onRegister(CreateRegistrate.connectedTextures(LaunchPadCTBehaviour::new))
             .addLayer(() -> RenderType::cutoutMipped)
             .simpleItem()
