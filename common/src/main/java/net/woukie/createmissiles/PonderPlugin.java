@@ -20,7 +20,7 @@ public class PonderPlugin implements net.createmod.ponder.api.registration.Ponde
         PonderSceneRegistrationHelper<ItemProviderEntry<?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
 
         HELPER.forComponents(Blocks.NAVIGATION_PANEL, Blocks.CONTROL_PANEL, Blocks.ASSEMBLY_PANEL, Blocks.LAUNCH_PAD)
-                .addStoryBoard("mis sile_assembly", (scene, util) -> {
+                .addStoryBoard("missile_assembly", (scene, util) -> {
                     BlockPos launchPadClose = util.grid().at(2, 1, 2);
                     BlockPos launchPadFar = util.grid().at(4, 1, 4);
                     BlockPos launchPadMiddle = util.grid().at(3, 1, 4);
