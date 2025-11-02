@@ -1,6 +1,6 @@
 package net.woukie.createmissiles.block.navigationpanel;
 
-import com.simibubi.create.foundation.utility.WorldAttached;
+import net.createmod.catnip.data.WorldAttached;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
