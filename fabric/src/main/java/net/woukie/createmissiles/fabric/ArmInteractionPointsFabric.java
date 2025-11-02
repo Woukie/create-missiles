@@ -1,5 +1,7 @@
 package net.woukie.createmissiles.fabric;
 
+import com.simibubi.create.Create;
+import com.simibubi.create.api.registry.CreateBuiltInRegistries;
 import com.simibubi.create.content.kinetics.mechanicalArm.AllArmInteractionPointTypes;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPoint;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPointType;
@@ -7,36 +9,22 @@ import io.github.fabricators_of_create.porting_lib.transfer.callbacks.Transactio
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.MultiblockHelper;
-import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
-import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
-import net.woukie.createmissiles.registry.BlockEntities;
 import net.woukie.createmissiles.registry.Blocks;
 
-import java.util.function.Function;
-
 public class ArmInteractionPointsFabric {
-    public static final LaunchPadType LAUNCH_PAD = register(LaunchPadType::new);
-
-    private static <T extends ArmInteractionPointType> T register(Function<ResourceLocation, T> factory) {
-        T type = factory.apply(new ResourceLocation(CreateMissiles.MOD_ID, "launch_pad"));
-        ArmInteractionPointType.register(type);
-        return type;
+    private static <T extends ArmInteractionPointType> void register(String name, T type) {
+        Registry.register(CreateBuiltInRegistries.ARM_INTERACTION_POINT_TYPE, Create.asResource(name), type);
     }
 
     public static class LaunchPadType extends ArmInteractionPointType {
-        public LaunchPadType(ResourceLocation id) {
-            super(id);
-        }
-
         @Override
         public boolean canCreatePoint(Level level, BlockPos pos, BlockState state) {
             return state.is(Blocks.LAUNCH_PAD.get());
@@ -82,5 +70,9 @@ public class ArmInteractionPointsFabric {
 
     public static void init() {
 
+    }
+
+    static {
+        register("launch_pad", new LaunchPadType());
     }
 }
