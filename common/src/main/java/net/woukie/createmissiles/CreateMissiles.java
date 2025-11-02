@@ -2,13 +2,9 @@ package net.woukie.createmissiles;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.render.CustomRenderedItems;
-import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
-import dev.architectury.event.events.client.ClientLifecycleEvent;
-import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.event.events.common.LootEvent;
@@ -18,6 +14,7 @@ import dev.architectury.registry.level.entity.EntityAttributeRegistry;
 import dev.architectury.registry.level.entity.trade.TradeRegistry;
 import dev.architectury.registry.menu.MenuRegistry;
 import dev.architectury.registry.registries.RegistrarManager;
+import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -50,7 +47,7 @@ public class CreateMissiles {
     public static final Supplier<RegistrarManager> MANAGER = Suppliers.memoize(() -> RegistrarManager.get(MOD_ID));
 
     public static void init() {
-        LOGGER.info("{} initializing! Create version: {}}", NAME, Create.VERSION);
+        LOGGER.info("Initializing!");
 
         LifecycleEvent.SERVER_STARTED.register(server -> {
             Trajectories.get().init(server);
@@ -190,6 +187,6 @@ public class CreateMissiles {
         });
 
         PartModels.init();
-        PonderIndex.register();
+        PonderIndex.addPlugin(new PonderPlugin());
     }
 }
