@@ -9,4 +9,9 @@ public class LaunchPadBlockEntity extends KineticBlockEntity {
     public LaunchPadBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
     }
+
+    @Override
+    public float calculateStressApplied() {
+        return 4;
+    }
 }
