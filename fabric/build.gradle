@@ -25,7 +25,8 @@ configurations {
     shadowBundle {
         canBeResolved = true
         canBeConsumed = false
-    }}
+    }
+}
 
 repositories {
     // mavens for Create Fabric and dependencies
