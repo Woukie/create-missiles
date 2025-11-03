@@ -53,6 +53,7 @@ configurations.configureEach {
 
 dependencies {
     modImplementation("net.fabricmc:fabric-loader:$fabric_loader_version")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabric_api_version")
 
     // Architectury API
     modImplementation "dev.architectury:architectury-fabric:$architectury_api_version"
@@ -60,13 +61,9 @@ dependencies {
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle((project(path: ':common', configuration: 'transformProductionFabric')))
 
-    modImplementation("net.createmod.ponder:Ponder-Fabric-${minecraft_version}:${ponder_fabric_version}")
-
-    // dependencies
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabric_api_version")
-
     // Create - dependencies are added transitively
-    modImplementation("com.simibubi.create:create-fabric-$minecraft_version:$create_fabric_version")
+    modImplementation("com.simibubi.create:create-fabric:$create_fabric_version")
+    modImplementation("net.createmod.ponder:Ponder-Fabric-${minecraft_version}:${ponder_fabric_version}")
 
     // Development QOL
     modLocalRuntime("com.terraformersmc:modmenu:$modmenu_version")
