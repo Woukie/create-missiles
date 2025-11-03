@@ -8,6 +8,7 @@ import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPointTyp
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.MultiblockHelper;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
 import net.woukie.createmissiles.registry.Blocks;
@@ -23,7 +25,7 @@ import javax.annotation.Nullable;
 
 public class ArmInteractionPointsForge {
     private static <T extends ArmInteractionPointType> void register(String name, T type) {
-        Registry.register(CreateBuiltInRegistries.ARM_INTERACTION_POINT_TYPE, Create.asResource(name), type);
+        Registry.register(CreateBuiltInRegistries.ARM_INTERACTION_POINT_TYPE, new ResourceLocation(CreateMissiles.MOD_ID, name), type);
     }
 
     public static class LaunchPadType extends ArmInteractionPointType {

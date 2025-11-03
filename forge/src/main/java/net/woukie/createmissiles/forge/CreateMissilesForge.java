@@ -5,6 +5,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.registries.RegisterEvent;
 import net.woukie.createmissiles.CreateMissiles;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -18,13 +19,13 @@ public class CreateMissilesForge {
     public CreateMissilesForge() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.addListener(this::clientSetup);
+        eventBus.addListener(this::onRegister);
 
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> EntityRenderers::init);
         EventBuses.registerModEventBus(CreateMissiles.MOD_ID, eventBus);
         CreateMissiles.registrate().registerEventListeners(eventBus);
         CreateMissiles.init();
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(this::registerParticles));
-        ArmInteractionPointsForge.init();
     }
 
     private void clientSetup(final FMLClientSetupEvent event) {
@@ -33,5 +34,9 @@ public class CreateMissilesForge {
 
     public void registerParticles(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(ParticleTypes.BUILD_SHRAPNEL.get(), BuildShrapnel.Provider::new);
+    }
+
+    private void onRegister(RegisterEvent evt) {
+        ArmInteractionPointsForge.init();
     }
 }
