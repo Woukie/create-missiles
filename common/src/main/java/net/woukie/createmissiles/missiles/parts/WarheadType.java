@@ -28,8 +28,10 @@ public abstract class WarheadType extends MissilePartType {
         Vec3 hitPosition = hitPosition(trajectory, server);
 
         if (level == null) return;
-        if ((trajectory.getTick() > 20 && hitPosition != null) || trajectory.getPosition().y < level.getMinBuildHeight()) {
+        if (trajectory.getTick() > 20 && hitPosition != null) {
             onDetonate(hitPosition, trajectory, server);
+            trajectory.setSpent(true);
+        } else if (trajectory.getPosition().y < level.getMinBuildHeight()) {
             trajectory.setSpent(true);
         }
     }
