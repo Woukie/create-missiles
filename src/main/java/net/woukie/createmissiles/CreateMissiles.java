@@ -5,9 +5,18 @@ import com.google.common.base.Suppliers;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.render.CustomRenderedItems;
 import net.createmod.ponder.foundation.PonderIndex;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -43,32 +52,7 @@ public class CreateMissiles {
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onServerStopping);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onServerTick);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::addWanderingTrades);
-
-        LootEvent.MODIFY_LOOT_TABLE.register((lootDataManager, id, context, builtin) -> {
-            if (!builtin) return;
-            if (id.equals(new ResourceLocation("minecraft:chests/abandoned_mineshaft"))) {
-                LootPool.Builder poolBuilder = LootPool.lootPool();
-                var warheadItem = LootItem.lootTableItem(Items.WARHEAD_ASSEMBLY.get());
-                warheadItem.when(LootItemRandomChanceCondition.randomChance(0.1f));
-                var data = new CompoundTag();
-                data.putString("PartType", "createmissiles:excavator_warhead");
-                warheadItem.apply(SetNbtFunction.setTag(data));
-
-                poolBuilder.add(warheadItem);
-
-                context.addPool(poolBuilder);
-            }
-
-            if (id.equals(new ResourceLocation("minecraft:entities/ender_dragon"))) {
-                LootPool.Builder poolBuilder = LootPool.lootPool();
-                var warheadItem = LootItem.lootTableItem(Items.WARHEAD_ASSEMBLY.get());
-                var data = new CompoundTag();
-                data.putString("PartType", "createmissiles:dragon_warhead");
-                warheadItem.apply(SetNbtFunction.setTag(data));
-                poolBuilder.add(warheadItem);
-                context.addPool(poolBuilder);
-            }
-        });
+        NeoForge.EVENT_BUS.addListener(CreateMissiles::onLootTableLoad);
 
         StructurePoolElementTypes.init();
         Blocks.init();
@@ -88,6 +72,29 @@ public class CreateMissiles {
 
         EntityAttributeRegistry.register(EntityTypes.BASIC_DRONE, Drone::createMobAttributes);
         EntityAttributeRegistry.register(EntityTypes.REINFORCED_DRONE, Drone::createMobAttributes);
+    }
+
+    public static void onLootTableLoad(LootTableLoadEvent event) {
+        if (event.getName().equals(ResourceLocation.parse("minecraft:chests/abandoned_mineshaft"))) {
+            LootPool.Builder poolBuilder = LootPool.lootPool();
+            var warheadItem = LootItem.lootTableItem(Items.WARHEAD_ASSEMBLY.get());
+            warheadItem.when(LootItemRandomChanceCondition.randomChance(0.1f));
+            var data = new CompoundTag();
+            data.putString("PartType", "createmissiles:excavator_warhead");
+            warheadItem.apply(SetComponentsFunction.setComponent(DataComponents.CUSTOM_DATA, CustomData.of(data)));
+            poolBuilder.add(warheadItem);
+            event.getTable().addPool(poolBuilder.build());
+        }
+
+        if (event.getName().equals(ResourceLocation.parse("minecraft:entities/ender_dragon"))) {
+            LootPool.Builder poolBuilder = LootPool.lootPool();
+            var warheadItem = LootItem.lootTableItem(Items.WARHEAD_ASSEMBLY.get());
+            var data = new CompoundTag();
+            data.putString("PartType", "createmissiles:dragon_warhead");
+            warheadItem.apply(SetComponentsFunction.setComponent(DataComponents.CUSTOM_DATA, CustomData.of(data)));
+            poolBuilder.add(warheadItem);
+            event.getTable().addPool(poolBuilder.build());
+        }
     }
 
     private static void onServerStarted(ServerStartedEvent event) {
