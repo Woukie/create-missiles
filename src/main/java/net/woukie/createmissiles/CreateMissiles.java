@@ -1,7 +1,5 @@
 package net.woukie.createmissiles;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.render.CustomRenderedItems;
 import net.createmod.ponder.foundation.PonderIndex;
@@ -14,7 +12,6 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
@@ -71,9 +68,6 @@ public class CreateMissiles {
         SoundEvents.init();
         ParticleTypes.init();
         ExplosionResistanceOverrides.init();
-
-        EntityAttributeRegistry.register(EntityTypes.BASIC_DRONE, Drone::createMobAttributes);
-        EntityAttributeRegistry.register(EntityTypes.REINFORCED_DRONE, Drone::createMobAttributes);
     }
 
     public static void onLootTableLoad(LootTableLoadEvent event) {
