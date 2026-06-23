@@ -3,8 +3,6 @@ package net.woukie.createmissiles.registry;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
-import dev.architectury.registry.CreativeTabRegistry;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -28,7 +26,6 @@ public class Blocks {
             .properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY))
             .properties(BlockBehaviour.Properties::noOcclusion)
             .onRegister(CreateRegistrate.connectedTextures(LaunchPadCTBehaviour::new))
-            .addLayer(() -> RenderType::cutoutMipped)
             .simpleItem()
             .register();
 
@@ -59,7 +56,6 @@ public class Blocks {
     public static final BlockEntry<FlamingFireBlock> FLAMING_FIRE = REGISTRATE
             .block("flaming_fire", FlamingFireBlock::new)
             .initialProperties(() -> net.minecraft.world.level.block.Blocks.FIRE)
-            .addLayer(() -> RenderType::cutoutMipped)
             .register();
 
     public static final BlockEntry<AnnoyingJukeboxBlock> ANNOYING_JUKEBOX = REGISTRATE
@@ -68,7 +64,6 @@ public class Blocks {
             .properties(BlockBehaviour.Properties::noOcclusion)
             .properties(properties -> properties.destroyTime(150))
             .properties(properties -> properties.explosionResistance(60))
-            .addLayer(() -> RenderType::cutoutMipped)
             .simpleItem()
             .register();
 
@@ -84,16 +79,7 @@ public class Blocks {
             .simpleItem()
             .register();
 
-    @SuppressWarnings({"Experimental", "UnstableApiUsage"})
     public static void init() {
         CreateMissiles.LOGGER.info("Registering blocks for " + CreateMissiles.NAME);
-
-        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(LAUNCH_PAD));
-        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(ASSEMBLY_PANEL));
-        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(CONTROL_PANEL));
-        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(NAVIGATION_PANEL));
-        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(ANNOYING_JUKEBOX));
-        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(INFERNAL_ASH));
-        CreativeTabRegistry.appendStack(CreativeMenus.ASSEMBLIES_TAB, () -> new ItemStack(FROST_SNOW));
     }
 }
