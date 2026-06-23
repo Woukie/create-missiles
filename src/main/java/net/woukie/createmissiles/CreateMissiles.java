@@ -55,6 +55,8 @@ public class CreateMissiles {
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onLootTableLoad);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::createDefaultAttributes);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onBuildCreativeModeTabContents);
+        NeoForge.EVENT_BUS.addListener(EntityRenderers::registerEntityRenderers);
+        NeoForge.EVENT_BUS.addListener(EntityRenderers::registerLayerDefinitions);
 
         StructurePoolElementTypes.init();
         Blocks.init();
