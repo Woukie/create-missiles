@@ -1,0 +1,65 @@
+{
+	"fallback": "createmissiles:small_rooms",
+	"elements": [
+		{
+			"weight": 9,
+			"element": {
+				"location": "createmissiles:bunker_6waysplit_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element",
+				"override_liquid_settings": "ignore_waterlogging"
+			}
+		},
+		{
+			"weight": 6,
+			"element": {
+				"location": "createmissiles:bunker_6waysplit_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element",
+				"override_liquid_settings": "ignore_waterlogging"
+			}
+		},
+		{
+			"weight": 3,
+			"element": {
+				"location": "createmissiles:bunker_6waysplit_tech",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element",
+				"override_liquid_settings": "ignore_waterlogging"
+			}
+		},
+		{
+			"weight": 9,
+			"element": {
+				"location": "createmissiles:bunker_8waysplit_normal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element",
+				"override_liquid_settings": "ignore_waterlogging"
+			}
+		},
+		{
+			"weight": 6,
+			"element": {
+				"location": "createmissiles:bunker_8waysplit_ruined",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element",
+				"override_liquid_settings": "ignore_waterlogging"
+			}
+		},
+		{
+			"weight": 3,
+			"element": {
+				"location": "createmissiles:bunker_8waysplit_tech",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element",
+				"override_liquid_settings": "ignore_waterlogging"
+			}
+		}
+	]
+}

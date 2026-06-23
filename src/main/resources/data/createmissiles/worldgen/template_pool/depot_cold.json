@@ -1,0 +1,35 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "override_liquid_settings": "ignore_waterlogging",
+        "location": "createmissiles:depot_cold_weathered",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "override_liquid_settings": "ignore_waterlogging",
+        "location": "createmissiles:depot_cold_ruined1",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "override_liquid_settings": "ignore_waterlogging",
+        "location": "createmissiles:depot_cold_ruined2",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}
