@@ -1,89 +1,70 @@
 package net.woukie.createmissiles.registry;
 
-import dev.architectury.registry.registries.DeferredRegister;
-import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.entity.drone.Drone;
 import net.woukie.createmissiles.entity.drone.ReinforcedDrone;
 import net.woukie.createmissiles.item.BiomeVialItem;
 import net.woukie.createmissiles.item.BoundEnderPearlItem;
 import net.woukie.createmissiles.item.DroneBoxItem;
-
-import java.util.Optional;
-import java.util.ServiceLoader;
+import net.woukie.createmissiles.item.assembly.AssemblyItem;
 
 public abstract class Items {
-    public static final DeferredRegister<Item> ITEMS =
-            DeferredRegister.create(CreateMissiles.MOD_ID, Registries.ITEM);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM, CreateMissiles.MOD_ID);
 
-    public static final RegistrySupplier<Item> WARHEAD_ASSEMBLY;
-    public static final RegistrySupplier<Item> CHASSIS_ASSEMBLY;
-    public static final RegistrySupplier<Item> THRUSTER_ASSEMBLY;
+    public static final DeferredHolder<Item, AssemblyItem> WARHEAD_ASSEMBLY = ITEMS.register("warhead_assembly", () -> new AssemblyItem(new Item.Properties()));
+    public static final DeferredHolder<Item, AssemblyItem> CHASSIS_ASSEMBLY = ITEMS.register("chassis_assembly", () -> new AssemblyItem(new Item.Properties()));
+    public static final DeferredHolder<Item, AssemblyItem> THRUSTER_ASSEMBLY = ITEMS.register("thruster_assembly", () -> new AssemblyItem(new Item.Properties()));
 
-    public static final RegistrySupplier<Item> BOUND_ENDER_PEARL = ITEMS.register(
+    public static final DeferredHolder<Item, BoundEnderPearlItem> BOUND_ENDER_PEARL = ITEMS.register(
             "bound_ender_pearl",
             () -> new BoundEnderPearlItem(new Item.Properties())
     );
-    public static final RegistrySupplier<Item> DRONE_BOX_ITEM = ITEMS.register("basic_drone_box", () -> new DroneBoxItem(new Item.Properties(), level -> new Drone(EntityTypes.BASIC_DRONE.get(), level)));
-    public static final RegistrySupplier<Item> REINFORCED_DRONE_BOX = ITEMS.register("reinforced_drone_box", () -> new DroneBoxItem(new Item.Properties(), level -> new ReinforcedDrone(EntityTypes.REINFORCED_DRONE.get(), level)));
-    public static final RegistrySupplier<Item> DRAGON_EGG_SHELL = ITEMS.register(
+    public static final DeferredHolder<Item, DroneBoxItem> DRONE_BOX_ITEM = ITEMS.register("basic_drone_box", () -> new DroneBoxItem(new Item.Properties(), level -> new Drone(EntityTypes.BASIC_DRONE.get(), level)));
+    public static final DeferredHolder<Item, DroneBoxItem> REINFORCED_DRONE_BOX = ITEMS.register("reinforced_drone_box", () -> new DroneBoxItem(new Item.Properties(), level -> new ReinforcedDrone(EntityTypes.REINFORCED_DRONE.get(), level)));
+    public static final DeferredHolder<Item, Item> DRAGON_EGG_SHELL = ITEMS.register(
             "dragon_egg_shell",
             () -> new Item(new Item.Properties())
     );
-    public static final RegistrySupplier<BiomeVialItem> BIOME_VIAL = ITEMS.register(
+    public static final DeferredHolder<Item, BiomeVialItem> BIOME_VIAL = ITEMS.register(
             "biome_vial",
             () -> new BiomeVialItem(new BiomeVialItem.Properties())
     );
-    public static final RegistrySupplier<Item> REINFORCED_DRAGON_EGG_SHELL = ITEMS.register(
+    public static final DeferredHolder<Item, Item> REINFORCED_DRAGON_EGG_SHELL = ITEMS.register(
             "reinforced_dragon_egg_shell",
             () -> new Item(new Item.Properties())
     );
-    public static final RegistrySupplier<Item> INCOMPLETE_BASIC_DRONE_BOX = ITEMS.register(
+    public static final DeferredHolder<Item, Item> INCOMPLETE_BASIC_DRONE_BOX = ITEMS.register(
             "incomplete_basic_drone_box",
             () -> new Item(new Item.Properties())
     );
-    public static final RegistrySupplier<Item> INCOMPLETE_REINFORCED_DRONE_BOX = ITEMS.register(
+    public static final DeferredHolder<Item, Item> INCOMPLETE_REINFORCED_DRONE_BOX = ITEMS.register(
             "incomplete_reinforced_drone_box",
             () -> new Item(new Item.Properties())
     );
-    public static final RegistrySupplier<Item> FIREWORK_UPGRADE_CORE = ITEMS.register(
+    public static final DeferredHolder<Item, Item> FIREWORK_UPGRADE_CORE = ITEMS.register(
             "firework_upgrade_core",
             () -> new Item(new Item.Properties())
     );
-    public static final RegistrySupplier<Item> FLAMING_UPGRADE_CORE = ITEMS.register(
+    public static final DeferredHolder<Item, Item> FLAMING_UPGRADE_CORE = ITEMS.register(
             "flaming_upgrade_core",
             () -> new Item(new Item.Properties())
     );
-    public static final RegistrySupplier<Item> EXCAVATOR_UPGRADE_CORE = ITEMS.register(
+    public static final DeferredHolder<Item, Item> EXCAVATOR_UPGRADE_CORE = ITEMS.register(
             "excavator_upgrade_core",
             () -> new Item(new Item.Properties())
     );
-    public static final RegistrySupplier<Item> FROST_UPGRADE_CORE = ITEMS.register(
+    public static final DeferredHolder<Item, Item> FROST_UPGRADE_CORE = ITEMS.register(
             "frost_upgrade_core",
             () -> new Item(new Item.Properties())
     );
 
-    protected abstract RegistrySupplier<Item> getWarheadAssembly();
-    protected abstract RegistrySupplier<Item> getChassisAssembly();
-    protected abstract RegistrySupplier<Item> getThrusterAssembly();
-
     public static void init() {
         CreateMissiles.LOGGER.info("Registering items for " + CreateMissiles.NAME);
-        ITEMS.register();
-    }
-
-    static {
-        Optional<Items> items = ServiceLoader.load(Items.class).findFirst();
-        if (items.isPresent()) {
-            WARHEAD_ASSEMBLY = items.get().getWarheadAssembly();
-            CHASSIS_ASSEMBLY = items.get().getChassisAssembly();
-            THRUSTER_ASSEMBLY = items.get().getThrusterAssembly();
-        } else {
-            WARHEAD_ASSEMBLY = null;
-            CHASSIS_ASSEMBLY = null;
-            THRUSTER_ASSEMBLY = null;
-        }
+        ITEMS.register(NeoForge.EVENT_BUS);
     }
 }

@@ -7,6 +7,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -117,7 +118,7 @@ public class CreateMissiles {
     private static void addWanderingTrades(WandererTradesEvent event) {
         event.getGenericTrades().add(
                 (entity, randomSource) -> new MerchantOffer(
-                        net.minecraft.world.item.Items.EMERALD.getDefaultInstance(),
+                        new ItemCost(net.minecraft.world.item.Items.EMERALD),
                         AssemblyItem.createWith(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "annoying_warhead"), Items.WARHEAD_ASSEMBLY.get()),
                         1,
                         6,
