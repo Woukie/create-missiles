@@ -36,6 +36,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Artifacts
-          path: |
-            fabric/build/libs/
-            forge/build/libs/
+          path: build/libs/
