@@ -84,7 +84,7 @@ public class PonderPlugin implements net.createmod.ponder.api.registration.Ponde
                     scene.world().showIndependentSection(assemblyPanelSelection, Direction.DOWN);
                     scene.idle(20);
                     scene.overlay().showControls(assemblyPanelSelection.getCenter(), Pointing.RIGHT, 50)
-                            .withItem(AssemblyItem.createWith(new ResourceLocation(CreateMissiles.MOD_ID, "firework_thruster"), net.woukie.createmissiles.registry.Items.THRUSTER_ASSEMBLY.get()));
+                            .withItem(AssemblyItem.createWith(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "firework_thruster"), net.woukie.createmissiles.registry.Items.THRUSTER_ASSEMBLY.get()));
 
                     scene.overlay().showText(70)
                             .attachKeyFrame()
