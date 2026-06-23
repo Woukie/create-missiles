@@ -4,27 +4,10 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.render.CustomRenderedItems;
-import dev.architectury.event.events.client.ClientGuiEvent;
-import dev.architectury.event.events.client.ClientTickEvent;
-import dev.architectury.event.events.common.LifecycleEvent;
-import dev.architectury.event.events.common.LootEvent;
-import dev.architectury.event.events.common.TickEvent;
-import dev.architectury.registry.item.ItemPropertiesRegistry;
-import dev.architectury.registry.level.entity.EntityAttributeRegistry;
-import dev.architectury.registry.level.entity.trade.TradeRegistry;
-import dev.architectury.registry.menu.MenuRegistry;
-import dev.architectury.registry.registries.RegistrarManager;
 import net.createmod.ponder.foundation.PonderIndex;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.trading.MerchantOffer;
-import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.functions.SetNbtFunction;
-import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -130,14 +113,14 @@ public class CreateMissiles {
 
     private static void addWanderingTrades(WandererTradesEvent event) {
         event.getGenericTrades().add(
-                (entity, randomSource) -> 
-        )
-        net.minecraft.world.item.Items.EMERALD.getDefaultInstance(),
-                AssemblyItem.createWith(new ResourceLocation(CreateMissiles.MOD_ID, "annoying_warhead"),
-                        Items.WARHEAD_ASSEMBLY.get()),
-                1,
-                6,
-                4
+                (entity, randomSource) -> new MerchantOffer(
+                        net.minecraft.world.item.Items.EMERALD.getDefaultInstance(),
+                        AssemblyItem.createWith(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "annoying_warhead"), Items.WARHEAD_ASSEMBLY.get()),
+                        1,
+                        6,
+                        4
+                )
+        );
     }
 
     public static CreateRegistrate registrate() {
