@@ -17,6 +17,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCon
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -53,6 +54,7 @@ public class CreateMissiles {
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onServerTick);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::addWanderingTrades);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onLootTableLoad);
+        NeoForge.EVENT_BUS.addListener(CreateMissiles::createDefaultAttributes);
 
         StructurePoolElementTypes.init();
         Blocks.init();
@@ -128,6 +130,11 @@ public class CreateMissiles {
                         4
                 )
         );
+    }
+
+    public static void createDefaultAttributes(EntityAttributeCreationEvent event) {
+        event.put(EntityTypes.BASIC_DRONE.get(), Drone.createMobAttributes().build());
+        event.put(EntityTypes.REINFORCED_DRONE.get(), Drone.createMobAttributes().build());
     }
 
     public static CreateRegistrate registrate() {
