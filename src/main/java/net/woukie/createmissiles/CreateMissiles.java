@@ -14,6 +14,7 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
@@ -53,6 +54,7 @@ public class CreateMissiles {
         NeoForge.EVENT_BUS.addListener(CreateMissiles::addWanderingTrades);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onLootTableLoad);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::createDefaultAttributes);
+        NeoForge.EVENT_BUS.addListener(CreateMissiles::onBuildCreativeModeTabContents);
 
         StructurePoolElementTypes.init();
         Blocks.init();
@@ -127,9 +129,15 @@ public class CreateMissiles {
         );
     }
 
-    public static void createDefaultAttributes(EntityAttributeCreationEvent event) {
+    private static void createDefaultAttributes(EntityAttributeCreationEvent event) {
         event.put(EntityTypes.BASIC_DRONE.get(), Drone.createMobAttributes().build());
         event.put(EntityTypes.REINFORCED_DRONE.get(), Drone.createMobAttributes().build());
+    }
+
+    private static void onBuildCreativeModeTabContents(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeMenus.ASSEMBLIES_TAB.getKey()) {
+            CreativeMenus.addItems(event);
+        }
     }
 
     public static CreateRegistrate registrate() {
