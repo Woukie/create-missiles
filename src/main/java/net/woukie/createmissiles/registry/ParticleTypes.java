@@ -1,22 +1,21 @@
 package net.woukie.createmissiles.registry;
 
-import dev.architectury.registry.registries.DeferredRegister;
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import net.woukie.createmissiles.CreateMissiles;
-
-import static net.woukie.createmissiles.CreateMissiles.MOD_ID;
 
 public class ParticleTypes {
     public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES =
-            DeferredRegister.create(MOD_ID, Registries.PARTICLE_TYPE);
+            DeferredRegister.create(Registries.PARTICLE_TYPE, CreateMissiles.MOD_ID);
 
-    public static final RegistrySupplier<SimpleParticleType> BUILD_SHRAPNEL = PARTICLE_TYPES.register("build_shrapnel", SimpleParticleType::new);
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BUILD_SHRAPNEL = PARTICLE_TYPES.register("build_shrapnel", SimpleParticleType::new);
 
     public static void init() {
         CreateMissiles.LOGGER.info("Registering particles for " + CreateMissiles.NAME);
-        PARTICLE_TYPES.register();
+        PARTICLE_TYPES.register(NeoForge.EVENT_BUS);
     }
 
     public static class SimpleParticleType extends net.minecraft.core.particles.SimpleParticleType {
