@@ -1,40 +1,34 @@
 package net.woukie.createmissiles.registry;
 
-import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.inventory.ControlPanelMenu;
 import net.woukie.createmissiles.inventory.DroneMenu;
 import net.woukie.createmissiles.inventory.NavigationPanelMenu;
 import net.woukie.createmissiles.inventory.AssemblyPanelMenu;
 
-import static net.woukie.createmissiles.CreateMissiles.MANAGER;
-import static net.woukie.createmissiles.CreateMissiles.MOD_ID;
+import java.util.function.Supplier;
 
 public class Menus {
-    public static final Registrar<MenuType<?>> MENUS = MANAGER.get().get(Registries.MENU);
+    public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(BuiltInRegistries.MENU, CreateMissiles.MOD_ID);
 
-    public static final RegistrySupplier<MenuType<ControlPanelMenu>> CONTROL_PANEL = MENUS.register(
-            new ResourceLocation(MOD_ID, "control_panel"),
-            () -> new MenuType<>(ControlPanelMenu::new, FeatureFlags.VANILLA_SET)
-    );
+    public static final Supplier<MenuType<ControlPanelMenu>> CONTROL_PANEL = MENUS.register("control_panel", () -> new MenuType<>(ControlPanelMenu::new, FeatureFlags.VANILLA_SET));
 
-    public static final RegistrySupplier<MenuType<AssemblyPanelMenu>> ASSEMBLY_PANEL = MENUS.register(
-            new ResourceLocation(MOD_ID, "assembly_panel"),
+    public static final Supplier<MenuType<AssemblyPanelMenu>> ASSEMBLY_PANEL = MENUS.register(
+            "assembly_panel",
             () -> new MenuType<>(AssemblyPanelMenu::new, FeatureFlags.VANILLA_SET)
     );
 
-    public static final RegistrySupplier<MenuType<NavigationPanelMenu>> NAVIGATION_PANEL = MENUS.register(
-            new ResourceLocation(MOD_ID, "navigation_panel"),
+    public static final Supplier<MenuType<NavigationPanelMenu>> NAVIGATION_PANEL = MENUS.register(
+            "navigation_panel",
             () -> new MenuType<>(NavigationPanelMenu::new, FeatureFlags.VANILLA_SET)
     );
 
-    public static final RegistrySupplier<MenuType<DroneMenu>> DRONE = MENUS.register(
-            new ResourceLocation(MOD_ID, "drone"),
+    public static final Supplier<MenuType<DroneMenu>> DRONE = MENUS.register(
+            "drone",
             () -> new MenuType<>(DroneMenu::new, FeatureFlags.VANILLA_SET)
     );
 
