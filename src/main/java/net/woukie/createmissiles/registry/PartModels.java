@@ -59,6 +59,6 @@ public class PartModels {
     }
 
     private static ResourceLocation id(String id) {
-        return new ResourceLocation(CreateMissiles.MOD_ID, id);
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, id);
     }
 }

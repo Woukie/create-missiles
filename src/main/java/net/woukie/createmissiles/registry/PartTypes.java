@@ -1,8 +1,9 @@
 package net.woukie.createmissiles.registry;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.missiles.parts.MissilePartType;
 import net.woukie.createmissiles.missiles.parts.chassis.*;
@@ -29,9 +30,9 @@ public class PartTypes {
 
     public static MissilePartType get(ItemStack itemStack) {
         if (itemStack == null || itemStack.isEmpty()) return null;
-        CompoundTag compoundTag = itemStack.getTag();
-        if (compoundTag == null) return null;
-        return PartTypes.get(new ResourceLocation(compoundTag.getString("PartType")));
+        CustomData data = itemStack.get(DataComponents.CUSTOM_DATA);
+        if (data == null || data.isEmpty()) return null;
+        return PartTypes.get(ResourceLocation.parse(data.copyTag().getString("PartType")));
     }
 
     public static void init() {
