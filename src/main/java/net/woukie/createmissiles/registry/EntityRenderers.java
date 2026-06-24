@@ -12,20 +12,20 @@ import net.woukie.createmissiles.client.models.DroneModel;
 public class EntityRenderers {
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         CreateMissiles.LOGGER.info("Registering entity renderers for " + CreateMissiles.NAME);
-        event.registerEntityRenderer(EntityTypes.MISSILE, MissileRenderer::new);
-        event.registerEntityRenderer(EntityTypes.BASIC_DRONE, DroneRenderer::new);
-        event.registerEntityRenderer(EntityTypes.REINFORCED_DRONE, ReinforcedDroneRenderer::new);
-        event.registerEntityRenderer(EntityTypes.FLAMINGBALL, ThrownItemRenderer::new);
-        event.registerEntityRenderer(EntityTypes.BLAZINGBALL, ThrownItemRenderer::new);
-        event.registerEntityRenderer(EntityTypes.INFERNALBALL, ThrownItemRenderer::new);
-        event.registerEntityRenderer(EntityTypes.FROSTBALL, ThrownItemRenderer::new);
-        event.registerEntityRenderer(EntityTypes.FROZENBALL, ThrownItemRenderer::new);
-        event.registerEntityRenderer(EntityTypes.GUARDIANBALL, ThrownItemRenderer::new);
-        event.registerEntityRenderer(EntityTypes.ANCIENTBALL, ThrownItemRenderer::new);
-        event.registerEntityRenderer(EntityTypes.WITHEREDBALL, ThrownItemRenderer::new);
-        event.registerEntityRenderer(EntityTypes.FROZEN_AREA, NoopRenderer::new);
-        event.registerEntityRenderer(EntityTypes.INFERNAL_AREA, NoopRenderer::new);
-        event.registerEntityRenderer(EntityTypes.MESSY, NoopRenderer::new);
+        event.registerEntityRenderer(EntityTypes.MISSILE.get(), MissileRenderer::new);
+        event.registerEntityRenderer(EntityTypes.BASIC_DRONE.get(), DroneRenderer::new);
+        event.registerEntityRenderer(EntityTypes.REINFORCED_DRONE.get(), ReinforcedDroneRenderer::new);
+        event.registerEntityRenderer(EntityTypes.FLAMINGBALL.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(EntityTypes.BLAZINGBALL.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(EntityTypes.INFERNALBALL.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(EntityTypes.FROSTBALL.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(EntityTypes.FROZENBALL.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(EntityTypes.GUARDIANBALL.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(EntityTypes.ANCIENTBALL.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(EntityTypes.WITHEREDBALL.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(EntityTypes.FROZEN_AREA.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityTypes.INFERNAL_AREA.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityTypes.MESSY.get(), NoopRenderer::new);
     }
 
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
