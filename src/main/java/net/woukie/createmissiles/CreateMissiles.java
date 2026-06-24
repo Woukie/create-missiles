@@ -3,6 +3,7 @@ package net.woukie.createmissiles;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.render.CustomRenderedItems;
 import net.createmod.ponder.foundation.PonderIndex;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -13,6 +14,11 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
@@ -21,6 +27,7 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import net.woukie.createmissiles.client.FlashHandler;
 import net.woukie.createmissiles.client.screens.AssemblyPanelScreen;
 import net.woukie.createmissiles.client.screens.ControlPanelScreen;
@@ -33,6 +40,7 @@ import net.woukie.createmissiles.item.BiomeVialItem;
 import net.woukie.createmissiles.item.assembly.AssemblyItem;
 import net.woukie.createmissiles.missiles.Trajectories;
 import net.woukie.createmissiles.missiles.asyncexplosionhandler.ExplosionHandler;
+import net.woukie.createmissiles.particle.BuildShrapnel;
 import net.woukie.createmissiles.registry.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,10 +51,11 @@ public class CreateMissiles {
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
 
     private static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
-//    public static final Supplier<RegistrarManager> MANAGER = Suppliers.memoize(() -> RegistrarManager.get(MOD_ID));
 
     public static void init() {
         LOGGER.info("Initializing!");
+
+        CreateMissiles.registrate().registerEventListeners(NeoForge.EVENT_BUS);
 
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onServerStarted);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onServerStopping);
@@ -57,6 +66,13 @@ public class CreateMissiles {
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onBuildCreativeModeTabContents);
         NeoForge.EVENT_BUS.addListener(EntityRenderers::registerEntityRenderers);
         NeoForge.EVENT_BUS.addListener(EntityRenderers::registerLayerDefinitions);
+        NeoForge.EVENT_BUS.addListener(CreateMissiles::registerScreens);
+        NeoForge.EVENT_BUS.addListener(CreateMissiles::clientSetup);
+        NeoForge.EVENT_BUS.addListener(CreateMissiles::registerParticles);
+        NeoForge.EVENT_BUS.addListener(CreateMissiles::onRegister);
+        NeoForge.EVENT_BUS.addListener(CreateMissiles::onClientTickPost);
+        NeoForge.EVENT_BUS.addListener(CreateMissiles::onRenderGuiEvent);
+        NeoForge.EVENT_BUS.addListener(CreateMissiles::onRenderGuiEvent);
 
         StructurePoolElementTypes.init();
         Blocks.init();
@@ -146,33 +162,49 @@ public class CreateMissiles {
         return REGISTRATE;
     }
 
-    public static void initClient() {
-        MenuRegistry.registerScreenFactory(Menus.CONTROL_PANEL.get(), ControlPanelScreen::new);
-        MenuRegistry.registerScreenFactory(Menus.NAVIGATION_PANEL.get(), NavigationPanelScreen::new);
-        MenuRegistry.registerScreenFactory(Menus.ASSEMBLY_PANEL.get(), AssemblyPanelScreen::new);
-        MenuRegistry.registerScreenFactory(Menus.DRONE.get(), DroneScreen::new);
+    public static void registerScreens(RegisterMenuScreensEvent event) {
+        event.register(Menus.CONTROL_PANEL.get(), ControlPanelScreen::new);
+        event.register(Menus.NAVIGATION_PANEL.get(), NavigationPanelScreen::new);
+        event.register(Menus.ASSEMBLY_PANEL.get(), AssemblyPanelScreen::new);
+        event.register(Menus.DRONE.get(), DroneScreen::new);
+    }
 
+    public static void clientSetup(FMLClientSetupEvent event) {
         CustomRenderedItems.register(Items.WARHEAD_ASSEMBLY.get());
         CustomRenderedItems.register(Items.CHASSIS_ASSEMBLY.get());
         CustomRenderedItems.register(Items.THRUSTER_ASSEMBLY.get());
 
-        ClientGuiEvent.RENDER_HUD.register((guiGraphics, v) -> {
-            FlashHandler.handleHudRender(guiGraphics);
-        });
-
-        ClientTickEvent.CLIENT_POST.register(instance -> {
-            FlashHandler.cleanUp();
-        });
-
-        ItemPropertiesRegistry.register(Items.BIOME_VIAL.get(), new ResourceLocation("full"), (itemStack, clientLevel, livingEntity, i) -> {
-            if (livingEntity == null) return 0.0F;
-            if (itemStack.getItem() instanceof BiomeVialItem item) {
-                return item.isFull(itemStack) ? 1.0F : 0.0F;
-            }
-            return 0.0F;
+        event.enqueueWork(() -> {
+            ItemProperties.register(
+                    Items.BIOME_VIAL.get(),
+                    ResourceLocation.withDefaultNamespace("full"),
+                    (itemStack, clientLevel, livingEntity, i) -> {
+                        if (livingEntity == null) return 0.0F;
+                        if (itemStack.getItem() instanceof BiomeVialItem item) {
+                            return item.isFull(itemStack) ? 1.0F : 0.0F;
+                        }
+                        return 0.0F;
+                    }
+            );
         });
 
         PartModels.init();
         PonderIndex.addPlugin(new PonderPlugin());
+    }
+
+    public static void registerParticles(RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(ParticleTypes.BUILD_SHRAPNEL.get(), BuildShrapnel.Provider::new);
+    }
+
+    public static void onRegister(RegisterEvent event) {
+        ArmInteractionPointsForge.init();
+    }
+
+    public static void onClientTickPost(ClientTickEvent.Post event) {
+        FlashHandler.cleanUp();
+    }
+
+    public static void onRenderGuiEvent(RenderGuiEvent event) {
+        FlashHandler.handleHudRender(event.getGuiGraphics());
     }
 }
