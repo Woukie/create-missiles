@@ -8,11 +8,10 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.woukie.createmissiles.CreateMissiles;
-import net.woukie.createmissiles.block.navigationpanel.messages.ClickMapMessage;
 import org.joml.Vector3f;
 
 public record ExplodeFireworkMessage(Vector3f pos, Vector3f vel, CompoundTag tag) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<ClickMapMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "explode_firework"));
+    public static final CustomPacketPayload.Type<ExplodeFireworkMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "explode_firework"));
 
     public static final StreamCodec<ByteBuf, ExplodeFireworkMessage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VECTOR3F,
