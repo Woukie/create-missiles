@@ -13,7 +13,7 @@ import net.woukie.createmissiles.block.navigationpanel.NavigationPanelBlockEntit
 import net.woukie.createmissiles.block.navigationpanel.NavigationPanelInstanceTracker;
 
 public record ClickFuelMessage(int sourceX, int sourceY, int sourceZ, float fuelPercent) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<ClickFuelMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "navigation_panel_click_map"));
+    public static final CustomPacketPayload.Type<ClickFuelMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "navigation_panel_click_fuel"));
 
     public static final StreamCodec<ByteBuf, ClickFuelMessage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT,
