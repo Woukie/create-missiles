@@ -1,41 +1,45 @@
 package net.woukie.createmissiles.entity.drone;
 
-import dev.architectury.networking.NetworkManager;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.registry.EntityTypes;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
-public class SendDroneMessage {
-    public final UUID entityUUID;
-    public final BlockPos desination;
+public record SendDroneMessage(byte[] entityUUID, int destinationX, int destinationY, int destinationZ) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<SendDroneMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "send_drone"));
 
-    public SendDroneMessage(FriendlyByteBuf buf) {
-        this(buf.readUUID(), buf.readBlockPos());
-    }
+    public static final StreamCodec<ByteBuf, SendDroneMessage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.BYTE_ARRAY,
+            SendDroneMessage::entityUUID,
+            ByteBufCodecs.INT,
+            SendDroneMessage::destinationX,
+            ByteBufCodecs.INT,
+            SendDroneMessage::destinationY,
+            ByteBufCodecs.INT,
+            SendDroneMessage::destinationZ,
+            SendDroneMessage::new
+    );
 
-    public SendDroneMessage(UUID entityUUID, BlockPos desination) {
-        this.entityUUID = entityUUID;
-        this.desination = desination;
-    }
-
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeUUID(entityUUID);
-        buf.writeBlockPos(desination);
-    }
-
-    public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {
-        Player player = contextSupplier.get().getPlayer();
-        if (player == null) return;
-        Entity entity = ((ServerLevel)player.level()).getEntity(entityUUID);
+    public void apply(final IPayloadContext context) {
+        Player player = context.player();
+        Entity entity = ((ServerLevel)player.level()).getEntity(UUID.nameUUIDFromBytes(entityUUID));
         if (entity != null && (entity.getType() == EntityTypes.BASIC_DRONE.get() || entity.getType() == EntityTypes.REINFORCED_DRONE.get())) {
-            ((Drone) entity).startMission(desination);
+            ((Drone) entity).startMission(new BlockPos(destinationX, destinationY, destinationZ));
         }
+    }
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }
