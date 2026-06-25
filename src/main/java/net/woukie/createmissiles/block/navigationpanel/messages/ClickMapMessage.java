@@ -1,38 +1,37 @@
 package net.woukie.createmissiles.block.navigationpanel.messages;
 
-import dev.architectury.networking.NetworkManager;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.navigationpanel.NavigationPanelBlockEntity;
 import net.woukie.createmissiles.block.navigationpanel.NavigationPanelInstanceTracker;
 
-import java.util.function.Supplier;
+public record ClickMapMessage(int sourceX, int sourceY, int sourceZ, double mapCrosshairX, double mapCrosshairZ) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<ClickMapMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "navigation_panel_click_map"));
 
-public class ClickMapMessage {
-    public final BlockPos source;
-    public final double mapCrosshairX, mapCrosshairZ;
+    public static final StreamCodec<ByteBuf, ClickMapMessage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT,
+            ClickMapMessage::sourceX,
+            ByteBufCodecs.INT,
+            ClickMapMessage::sourceY,
+            ByteBufCodecs.INT,
+            ClickMapMessage::sourceZ,
+            ByteBufCodecs.DOUBLE,
+            ClickMapMessage::mapCrosshairX,
+            ByteBufCodecs.DOUBLE,
+            ClickMapMessage::mapCrosshairZ,
+            ClickMapMessage::new
+    );
 
-    public ClickMapMessage(FriendlyByteBuf buf) {
-        this(buf.readBlockPos(), buf.readDouble(), buf.readDouble());
-    }
-
-    public ClickMapMessage(BlockPos source, double mapCrosshairX, double mapCrosshairZ) {
-        this.source = source;
-        this.mapCrosshairX = mapCrosshairX;
-        this.mapCrosshairZ = mapCrosshairZ;
-    }
-
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeBlockPos(source);
-        buf.writeDouble(mapCrosshairX);
-        buf.writeDouble(mapCrosshairZ);
-    }
-
-    public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {
-        Player player = contextSupplier.get().getPlayer();
-        if (player == null) return;
-        NavigationPanelBlockEntity blockEntity = NavigationPanelInstanceTracker.get(player.level(), source);
+    public void apply(final IPayloadContext context) {
+        Player player = context.player();
+        NavigationPanelBlockEntity blockEntity = NavigationPanelInstanceTracker.get(player.level(), new BlockPos(sourceX, sourceY, sourceZ));
 
         if (blockEntity == null)
             return;
@@ -40,5 +39,10 @@ public class ClickMapMessage {
         if (mapCrosshairX >= 0 && mapCrosshairZ >= 0 && mapCrosshairX <= 128 && mapCrosshairZ <= 128) {
             blockEntity.mapClicked(mapCrosshairX, mapCrosshairZ);
         }
+    }
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }
