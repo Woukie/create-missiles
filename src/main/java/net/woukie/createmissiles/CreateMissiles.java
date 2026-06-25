@@ -72,7 +72,7 @@ public class CreateMissiles {
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onRegister);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onClientTickPost);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onRenderGuiEvent);
-        NeoForge.EVENT_BUS.addListener(CreateMissiles::onRenderGuiEvent);
+        NeoForge.EVENT_BUS.addListener(Packets::onRegisterPayloadHandlers);
 
         StructurePoolElementTypes.init();
         Blocks.init();
@@ -80,7 +80,6 @@ public class CreateMissiles {
         PartTypes.init();
         Items.init();
         CreativeMenus.init();
-        Packets.init();
         Menus.init();
         RecipeSerializers.init();
         RecipeTypes.init();
