@@ -1,37 +1,42 @@
 package net.woukie.createmissiles.block.controlpanel.messages;
 
-import dev.architectury.networking.NetworkManager;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.block.controlpanel.ControlPanelBlockEntity;
 import net.woukie.createmissiles.block.controlpanel.ControlPanelInstanceTracker;
 
-import java.util.function.Supplier;
+public record ClickLaunchMessage(int sourceX, int sourceY, int sourceZ) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<ClickLaunchMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "control_panel_click_launch"));
 
-public class ClickLaunchMessage {
-    public final BlockPos pos;
+    public static final StreamCodec<ByteBuf, ClickLaunchMessage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT,
+            ClickLaunchMessage::sourceX,
+            ByteBufCodecs.INT,
+            ClickLaunchMessage::sourceY,
+            ByteBufCodecs.INT,
+            ClickLaunchMessage::sourceZ,
+            ClickLaunchMessage::new
+    );
 
-    public ClickLaunchMessage(FriendlyByteBuf buf) {
-        this(buf.readBlockPos());
-    }
-
-    public ClickLaunchMessage(BlockPos pos) {
-        this.pos = pos;
-    }
-
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeBlockPos(pos);
-    }
-
-    public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {
-        Player player = contextSupplier.get().getPlayer();
-        if (player == null) return;
-        ControlPanelBlockEntity controlPanel = ControlPanelInstanceTracker.get(player.level(), pos);
+    public void apply(final IPayloadContext context) {
+        Player player = context.player();
+        ControlPanelBlockEntity controlPanel = ControlPanelInstanceTracker.get(player.level(), new BlockPos(sourceX, sourceY, sourceZ));
 
         if (controlPanel == null)
             return;
 
         controlPanel.launch();
+    }
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }
