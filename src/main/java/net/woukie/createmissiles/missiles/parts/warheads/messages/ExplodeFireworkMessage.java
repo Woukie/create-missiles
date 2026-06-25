@@ -1,36 +1,36 @@
 package net.woukie.createmissiles.missiles.parts.warheads.messages;
 
-import dev.architectury.networking.NetworkManager;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.block.navigationpanel.messages.ClickMapMessage;
 import org.joml.Vector3f;
 
-import java.util.function.Supplier;
+public record ExplodeFireworkMessage(Vector3f pos, Vector3f vel, CompoundTag tag) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<ClickMapMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "explode_firework"));
 
-public class ExplodeFireworkMessage {
-    public final Vector3f pos;
-    public final Vector3f vel;
-    public final CompoundTag tag;
+    public static final StreamCodec<ByteBuf, ExplodeFireworkMessage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VECTOR3F,
+            ExplodeFireworkMessage::pos,
+            ByteBufCodecs.VECTOR3F,
+            ExplodeFireworkMessage::vel,
+            ByteBufCodecs.COMPOUND_TAG,
+            ExplodeFireworkMessage::tag,
+            ExplodeFireworkMessage::new
+    );
 
-    public ExplodeFireworkMessage(FriendlyByteBuf buf) {
-        this(buf.readVector3f(), buf.readVector3f(), buf.readNbt());
-    }
-
-    public ExplodeFireworkMessage(Vector3f pos, Vector3f vel, CompoundTag tag) {
-        this.pos = pos;
-        this.vel = vel;
-        this.tag = tag;
-    }
-
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeVector3f(pos);
-        buf.writeVector3f(vel);
-        buf.writeNbt(tag);
-    }
-
-    public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {
-        var player = contextSupplier.get().getPlayer();
-        if (player == null) return;
+    public void apply(final IPayloadContext context) {
+        var player = context.player();
         player.level().createFireworks(pos.x, pos.y, pos.z, vel.x, vel.y, vel.z, tag);
+    }
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }
