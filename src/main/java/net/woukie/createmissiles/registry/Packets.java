@@ -14,13 +14,6 @@ import net.woukie.createmissiles.entity.drone.SendDroneMessage;
 import net.woukie.createmissiles.missiles.parts.warheads.messages.ExplodeFireworkMessage;
 
 public class Packets {
-    public static final NetworkChannel NAVIGATION_PANEL_CLICK_MAP = NetworkChannel.create(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "navigation_panel_click_map"));
-    public static final NetworkChannel NAVIGATION_PANEL_CLICK_FUEL = NetworkChannel.create(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "navigation_panel_click_fuel"));
-    public static final NetworkChannel CONTROL_PANEL_CLICK_LAUNCH = NetworkChannel.create(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "control_panel_click_launch"));
-    public static final NetworkChannel EXPLODE_FIREWORK = NetworkChannel.create(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "explode_firework"));
-    public static final NetworkChannel UPDATE_MAP_DATA = NetworkChannel.create(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "update_map_data"));
-    public static final NetworkChannel SEND_DRONE = NetworkChannel.create(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "send_drone"));
-    public static final NetworkChannel TRIGGER_BUILD_PARTICLES = NetworkChannel.create(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "trigger_build_particles"));
     public static final NetworkChannel CREATE_FLASH = NetworkChannel.create(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "create_flash"));
 
     public static void onRegisterPayloadHandlers(RegisterPayloadHandlersEvent event) {
