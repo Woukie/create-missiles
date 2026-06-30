@@ -7,6 +7,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.Util;
 import net.woukie.createmissiles.registry.PartModels;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.joml.Vector3f;
@@ -18,9 +19,8 @@ import java.util.Map;
 public record TriggerBuildParticles(Vector3f pos, String warhead, String chassis, String thruster, int warheadBuildPercent, int chassisBuildPercent, int thrusterBuildPercent) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<TriggerBuildParticles> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "trigger_build_particles"));
 
-    StreamCodec.composite()
 
-    public static final StreamCodec<ByteBuf, TriggerBuildParticles> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<ByteBuf, TriggerBuildParticles> STREAM_CODEC = Util.composite(
             ByteBufCodecs.VECTOR3F,
             TriggerBuildParticles::pos,
             ByteBufCodecs.STRING_UTF8,

@@ -1,6 +1,5 @@
 package net.woukie.createmissiles.registry;
 
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.woukie.createmissiles.CreateMissiles;
@@ -14,8 +13,6 @@ import net.woukie.createmissiles.entity.drone.SendDroneMessage;
 import net.woukie.createmissiles.missiles.parts.warheads.messages.ExplodeFireworkMessage;
 
 public class Packets {
-    public static final NetworkChannel CREATE_FLASH = NetworkChannel.create(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "create_flash"));
-
     public static void onRegisterPayloadHandlers(RegisterPayloadHandlersEvent event) {
         CreateMissiles.LOGGER.info("Registering payload handlers for " + CreateMissiles.NAME);
 

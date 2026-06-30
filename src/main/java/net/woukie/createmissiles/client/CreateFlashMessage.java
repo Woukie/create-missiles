@@ -1,45 +1,49 @@
 package net.woukie.createmissiles.client;
 
-import dev.architectury.networking.NetworkManager;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.Util;
 
-import java.util.function.Supplier;
+public record CreateFlashMessage(int colour, int originX, int originY, int originZ, int radius, double intensity, int length) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<CreateFlashMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "create_flash"));
 
-public class CreateFlashMessage {
-    public final Integer  colour;
-    public final BlockPos origin;
-    public final Integer radius;
-    public final Double intentsity;
-    public final Integer length;
+    public static final StreamCodec<ByteBuf, CreateFlashMessage> STREAM_CODEC = Util.composite(
+            ByteBufCodecs.INT,
+            CreateFlashMessage::colour,
+            ByteBufCodecs.INT,
+            CreateFlashMessage::originX,
+            ByteBufCodecs.INT,
+            CreateFlashMessage::originY,
+            ByteBufCodecs.INT,
+            CreateFlashMessage::originZ,
+            ByteBufCodecs.INT,
+            CreateFlashMessage::radius,
+            ByteBufCodecs.DOUBLE,
+            CreateFlashMessage::intensity,
+            ByteBufCodecs.INT,
+            CreateFlashMessage::length,
+            CreateFlashMessage::new
+    );
 
-    public CreateFlashMessage(FriendlyByteBuf buf) {
-        this(buf.readInt(), buf.readBlockPos(), buf.readInt(), buf.readDouble(), buf.readInt());
-    }
 
-    public CreateFlashMessage(Integer colour, BlockPos origin, Integer radius, Double intentsity, Integer length) {
-        this.colour = colour;
-        this.origin = origin;
-        this.radius = radius;
-        this.intentsity = intentsity;
-        this.length = length;
-    }
-
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeInt(colour);
-        buf.writeBlockPos(origin);
-        buf.writeInt(radius);
-        buf.writeDouble(intentsity);
-        buf.writeInt(length);
-    }
-
-    public void apply(Supplier<NetworkManager.PacketContext> contextSupplier) {
+    public void apply(final IPayloadContext context) {
         FlashHandler.addFlash(new FlashHandler.Flash(
                 colour,
-                origin,
+                new BlockPos(originX, originY, originZ),
                 radius,
-                intentsity,
+                intensity,
                 length
         ));
+    }
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }
