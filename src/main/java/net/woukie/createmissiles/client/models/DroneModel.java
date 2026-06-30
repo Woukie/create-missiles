@@ -39,8 +39,6 @@ public class DroneModel<T extends Drone> extends EntityModel<T> {
         this.bb_main = root.getChild("bb_main");
     }
 
-
-
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
@@ -83,16 +81,16 @@ public class DroneModel<T extends Drone> extends EntityModel<T> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        head.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        left_wing.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        left_wing_tip.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        right_wing.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        right_wing_tip.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        tail.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        tail2.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int i2) {
+        body.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+        head.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+        left_wing.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+        left_wing_tip.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+        right_wing.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+        right_wing_tip.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+        tail.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+        tail2.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay);
     }
 
     @Override
