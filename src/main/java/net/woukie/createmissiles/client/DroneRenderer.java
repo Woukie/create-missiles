@@ -21,8 +21,8 @@ public class DroneRenderer extends MobRenderer<Drone, DroneModel<Drone>> {
     }
 
     @Override
-    protected void setupRotations(Drone drone, PoseStack poseStack, float f, float g, float h) {
-        super.setupRotations(drone, poseStack, f, g, h);
-        poseStack.mulPose(Axis.XP.rotationDegrees(-drone.getXRot()));
+    protected void setupRotations(Drone entity, PoseStack poseStack, float bob, float yBodyRot, float partialTick, float scale) {
+        super.setupRotations(entity, poseStack, bob, yBodyRot, partialTick, scale);
+        poseStack.mulPose(Axis.XP.rotationDegrees(-entity.getXRot()));
     }
 }

@@ -67,7 +67,7 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
         Vector3f vec = new Vector3f(offset);
         part.offsetPos(vec.rotateX(rotation.getX()).rotateY(rotation.getY()).rotateZ(rotation.getZ()));
         VertexConsumer warheadVertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(model.getTexture(stage)));
-        part.render(poseStack, warheadVertexConsumer, i, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        part.render(poseStack, warheadVertexConsumer, i, OverlayTexture.NO_OVERLAY);
 
         if (attachments.containsKey("top")) offset.add(attachments.get("top"));
     }

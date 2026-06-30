@@ -304,8 +304,8 @@ public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu
     }
 
     @Override
-    public boolean mouseScrolled(double d, double e, double f) {
-        this.currentScrollPosition += f * 4f;
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        this.currentScrollPosition += scrollY * 4f;
         return true;
     }
 
