@@ -74,7 +74,6 @@ public class CreateMissiles {
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onRenderGuiEvent);
         NeoForge.EVENT_BUS.addListener(Packets::onRegisterPayloadHandlers);
 
-        StructurePoolElementTypes.init();
         Blocks.init();
         BlockEntities.init();
         PartTypes.init();
