@@ -1,10 +1,12 @@
 package net.woukie.createmissiles.recipe;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -13,8 +15,8 @@ import net.woukie.createmissiles.registry.RecipeSerializers;
 import org.jetbrains.annotations.NotNull;
 
 public class AssemblyCloningRecipe extends CustomRecipe {
-    public AssemblyCloningRecipe(ResourceLocation resourceLocation, CraftingBookCategory craftingBookCategory) {
-        super(resourceLocation, craftingBookCategory);
+    public AssemblyCloningRecipe(CraftingBookCategory category) {
+        super(category);
     }
 
     private boolean isAssembly(ItemStack stack) {
@@ -22,12 +24,12 @@ public class AssemblyCloningRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean matches(CraftingContainer craftingContainer, @NotNull Level level) {
+    public boolean matches(CraftingInput craftingInput, Level level) {
         int paperCount = 0;
         ItemStack assembly = ItemStack.EMPTY;
 
-        for(int j = 0; j < craftingContainer.getContainerSize(); ++j) {
-            ItemStack containerItem = craftingContainer.getItem(j);
+        for(int j = 0; j < craftingInput.size(); ++j) {
+            ItemStack containerItem = craftingInput.getItem(j);
             if (!containerItem.isEmpty()) {
                 if (isAssembly(containerItem)) {
                     if (!assembly.isEmpty()) {
@@ -49,12 +51,12 @@ public class AssemblyCloningRecipe extends CustomRecipe {
     }
 
     @Override
-    public @NotNull ItemStack assemble(CraftingContainer craftingContainer, @NotNull RegistryAccess registryAccess) {
+    public ItemStack assemble(CraftingInput craftingInput, HolderLookup.Provider provider) {
         int paperCount = 0;
         ItemStack assembly = ItemStack.EMPTY;
 
-        for(int j = 0; j < craftingContainer.getContainerSize(); ++j) {
-            ItemStack containerItem = craftingContainer.getItem(j);
+        for(int j = 0; j < craftingInput.size(); ++j) {
+            ItemStack containerItem = craftingInput.getItem(j);
             if (!containerItem.isEmpty()) {
                 if (isAssembly(containerItem)) {
                     if (!assembly.isEmpty()) {
