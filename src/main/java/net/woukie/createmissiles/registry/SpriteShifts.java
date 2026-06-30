@@ -24,8 +24,8 @@ public class SpriteShifts {
     }
 
     private static CTSpriteShiftEntry getCT(CTType type, String blockTextureName, String connectedTextureName) {
-        return CTSpriteShifter.getCT(type, new ResourceLocation(CreateMissiles.MOD_ID, "block/" + blockTextureName),
-                new ResourceLocation(CreateMissiles.MOD_ID, "block/" + connectedTextureName + "_connected"));
+        return CTSpriteShifter.getCT(type, ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "block/" + blockTextureName),
+                ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "block/" + connectedTextureName + "_connected"));
     }
 
     public static void init() {
