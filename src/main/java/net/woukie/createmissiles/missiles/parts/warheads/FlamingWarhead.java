@@ -54,7 +54,7 @@ public class FlamingWarhead extends WarheadType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "flaming_warhead");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "flaming_warhead");
     }
 
     @Override

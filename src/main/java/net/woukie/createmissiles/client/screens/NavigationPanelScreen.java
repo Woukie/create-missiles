@@ -29,19 +29,19 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPanelMenu> {
-    private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/navigation_panel.png");
-    private static final ResourceLocation MAP_ERROR = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/map_error.png");
-    private static final ResourceLocation NO_MAP = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/no_map.png");
-    private static final ResourceLocation MAP_TARGET_HORIZONTAL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_horizontal.png");
-    private static final ResourceLocation MAP_TARGET_VERTICAL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_vertical.png");
-    private static final ResourceLocation MAP_TARGET = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_marker.png");
-    private static final ResourceLocation TRAJECTORY_NO_MAP = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/trajectory_no_map.png");
-    private static final ResourceLocation TRAJECTORY_TARGET_LOADING = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/trajectory_target_loading.png");
-    private static final ResourceLocation INVALID_SETUP = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/invalid_setup.png");
-    private static final ResourceLocation FUEL = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel.png");
-    private static final ResourceLocation WHITE_DOT = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/white_dot.png");
-    private static final ResourceLocation FUEL_GAUGE = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel_gauge.png");
-    private static final ResourceLocation MIN_THRUST_DURATION = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/min_thrust_duration.png");
+    private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/container/navigation_panel.png");
+    private static final ResourceLocation MAP_ERROR = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/map_error.png");
+    private static final ResourceLocation NO_MAP = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/no_map.png");
+    private static final ResourceLocation MAP_TARGET_HORIZONTAL = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_horizontal.png");
+    private static final ResourceLocation MAP_TARGET_VERTICAL = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_vertical.png");
+    private static final ResourceLocation MAP_TARGET = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/target_marker.png");
+    private static final ResourceLocation TRAJECTORY_NO_MAP = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/trajectory_no_map.png");
+    private static final ResourceLocation TRAJECTORY_TARGET_LOADING = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/trajectory_target_loading.png");
+    private static final ResourceLocation INVALID_SETUP = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/invalid_setup.png");
+    private static final ResourceLocation FUEL = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel.png");
+    private static final ResourceLocation WHITE_DOT = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/white_dot.png");
+    private static final ResourceLocation FUEL_GAUGE = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/fuel_gauge.png");
+    private static final ResourceLocation MIN_THRUST_DURATION = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/min_thrust_duration.png");
 
     private static final int mapLeft = 8;
     private static final int mapTop = 16;

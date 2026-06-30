@@ -56,7 +56,7 @@ public class BiomeBrushWarhead extends WarheadType {
             }
         }
 
-        ResourceLocation reference = new ResourceLocation(trajectory.getWarheadData().getString("biome"));
+        ResourceLocation reference = ResourceLocation.fromNamespaceAndPath(trajectory.getWarheadData().getString("biome"));
         var registryOptional = level.registryAccess().registry(Registries.BIOME);
         if (registryOptional.isEmpty()) return;
         var biomeHolderOptional = registryOptional.get().getHolder(ResourceKey.create(Registries.BIOME, reference));
@@ -115,7 +115,7 @@ public class BiomeBrushWarhead extends WarheadType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "biome_brush_warhead");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "biome_brush_warhead");
     }
 
     @Override

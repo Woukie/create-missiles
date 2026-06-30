@@ -18,7 +18,7 @@ public class DragonChassis extends ChassisType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "dragon_chassis");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "dragon_chassis");
     }
 
     @Override

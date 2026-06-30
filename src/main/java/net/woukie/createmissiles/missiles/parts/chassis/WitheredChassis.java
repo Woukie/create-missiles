@@ -18,7 +18,7 @@ public class WitheredChassis extends ChassisType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "withered_chassis");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "withered_chassis");
     }
 
     @Override

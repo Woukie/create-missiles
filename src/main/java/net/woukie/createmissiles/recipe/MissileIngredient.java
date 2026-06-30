@@ -98,12 +98,12 @@ public record MissileIngredient(int count, ItemStack[] items, TagKey<Item>[] tag
     }
 
     private static ItemStack itemStackFromJson(JsonElement json) {
-        var resourceLocation = new ResourceLocation(json.getAsString());
+        var resourceLocation = ResourceLocation.fromNamespaceAndPath(json.getAsString());
         return new ItemStack(BuiltInRegistries.ITEM.get(resourceLocation));
     }
 
     private static TagKey<Item> tagFromJson(JsonElement json) {
-        var resourceLocation = new ResourceLocation(json.getAsString());
+        var resourceLocation = ResourceLocation.fromNamespaceAndPath(json.getAsString());
         return TagKey.create(Registries.ITEM, resourceLocation);
     }
 }

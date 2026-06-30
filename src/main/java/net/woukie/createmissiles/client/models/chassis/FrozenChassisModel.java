@@ -179,7 +179,7 @@ public class FrozenChassisModel implements MissilePartModel {
 
 	@Override
 	public ResourceLocation getTexture(int stage) {
-		return new ResourceLocation(CreateMissiles.MOD_ID,"textures/entity/frozen_chassis.png");
+		return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID,"textures/entity/frozen_chassis.png");
 	}
 
 	@Override

@@ -73,6 +73,6 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
     }
 
     public @NotNull ResourceLocation getTextureLocation(@NotNull MissileEntity entity) {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "textures/entity/gunpowder_thruster.png");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/entity/gunpowder_thruster.png");
     }
 }

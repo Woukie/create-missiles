@@ -18,7 +18,7 @@ public class FrozenChassis extends ChassisType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "frozen_chassis");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "frozen_chassis");
     }
 
     @Override

@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class DroneModel<T extends Drone> extends EntityModel<T> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(CreateMissiles.MOD_ID, "drone"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "drone"), "main");
 
     private final ModelPart body;
     private final ModelPart head;

@@ -61,7 +61,7 @@ public class DragonThruster extends ThrusterType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "dragon_thruster");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "dragon_thruster");
     }
 
     @Override

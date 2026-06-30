@@ -18,7 +18,7 @@ public class ExcavatorChassis extends ChassisType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "excavator_chassis");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "excavator_chassis");
     }
 
     @Override

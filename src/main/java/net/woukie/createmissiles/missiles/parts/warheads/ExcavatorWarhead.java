@@ -32,7 +32,7 @@ public class ExcavatorWarhead extends WarheadType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "excavator_warhead");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "excavator_warhead");
     }
 
     @Override

@@ -77,7 +77,7 @@ public class DirectHitWarheadModel implements MissilePartModel {
 
 	@Override
 	public ResourceLocation getTexture(int stage) {
-		return new ResourceLocation(CreateMissiles.MOD_ID,"textures/entity/direct_hit_warhead.png");
+		return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID,"textures/entity/direct_hit_warhead.png");
 	}
 
 	@Override

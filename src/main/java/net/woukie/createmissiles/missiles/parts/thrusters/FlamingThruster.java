@@ -61,7 +61,7 @@ public class FlamingThruster extends ThrusterType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "flaming_thruster");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "flaming_thruster");
     }
 
     @Override

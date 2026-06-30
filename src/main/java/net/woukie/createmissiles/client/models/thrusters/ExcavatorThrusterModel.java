@@ -111,7 +111,7 @@ public class ExcavatorThrusterModel implements MissilePartModel {
 
 	@Override
 	public ResourceLocation getTexture(int stage) {
-		return new ResourceLocation(CreateMissiles.MOD_ID,"textures/entity/excavator.png");
+		return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID,"textures/entity/excavator.png");
 	}
 
 	@Override

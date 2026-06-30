@@ -19,9 +19,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Predicate;
 
 public class DroneScreen extends AbstractContainerScreen<DroneMenu> {
-    private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/drone_panel.png");
-    private static final ResourceLocation LAUNCH_BUTTON = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/launch_drone_button.png");
-    private static final ResourceLocation LAUNCH_BUTTON_HOVER = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/launch_drone_button_hover.png");
+    private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/container/drone_panel.png");
+    private static final ResourceLocation LAUNCH_BUTTON = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/launch_drone_button.png");
+    private static final ResourceLocation LAUNCH_BUTTON_HOVER = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/launch_drone_button_hover.png");
 
     private EditBox tbXPos;
     private EditBox tbYPos;

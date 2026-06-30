@@ -87,7 +87,7 @@ public class DragonThrusterModel implements MissilePartModel {
 
 	@Override
 	public ResourceLocation getTexture(int stage) {
-		return new ResourceLocation(CreateMissiles.MOD_ID,"textures/entity/dragon_thruster.png");
+		return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID,"textures/entity/dragon_thruster.png");
 	}
 
 	@Override

@@ -83,15 +83,15 @@ public class MissileEntity extends Entity {
     }
 
     public ResourceLocation getWarheadType() {
-        return new ResourceLocation(entityData.get(WARHEAD_TYPE));
+        return ResourceLocation.fromNamespaceAndPath(entityData.get(WARHEAD_TYPE));
     }
 
     public ResourceLocation getChassisType() {
-        return new ResourceLocation(entityData.get(CHASSIS_TYPE));
+        return ResourceLocation.fromNamespaceAndPath(entityData.get(CHASSIS_TYPE));
     }
 
     public ResourceLocation getThrusterType() {
-        return new ResourceLocation(entityData.get(THRUSTER_TYPE));
+        return ResourceLocation.fromNamespaceAndPath(entityData.get(THRUSTER_TYPE));
     }
 
     public int getWarheadBuildPercent() {

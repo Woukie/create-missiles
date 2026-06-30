@@ -51,7 +51,7 @@ public class FrozenWarhead extends WarheadType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "frozen_warhead");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "frozen_warhead");
     }
 
     @Override

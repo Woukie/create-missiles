@@ -18,7 +18,7 @@ public class FlamingChassis extends ChassisType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "flaming_chassis");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "flaming_chassis");
     }
 
     @Override

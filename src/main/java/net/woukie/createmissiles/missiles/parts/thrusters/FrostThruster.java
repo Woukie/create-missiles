@@ -62,7 +62,7 @@ public class FrostThruster extends ThrusterType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "frost_thruster");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "frost_thruster");
     }
 
     @Override

@@ -41,7 +41,7 @@ public class AnnoyingWarhead extends WarheadType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "annoying_warhead");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "annoying_warhead");
     }
 
     @Override

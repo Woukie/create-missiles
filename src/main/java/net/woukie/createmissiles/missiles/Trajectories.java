@@ -127,7 +127,7 @@ public class Trajectories extends SavedData {
         ListTag trajectories = nbt.getList("Trajectories", 10);
         trajectories.forEach(tag -> {
             CompoundTag savedData = (CompoundTag) tag;
-            ThrusterType thrusterType = (ThrusterType) PartTypes.get(new ResourceLocation(savedData.getString("ThrusterType")));
+            ThrusterType thrusterType = (ThrusterType) PartTypes.get(ResourceLocation.fromNamespaceAndPath(savedData.getString("ThrusterType")));
             launch(thrusterType.constructTrajectory(savedData, server));
         });
 

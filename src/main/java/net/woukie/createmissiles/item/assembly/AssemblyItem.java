@@ -27,7 +27,7 @@ public class AssemblyItem extends Item {
     public @NotNull Component getName(ItemStack itemStack) {
         CompoundTag compoundTag = itemStack.getTag();
         if (compoundTag != null) {
-            var type = PartTypes.get(new ResourceLocation(compoundTag.getString("PartType")));
+            var type = PartTypes.get(ResourceLocation.fromNamespaceAndPath(compoundTag.getString("PartType")));
             if (type == null) return Component.translatable("item.createmissiles.assembly_invalid");
             return type.getDisplayName();
         }
@@ -42,7 +42,7 @@ public class AssemblyItem extends Item {
         CompoundTag compoundTag = itemStack.getTag();
         if (compoundTag == null) return;
 
-        Optional<MissilePartRecipe> recipe = MissilePartRecipe.fromResourceLocation(level, new ResourceLocation(compoundTag.getString("PartType")));
+        Optional<MissilePartRecipe> recipe = MissilePartRecipe.fromResourceLocation(level, ResourceLocation.fromNamespaceAndPath(compoundTag.getString("PartType")));
         if (recipe.isPresent()) {
             List<MissileIngredient> ingredients = recipe.get().getMissileIngredients();
 

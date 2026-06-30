@@ -12,7 +12,7 @@ public class TunnelerWarhead extends ExcavatorWarhead {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "tunneler_warhead");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "tunneler_warhead");
     }
 
     @Override

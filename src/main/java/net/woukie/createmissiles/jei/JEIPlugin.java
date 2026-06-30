@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public class JEIPlugin implements IModPlugin {
     @Override
     public @NotNull ResourceLocation getPluginUid() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "main");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "main");
     }
 
     @Override

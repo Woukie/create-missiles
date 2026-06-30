@@ -69,7 +69,7 @@ public class TeleportationWarheadModel implements MissilePartModel {
 
 	@Override
 	public ResourceLocation getTexture(int stage) {
-		return new ResourceLocation(CreateMissiles.MOD_ID,"textures/entity/teleportation_warhead.png");
+		return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID,"textures/entity/teleportation_warhead.png");
 	}
 
 	@Override

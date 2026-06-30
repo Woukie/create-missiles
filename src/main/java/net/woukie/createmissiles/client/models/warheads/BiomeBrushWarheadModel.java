@@ -69,7 +69,7 @@ public class BiomeBrushWarheadModel implements MissilePartModel {
 
 	@Override
 	public ResourceLocation getTexture(int stage) {
-		return new ResourceLocation(CreateMissiles.MOD_ID,"textures/entity/biome_brush_warhead.png");
+		return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID,"textures/entity/biome_brush_warhead.png");
 	}
 
 	@Override

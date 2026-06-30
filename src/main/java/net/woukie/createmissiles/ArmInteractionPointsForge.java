@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 
 public class ArmInteractionPointsForge {
     private static <T extends ArmInteractionPointType> void register(String name, T type) {
-        Registry.register(CreateBuiltInRegistries.ARM_INTERACTION_POINT_TYPE, new ResourceLocation(CreateMissiles.MOD_ID, name), type);
+        Registry.register(CreateBuiltInRegistries.ARM_INTERACTION_POINT_TYPE, ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, name), type);
     }
 
     public static class LaunchPadType extends ArmInteractionPointType {

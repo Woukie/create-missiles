@@ -163,7 +163,7 @@ public class MissilePartRecipe implements Recipe<Container> {
         @Override
         public @NotNull MissilePartRecipe fromJson(@NotNull ResourceLocation resourceLocation, @NotNull JsonObject jsonObject) {
             NonNullList<MissileIngredient> ingredients = itemsFromJson(GsonHelper.getAsJsonArray(jsonObject, "ingredients"));
-            ResourceLocation assembly = new ResourceLocation(GsonHelper.getAsString(jsonObject, "assembly"));
+            ResourceLocation assembly = ResourceLocation.fromNamespaceAndPath(GsonHelper.getAsString(jsonObject, "assembly"));
 
             return new MissilePartRecipe(resourceLocation, ingredients, assembly);
         }

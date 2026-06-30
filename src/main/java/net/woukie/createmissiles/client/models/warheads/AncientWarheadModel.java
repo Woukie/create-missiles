@@ -82,7 +82,7 @@ public class AncientWarheadModel implements MissilePartModel {
 
 	@Override
 	public ResourceLocation getTexture(int stage) {
-		return new ResourceLocation(CreateMissiles.MOD_ID,"textures/entity/ancient_warhead.png");
+		return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID,"textures/entity/ancient_warhead.png");
 	}
 
 	@Override

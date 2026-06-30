@@ -228,9 +228,9 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
                             ((ServerLevel) level).getPlayers(serverPlayer -> serverPlayer.position().distanceTo(p) < 128),
                             new TriggerBuildParticles(
                                     p.toVector3f(),
-                                    warheadType == null ? new ResourceLocation("") : warheadType.getResourceLocation(),
-                                    chassisType == null ? new ResourceLocation("") : chassisType.getResourceLocation(),
-                                    thrusterType == null ? new ResourceLocation("") : thrusterType.getResourceLocation(),
+                                    warheadType == null ? ResourceLocation.fromNamespaceAndPath("") : warheadType.getResourceLocation(),
+                                    chassisType == null ? ResourceLocation.fromNamespaceAndPath("") : chassisType.getResourceLocation(),
+                                    thrusterType == null ? ResourceLocation.fromNamespaceAndPath("") : thrusterType.getResourceLocation(),
                                     warheadBuildPercent,
                                     chassisBuildPercent,
                                     thrusterBuildPercent

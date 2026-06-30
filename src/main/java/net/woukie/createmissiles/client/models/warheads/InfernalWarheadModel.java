@@ -6,6 +6,6 @@ import net.woukie.createmissiles.CreateMissiles;
 public class InfernalWarheadModel extends FlamingWarheadModel {
 	@Override
 	public ResourceLocation getTexture(int stage) {
-		return new ResourceLocation(CreateMissiles.MOD_ID,"textures/entity/infernal_warhead.png");
+		return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID,"textures/entity/infernal_warhead.png");
 	}
 }

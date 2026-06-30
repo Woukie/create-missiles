@@ -305,7 +305,7 @@ public class NbtShapedRecipe extends ShapedRecipe {
             } else if (jsonObject.has("item")) {
                 return new ItemValue(NbtShapedRecipe.itemStackFromJson(jsonObject));
             } else if (jsonObject.has("tag")) {
-                ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(jsonObject, "tag"));
+                ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(GsonHelper.getAsString(jsonObject, "tag"));
                 TagKey<Item> tagKey = TagKey.create(Registries.ITEM, resourceLocation);
                 return new TagValue(tagKey);
             } else {

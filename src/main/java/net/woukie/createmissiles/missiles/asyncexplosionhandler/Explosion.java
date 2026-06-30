@@ -170,7 +170,7 @@ public class Explosion {
     }
 
     public static Explosion load(CompoundTag data, MinecraftServer server) {
-        Level level = server.getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(data.getString("Level"))));
+        Level level = server.getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(data.getString("Level"))));
         Vec3 origin = new Vec3(data.getInt("PositionX"), data.getInt("PositionY"), data.getInt("PositionZ"));
         if (level == null) return null;
         Explosion explosion = new Explosion(level, origin, data.getDouble("Power"));

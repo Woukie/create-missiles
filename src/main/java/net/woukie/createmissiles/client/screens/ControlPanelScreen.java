@@ -21,11 +21,11 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ControlPanelScreen extends AbstractContainerScreen<ControlPanelMenu> {
-    private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/control_panel.png");
-    private static final ResourceLocation COVER_LEFT = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/cover_l.png");
-    private static final ResourceLocation COVER_RIGHT = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/cover_r.png");
-    private static final ResourceLocation BUTTON = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/button.png");
-    private static final ResourceLocation BUTTON_HOVER = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/sprites/container/button_hover.png");
+    private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/container/control_panel.png");
+    private static final ResourceLocation COVER_LEFT = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/cover_l.png");
+    private static final ResourceLocation COVER_RIGHT = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/cover_r.png");
+    private static final ResourceLocation BUTTON = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/button.png");
+    private static final ResourceLocation BUTTON_HOVER = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/sprites/container/button_hover.png");
 
     private static final int consoleLeft = 8;
     private static final int consoleTop = 18;

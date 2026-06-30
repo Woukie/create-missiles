@@ -113,7 +113,7 @@ public class FrozenThrusterModel implements MissilePartModel {
 
 	@Override
 	public ResourceLocation getTexture(int stage) {
-		return new ResourceLocation(CreateMissiles.MOD_ID,"textures/entity/frozen_thruster.png");
+		return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID,"textures/entity/frozen_thruster.png");
 	}
 
 	@Override

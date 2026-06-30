@@ -41,7 +41,7 @@ public class DirectHitWarhead extends WarheadType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "direct_hit_warhead");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "direct_hit_warhead");
     }
 
     @Override

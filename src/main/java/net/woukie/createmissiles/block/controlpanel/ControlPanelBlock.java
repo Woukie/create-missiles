@@ -1,11 +1,13 @@
 package net.woukie.createmissiles.block.controlpanel;
 
+import com.mojang.serialization.MapCodec;
 import net.createmod.catnip.math.VoxelShaper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -24,8 +26,14 @@ public class ControlPanelBlock extends AbstractBasicBlock<ControlPanelBlockEntit
     private static final VoxelShape baseBoxNorth = Shapes.box(3/16.0, 1/16.0, 13/16.0, 13/16.0, 5/16.0, 15/16.0);
     private static final VoxelShape voxelShape = Shapes.or(leftPillarNorth, rightPillarNorth, displayNorth, baseBoxNorth);
 
-    public ControlPanelBlock(Properties properties) {
+    public static final MapCodec<ControlPanelBlock> CODEC = simpleCodec(ControlPanelBlock::new);
+
+    protected ControlPanelBlock(Properties properties) {
         super(properties);
+    }
+
+    public MapCodec<ControlPanelBlock> codec() {
+        return CODEC;
     }
 
     @Override

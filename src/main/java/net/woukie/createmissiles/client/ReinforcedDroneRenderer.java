@@ -13,6 +13,6 @@ public class ReinforcedDroneRenderer extends DroneRenderer {
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull Drone entity) {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "textures/entity/reinforced_drone.png");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/entity/reinforced_drone.png");
     }
 }

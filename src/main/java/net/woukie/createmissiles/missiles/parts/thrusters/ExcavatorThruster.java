@@ -61,7 +61,7 @@ public class ExcavatorThruster extends ThrusterType {
 
     @Override
     public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "excavator_thruster");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "excavator_thruster");
     }
 
     @Override

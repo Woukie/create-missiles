@@ -237,7 +237,7 @@ public class DroneHandler extends SavedData {
         CompoundTag levels = nbt.getCompound("Drones");
         levels.getAllKeys().forEach(dimensionKey -> {
             ListTag drones = levels.getList(dimensionKey, 10);
-            Level level = server.getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimensionKey)));
+            Level level = server.getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(dimensionKey)));
             drones.forEach(tag -> {
                 CompoundTag drone = (CompoundTag) tag;
                 DroneHandler.drones.get(level).put(drone.getUUID("UUID"), drone);

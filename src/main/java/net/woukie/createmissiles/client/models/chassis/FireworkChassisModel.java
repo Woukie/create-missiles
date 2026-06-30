@@ -64,7 +64,7 @@ public class FireworkChassisModel implements MissilePartModel {
 
 	@Override
 	public ResourceLocation getTexture(int stage) {
-		return new ResourceLocation(CreateMissiles.MOD_ID,"textures/entity/firework_chassis.png");
+		return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID,"textures/entity/firework_chassis.png");
 	}
 
 	@Override

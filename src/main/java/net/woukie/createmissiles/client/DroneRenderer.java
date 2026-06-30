@@ -17,7 +17,7 @@ public class DroneRenderer extends MobRenderer<Drone, DroneModel<Drone>> {
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull Drone entity) {
-        return new ResourceLocation(CreateMissiles.MOD_ID, "textures/entity/basic_drone.png");
+        return ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/entity/basic_drone.png");
     }
 
     @Override

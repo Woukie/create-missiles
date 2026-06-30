@@ -10,7 +10,7 @@ import net.woukie.createmissiles.inventory.AssemblyPanelMenu;
 import org.jetbrains.annotations.NotNull;
 
 public class AssemblyPanelScreen extends AbstractContainerScreen<AssemblyPanelMenu>  {
-    private static final ResourceLocation BACKGROUND = new ResourceLocation(CreateMissiles.MOD_ID, "textures/gui/container/assembly_panel.png");
+    private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "textures/gui/container/assembly_panel.png");
 
     public AssemblyPanelScreen(AssemblyPanelMenu abstractContainerMenu, Inventory inventory, Component component) {
         super(abstractContainerMenu, inventory, component);
