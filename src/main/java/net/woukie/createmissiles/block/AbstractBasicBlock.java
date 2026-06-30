@@ -20,7 +20,6 @@ public abstract class AbstractBasicBlock<T extends BlockEntity> extends Horizont
         super(properties);
     }
 
-    @SuppressWarnings("deprecation")
     public @NotNull InteractionResult use(@NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull InteractionHand interactionHand, @NotNull BlockHitResult blockHitResult) {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
@@ -36,7 +35,6 @@ public abstract class AbstractBasicBlock<T extends BlockEntity> extends Horizont
             player.openMenu((MenuProvider)blockEntity);
     }
 
-    @SuppressWarnings("deprecation")
     public void onRemove(BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, BlockState blockState2, boolean bl) {
         if (!blockState.is(blockState2.getBlock())) {
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
@@ -49,7 +47,6 @@ public abstract class AbstractBasicBlock<T extends BlockEntity> extends Horizont
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public @NotNull RenderShape getRenderShape(@NotNull BlockState blockState) {
         return RenderShape.MODEL;
     }

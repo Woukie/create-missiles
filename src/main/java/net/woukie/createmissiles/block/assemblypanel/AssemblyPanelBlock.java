@@ -1,5 +1,6 @@
 package net.woukie.createmissiles.block.assemblypanel;
 
+import com.mojang.serialization.MapCodec;
 import net.createmod.catnip.math.VoxelShaper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -14,6 +15,11 @@ import net.woukie.createmissiles.registry.BlockEntities;
 import org.jetbrains.annotations.NotNull;
 
 public class AssemblyPanelBlock extends AbstractBasicBlock<AssemblyPanelBlockEntity> {
+    public static final MapCodec<AssemblyPanelBlock> CODEC = simpleCodec(AssemblyPanelBlock::new);
+    public MapCodec<AssemblyPanelBlock> codec() {
+        return CODEC;
+    }
+
     private static final VoxelShape leftPillarNorth = Shapes.box(12/16.0, 0/16.0, 15/16.0, 14/16.0, 15/16.0, 16/16.0);
     private static final VoxelShape rightPillarNorth = Shapes.box(2/16.0, 0/16.0, 15/16.0, 4/16.0, 15/16.0, 16/16.0);
     private static final VoxelShape displayNorth = Shapes.box(2/16.0, 5.45/16.0, 10.275/16.0, 14/16.0, 16.925/16.0, 15.8/16.0);
