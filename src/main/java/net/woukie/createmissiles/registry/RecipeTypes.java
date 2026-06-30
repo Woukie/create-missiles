@@ -1,18 +1,18 @@
 package net.woukie.createmissiles.registry;
 
-import dev.architectury.registry.registries.DeferredRegister;
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.recipe.MissilePartRecipe;
 
 public class RecipeTypes {
-    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(CreateMissiles.MOD_ID, Registries.RECIPE_TYPE);
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registries.RECIPE_TYPE, CreateMissiles.MOD_ID);
 
-    public static final RegistrySupplier<RecipeType<MissilePartRecipe>> MISSILE_PART = RECIPE_TYPES.register(
-            new ResourceLocation(CreateMissiles.MOD_ID, "missile_part"), () -> new RecipeType<>() {
+    public static final DeferredHolder<RecipeType<?>, RecipeType<MissilePartRecipe>> MISSILE_PART = RECIPE_TYPES.register(
+            "missile_part", () -> new RecipeType<>() {
                 @Override
                 public String toString() {
                     return "missile_part";
@@ -21,6 +21,6 @@ public class RecipeTypes {
 
     public static void init() {
         CreateMissiles.LOGGER.info("Registering custom recipe types for " + CreateMissiles.NAME);
-        RECIPE_TYPES.register();
+        RECIPE_TYPES.register(NeoForge.EVENT_BUS);
     }
 }
