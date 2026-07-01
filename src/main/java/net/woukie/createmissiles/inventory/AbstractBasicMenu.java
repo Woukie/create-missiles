@@ -71,7 +71,7 @@ public abstract class AbstractBasicMenu extends AbstractContainerMenu {
                 Slot slot = getSlot(currentSlotIndex);
                 ItemStack targetStack = slot.getItem();
 
-                if (!targetStack.isEmpty() && ItemStack.isSameItemSameTags(clickedStack, targetStack)) {
+                if (!targetStack.isEmpty() && ItemStack.isSameItemSameComponents(clickedStack, targetStack)) {
                     var maxStackSize = Math.min(targetStack.getMaxStackSize(), slot.getMaxStackSize());
 
                     if (targetStack.getCount() < maxStackSize) {
