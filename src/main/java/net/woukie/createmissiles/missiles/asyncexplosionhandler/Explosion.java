@@ -9,7 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.enchantment.ProtectionEnchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -63,7 +62,8 @@ public class Explosion {
         List<Entity> entities = this.level.getEntities(null, new AABB(c1.x, c1.y, c1.z, c2.x, c2.y, c2.z));
         entities.forEach(entity -> {
             if (!(entity instanceof LivingEntity)) return;
-            if (entity.ignoreExplosion()) return;
+//            idk man they want an official Minecraft™ explosion
+//            if (entity.ignoreExplosion()) return;
             double proximity = Math.sqrt(entity.distanceToSqr(originBlockPosition.getCenter()));
             double proportionToEdge = proximity / (double) maxRadius;
             double proportionToCenter = 1 - proportionToEdge;
@@ -99,7 +99,6 @@ public class Explosion {
             exposure = exposure >= 1 ? 1 : 1 - Math.pow(2, -10 * exposure); // Adjusted for a further falloff
             double impact = proportionToCenter * exposure;
             entity.hurt(level.damageSources().explosion(null, null), (int)((impact * impact * impact) * 7 * power + 1));
-            exposure = ProtectionEnchantment.getExplosionKnockbackAfterDampener((LivingEntity)entity, exposure);
             entity.setDeltaMovement(entity.getDeltaMovement().add(entity.position().subtract(originBlockPosition.getCenter()).normalize().scale(exposure)));
         });
     }
@@ -170,7 +169,7 @@ public class Explosion {
     }
 
     public static Explosion load(CompoundTag data, MinecraftServer server) {
-        Level level = server.getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(data.getString("Level"))));
+        Level level = server.getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(data.getString("Level"))));
         Vec3 origin = new Vec3(data.getInt("PositionX"), data.getInt("PositionY"), data.getInt("PositionZ"));
         if (level == null) return null;
         Explosion explosion = new Explosion(level, origin, data.getDouble("Power"));
