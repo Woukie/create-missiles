@@ -5,7 +5,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -139,7 +141,8 @@ public class Drone extends FlyingMob {
         }
 
         if (compoundTag.contains("MapItem")) {
-            mapContainer = new SimpleContainer(ItemStack.of(compoundTag.getCompound("MapItem")));
+            HolderLookup.Provider provider = this.registryAccess();
+            ContainerHelper.loadAllItems(compoundTag.getCompound("MapItem"), this.mapContainer.getItems(), provider);
         }
     }
 
@@ -162,7 +165,9 @@ public class Drone extends FlyingMob {
             compoundTag.putInt("OriginBlockZ", this.originBlock.getZ());
         }
 
-        compoundTag.put("MapItem", mapContainer.getItem(0).save(new CompoundTag()));
+        CompoundTag mapItem = new CompoundTag();
+        ContainerHelper.saveAllItems(mapItem, this.mapContainer.getItems(), this.registryAccess());
+        compoundTag.put("MapItem", mapItem);
     }
 
     @Override
@@ -191,18 +196,13 @@ public class Drone extends FlyingMob {
     }
 
     @Override
-    protected float getStandingEyeHeight(@NotNull Pose pose, EntityDimensions entityDimensions) {
-        return entityDimensions.height * 0.35F;
-    }
-
-    @Override
     public boolean isAttackable() {
         return true;
     }
 
     public void aiStep() {
         if (this.isAlive() && this.isSunBurnTick()) {
-            this.setSecondsOnFire(8);
+            this.igniteForSeconds(8);
         }
 
         super.aiStep();
