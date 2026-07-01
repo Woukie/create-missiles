@@ -1,5 +1,6 @@
 package net.woukie.createmissiles.missiles.asyncexplosionhandler;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.MinecraftServer;
@@ -7,8 +8,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.CreateFlashMessage;
+import net.woukie.createmissiles.entity.drone.DroneHandler;
 import net.woukie.createmissiles.registry.Packets;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +24,12 @@ public class ExplosionHandler extends SavedData {
     private static ExplosionHandler instance;
     private static boolean initialized = false;
     private static boolean destroyOnSave = false;
+
+    public static final SavedData.Factory<ExplosionHandler> FACTORY = new SavedData.Factory<>(
+            ExplosionHandler::get,
+            (tag, provider) -> ExplosionHandler.get().load(tag),
+            null
+    );
 
     private ExplosionHandler() {}
 
@@ -41,14 +50,15 @@ public class ExplosionHandler extends SavedData {
         explosion.getLevel().players().forEach(player -> {
             double distance = player.position().distanceTo(explosion.getOrigin().getCenter());
             if (distance < explosion.getMaxRadius() * 4) {
-                Packets.CREATE_FLASH.sendToPlayer((ServerPlayer) player, new CreateFlashMessage(colour, explosion.getOrigin(), explosion.getMaxRadius(), explosion.getPower(), length));
+                var source = explosion.getOrigin();
+                PacketDistributor.sendToPlayer((ServerPlayer) player, new CreateFlashMessage(colour, source.getX(), source.getY(), source.getZ(), explosion.getMaxRadius(), explosion.getPower(), length));
             }
         });
         setDirty();
     }
 
     @Override
-    public @NotNull CompoundTag save(CompoundTag compoundTag) {
+    public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
         CreateMissiles.LOGGER.info("Saving explosions");
         var explosions = new ListTag();
         explosions.addAll(this.explosions.stream().map(Explosion::save).toList());
@@ -93,7 +103,7 @@ public class ExplosionHandler extends SavedData {
 
         ExplosionHandler.server = server;
         DimensionDataStorage storage = server.overworld().getDataStorage();
-        storage.computeIfAbsent(this::load, () -> this, "Explosions");
+        storage.computeIfAbsent(FACTORY, "Explosions");
     }
 
     public ExplosionHandler load(CompoundTag nbt) {
