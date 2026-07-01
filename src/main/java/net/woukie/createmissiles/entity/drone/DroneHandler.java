@@ -3,6 +3,7 @@ package net.woukie.createmissiles.entity.drone;
 import net.createmod.catnip.data.WorldAttached;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
@@ -34,6 +35,12 @@ public class DroneHandler extends SavedData {
     private static DroneHandler instance;
     private static boolean initialized = false;
     private static boolean destroyOnSave = false;
+
+    public static final SavedData.Factory<DroneHandler> FACTORY = new SavedData.Factory<>(
+            DroneHandler::get,
+            (tag, provider) -> DroneHandler.get().load(tag),
+            null
+    );
 
     private DroneHandler() {}
 
@@ -230,14 +237,14 @@ public class DroneHandler extends SavedData {
 
         DroneHandler.server = server;
         DimensionDataStorage storage = server.overworld().getDataStorage();
-        storage.computeIfAbsent(this::load, () -> this, "Drones");
+        storage.computeIfAbsent(FACTORY, "Drones");
     }
 
     public DroneHandler load(CompoundTag nbt) {
         CompoundTag levels = nbt.getCompound("Drones");
         levels.getAllKeys().forEach(dimensionKey -> {
             ListTag drones = levels.getList(dimensionKey, 10);
-            Level level = server.getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(dimensionKey)));
+            Level level = server.getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dimensionKey)));
             drones.forEach(tag -> {
                 CompoundTag drone = (CompoundTag) tag;
                 DroneHandler.drones.get(level).put(drone.getUUID("UUID"), drone);
@@ -254,7 +261,7 @@ public class DroneHandler extends SavedData {
     }
 
     @Override
-    public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag) {
+    public @NotNull CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
         CreateMissiles.LOGGER.info("Saving drones");
         var data = new CompoundTag();
         server.getAllLevels().forEach(serverLevel -> {
