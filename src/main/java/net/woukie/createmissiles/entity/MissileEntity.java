@@ -38,13 +38,13 @@ public class MissileEntity extends Entity {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        this.entityData.define(WARHEAD_TYPE, "");
-        this.entityData.define(CHASSIS_TYPE, "");
-        this.entityData.define(THRUSTER_TYPE, "");
-        this.entityData.define(WARHEAD_BUILD_PERCENT, 0);
-        this.entityData.define(CHASSIS_BUILD_PERCENT, 0);
-        this.entityData.define(THRUSTER_BUILD_PERCENT, 0);
-        this.entityData.define(ROTATION, new Rotations(0, 0, 0));
+        builder.define(WARHEAD_TYPE, "");
+        builder.define(CHASSIS_TYPE, "");
+        builder.define(THRUSTER_TYPE, "");
+        builder.define(WARHEAD_BUILD_PERCENT, 0);
+        builder.define(CHASSIS_BUILD_PERCENT, 0);
+        builder.define(THRUSTER_BUILD_PERCENT, 0);
+        builder.define(ROTATION, new Rotations(0, 0, 0));
     }
 
     @Override
@@ -83,15 +83,15 @@ public class MissileEntity extends Entity {
     }
 
     public ResourceLocation getWarheadType() {
-        return ResourceLocation.fromNamespaceAndPath(entityData.get(WARHEAD_TYPE));
+        return ResourceLocation.parse(entityData.get(WARHEAD_TYPE));
     }
 
     public ResourceLocation getChassisType() {
-        return ResourceLocation.fromNamespaceAndPath(entityData.get(CHASSIS_TYPE));
+        return ResourceLocation.parse(entityData.get(CHASSIS_TYPE));
     }
 
     public ResourceLocation getThrusterType() {
-        return ResourceLocation.fromNamespaceAndPath(entityData.get(THRUSTER_TYPE));
+        return ResourceLocation.parse(entityData.get(THRUSTER_TYPE));
     }
 
     public int getWarheadBuildPercent() {
