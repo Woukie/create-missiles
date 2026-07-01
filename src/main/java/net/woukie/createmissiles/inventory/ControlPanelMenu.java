@@ -8,6 +8,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.woukie.createmissiles.block.controlpanel.ControlPanelBlockEntity;
 import net.woukie.createmissiles.block.controlpanel.messages.ClickLaunchMessage;
 import net.woukie.createmissiles.registry.Items;
@@ -55,7 +56,8 @@ public class ControlPanelMenu extends AbstractBasicMenu {
     }
 
     public void clickLaunch() {
-        Packets.CONTROL_PANEL_CLICK_LAUNCH.sendToServer(new ClickLaunchMessage(getPosition()));
+        var source = getPosition();
+        PacketDistributor.sendToServer(new ClickLaunchMessage(source.getX(), source.getY(), source.getZ()));
     }
 
     public BlockPos getPosition() {

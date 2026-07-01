@@ -15,12 +15,14 @@ import net.woukie.createmissiles.registry.EntityTypes;
 
 import java.util.UUID;
 
-public record SendDroneMessage(byte[] entityUUID, int destinationX, int destinationY, int destinationZ) implements CustomPacketPayload {
+public record SendDroneMessage(long mostSigBits, long leastSigBits, int destinationX, int destinationY, int destinationZ) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<SendDroneMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "send_drone"));
 
     public static final StreamCodec<ByteBuf, SendDroneMessage> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.BYTE_ARRAY,
-            SendDroneMessage::entityUUID,
+            ByteBufCodecs.VAR_LONG,
+            SendDroneMessage::mostSigBits,
+            ByteBufCodecs.VAR_LONG,
+            SendDroneMessage::leastSigBits,
             ByteBufCodecs.INT,
             SendDroneMessage::destinationX,
             ByteBufCodecs.INT,
@@ -32,7 +34,7 @@ public record SendDroneMessage(byte[] entityUUID, int destinationX, int destinat
 
     public void apply(final IPayloadContext context) {
         Player player = context.player();
-        Entity entity = ((ServerLevel)player.level()).getEntity(UUID.nameUUIDFromBytes(entityUUID));
+        Entity entity = ((ServerLevel)player.level()).getEntity(new UUID(mostSigBits, leastSigBits));
         if (entity != null && (entity.getType() == EntityTypes.BASIC_DRONE.get() || entity.getType() == EntityTypes.REINFORCED_DRONE.get())) {
             ((Drone) entity).startMission(new BlockPos(destinationX, destinationY, destinationZ));
         }

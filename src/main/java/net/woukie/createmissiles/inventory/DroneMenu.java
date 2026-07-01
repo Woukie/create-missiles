@@ -12,6 +12,7 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.entity.drone.SendDroneMessage;
 import net.woukie.createmissiles.registry.Packets;
@@ -76,7 +77,7 @@ public class DroneMenu extends AbstractBasicMenu {
                 ((long)(shorts[5] & 0xFFFF) << 32) |
                 ((long)(shorts[6] & 0xFFFF) << 16) |
                 ((long)(shorts[7] & 0xFFFF));
-        Packets.SEND_DRONE.sendToServer(new SendDroneMessage(new UUID(mostSigBits, leastSigBits), desination));
+        PacketDistributor.sendToServer(new SendDroneMessage(mostSigBits, leastSigBits, desination.getX(), desination.getY(), desination.getZ()));
     }
 
     public int getInitialX() {

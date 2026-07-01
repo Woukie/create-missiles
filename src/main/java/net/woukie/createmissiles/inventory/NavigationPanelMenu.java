@@ -10,6 +10,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.woukie.createmissiles.block.navigationpanel.messages.ClickFuelMessage;
 import net.woukie.createmissiles.block.navigationpanel.messages.ClickMapMessage;
 import net.woukie.createmissiles.registry.Items;
@@ -38,7 +40,7 @@ public class NavigationPanelMenu extends AbstractBasicMenu {
                 if (data == null) return false;
 
                 for(MapDecoration mapDecoration : data.getDecorations())
-                    if (mapDecoration.getType() == MapDecoration.Type.RED_X)
+                    if (mapDecoration.type() == MapDecorationTypes.RED_X)
                         return false;
                 return !data.isExplorationMap();
             }
@@ -139,11 +141,13 @@ public class NavigationPanelMenu extends AbstractBasicMenu {
     }
 
     public void clickMap(double x, double z) {
-        Packets.NAVIGATION_PANEL_CLICK_MAP.sendToServer(new ClickMapMessage(getSource(), x, z));
+        var source = getSource();
+        PacketDistributor.sendToServer(new ClickMapMessage(source.getX(), source.getY(), source.getZ(), x, z));
     }
 
     public void clickFuel(float fuelClickZ) {
-        Packets.NAVIGATION_PANEL_CLICK_FUEL.sendToServer(new ClickFuelMessage(getSource(), fuelClickZ));
+        var source = getSource();
+        PacketDistributor.sendToServer(new ClickFuelMessage(source.getX(), getSource().getY(), getSource().getZ(), fuelClickZ));
     }
 
     public float getUpperLaunchAngle() {
