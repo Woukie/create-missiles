@@ -76,6 +76,7 @@ public class CreateMissiles {
 
         Blocks.init();
         BlockEntities.init();
+        net.woukie.createmissiles.registry.DataComponents.init();
         PartTypes.init();
         Items.init();
         CreativeMenus.init();

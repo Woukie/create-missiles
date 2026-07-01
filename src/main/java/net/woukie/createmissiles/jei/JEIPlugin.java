@@ -26,7 +26,9 @@ public class JEIPlugin implements IModPlugin {
     @Override
     public void registerItemSubtypes(@NotNull ISubtypeRegistration registration) {
         IModPlugin.super.registerItemSubtypes(registration);
-        registration.useNbtForSubtypes(Items.WARHEAD_ASSEMBLY.get(), Items.CHASSIS_ASSEMBLY.get(), Items.THRUSTER_ASSEMBLY.get());
+        registration.registerSubtypeInterpreter(Items.THRUSTER_ASSEMBLY.get(), AssemblySubtypeInterpreter.INSTANCE);
+        registration.registerSubtypeInterpreter(Items.CHASSIS_ASSEMBLY.get(), AssemblySubtypeInterpreter.INSTANCE);
+        registration.registerSubtypeInterpreter(Items.WARHEAD_ASSEMBLY.get(), AssemblySubtypeInterpreter.INSTANCE);
     }
 
     @Override
