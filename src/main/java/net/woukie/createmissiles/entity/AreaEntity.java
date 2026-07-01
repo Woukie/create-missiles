@@ -55,11 +55,6 @@ public abstract class AreaEntity extends Entity {
     public abstract void apply(BlockPos blockPos, ServerLevel level);
 
     @Override
-    protected void defineSynchedData() {
-
-    }
-
-    @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
 
     }

@@ -36,7 +36,7 @@ public class WitheredballEntity extends BallEntity {
         BlockPos spawnPos = Util.locateNearestMatchingBlock(hitResult.getLocation(), blockPos -> level().getBlockState(blockPos).canBeReplaced(Fluids.WATER), 20);
         spawnPos = spawnPos == null ? BlockPos.containing(hitResult.getLocation()) : spawnPos;
 
-        level().playSound(null, spawnPos, SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE);
+        level().playSound(null, spawnPos, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE);
         if (random.nextFloat() > 0.5) {
             var e = EntityType.WITHER_SKELETON.spawn((ServerLevel) level(), spawnPos, MobSpawnType.MOB_SUMMONED);
             if (e != null) e.setPersistenceRequired();

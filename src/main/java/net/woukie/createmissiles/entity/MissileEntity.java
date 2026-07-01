@@ -37,7 +37,7 @@ public class MissileEntity extends Entity {
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
         this.entityData.define(WARHEAD_TYPE, "");
         this.entityData.define(CHASSIS_TYPE, "");
         this.entityData.define(THRUSTER_TYPE, "");

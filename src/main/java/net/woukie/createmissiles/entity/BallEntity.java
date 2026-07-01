@@ -10,8 +10,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public abstract class BallEntity extends AbstractHurtingProjectile implements ItemSupplier {
-    private boolean spent;
-
     public BallEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level level) {
         super(entityType, level);
     }
@@ -27,7 +25,7 @@ public abstract class BallEntity extends AbstractHurtingProjectile implements It
         if (this.level().isClientSide || (entity == null || !entity.isRemoved()) && this.level().hasChunkAt(this.blockPosition())) {
             super.tick();
             if (this.shouldBurn()) {
-                this.setSecondsOnFire(1);
+                this.setRemainingFireTicks(20);
             }
 
             HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
@@ -47,7 +45,7 @@ public abstract class BallEntity extends AbstractHurtingProjectile implements It
 
             ProjectileUtil.rotateTowardsMovement(this, 0.2F);
             float g = this.getInertia();
-            this.setDeltaMovement(vec3.add(this.xPower, this.yPower, this.zPower).scale((double)g));
+            this.setDeltaMovement(vec3.add(this.accelerationPower, this.accelerationPower, this.accelerationPower).scale((double)g));
             this.level().addParticle(this.getTrailParticle(), d, e + (double)0.5F, f, (double)0.0F, (double)0.0F, (double)0.0F);
             this.setPos(d, e, f);
         } else {
@@ -63,9 +61,5 @@ public abstract class BallEntity extends AbstractHurtingProjectile implements It
     @Override
     public boolean canBeHitByProjectile() {
         return false;
-    }
-
-    @Override
-    protected void defineSynchedData() {
     }
 }

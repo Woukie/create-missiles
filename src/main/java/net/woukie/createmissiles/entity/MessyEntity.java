@@ -25,6 +25,11 @@ public class MessyEntity extends Entity {
     }
 
     @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        this.entityData.define(BLOCKS_LEFT, 50000);
+    }
+
+    @Override
     public void tick() {
         super.tick();
 
@@ -62,10 +67,6 @@ public class MessyEntity extends Entity {
             }
         }
         entityData.set(BLOCKS_LEFT, blocksLeft - applysPerTick);
-    }
-
-    protected void defineSynchedData() {
-        this.entityData.define(BLOCKS_LEFT, 50000);
     }
 
     @Override
