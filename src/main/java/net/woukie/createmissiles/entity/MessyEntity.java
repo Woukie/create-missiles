@@ -26,7 +26,7 @@ public class MessyEntity extends Entity {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        this.entityData.define(BLOCKS_LEFT, 50000);
+        builder.define(BLOCKS_LEFT, 50000);
     }
 
     @Override
