@@ -1,6 +1,7 @@
 package net.woukie.createmissiles.missiles.parts.warheads;
 
 import net.minecraft.core.*;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -12,10 +13,11 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
@@ -56,7 +58,7 @@ public class BiomeBrushWarhead extends WarheadType {
             }
         }
 
-        ResourceLocation reference = ResourceLocation.fromNamespaceAndPath(trajectory.getWarheadData().getString("biome"));
+        ResourceLocation reference = ResourceLocation.parse(trajectory.getWarheadData().getString("biome"));
         var registryOptional = level.registryAccess().registry(Registries.BIOME);
         if (registryOptional.isEmpty()) return;
         var biomeHolderOptional = registryOptional.get().getHolder(ResourceKey.create(Registries.BIOME, reference));
@@ -69,7 +71,7 @@ public class BiomeBrushWarhead extends WarheadType {
 
         level.getChunkSource().chunkMap.resendBiomesForChunks(list);
 
-        level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE, SoundSource.NEUTRAL);
+        level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL);
         level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.FIREWORK_ROCKET_TWINKLE, SoundSource.NEUTRAL);
 
         for (int i = 0; i < 20; i++) {
@@ -104,7 +106,11 @@ public class BiomeBrushWarhead extends WarheadType {
             if (itemStack.is(Items.BIOME_VIAL.get())) {
                 BiomeVialItem item = (BiomeVialItem) itemStack.getItem();
                 if (item.isFull(itemStack)) {
-                    data.putString("biome", itemStack.getTag().getString("biome"));
+                    CustomData customData = itemStack.get(DataComponents.CUSTOM_DATA);
+                    if (customData != null) {
+                        CompoundTag tag = customData.copyTag();
+                        data.putString("biome", tag.getString("biome"));
+                    }
                     return data;
                 }
             }
