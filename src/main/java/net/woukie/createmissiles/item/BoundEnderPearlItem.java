@@ -1,5 +1,7 @@
 package net.woukie.createmissiles.item;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -13,9 +15,9 @@ import net.minecraft.world.entity.projectile.ThrownEnderpearl;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,24 +27,30 @@ public class BoundEnderPearlItem extends Item {
         super(properties);
     }
 
-    @Override
-    public boolean isFoil(@NotNull ItemStack itemStack) {
-        return itemStack.hasTag() && itemStack.getTag().hasUUID("PlayerUUID");
+    private static CompoundTag getTagOrEmpty(ItemStack itemStack) {
+        CustomData customData = itemStack.get(DataComponents.CUSTOM_DATA);
+        return customData != null ? customData.copyTag() : new CompoundTag();
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> list, @NotNull TooltipFlag tooltipFlag) {
-        super.appendHoverText(itemStack, level, list, tooltipFlag);
+    public boolean isFoil(@NotNull ItemStack itemStack) {
+        return getTagOrEmpty(itemStack).hasUUID("PlayerUUID");
+    }
 
-        CompoundTag tag = itemStack.getTag();
-        if (level == null || tag == null || !tag.hasUUID("PlayerUUID")) {
-            return;
-        }
+    @Override
+    public void appendHoverText(@NotNull ItemStack itemStack, TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
+        super.appendHoverText(itemStack, context, tooltipComponents, tooltipFlag);
+
+        CompoundTag tag = getTagOrEmpty(itemStack);
+        if (!tag.hasUUID("PlayerUUID")) return;
+
+        Level level = Minecraft.getInstance().level;
+        if (level == null) return;
 
         UUID playerUUID = tag.getUUID("PlayerUUID");
         Player targetPlayer = level.getPlayerByUUID(playerUUID);
         if (targetPlayer == null) {
-            list.add(Component.translatable("item.createmissiles.bound_ender_pearl_not_online"));
+            tooltipComponents.add(Component.translatable("item.createmissiles.bound_ender_pearl_not_online"));
         }
     }
 
@@ -52,19 +60,20 @@ public class BoundEnderPearlItem extends Item {
 
         if (level.isClientSide) return;
 
-        CompoundTag tag = itemStack.getOrCreateTag();
+        CompoundTag tag = getTagOrEmpty(itemStack);
         if (tag.hasUUID("PlayerUUID")) return;
 
         tag.putUUID("PlayerUUID", entity.getUUID());
         tag.putString("PlayerName", entity.getName().getString());
 
-        itemStack.resetHoverName();
+//        TODO: Idk what to replace this with
+//        itemStack.resetHoverName();
     }
 
     @Override
     public @NotNull Component getName(@NotNull ItemStack itemStack) {
-        CompoundTag tag = itemStack.getTag();
-        if (tag == null || !tag.hasUUID("PlayerUUID")) {
+        CompoundTag tag = getTagOrEmpty(itemStack);
+        if (!tag.hasUUID("PlayerUUID")) {
             return Component.translatable("item.createmissiles.bound_ender_pearl");
         }
 
@@ -74,9 +83,10 @@ public class BoundEnderPearlItem extends Item {
 
     @Override
     public void onCraftedBy(ItemStack itemStack, @NotNull Level level, Player player) {
-        var tag = itemStack.getOrCreateTag();
+        CompoundTag tag = getTagOrEmpty(itemStack);
         tag.putUUID("PlayerUUID", player.getUUID());
         tag.putString("PlayerName", player.getName().getString());
+        itemStack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
 
         super.onCraftedBy(itemStack, level, player);
     }
@@ -85,15 +95,15 @@ public class BoundEnderPearlItem extends Item {
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player throwingPlayer, @NotNull InteractionHand interactionHand) {
         ItemStack itemStack = throwingPlayer.getItemInHand(interactionHand);
 
-        CompoundTag tag = itemStack.getTag();
-        if (tag != null && tag.hasUUID("PlayerUUID")) {
+        CompoundTag tag = getTagOrEmpty(itemStack);
+        if (tag.hasUUID("PlayerUUID")) {
             UUID playerUUID = tag.getUUID("PlayerUUID");
             Player targetPlayer = level.getPlayerByUUID(playerUUID);
             if (targetPlayer == null) return InteractionResultHolder.fail(itemStack);
 
             throwingPlayer.getCooldowns().addCooldown(this, 20);
-            level.playSound((Player)null, throwingPlayer.getX(), throwingPlayer.getY(), throwingPlayer.getZ(), SoundEvents.CHAIN_BREAK, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 1.2F));
-            level.playSound((Player)null, throwingPlayer.getX(), throwingPlayer.getY(), throwingPlayer.getZ(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+            level.playSound(null, throwingPlayer.getX(), throwingPlayer.getY(), throwingPlayer.getZ(), SoundEvents.CHAIN_BREAK, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 1.2F));
+            level.playSound(null, throwingPlayer.getX(), throwingPlayer.getY(), throwingPlayer.getZ(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
             if (!level.isClientSide) {
                 ThrownEnderpearl thrownEnderpearl = new ThrownEnderpearl(level, throwingPlayer);
                 thrownEnderpearl.setOwner(targetPlayer);
