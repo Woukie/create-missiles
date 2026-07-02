@@ -1,12 +1,12 @@
 package net.woukie.createmissiles.recipe;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
@@ -23,13 +23,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class MissilePartRecipe implements Recipe<Container> {
-    private final ResourceLocation id;
-    private final NonNullList<MissileIngredient> ingredients;
+public class MissilePartRecipe implements Recipe<RecipeInput> {
+    private final List<MissileIngredient> ingredients;
     private final ResourceLocation assembly;
 
-    public MissilePartRecipe(ResourceLocation id, NonNullList<MissileIngredient> ingredients, ResourceLocation assembly) {
-        this.id = id;
+    public MissilePartRecipe(List<MissileIngredient> ingredients, ResourceLocation assembly) {
         this.ingredients = ingredients;
         this.assembly = assembly;
     }
@@ -54,7 +52,7 @@ public class MissilePartRecipe implements Recipe<Container> {
         return false;
     }
 
-    public NonNullList<MissileIngredient> getMissileIngredients() {
+    public List<MissileIngredient> getMissileIngredients() {
         return this.ingredients;
     }
 
@@ -81,7 +79,10 @@ public class MissilePartRecipe implements Recipe<Container> {
     public static Optional<MissilePartRecipe> fromResourceLocation(Level level, ResourceLocation resourceLocation) {
         if (level == null) return Optional.empty();
         var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MISSILE_PART.get());
-        return missilePartRecipes.stream().filter(r -> r.getAssembly().equals(resourceLocation)).findFirst();
+        return missilePartRecipes.stream()
+                .map(RecipeHolder::value)
+                .filter(r -> r.getAssembly().equals(resourceLocation))
+                .findFirst();
     }
 
     public static Map<MissileIngredient, Integer> getRemainingItems(MissilePartType partType, Level level, List<ItemStack> items) {
@@ -111,14 +112,14 @@ public class MissilePartRecipe implements Recipe<Container> {
     }
 
     @Override
-    public boolean matches(@NotNull Container container, @NotNull Level level) {
+    public boolean matches(@NotNull RecipeInput input, @NotNull Level level) {
         List<ItemStack> containerStacks = new ArrayList<>();
 
         var partType = PartTypes.get(assembly);
 
         for (int i = partType.getStartSlot(); i < partType.getEndSlot(); i++)
-            if (!container.getItem(i).isEmpty())
-                containerStacks.add(container.getItem(i));
+            if (!input.getItem(i).isEmpty())
+                containerStacks.add(input.getItem(i));
 
         var remainingItems = getRemainingItems(containerStacks);
 
@@ -130,7 +131,7 @@ public class MissilePartRecipe implements Recipe<Container> {
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull Container container, @NotNull RegistryAccess registryAccess) {
+    public @NotNull ItemStack assemble(@NotNull RecipeInput input, @NotNull HolderLookup.Provider registries) {
         return ItemStack.EMPTY;
     }
 
@@ -140,13 +141,8 @@ public class MissilePartRecipe implements Recipe<Container> {
     }
 
     @Override
-    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
+    public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider registries) {
         return ItemStack.EMPTY;
-    }
-
-    @Override
-    public @NotNull ResourceLocation getId() {
-        return this.id;
     }
 
     @Override
@@ -160,45 +156,25 @@ public class MissilePartRecipe implements Recipe<Container> {
     }
 
     public static class Serializer implements RecipeSerializer<MissilePartRecipe> {
+        public static final MapCodec<MissilePartRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                MissileIngredient.CODEC.listOf().fieldOf("ingredients").forGetter(MissilePartRecipe::getMissileIngredients),
+                ResourceLocation.CODEC.fieldOf("assembly").forGetter(MissilePartRecipe::getAssembly)
+        ).apply(instance, MissilePartRecipe::new));
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, MissilePartRecipe> STREAM_CODEC = StreamCodec.composite(
+                MissileIngredient.STREAM_CODEC.apply(ByteBufCodecs.list()), MissilePartRecipe::getMissileIngredients,
+                ResourceLocation.STREAM_CODEC, MissilePartRecipe::getAssembly,
+                MissilePartRecipe::new
+        );
+
         @Override
-        public @NotNull MissilePartRecipe fromJson(@NotNull ResourceLocation resourceLocation, @NotNull JsonObject jsonObject) {
-            NonNullList<MissileIngredient> ingredients = itemsFromJson(GsonHelper.getAsJsonArray(jsonObject, "ingredients"));
-            ResourceLocation assembly = ResourceLocation.fromNamespaceAndPath(GsonHelper.getAsString(jsonObject, "assembly"));
-
-            return new MissilePartRecipe(resourceLocation, ingredients, assembly);
-        }
-
-        private static NonNullList<MissileIngredient> itemsFromJson(JsonArray jsonArray) {
-            NonNullList<MissileIngredient> items = NonNullList.create();
-
-            for(int i = 0; i < jsonArray.size(); ++i) {
-                MissileIngredient ingredient = MissileIngredient.fromJson(jsonArray.get(i), false);
-                if (!ingredient.isEmpty()) {
-                    items.add(ingredient);
-                }
-            }
-
-            return items;
+        public @NotNull MapCodec<MissilePartRecipe> codec() {
+            return CODEC;
         }
 
         @Override
-        public @NotNull MissilePartRecipe fromNetwork(@NotNull ResourceLocation resourceLocation, FriendlyByteBuf friendlyByteBuf) {
-            int ingredientCount = friendlyByteBuf.readVarInt();
-            NonNullList<MissileIngredient> ingredients = NonNullList.withSize(ingredientCount, MissileIngredient.EMPTY);
-            ingredients.replaceAll(ignored -> MissileIngredient.fromNetwork(friendlyByteBuf));
-            ResourceLocation assembly = friendlyByteBuf.readResourceLocation();
-
-            return new MissilePartRecipe(resourceLocation, ingredients, assembly);
-        }
-
-        @Override
-        public void toNetwork(FriendlyByteBuf friendlyByteBuf, MissilePartRecipe recipe) {
-            friendlyByteBuf.writeVarInt(recipe.ingredients.size());
-
-            for(MissileIngredient ingredient : recipe.ingredients)
-                ingredient.toNetwork(friendlyByteBuf);
-
-            friendlyByteBuf.writeResourceLocation(recipe.assembly);
+        public @NotNull StreamCodec<RegistryFriendlyByteBuf, MissilePartRecipe> streamCodec() {
+            return STREAM_CODEC;
         }
     }
 }

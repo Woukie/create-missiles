@@ -1,14 +1,14 @@
 package net.woukie.createmissiles.recipe;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +16,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.StreamSupport;
 
 /**
  * @param items Ingredient accepts any of these items
@@ -24,6 +23,31 @@ import java.util.stream.StreamSupport;
  */
 public record MissileIngredient(int count, ItemStack[] items, TagKey<Item>[] tags) {
     public static final MissileIngredient EMPTY = new MissileIngredient(0, new ItemStack[0], new TagKey[0]);
+
+    private static final Codec<ItemStack> ITEM_CODEC = BuiltInRegistries.ITEM.byNameCodec()
+            .xmap(ItemStack::new, ItemStack::getItem);
+
+    private static final StreamCodec<RegistryFriendlyByteBuf, TagKey<Item>> TAG_STREAM_CODEC = StreamCodec.of(
+            (buf, tag) -> buf.writeResourceLocation(tag.location()),
+            buf -> TagKey.create(Registries.ITEM, buf.readResourceLocation())
+    );
+
+    public static final Codec<MissileIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.fieldOf("count").forGetter(MissileIngredient::count),
+            ITEM_CODEC.listOf().optionalFieldOf("items", List.of())
+                    .forGetter(i -> Arrays.asList(i.items())),
+            TagKey.codec(Registries.ITEM).listOf().optionalFieldOf("tags", List.of())
+                    .forGetter(i -> Arrays.asList(i.tags()))
+    ).apply(instance, (count, items, tags) ->
+            new MissileIngredient(count, items.toArray(new ItemStack[0]), tags.toArray(new TagKey[0]))
+    ));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, MissileIngredient> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT, MissileIngredient::count,
+            ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()), i -> Arrays.asList(i.items()),
+            TAG_STREAM_CODEC.apply(ByteBufCodecs.list()), i -> Arrays.asList(i.tags()),
+            (count, items, tags) -> new MissileIngredient(count, items.toArray(new ItemStack[0]), tags.toArray(new TagKey[0]))
+    );
 
     public boolean isEmpty() {
         return (items.length == 0 && tags.length == 0) || count == 0;
@@ -45,12 +69,6 @@ public record MissileIngredient(int count, ItemStack[] items, TagKey<Item>[] tag
         return false;
     }
 
-    public void toNetwork(FriendlyByteBuf friendlyByteBuf) {
-        friendlyByteBuf.writeCollection(Arrays.asList(items()), FriendlyByteBuf::writeItem);
-        friendlyByteBuf.writeCollection(Arrays.asList(tags()), (a, b) -> a.writeResourceLocation(b.location()));
-        friendlyByteBuf.writeInt(count);
-    }
-
     // Used currently only for display purposes
     public List<ItemStack> getAllValidItems() {
         List<ItemStack> items = new ArrayList<>(Arrays.stream(items()).toList());
@@ -61,49 +79,5 @@ public record MissileIngredient(int count, ItemStack[] items, TagKey<Item>[] tag
         }
 
         return items;
-    }
-
-    public static MissileIngredient fromJson(JsonElement rawJson, boolean b) {
-        if (rawJson != null && !rawJson.isJsonNull()) {
-            if (rawJson.isJsonObject()) {
-                var ingredient = rawJson.getAsJsonObject();
-                var count = GsonHelper.getAsInt(ingredient, "count");
-
-                ItemStack[] items = new ItemStack[0];
-                if (ingredient.has("items")) {
-                    var ingredientArray = GsonHelper.getAsJsonArray(ingredient, "items");
-                    items = StreamSupport.stream(ingredientArray.spliterator(), false).map(MissileIngredient::itemStackFromJson).toList().toArray(new ItemStack[0]);
-                }
-
-                TagKey<Item>[] tags = new TagKey[0];
-                if (ingredient.has("tags")) {
-                    var tagArray = GsonHelper.getAsJsonArray(ingredient, "tags");
-                    tags = StreamSupport.stream(tagArray.spliterator(), false).map(MissileIngredient::tagFromJson).toList().toArray(new TagKey[0]);
-                }
-
-                return new MissileIngredient(count, items, tags);
-            } else {
-                throw new JsonSyntaxException("Value of key 'ingredients' must be an object");
-            }
-        } else {
-            throw new JsonSyntaxException("Value of key 'ingredients' cannot be null");
-        }
-    }
-
-    public static MissileIngredient fromNetwork(FriendlyByteBuf friendlyByteBuf) {
-        var items = friendlyByteBuf.readList(FriendlyByteBuf::readItem).toArray(new ItemStack[0]);
-        var tags = friendlyByteBuf.readList(buf -> TagKey.create(Registries.ITEM, buf.readResourceLocation())).toArray(new TagKey[0]);
-        var count = friendlyByteBuf.readInt();
-        return new MissileIngredient(count, items, tags);
-    }
-
-    private static ItemStack itemStackFromJson(JsonElement json) {
-        var resourceLocation = ResourceLocation.parse(json.getAsString());
-        return new ItemStack(BuiltInRegistries.ITEM.get(resourceLocation));
-    }
-
-    private static TagKey<Item> tagFromJson(JsonElement json) {
-        var resourceLocation = ResourceLocation.parse(json.getAsString());
-        return TagKey.create(Registries.ITEM, resourceLocation);
     }
 }
