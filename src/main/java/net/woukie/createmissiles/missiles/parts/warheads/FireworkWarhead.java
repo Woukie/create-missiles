@@ -1,9 +1,11 @@
 package net.woukie.createmissiles.missiles.parts.warheads;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -13,7 +15,9 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.FireworkExplosion;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.missiles.Trajectory;
 import net.woukie.createmissiles.missiles.asyncexplosionhandler.Explosion;
@@ -54,18 +58,20 @@ public class FireworkWarhead extends WarheadType {
 
             Vector3f vel = new Vector3f(0, 0, 0); // TODO: Replace with rocket velocity
             Vector3f impactPosFloat = new Vector3f((float) hitPosition.x, (float) hitPosition.y, (float) hitPosition.z);
-            Packets.EXPLODE_FIREWORK.sendToPlayers(players, new ExplodeFireworkMessage(impactPosFloat, vel, explosions));
+
+            PacketDistributor.sendToPlayersNear(level, null, hitPosition.x, hitPosition.y, hitPosition.z, 512, new ExplodeFireworkMessage(impactPosFloat, vel, explosions));
         }
     }
 
     @Override
     public CompoundTag saveTo(Container container, CompoundTag data) {
         ListTag explosions = new ListTag();
-
         for (int i = 0; i < container.getContainerSize(); i++) {
             ItemStack itemStack = container.getItem(i);
-            if (itemStack.is(Items.FIREWORK_STAR) && itemStack.getTag() != null)
-                explosions.add(itemStack.getTagElement("Explosion"));
+            FireworkExplosion explosion = itemStack.get(DataComponents.FIREWORK_EXPLOSION);
+            if (itemStack.is(Items.FIREWORK_STAR) && explosion != null) {
+                FireworkExplosion.CODEC.encodeStart(NbtOps.INSTANCE, explosion).result().ifPresent(explosions::add);
+            }
         }
         data.put("Explosions", explosions);
         return data;

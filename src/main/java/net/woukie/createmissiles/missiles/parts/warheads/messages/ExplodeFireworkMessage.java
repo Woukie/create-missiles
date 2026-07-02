@@ -2,13 +2,20 @@ package net.woukie.createmissiles.missiles.parts.warheads.messages;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.component.FireworkExplosion;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.woukie.createmissiles.CreateMissiles;
 import org.joml.Vector3f;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public record ExplodeFireworkMessage(Vector3f pos, Vector3f vel, CompoundTag tag) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ExplodeFireworkMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, "explode_firework"));
@@ -25,7 +32,16 @@ public record ExplodeFireworkMessage(Vector3f pos, Vector3f vel, CompoundTag tag
 
     public void apply(final IPayloadContext context) {
         var player = context.player();
-        player.level().createFireworks(pos.x, pos.y, pos.z, vel.x, vel.y, vel.z, tag);
+        player.level().createFireworks(pos.x, pos.y, pos.z, vel.x, vel.y, vel.z, loadExplosions(tag));
+    }
+
+    public static List<FireworkExplosion> loadExplosions(CompoundTag data) {
+        List<FireworkExplosion> explosions = new ArrayList<>();
+        ListTag explosionsTag = data.getList("Explosions", Tag.TAG_COMPOUND);
+        for (Tag tag : explosionsTag) {
+            FireworkExplosion.CODEC.parse(NbtOps.INSTANCE, tag).result().ifPresent(explosions::add);
+        }
+        return explosions;
     }
 
     @Override
