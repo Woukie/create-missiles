@@ -28,7 +28,7 @@ public class DragonWarhead extends WarheadType {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
         level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.DRAGON_FIREBALL_EXPLODE, SoundSource.HOSTILE, 100, 1);
-        level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 100, 1);
+        level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 100, 1);
         ExplosionHandler.get().createExplosion(new Explosion(level, hitPosition, 90), FastColor.ARGB32.color(255, 234, 194, 255), 15000);
         level.setBlock(BlockPos.containing(hitPosition), Blocks.DRAGON_EGG.defaultBlockState(), 3);
     }

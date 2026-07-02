@@ -51,7 +51,7 @@ public class ShulkerBoxWarhead extends WarheadType {
     public void onDetonate(Vec3 hitPosition, Trajectory trajectory, MinecraftServer server) {
         var level = server.getLevel(trajectory.getLevelKey());
         if (level == null) return;
-        level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 10, 1);
+        level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 10, 1);
         level.playSound(null, BlockPos.containing(hitPosition), SoundEvents.SHULKER_TELEPORT, SoundSource.HOSTILE, 10, 1);
         CompoundTag data = trajectory.getWarheadData();
         if (data != null && !data.isEmpty()) {
