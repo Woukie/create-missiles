@@ -2,9 +2,7 @@ package net.woukie.createmissiles.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -54,9 +52,9 @@ public class InfernalAshLayer extends Block {
     }
 
     @Override
-    public boolean isPathfindable(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, PathComputationType pathComputationType) {
+    protected boolean isPathfindable(BlockState state, PathComputationType pathComputationType) {
         if (Objects.requireNonNull(pathComputationType) == PathComputationType.LAND) {
-            return blockState.getValue(LAYERS) < HEIGHT_IMPASSABLE;
+            return state.getValue(LAYERS) < HEIGHT_IMPASSABLE;
         }
         return false;
     }

@@ -1,19 +1,27 @@
 package net.woukie.createmissiles.block;
+
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
 
 public class FlamingFireBlock extends BaseFireBlock {
+    public static final MapCodec<FlamingFireBlock> CODEC = simpleCodec(FlamingFireBlock::new);
+    public MapCodec<FlamingFireBlock> codec() {
+        return CODEC;
+    }
+
     public final int radius = 2;
     public final int height = 2;
 
