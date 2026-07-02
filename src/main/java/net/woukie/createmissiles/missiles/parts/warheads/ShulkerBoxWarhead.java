@@ -2,6 +2,7 @@ package net.woukie.createmissiles.missiles.parts.warheads;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -19,6 +20,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.DirectionalPlaceContext;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.missiles.Trajectory;
 import net.woukie.createmissiles.missiles.parts.WarheadType;
@@ -35,13 +37,17 @@ public class ShulkerBoxWarhead extends WarheadType {
 
     @Override
     public CompoundTag saveTo(Container container, CompoundTag data) {
-        ListTag boxes = new ListTag();
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        if (server == null) return data;
 
+        HolderLookup.Provider provider = server.registryAccess();
+
+        ListTag boxes = new ListTag();
         for (int i = getStartSlot(); i < getEndSlot(); i++) {
             ItemStack stack = container.getItem(i);
             boolean isShulker = stack.is(Items.SHULKER_BOX) || Arrays.stream(DyeColor.values()).anyMatch(c -> stack.is(ShulkerBoxBlock.getBlockByColor(c).asItem()));
             if (isShulker)
-                boxes.add(stack.save(new CompoundTag()));
+                boxes.add(stack.save(provider, new CompoundTag()));
         }
         data.put("ShulkerBoxes", boxes);
         return data;
@@ -59,7 +65,7 @@ public class ShulkerBoxWarhead extends WarheadType {
 
             if (!boxes.isEmpty()) {
                 for (int i = 0; i < boxes.size(); ++i) {
-                    var itemStack = ItemStack.of(boxes.getCompound(i));
+                    var itemStack = ItemStack.parseOptional(server.registryAccess(), boxes.getCompound(i));
                     var emptyBlock = locateAir(hitPosition.add(0, 1, 0), level, 100);
                     if (emptyBlock != null) {
                         var success = ((BlockItem)(itemStack.getItem())).place(new DirectionalPlaceContext(level, emptyBlock, Direction.UP, itemStack, Direction.UP)).consumesAction();
