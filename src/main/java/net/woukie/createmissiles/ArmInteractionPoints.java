@@ -2,6 +2,7 @@ package net.woukie.createmissiles;
 
 import com.simibubi.create.api.registry.CreateBuiltInRegistries;
 import com.simibubi.create.content.kinetics.mechanicalArm.AllArmInteractionPointTypes;
+import com.simibubi.create.content.kinetics.mechanicalArm.ArmBlockEntity;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPoint;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPointType;
 import net.minecraft.core.BlockPos;
@@ -13,14 +14,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlock;
 import net.woukie.createmissiles.registry.Blocks;
 
-import javax.annotation.Nullable;
-
-public class ArmInteractionPointsForge {
+public class ArmInteractionPoints {
     private static <T extends ArmInteractionPointType> void register(String name, T type) {
         Registry.register(CreateBuiltInRegistries.ARM_INTERACTION_POINT_TYPE, ResourceLocation.fromNamespaceAndPath(CreateMissiles.MOD_ID, name), type);
     }
@@ -47,12 +46,11 @@ public class ArmInteractionPointsForge {
             BlockState oldState = cachedState;
             super.updateCachedState();
             if (oldState != cachedState)
-                cachedHandler.invalidate();
+                cachedAngles = null;
         }
 
-        @Nullable
         @Override
-        protected IItemHandler getHandler() {
+        protected @org.jetbrains.annotations.Nullable IItemHandler getHandler(ArmBlockEntity armBlockEntity) {
             return null;
         }
 
@@ -71,12 +69,12 @@ public class ArmInteractionPointsForge {
         }
 
         @Override
-        public ItemStack insert(ItemStack stack, boolean simulate) {
+        public ItemStack insert(ArmBlockEntity armBlockEntity, ItemStack stack, boolean simulate) {
             ItemStack remainder = stack.copy();
             ItemStack toInsert = remainder.split(1);
             LaunchPadBlock block = Blocks.LAUNCH_PAD.get();
             WorldlyContainer container = block.getContainer(cachedState, level, pos);
-                if (!container.canPlaceItemThroughFace(0, toInsert, Direction.UP)) {
+            if (!container.canPlaceItemThroughFace(0, toInsert, Direction.UP)) {
                 return stack;
             }
 

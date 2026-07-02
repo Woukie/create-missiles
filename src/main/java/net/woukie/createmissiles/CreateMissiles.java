@@ -196,7 +196,7 @@ public class CreateMissiles {
     }
 
     public static void onRegister(RegisterEvent event) {
-        ArmInteractionPointsForge.init();
+        ArmInteractionPoints.init();
     }
 
     public static void onClientTickPost(ClientTickEvent.Post event) {
