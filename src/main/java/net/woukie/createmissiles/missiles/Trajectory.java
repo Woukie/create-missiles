@@ -107,12 +107,12 @@ public abstract class Trajectory {
     private void loadFrom(CompoundTag data, MinecraftServer server) {
         String dimension = data.getString("Dimension");
 
-        this.levelKey = ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(dimension));
+        this.levelKey = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dimension));
         this.entityId = data.hasUUID("EntityID") ? data.getUUID("EntityID") : null;
         this.tick = data.getInt("Tick");
-        this.warheadType = (WarheadType) PartTypes.get(ResourceLocation.fromNamespaceAndPath(data.getString("WarheadType")));
-        this.chassisType = (ChassisType) PartTypes.get(ResourceLocation.fromNamespaceAndPath(data.getString("ChassisType")));
-        this.thrusterType = (ThrusterType) PartTypes.get(ResourceLocation.fromNamespaceAndPath(data.getString("ThrusterType")));
+        this.warheadType = (WarheadType) PartTypes.get(ResourceLocation.parse(data.getString("WarheadType")));
+        this.chassisType = (ChassisType) PartTypes.get(ResourceLocation.parse(data.getString("ChassisType")));
+        this.thrusterType = (ThrusterType) PartTypes.get(ResourceLocation.parse(data.getString("ThrusterType")));
         this.initialPosition = new Vector3d(data.getDouble("InitialPositionX"), data.getDouble("InitialPositionY"), data.getDouble("InitialPositionZ"));
         this.position = new Vector3d(data.getDouble("PositionX"), data.getDouble("PositionY"), data.getDouble("PositionZ"));
         this.targetPosition = new Vector3d(data.getDouble("TargetPositionX"), data.getDouble("TargetPositionY"), data.getDouble("TargetPositionZ"));
