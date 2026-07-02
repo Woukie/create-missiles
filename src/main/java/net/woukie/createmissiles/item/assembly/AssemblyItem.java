@@ -1,7 +1,7 @@
 package net.woukie.createmissiles.item.assembly;
 
 import net.minecraft.Util;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -11,9 +11,9 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.woukie.createmissiles.recipe.MissileIngredient;
 import net.woukie.createmissiles.recipe.MissilePartRecipe;
+import net.woukie.createmissiles.registry.DataComponents;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,9 +25,9 @@ public class AssemblyItem extends Item {
 
     @Override
     public @NotNull Component getName(ItemStack itemStack) {
-        CompoundTag compoundTag = itemStack.getTag();
-        if (compoundTag != null) {
-            var type = PartTypes.get(ResourceLocation.fromNamespaceAndPath(compoundTag.getString("PartType")));
+        String partType = itemStack.get(DataComponents.PART_TYPE);
+        if (partType != null) {
+            var type = PartTypes.get(ResourceLocation.parse(partType));
             if (type == null) return Component.translatable("item.createmissiles.assembly_invalid");
             return type.getDisplayName();
         }
@@ -38,11 +38,13 @@ public class AssemblyItem extends Item {
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(itemStack, context, tooltipComponents, tooltipFlag);
+        String partType = itemStack.get(DataComponents.PART_TYPE);
+        if (partType == null) return;
 
-        CompoundTag compoundTag = itemStack.getTag();
-        if (compoundTag == null) return;
+        Level level = Minecraft.getInstance().level;
+        if (level == null) return;
 
-        Optional<MissilePartRecipe> recipe = MissilePartRecipe.fromResourceLocation(level, ResourceLocation.fromNamespaceAndPath(compoundTag.getString("PartType")));
+        Optional<MissilePartRecipe> recipe = MissilePartRecipe.fromResourceLocation(level, ResourceLocation.parse(partType));
         if (recipe.isPresent()) {
             List<MissileIngredient> ingredients = recipe.get().getMissileIngredients();
 
@@ -51,16 +53,14 @@ public class AssemblyItem extends Item {
 
                 Component[] names = items.stream().map(ItemStack::getDisplayName).toList().toArray(new Component[0]);
                 String name = names[(int)(Util.getMillis() / 1000f) % names.length].getString();
-                list.add(Component.literal(ingredient.count() + " " + name.substring(1, name.length() - 1)));
+                tooltipComponents.add(Component.literal(ingredient.count() + " " + name.substring(1, name.length() - 1)));
             });
         }
     }
 
     public static ItemStack createWith(ResourceLocation partTypeResourceLocation, ItemLike item) {
         ItemStack itemStack = new ItemStack(item);
-        CompoundTag compoundTag = itemStack.getOrCreateTag();
-        compoundTag.putString("PartType", partTypeResourceLocation.toString());
-        itemStack.setTag(compoundTag);
+        itemStack.set(DataComponents.PART_TYPE, partTypeResourceLocation.toString());
         return itemStack;
     }
 }
