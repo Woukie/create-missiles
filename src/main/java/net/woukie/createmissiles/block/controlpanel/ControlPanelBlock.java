@@ -28,7 +28,7 @@ public class ControlPanelBlock extends AbstractBasicBlock<ControlPanelBlockEntit
 
     public static final MapCodec<ControlPanelBlock> CODEC = simpleCodec(ControlPanelBlock::new);
 
-    protected ControlPanelBlock(Properties properties) {
+    public ControlPanelBlock(Properties properties) {
         super(properties);
     }
 
