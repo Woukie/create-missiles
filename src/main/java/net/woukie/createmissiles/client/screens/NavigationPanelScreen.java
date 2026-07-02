@@ -1,15 +1,16 @@
 package net.woukie.createmissiles.client.screens;
 
-import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
+import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.inventory.NavigationPanelMenu;
@@ -137,8 +138,8 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
             return;
         }
 
-        Integer mapId = MapItem.getMapId(mapItem);
-        MapItemSavedData mapData = MapItem.getSavedData(mapId, minecraft.level);
+        MapId mapId = mapItem.get(DataComponents.MAP_ID);
+        MapItemSavedData mapData = mapId != null ? MapItem.getSavedData(mapId, minecraft.level) : null;
         if(mapId == null || mapData == null) {
             gui.blit(MAP_ERROR, mapLeft, mapTop, 5, 0, 0, mapWidth, mapHeight, mapWidth, mapHeight);
             return;
