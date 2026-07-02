@@ -1,6 +1,7 @@
 package net.woukie.createmissiles.item;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -10,6 +11,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.woukie.createmissiles.registry.Items;
 import org.jetbrains.annotations.NotNull;
@@ -20,16 +22,16 @@ public class BiomeVialItem extends Item {
     }
 
     public boolean isFull(@NotNull ItemStack itemStack) {
-        var tag = itemStack.getTag();
-        if (tag == null) return false;
-        return tag.contains("biome");
+        CustomData customData = itemStack.get(DataComponents.CUSTOM_DATA);
+        return customData != null && customData.copyTag().contains("biome");
     }
 
     @Override
     public Component getName(ItemStack itemStack) {
-        if (isFull(itemStack)) {
-//            TODO: Verify jank
-            return Component.translatable("biome." + itemStack.getTag().getString("biome").replace(":", "."));
+        CustomData customData = itemStack.get(DataComponents.CUSTOM_DATA);
+        if (customData != null && customData.copyTag().contains("biome")) {
+            String biome = customData.copyTag().getString("biome");
+            return Component.translatable("biome." + biome.replace(":", "."));
         }
         return super.getName(itemStack);
     }
@@ -45,9 +47,9 @@ public class BiomeVialItem extends Item {
 
         itemStack.shrink(1);
         var newItem = new ItemStack(Items.BIOME_VIAL.get(), 1);
-        var data = new CompoundTag();
-        data.putString("biome", biomeKeyOptional.get().location().toString());
-        newItem.setTag(data);
+        CompoundTag tag = new CompoundTag();
+        tag.putString("biome", biomeKeyOptional.get().location().toString());
+        newItem.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
         player.addItem(newItem);
         level.playSound(null, player.position().x, player.position().y, player.position().z, SoundEvents.BOTTLE_FILL, SoundSource.PLAYERS, 1, 1);
 
