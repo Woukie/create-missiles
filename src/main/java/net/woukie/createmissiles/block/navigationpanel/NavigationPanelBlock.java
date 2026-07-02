@@ -1,5 +1,6 @@
 package net.woukie.createmissiles.block.navigationpanel;
 
+import com.mojang.serialization.MapCodec;
 import net.createmod.catnip.math.VoxelShaper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,6 +24,13 @@ public class NavigationPanelBlock extends AbstractBasicBlock<NavigationPanelBloc
     private static final VoxelShape baseBoxNorth = Shapes.box(3/16.0, 1/16.0, 13/16.0, 13/16.0, 5/16.0, 15/16.0);
     private static final VoxelShape voxelShape = Shapes.or(leftPillarNorth, rightPillarNorth, displayNorth, baseBoxNorth);
 
+    public static final MapCodec<NavigationPanelBlock> CODEC = simpleCodec(NavigationPanelBlock::new);
+
+    @Override
+    public MapCodec<NavigationPanelBlock> codec() {
+        return CODEC;
+    }
+
     public NavigationPanelBlock(Properties properties) {
         super(properties);
     }
@@ -31,7 +39,6 @@ public class NavigationPanelBlock extends AbstractBasicBlock<NavigationPanelBloc
     public BlockEntityType<? extends NavigationPanelBlockEntity> getBlockEntityType() {
         return BlockEntities.NAVIGATION_PANEL.get();
     }
-
     @Override
     @SuppressWarnings("deprecation")
     public @NotNull VoxelShape getShape(BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull CollisionContext collisionContext) {
