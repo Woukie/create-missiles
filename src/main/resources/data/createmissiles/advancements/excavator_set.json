@@ -9,7 +9,9 @@
             "items": [
               "createmissiles:warhead_assembly"
             ],
-            "nbt": "{PartType:\"createmissiles:excavator_warhead\"}"
+            "components": {
+              "createmissiles:part_type": "createmissiles:excavator_warhead"
+            }
           }
         ]
       }
@@ -22,7 +24,9 @@
             "items": [
               "createmissiles:chassis_assembly"
             ],
-            "nbt": "{PartType:\"createmissiles:excavator_chassis\"}"
+            "components": {
+              "createmissiles:part_type": "createmissiles:excavator_chassis"
+            }
           }
         ]
       }
@@ -35,7 +39,9 @@
             "items": [
               "createmissiles:thruster_assembly"
             ],
-            "nbt": "{PartType:\"createmissiles:excavator_thruster\"}"
+            "components": {
+              "createmissiles:part_type": "createmissiles:excavator_thruster"
+            }
           }
         ]
       }
@@ -49,8 +55,10 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "createmissiles:chassis_assembly",
-      "nbt": "{PartType:\"createmissiles:excavator_chassis\"}"
+      "id": "createmissiles:chassis_assembly",
+      "components": {
+        "createmissiles:part_type": "createmissiles:excavator_chassis"
+      }
     },
     "show_toast": true,
     "title": {

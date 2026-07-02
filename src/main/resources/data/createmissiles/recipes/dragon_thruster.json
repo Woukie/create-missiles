@@ -1,22 +1,29 @@
 {
-  "type": "createmissiles:nbt_crafting_shaped",
+  "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
     "@": {
-      "item": "createmissiles:warhead_assembly",
-      "nbt": "{PartType:\"createmissiles:dragon_warhead\"}"
+      "type": "neoforge:components",
+      "items": "createmissiles:thruster_assembly",
+      "components": {
+        "createmissiles:part_type": "createmissiles:dragon_thruster"
+      },
+      "strict": false
     },
     "S": {
-      "item": "minecraft:obsidian"
+      "item": "minecraft:iron_ingot"
     }
   },
   "pattern": [
     "S S",
     "S@S",
-    " S "
+    "S S"
   ],
   "result": {
-    "item": "createmissiles:thruster_assembly",
-    "nbt": "{PartType:\"createmissiles:dragon_thruster\"}"
+    "id": "createmissiles:chassis_assembly",
+    "count": 1,
+    "components": {
+      "createmissiles:part_type": "createmissiles:dragon_chassis"
+    }
   }
 }

@@ -1,10 +1,14 @@
 {
-  "type": "createmissiles:nbt_crafting_shaped",
+  "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
     "@": {
-      "item": "createmissiles:warhead_assembly",
-      "nbt": "{PartType:\"createmissiles:dragon_warhead\"}"
+      "type": "neoforge:components",
+      "items": "createmissiles:warhead_assembly",
+      "components": {
+        "createmissiles:part_type": "createmissiles:dragon_warhead"
+      },
+      "strict": false
     },
     "S": {
       "item": "minecraft:obsidian"
@@ -16,7 +20,10 @@
     "S S"
   ],
   "result": {
-    "item": "createmissiles:chassis_assembly",
-    "nbt": "{PartType:\"createmissiles:dragon_chassis\"}"
+    "id": "createmissiles:chassis_assembly",
+    "count": 1,
+    "components": {
+      "createmissiles:part_type": "createmissiles:dragon_chassis"
+    }
   }
 }

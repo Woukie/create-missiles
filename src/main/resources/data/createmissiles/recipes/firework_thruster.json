@@ -1,10 +1,14 @@
 {
-  "type": "createmissiles:nbt_crafting_shaped",
+  "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
     "@": {
-      "item": "createmissiles:warhead_assembly",
-      "nbt": "{PartType:\"createmissiles:firework_warhead\"}"
+      "type": "neoforge:components",
+      "items": "createmissiles:warhead_assembly",
+      "components": {
+        "createmissiles:part_type": "createmissiles:firework_warhead"
+      },
+      "strict": false
     },
     "S": {
       "item": "minecraft:paper"
@@ -16,7 +20,10 @@
     " S "
   ],
   "result": {
-    "item": "createmissiles:thruster_assembly",
-    "nbt": "{PartType:\"createmissiles:firework_thruster\"}"
+    "id": "createmissiles:thruster_assembly",
+    "count": 1,
+    "components": {
+      "createmissiles:part_type": "createmissiles:firework_thruster"
+    }
   }
 }

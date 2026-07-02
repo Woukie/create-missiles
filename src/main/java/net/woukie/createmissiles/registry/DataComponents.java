@@ -14,7 +14,7 @@ public class DataComponents {
     public static final DeferredRegister.DataComponents DATA_COMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, CreateMissiles.MOD_ID);
 
     public static final DataComponentType<String> PART_TYPE = register(
-            "PartType",
+            "part_type",
             builder -> builder.persistent(ExtraCodecs.NON_EMPTY_STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8)
     );
 

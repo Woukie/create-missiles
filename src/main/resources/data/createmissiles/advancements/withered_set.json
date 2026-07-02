@@ -9,7 +9,9 @@
             "items": [
               "createmissiles:warhead_assembly"
             ],
-            "nbt": "{PartType:\"createmissiles:withered_warhead\"}"
+            "components": {
+              "createmissiles:part_type": "createmissiles:withered_warhead"
+            }
           }
         ]
       }
@@ -22,7 +24,9 @@
             "items": [
               "createmissiles:chassis_assembly"
             ],
-            "nbt": "{PartType:\"createmissiles:withered_chassis\"}"
+            "components": {
+              "createmissiles:part_type": "createmissiles:withered_chassis"
+            }
           }
         ]
       }
@@ -35,7 +39,9 @@
             "items": [
               "createmissiles:thruster_assembly"
             ],
-            "nbt": "{PartType:\"createmissiles:withered_thruster\"}"
+            "components": {
+              "createmissiles:part_type": "createmissiles:withered_thruster"
+            }
           }
         ]
       }
@@ -49,8 +55,10 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "createmissiles:chassis_assembly",
-      "nbt": "{PartType:\"createmissiles:withered_chassis\"}"
+      "id": "createmissiles:chassis_assembly",
+      "components": {
+        "createmissiles:part_type": "createmissiles:withered_chassis"
+      }
     },
     "show_toast": true,
     "title": {

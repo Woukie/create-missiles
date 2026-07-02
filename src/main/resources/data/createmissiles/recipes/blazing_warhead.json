@@ -1,10 +1,14 @@
 {
-  "type": "createmissiles:nbt_crafting_shaped",
+  "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
     "@": {
-      "item": "createmissiles:warhead_assembly",
-      "nbt": "{PartType:\"createmissiles:flaming_warhead\"}"
+      "type": "neoforge:components",
+      "items": "createmissiles:warhead_assembly",
+      "components": {
+        "createmissiles:part_type": "createmissiles:flaming_warhead"
+      },
+      "strict": false
     },
     "R": {
       "item": "minecraft:blaze_rod"
@@ -19,7 +23,10 @@
     "R@R"
   ],
   "result": {
-    "item": "createmissiles:warhead_assembly",
-    "nbt": "{PartType:\"createmissiles:blazing_warhead\"}"
+    "id": "createmissiles:warhead_assembly",
+    "count": 1,
+    "components": {
+      "createmissiles:part_type": "createmissiles:blazing_warhead"
+    }
   }
 }

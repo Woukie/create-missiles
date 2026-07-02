@@ -9,7 +9,9 @@
             "items": [
               "createmissiles:warhead_assembly"
             ],
-            "nbt": "{PartType:\"createmissiles:annoying_warhead\"}"
+            "components": {
+              "createmissiles:part_type": "createmissiles:annoying_warhead"
+            }
           }
         ]
       }
@@ -23,8 +25,10 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "createmissiles:warhead_assembly",
-      "nbt": "{PartType:\"createmissiles:annoying_warhead\"}"
+      "id": "createmissiles:warhead_assembly",
+      "components": {
+        "createmissiles:part_type": "createmissiles:annoying_warhead"
+      }
     },
     "show_toast": true,
     "title": {
