@@ -1,6 +1,7 @@
 package net.woukie.createmissiles.missiles.parts.warheads;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -10,6 +11,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.phys.Vec3;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.client.MissilePartModel;
@@ -25,14 +27,16 @@ public class TeleportationWarhead extends WarheadType {
         for (int i = getStartSlot(); i < getEndSlot(); i++) {
             ItemStack stack = container.getItem(i);
             if (stack.is(Items.BOUND_ENDER_PEARL.get())) {
-                CompoundTag tag = stack.getTag();
-                if (tag != null && tag.hasUUID("PlayerUUID")) {
-                    data.putUUID("PlayerUUID", tag.getUUID("PlayerUUID"));
+                CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
+                if (customData != null) {
+                    CompoundTag tag = customData.copyTag();
+                    if (tag.hasUUID("PlayerUUID")) {
+                        data.putUUID("PlayerUUID", tag.getUUID("PlayerUUID"));
+                    }
                 }
                 return data;
             }
         }
-
         return data;
     }
 
