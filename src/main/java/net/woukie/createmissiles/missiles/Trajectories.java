@@ -1,5 +1,6 @@
 package net.woukie.createmissiles.missiles;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -11,10 +12,10 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.entity.MissileEntity;
+import net.woukie.createmissiles.missiles.asyncexplosionhandler.ExplosionHandler;
 import net.woukie.createmissiles.missiles.parts.ThrusterType;
 import net.woukie.createmissiles.registry.EntityTypes;
 import net.woukie.createmissiles.registry.PartTypes;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +32,12 @@ public class Trajectories extends SavedData {
     private static boolean destroyOnSave = false;
     private static MinecraftServer server;
 
+    public static final SavedData.Factory<ExplosionHandler> FACTORY = new SavedData.Factory<>(
+            ExplosionHandler::get,
+            (tag, provider) -> ExplosionHandler.get().load(tag),
+            null
+    );
+
     private Trajectories() {}
 
     public static Trajectories get() {
@@ -46,7 +53,7 @@ public class Trajectories extends SavedData {
 
         Trajectories.server = server;
         DimensionDataStorage storage = server.overworld().getDataStorage();
-        storage.computeIfAbsent(this::load, () -> this, "trajectory");
+        storage.computeIfAbsent(FACTORY, "Explosions");
     }
 
     public void stop() {
@@ -127,7 +134,7 @@ public class Trajectories extends SavedData {
         ListTag trajectories = nbt.getList("Trajectories", 10);
         trajectories.forEach(tag -> {
             CompoundTag savedData = (CompoundTag) tag;
-            ThrusterType thrusterType = (ThrusterType) PartTypes.get(ResourceLocation.fromNamespaceAndPath(savedData.getString("ThrusterType")));
+            ThrusterType thrusterType = (ThrusterType) PartTypes.get(ResourceLocation.parse(savedData.getString("ThrusterType")));
             launch(thrusterType.constructTrajectory(savedData, server));
         });
 
@@ -139,7 +146,7 @@ public class Trajectories extends SavedData {
     }
 
     @Override
-    public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag) {
+    public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
         ListTag trajectories = new ListTag();
         for (Trajectory trajectory : activeTrajectories) {
             CreateMissiles.LOGGER.info("Saving trajectory at {}", trajectory.position);
