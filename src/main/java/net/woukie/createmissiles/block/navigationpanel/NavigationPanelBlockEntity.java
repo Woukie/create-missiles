@@ -2,7 +2,9 @@ package net.woukie.createmissiles.block.navigationpanel;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -19,11 +21,13 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.woukie.createmissiles.MultiblockHelper;
-import net.woukie.createmissiles.block.entity.AbstractBasicBlockEntity;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
+import net.woukie.createmissiles.block.entity.AbstractBasicBlockEntity;
 import net.woukie.createmissiles.block.navigationpanel.messages.UpdateMapDataMessage;
 import net.woukie.createmissiles.inventory.NavigationPanelMenu;
 import net.woukie.createmissiles.missiles.Trajectory;
@@ -32,7 +36,6 @@ import net.woukie.createmissiles.missiles.parts.ThrusterType;
 import net.woukie.createmissiles.missiles.parts.WarheadType;
 import net.woukie.createmissiles.missiles.trajectories.BallisticTrajectory;
 import net.woukie.createmissiles.registry.BlockEntities;
-import net.woukie.createmissiles.registry.Packets;
 import net.woukie.createmissiles.registry.PartTypes;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
@@ -211,11 +214,11 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
     }
 
     @Override
-    public void load(@NotNull CompoundTag compoundTag) {
-        super.load(compoundTag);
+    protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider registries) {
+        super.loadAdditional(compoundTag, registries);
 
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(compoundTag, this.items);
+        ContainerHelper.loadAllItems(compoundTag, this.items, registries);
 
         this.mapCrosshairX = compoundTag.getDouble("MapCrosshairX");
         this.mapCrosshairZ = compoundTag.getDouble("MapCrosshairZ");
@@ -223,14 +226,14 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(@NotNull CompoundTag compoundTag) {
-        super.saveAdditional(compoundTag);
+    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider registries) {
+        super.saveAdditional(compoundTag, registries);
 
         compoundTag.putDouble("MapCrosshairX", this.mapCrosshairX);
         compoundTag.putDouble("MapCrosshairZ", this.mapCrosshairZ);
         compoundTag.putFloat("FuelPercent", this.thrustDurationPercent);
 
-        ContainerHelper.saveAllItems(compoundTag, this.items);
+        ContainerHelper.saveAllItems(compoundTag, this.items, registries);
     }
 
     @Override
@@ -239,18 +242,27 @@ public class NavigationPanelBlockEntity extends AbstractBasicBlockEntity {
     }
 
     @Override
+    protected NonNullList<ItemStack> getItems() {
+        return this.items;
+    }
+
+    @Override
+    protected void setItems(NonNullList<ItemStack> items) {
+        this.items = items;
+    }
+
+    @Override
     protected @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory) {
         Direction facing = getBlockState().getValue(AssemblyPanelBlock.FACING).getOpposite();
         BlockPos corner = MultiblockHelper.findCorner(getBlockPos(), facing, level);
         BlockEntity assemblyPanel = MultiblockHelper.findEdgeBlock(corner, facing, getLevel(), BlockEntities.ASSEMBLY_PANEL.get());
-
         if (level != null && !level.isClientSide) {
             ItemStack itemStack = getItem(SLOT_MAP);
             if (itemStack.is(Items.FILLED_MAP) && !itemStack.isEmpty()) {
                 MapItemSavedData data = MapItem.getSavedData(itemStack, level);
-                Integer mapId = MapItem.getMapId(itemStack);
+                MapId mapId = itemStack.get(DataComponents.MAP_ID);
                 if (data != null && mapId != null) {
-                    Packets.UPDATE_MAP_DATA.sendToPlayer((ServerPlayer) playerInventory.player, new UpdateMapDataMessage(mapId, data.save(new CompoundTag())));
+                    PacketDistributor.sendToPlayer((ServerPlayer) playerInventory.player, new UpdateMapDataMessage(mapId.id(), data.save(new CompoundTag(), level.registryAccess())));
                 }
             }
         }
