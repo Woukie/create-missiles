@@ -2,13 +2,13 @@ package net.woukie.createmissiles.block.controlpanel;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -20,18 +20,20 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.woukie.createmissiles.MultiblockHelper;
+import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
+import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
 import net.woukie.createmissiles.block.controlpanel.messages.TriggerBuildParticles;
 import net.woukie.createmissiles.block.entity.AbstractBasicBlockEntity;
-import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlock;
 import net.woukie.createmissiles.block.launchpad.LaunchPadBlockEntity;
 import net.woukie.createmissiles.block.navigationpanel.NavigationPanelBlockEntity;
-import net.woukie.createmissiles.block.assemblypanel.AssemblyPanelBlockEntity;
 import net.woukie.createmissiles.entity.MissileEntity;
 import net.woukie.createmissiles.inventory.ControlPanelMenu;
 import net.woukie.createmissiles.missiles.Trajectories;
@@ -49,10 +51,10 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static net.woukie.createmissiles.registry.Packets.TRIGGER_BUILD_PARTICLES;
 
 // Inventory divided up into 32-slot areas representing thruster, chassis and warhead
 public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
@@ -129,7 +131,7 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
     private void addItemToPartOfInventory(ItemStack itemStack, int fromIndex, int toIndex) {
         for (int i = fromIndex; i < toIndex; i++) {
             ItemStack stack = getItem(i);
-            if (ItemStack.isSameItemSameTags(stack, itemStack)) {
+            if (ItemStack.isSameItemSameComponents(stack, itemStack)) {
                 itemStack.setCount(0);
                 stack.grow(1);
                 return;
@@ -156,12 +158,12 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
 
         var missilePartRecipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MISSILE_PART.get());
         for (var recipe : missilePartRecipes) {
-            var assembly = recipe.getAssembly();
+            var assembly = recipe.value().getAssembly();
             if (((warheadType != null && assembly.equals(warheadType.getResourceLocation())) ||
                     (chassisType != null && assembly.equals(chassisType.getResourceLocation())) ||
                     (thrusterType != null && assembly.equals(thrusterType.getResourceLocation())))
-                    && recipe.itemComplements(itemStack, this))
-                return recipe;
+                    && recipe.value().itemComplements(itemStack, this))
+                return recipe.value();
         }
 
         return null;
@@ -224,18 +226,15 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
                         level.playSound(null, soundOrigin, SoundEvents.BUILD.get(), SoundSource.BLOCKS, 1f, pitch);
                     }
 
-                    TRIGGER_BUILD_PARTICLES.sendToPlayers(
-                            ((ServerLevel) level).getPlayers(serverPlayer -> serverPlayer.position().distanceTo(p) < 128),
-                            new TriggerBuildParticles(
-                                    p.toVector3f(),
-                                    warheadType == null ? ResourceLocation.fromNamespaceAndPath("") : warheadType.getResourceLocation(),
-                                    chassisType == null ? ResourceLocation.fromNamespaceAndPath("") : chassisType.getResourceLocation(),
-                                    thrusterType == null ? ResourceLocation.fromNamespaceAndPath("") : thrusterType.getResourceLocation(),
-                                    warheadBuildPercent,
-                                    chassisBuildPercent,
-                                    thrusterBuildPercent
-                            )
-                    );
+                    PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, new ChunkPos(soundOrigin), new TriggerBuildParticles(
+                            p.toVector3f(),
+                            warheadType == null ? "" : warheadType.getResourceLocation().toString(),
+                            chassisType == null ? "" : chassisType.getResourceLocation().toString(),
+                            thrusterType == null ? "" : thrusterType.getResourceLocation().toString(),
+                            warheadBuildPercent,
+                            chassisBuildPercent,
+                            thrusterBuildPercent
+                    ));
                 }
             }
         }
@@ -381,26 +380,24 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
         var missilePartRecipes = getLevel().getRecipeManager().getAllRecipesFor(RecipeTypes.MISSILE_PART.get());
         for (var recipe : missilePartRecipes) {
             if (!(warheadRecipe == null || chassisRecipe == null || thrusterRecipe == null)) break;
-            var assembly = recipe.getAssembly();
+            var assembly = recipe.value().getAssembly();
             if (assembly.equals(warheadType.getResourceLocation())) {
-                warheadRecipe = recipe;
+                warheadRecipe = recipe.value();
                 continue;
             }
 
             if (assembly.equals(chassisType.getResourceLocation())) {
-                chassisRecipe = recipe;
+                chassisRecipe = recipe.value();
                 continue;
             }
 
             if (assembly.equals(thrusterType.getResourceLocation())) {
-                thrusterRecipe = recipe;
+                thrusterRecipe = recipe.value();
             }
         }
 
         if (warheadRecipe == null || chassisRecipe == null || thrusterRecipe == null) return;
-        if (!warheadRecipe.matches(this, getLevel())) return;
-        if (!chassisRecipe.matches(this, getLevel())) return;
-        if (!thrusterRecipe.matches(this, getLevel())) return;
+        if (warheadBuildPercent != 100 || chassisBuildPercent != 100 || thrusterBuildPercent != 100) return;
 
         Direction launchPadDirection = this.getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite();
 
@@ -455,35 +452,49 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
     }
 
     @Override
-    public void load(@NotNull CompoundTag compoundTag) {
-        super.load(compoundTag);
+    protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider registries) {
+        super.loadAdditional(compoundTag, registries);
+
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(compoundTag, this.items);
+        ContainerHelper.loadAllItems(compoundTag, this.items, registries);
         if (compoundTag.contains("EntityID")) {
             this.entityId = compoundTag.getUUID("EntityID");
         }
     }
 
     @Override
-    protected void saveAdditional(@NotNull CompoundTag compoundTag) {
-        super.saveAdditional(compoundTag);
-        ContainerHelper.saveAllItems(compoundTag, this.items);
+    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider registries) {
+        super.saveAdditional(compoundTag, registries);
+
+        ContainerHelper.saveAllItems(compoundTag, this.items, registries);
         if (this.entityId != null) {
             compoundTag.putUUID("EntityID", this.entityId);
         }
     }
 
     @Override
-    public void saveToItem(@NotNull ItemStack itemStack) {
-        var data = this.saveWithoutMetadata();
+    public void saveToItem(ItemStack itemStack, HolderLookup.Provider registries) {
+        super.saveToItem(itemStack, registries);
+        var data = this.saveWithoutMetadata(registries);
         data.remove("EntityID");
         data.remove("Items");
         BlockItem.setBlockEntityData(itemStack, this.getType(), data);
     }
 
+
     @Override
     protected @NotNull Component getDefaultName() {
         return Component.translatable("container.createmissiles.control_panel");
+    }
+
+    @Override
+    protected NonNullList<ItemStack> getItems() {
+        return this.items;
+    }
+
+    @Override
+    protected void setItems(NonNullList<ItemStack> nonNullList) {
+        this.items = nonNullList;
     }
 
     @Override
