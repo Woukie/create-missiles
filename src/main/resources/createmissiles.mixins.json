@@ -3,11 +3,11 @@
   "package": "net.woukie.createmissiles.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "MixinGameRenderer"
+//    "MixinGameRenderer"
   ],
   "mixins": [
-    "MixinBucketItem",
-    "MixinFlintAndSteelItem"
+//    "MixinBucketItem",
+//    "MixinFlintAndSteelItem"
   ],
   "injectors": {
     "defaultRequire": 1

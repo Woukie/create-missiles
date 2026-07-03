@@ -5,7 +5,7 @@
       "weight": 1,
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "override_liquid_settings": "ignore_waterlogging"
+        "override_liquid_settings": "ignore_waterlogging",
         "location": "createmissiles:depot_snowy_weathered",
         "projection": "rigid",
         "processors": "minecraft:empty"
@@ -15,7 +15,7 @@
       "weight": 1,
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "override_liquid_settings": "ignore_waterlogging"
+        "override_liquid_settings": "ignore_waterlogging",
         "location": "createmissiles:depot_snowy_ruined1",
         "projection": "rigid",
         "processors": "minecraft:empty"
@@ -25,7 +25,7 @@
       "weight": 1,
       "element": {
         "element_type": "minecraft:single_pool_element",
-"override_liquid_settings": "ignore_waterlogging"
+"override_liquid_settings": "ignore_waterlogging",
         "location": "createmissiles:depot_snowy_ruined2",
         "projection": "rigid",
         "processors": "minecraft:empty"

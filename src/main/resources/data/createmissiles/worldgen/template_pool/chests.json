@@ -61,7 +61,8 @@
 					}
 				],
 				"projection":"rigid",
-				"element_type": "createmissiles:liquidless_single_pool_element"
+				"element_type": "minecraft:single_pool_element",
+				"override_liquid_settings": "ignore_waterlogging"
 			}
 		},
 		{
@@ -92,7 +93,8 @@
 					}
 				],
 				"projection":"rigid",
-				"element_type": "createmissiles:liquidless_single_pool_element"
+				"element_type": "minecraft:single_pool_element",
+				"override_liquid_settings": "ignore_waterlogging"
 			}
 		},
 		{
@@ -123,7 +125,8 @@
 					}
 				],
 				"projection":"rigid",
-				"element_type": "createmissiles:liquidless_single_pool_element"
+				"element_type": "minecraft:single_pool_element",
+				"override_liquid_settings": "ignore_waterlogging"
 			}
 		}
 	]
