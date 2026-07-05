@@ -24,7 +24,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "createmissiles:thruster_assembly"
+      "id": "createmissiles:thruster_assembly"
     },
     "show_toast": true,
     "title": {

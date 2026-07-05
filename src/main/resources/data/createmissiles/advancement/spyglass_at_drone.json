@@ -58,7 +58,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "minecraft:spyglass"
+      "id": "minecraft:spyglass"
     },
     "show_toast": true,
     "title": {

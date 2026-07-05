@@ -25,7 +25,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "createmissiles:launch_pad"
+      "id": "createmissiles:launch_pad"
     },
     "show_toast": true,
     "title": {

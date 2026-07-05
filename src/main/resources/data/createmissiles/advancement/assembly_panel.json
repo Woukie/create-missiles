@@ -22,7 +22,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "createmissiles:assembly_panel"
+      "id": "createmissiles:assembly_panel"
     },
     "show_toast": true,
     "title": {

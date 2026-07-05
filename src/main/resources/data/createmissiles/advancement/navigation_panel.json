@@ -22,7 +22,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "createmissiles:navigation_panel"
+      "id": "createmissiles:navigation_panel"
     },
     "show_toast": true,
     "title": {
