@@ -66,8 +66,7 @@ public class BoundEnderPearlItem extends Item {
         tag.putUUID("PlayerUUID", entity.getUUID());
         tag.putString("PlayerName", entity.getName().getString());
 
-//        TODO: Idk what to replace this with
-//        itemStack.resetHoverName();
+        itemStack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
     }
 
     @Override
