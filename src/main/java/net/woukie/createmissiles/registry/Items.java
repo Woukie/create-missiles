@@ -2,7 +2,7 @@ package net.woukie.createmissiles.registry;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.woukie.createmissiles.CreateMissiles;
@@ -63,8 +63,8 @@ public abstract class Items {
             () -> new Item(new Item.Properties())
     );
 
-    public static void init() {
+    public static void init(IEventBus modBus) {
         CreateMissiles.LOGGER.info("Registering items for " + CreateMissiles.NAME);
-        ITEMS.register(NeoForge.EVENT_BUS);
+        ITEMS.register(modBus);
     }
 }

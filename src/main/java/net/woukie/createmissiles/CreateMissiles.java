@@ -19,6 +19,8 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
@@ -45,6 +47,7 @@ import net.woukie.createmissiles.registry.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Mod(CreateMissiles.MOD_ID)
 public class CreateMissiles {
     public static final String MOD_ID = "createmissiles";
     public static final String NAME = "Create Missiles";
@@ -52,41 +55,46 @@ public class CreateMissiles {
 
     private static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
 
-    public static void init() {
+    public CreateMissiles(IEventBus modEventBus) {
+        init(modEventBus);
+    }
+
+    public static void init(IEventBus modBus) {
         LOGGER.info("Initializing!");
 
-        CreateMissiles.registrate().registerEventListeners(NeoForge.EVENT_BUS);
+        CreateMissiles.registrate().registerEventListeners(modBus);
 
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onServerStarted);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onServerStopping);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onServerTick);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::addWanderingTrades);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onLootTableLoad);
-        NeoForge.EVENT_BUS.addListener(CreateMissiles::createDefaultAttributes);
-        NeoForge.EVENT_BUS.addListener(CreateMissiles::onBuildCreativeModeTabContents);
-        NeoForge.EVENT_BUS.addListener(EntityRenderers::registerEntityRenderers);
-        NeoForge.EVENT_BUS.addListener(EntityRenderers::registerLayerDefinitions);
-        NeoForge.EVENT_BUS.addListener(CreateMissiles::registerScreens);
-        NeoForge.EVENT_BUS.addListener(CreateMissiles::clientSetup);
-        NeoForge.EVENT_BUS.addListener(CreateMissiles::registerParticles);
-        NeoForge.EVENT_BUS.addListener(CreateMissiles::onRegister);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onClientTickPost);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onRenderGuiEvent);
-        NeoForge.EVENT_BUS.addListener(Packets::onRegisterPayloadHandlers);
+
+        modBus.addListener(CreateMissiles::createDefaultAttributes);
+        modBus.addListener(CreateMissiles::onBuildCreativeModeTabContents);
+        modBus.addListener(EntityRenderers::registerEntityRenderers);
+        modBus.addListener(EntityRenderers::registerLayerDefinitions);
+        modBus.addListener(CreateMissiles::registerScreens);
+        modBus.addListener(CreateMissiles::clientSetup);
+        modBus.addListener(CreateMissiles::registerParticles);
+        modBus.addListener(CreateMissiles::onRegister);
+        modBus.addListener(Packets::onRegisterPayloadHandlers);
 
         Blocks.init();
         BlockEntities.init();
-        net.woukie.createmissiles.registry.DataComponents.init();
+        net.woukie.createmissiles.registry.DataComponents.init(modBus);
         PartTypes.init();
-        Items.init();
-        CreativeMenus.init();
-        Menus.init();
-        RecipeSerializers.init();
-        RecipeTypes.init();
+        Items.init(modBus);
+        CreativeMenus.init(modBus);
+        Menus.init(modBus);
+        RecipeSerializers.init(modBus);
+        RecipeTypes.init(modBus);
         SpriteShifts.init();
-        EntityTypes.init();
-        SoundEvents.init();
-        ParticleTypes.init();
+        EntityTypes.init(modBus);
+        SoundEvents.init(modBus);
+        ParticleTypes.init(modBus);
         ExplosionResistanceOverrides.init();
     }
 
@@ -126,7 +134,7 @@ public class CreateMissiles {
         DroneHandler.get().stop();
     }
 
-    private static void onServerTick(ServerTickEvent event) {
+    private static void onServerTick(ServerTickEvent.Pre event) {
         var server = event.getServer();
         Trajectories.get().serverTick(server);
         ExplosionHandler.get().serverTick(server);
@@ -203,7 +211,7 @@ public class CreateMissiles {
         FlashHandler.cleanUp();
     }
 
-    public static void onRenderGuiEvent(RenderGuiEvent event) {
+    public static void onRenderGuiEvent(RenderGuiEvent.Post event) {
         FlashHandler.handleHudRender(event.getGuiGraphics());
     }
 }

@@ -4,7 +4,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.util.ExtraCodecs;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.woukie.createmissiles.CreateMissiles;
 
@@ -24,8 +24,8 @@ public class DataComponents {
         return type;
     }
 
-    public static void init() {
+    public static void init(IEventBus modBus) {
         CreateMissiles.LOGGER.info("Registering components for " + CreateMissiles.NAME);
-        DATA_COMPONENTS.register(NeoForge.EVENT_BUS);
+        DATA_COMPONENTS.register(modBus);
     }
 }

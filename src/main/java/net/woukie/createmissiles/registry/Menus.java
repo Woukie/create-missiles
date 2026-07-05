@@ -3,6 +3,7 @@ package net.woukie.createmissiles.registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.woukie.createmissiles.CreateMissiles;
@@ -31,7 +32,8 @@ public class Menus {
             () -> new MenuType<>(DroneMenu::new, FeatureFlags.VANILLA_SET)
     );
 
-    public static void init() {
+    public static void init(IEventBus modBus) {
         CreateMissiles.LOGGER.info("Registering menus for " + CreateMissiles.NAME);
+        MENUS.register(modBus);
     }
 }

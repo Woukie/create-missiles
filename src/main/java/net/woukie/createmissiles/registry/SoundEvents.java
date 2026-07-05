@@ -4,7 +4,7 @@ package net.woukie.createmissiles.registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.woukie.createmissiles.CreateMissiles;
@@ -20,9 +20,9 @@ public class SoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> BUTTON = register("button") ;
     public static final DeferredHolder<SoundEvent, SoundEvent> CRUNCH = register("crunch") ;
 
-    public static void init() {
+    public static void init(IEventBus modBus) {
         CreateMissiles.LOGGER.info("Registering sound events for " + CreateMissiles.NAME);
-        SOUND_EVENTS.register(NeoForge.EVENT_BUS);
+        SOUND_EVENTS.register(modBus);
     }
 
     private static DeferredHolder<SoundEvent, SoundEvent> register(String name) {

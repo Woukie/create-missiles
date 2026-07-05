@@ -5,14 +5,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.woukie.createmissiles.CreateMissiles;
 import net.woukie.createmissiles.item.assembly.AssemblyItem;
 
-import static net.woukie.createmissiles.registry.Blocks.*;
 import static net.woukie.createmissiles.registry.Items.*;
 
 public class CreativeMenus {
@@ -26,9 +25,9 @@ public class CreativeMenus {
                     .build()
             );
 
-    public static void init() {
+    public static void init(IEventBus modBus) {
         CreateMissiles.LOGGER.info("Registering creative menus for " + CreateMissiles.NAME);
-        TABS.register(NeoForge.EVENT_BUS);
+        TABS.register(modBus);
     }
 
     private static ResourceLocation id(String id) {
@@ -80,12 +79,5 @@ public class CreativeMenus {
         event.accept(AssemblyItem.createWith(id("shulker_box_warhead"), WARHEAD_ASSEMBLY.get()));
         event.accept(AssemblyItem.createWith(id("teleportation_warhead"), WARHEAD_ASSEMBLY.get()));
         event.accept(AssemblyItem.createWith(id("messy_warhead"), WARHEAD_ASSEMBLY.get()));
-        event.accept(new ItemStack(LAUNCH_PAD));
-        event.accept(new ItemStack(ASSEMBLY_PANEL));
-        event.accept(new ItemStack(CONTROL_PANEL));
-        event.accept(new ItemStack(NAVIGATION_PANEL));
-        event.accept(new ItemStack(ANNOYING_JUKEBOX));
-        event.accept(new ItemStack(INFERNAL_ASH));
-        event.accept(new ItemStack(FROST_SNOW));
     }
 }

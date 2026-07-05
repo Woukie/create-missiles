@@ -3,7 +3,6 @@ package net.woukie.createmissiles.registry;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.woukie.createmissiles.CreateMissiles;
@@ -19,6 +18,10 @@ import net.woukie.createmissiles.block.navigationpanel.NavigationPanelBlock;
 
 public class Blocks {
     private static final CreateRegistrate REGISTRATE = CreateMissiles.registrate();
+
+    static {
+        REGISTRATE.defaultCreativeTab(CreativeMenus.ASSEMBLIES_TAB.getKey());
+    }
 
     public static final BlockEntry<LaunchPadBlock> LAUNCH_PAD = REGISTRATE
             .block("launch_pad", LaunchPadBlock::new)
