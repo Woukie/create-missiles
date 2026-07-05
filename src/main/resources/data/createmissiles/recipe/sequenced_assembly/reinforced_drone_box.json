@@ -6,7 +6,7 @@
   "loops": 2,
   "results": [
     {
-      "item": "createmissiles:reinforced_drone_box"
+      "id": "createmissiles:reinforced_drone_box"
     }
   ],
   "sequence": [
@@ -22,7 +22,7 @@
       ],
       "results": [
         {
-          "item": "createmissiles:incomplete_reinforced_drone_box"
+          "id": "createmissiles:incomplete_reinforced_drone_box"
         }
       ]
     },
@@ -38,7 +38,7 @@
       ],
       "results": [
         {
-          "item": "createmissiles:incomplete_reinforced_drone_box"
+          "id": "createmissiles:incomplete_reinforced_drone_box"
         }
       ]
     },
@@ -54,12 +54,12 @@
       ],
       "results": [
         {
-          "item": "createmissiles:incomplete_reinforced_drone_box"
+          "id": "createmissiles:incomplete_reinforced_drone_box"
         }
       ]
     }
   ],
-  "transitionalItem": {
-    "item": "createmissiles:incomplete_reinforced_drone_box"
+  "transitional_item": {
+    "id": "createmissiles:incomplete_reinforced_drone_box"
   }
 }
