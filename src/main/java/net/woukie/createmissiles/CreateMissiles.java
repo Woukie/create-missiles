@@ -3,6 +3,7 @@ package net.woukie.createmissiles;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.render.CustomRenderedItems;
 import net.createmod.ponder.foundation.PonderIndex;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -14,13 +15,15 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
@@ -30,6 +33,7 @@ import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import net.woukie.createmissiles.client.AssemblyRenderer;
 import net.woukie.createmissiles.client.FlashHandler;
 import net.woukie.createmissiles.client.screens.AssemblyPanelScreen;
 import net.woukie.createmissiles.client.screens.ControlPanelScreen;
@@ -44,6 +48,7 @@ import net.woukie.createmissiles.missiles.Trajectories;
 import net.woukie.createmissiles.missiles.asyncexplosionhandler.ExplosionHandler;
 import net.woukie.createmissiles.particle.BuildShrapnel;
 import net.woukie.createmissiles.registry.*;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,6 +83,7 @@ public class CreateMissiles {
         modBus.addListener(EntityRenderers::registerLayerDefinitions);
         modBus.addListener(CreateMissiles::registerScreens);
         modBus.addListener(CreateMissiles::clientSetup);
+        modBus.addListener(CreateMissiles::onRegisterClientExtensions);
         modBus.addListener(CreateMissiles::registerParticles);
         modBus.addListener(CreateMissiles::onRegister);
         modBus.addListener(Packets::onRegisterPayloadHandlers);
@@ -205,6 +211,17 @@ public class CreateMissiles {
 
     public static void onRegister(RegisterEvent event) {
         ArmInteractionPoints.init();
+    }
+
+    public static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
+        event.registerItem(new IClientItemExtensions() {
+            private final AssemblyRenderer renderer = new AssemblyRenderer();
+
+            @Override
+            public @NotNull BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return renderer;
+            }
+        }, Items.WARHEAD_ASSEMBLY.get(), Items.CHASSIS_ASSEMBLY.get(), Items.THRUSTER_ASSEMBLY.get());
     }
 
     public static void onClientTickPost(ClientTickEvent.Post event) {
