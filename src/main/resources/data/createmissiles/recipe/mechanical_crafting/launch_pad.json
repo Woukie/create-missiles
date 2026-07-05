@@ -1,6 +1,7 @@
 {
   "type": "create:mechanical_crafting",
-  "acceptMirrored": false,
+  "accept_mirrored": false,
+  "category": "misc",
   "key": {
     "S": {
       "item": "create:iron_sheet"
@@ -24,6 +25,7 @@
   ],
   "result": {
     "count": 3,
-    "item": "createmissiles:launch_pad"
-  }
+    "id": "createmissiles:launch_pad"
+  },
+  "show_notification": false
 }

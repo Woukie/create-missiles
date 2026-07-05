@@ -1,6 +1,7 @@
 {
   "type": "create:mechanical_crafting",
-  "acceptMirrored": false,
+  "accept_mirrored": false,
+  "category": "misc",
   "key": {
     "B": {
       "item": "create:brass_sheet"
@@ -26,6 +27,7 @@
   ],
   "result": {
     "count": 1,
-    "item": "createmissiles:navigation_panel"
-  }
+    "id": "createmissiles:navigation_panel"
+  },
+  "show_notification": false
 }
