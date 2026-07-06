@@ -22,7 +22,7 @@ import java.util.Objects;
 
 @Mixin(BucketItem.class)
 public abstract class MixinBucketItem extends Item {
-    @Shadow @Final private Fluid content;
+    @Shadow @Final public Fluid content;
 
     public MixinBucketItem(Properties properties) {
         super(properties);

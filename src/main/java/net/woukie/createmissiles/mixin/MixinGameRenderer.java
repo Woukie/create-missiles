@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
 public abstract class MixinGameRenderer {
-    @Inject(method = "renderLevel", at = @At("HEAD"))
-    public void use(float f, long l, PoseStack poseStack, CallbackInfo ci) {
+    @Inject(method = "bobHurt", at = @At("HEAD"))
+    public void bobHurt(PoseStack poseStack, float partialTicks, CallbackInfo ci) {
         FlashHandler.handleRenderLevel(poseStack);
     }
 }
