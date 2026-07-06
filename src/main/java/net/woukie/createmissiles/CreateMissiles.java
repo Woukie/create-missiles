@@ -5,10 +5,7 @@ import com.simibubi.create.foundation.item.render.CustomRenderedItems;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -90,7 +87,7 @@ public class CreateMissiles {
 
         Blocks.init();
         BlockEntities.init();
-        net.woukie.createmissiles.registry.DataComponents.init(modBus);
+        DataComponents.init(modBus);
         PartTypes.init();
         Items.init(modBus);
         CreativeMenus.init(modBus);
@@ -109,9 +106,7 @@ public class CreateMissiles {
             LootPool.Builder poolBuilder = LootPool.lootPool();
             var warheadItem = LootItem.lootTableItem(Items.WARHEAD_ASSEMBLY.get());
             warheadItem.when(LootItemRandomChanceCondition.randomChance(0.1f));
-            var data = new CompoundTag();
-            data.putString("PartType", "createmissiles:excavator_warhead");
-            warheadItem.apply(SetComponentsFunction.setComponent(DataComponents.CUSTOM_DATA, CustomData.of(data)));
+            warheadItem.apply(SetComponentsFunction.setComponent(DataComponents.PART_TYPE, "createmissiles:excavator_warhead"));
             poolBuilder.add(warheadItem);
             event.getTable().addPool(poolBuilder.build());
         }
@@ -119,9 +114,7 @@ public class CreateMissiles {
         if (event.getName().equals(ResourceLocation.parse("minecraft:entities/ender_dragon"))) {
             LootPool.Builder poolBuilder = LootPool.lootPool();
             var warheadItem = LootItem.lootTableItem(Items.WARHEAD_ASSEMBLY.get());
-            var data = new CompoundTag();
-            data.putString("PartType", "createmissiles:dragon_warhead");
-            warheadItem.apply(SetComponentsFunction.setComponent(DataComponents.CUSTOM_DATA, CustomData.of(data)));
+            warheadItem.apply(SetComponentsFunction.setComponent(DataComponents.PART_TYPE, "createmissiles:dragon_warhead"));
             poolBuilder.add(warheadItem);
             event.getTable().addPool(poolBuilder.build());
         }
