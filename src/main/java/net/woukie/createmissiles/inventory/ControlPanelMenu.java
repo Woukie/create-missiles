@@ -12,7 +12,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.woukie.createmissiles.block.controlpanel.ControlPanelBlockEntity;
 import net.woukie.createmissiles.block.controlpanel.messages.ClickLaunchMessage;
 import net.woukie.createmissiles.registry.Items;
-import net.woukie.createmissiles.registry.Packets;
 
 import static net.woukie.createmissiles.registry.Menus.CONTROL_PANEL;
 
@@ -52,7 +51,7 @@ public class ControlPanelMenu extends AbstractBasicMenu {
     }
 
     public ControlPanelMenu(int id, Inventory inventory) {
-        this(id, inventory, new SimpleContainer(96), new SimpleContainerData(7), new SimpleContainer(3), new SimpleContainer(1));
+        this(id, inventory, new ReallyBigContainer(96), new SimpleContainerData(7), new SimpleContainer(3), new SimpleContainer(1));
     }
 
     public void clickLaunch() {

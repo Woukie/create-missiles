@@ -439,6 +439,11 @@ public class ControlPanelBlockEntity extends AbstractBasicBlockEntity {
     }
 
     @Override
+    public int getMaxStackSize(ItemStack stack) {
+        return this.getMaxStackSize();
+    }
+
+    @Override
     public void setRemoved() {
         super.setRemoved();
         ControlPanelInstanceTracker.remove(this);
