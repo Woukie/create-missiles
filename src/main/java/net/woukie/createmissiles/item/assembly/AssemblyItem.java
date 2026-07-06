@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.woukie.createmissiles.recipe.MissileIngredient;
@@ -19,8 +20,23 @@ import java.util.List;
 import java.util.Optional;
 
 public class AssemblyItem extends Item {
+    private static final String LEGACY_NBT_KEY = "PartType";
+
     public AssemblyItem(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    public void verifyComponentsAfterLoad(ItemStack itemStack) {
+        CustomData customData = itemStack.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
+        if (customData == null || !customData.contains(LEGACY_NBT_KEY)) return;
+
+        if (!itemStack.has(DataComponents.PART_TYPE)) {
+            String partType = customData.copyTag().getString(LEGACY_NBT_KEY);
+            if (!partType.isEmpty()) itemStack.set(DataComponents.PART_TYPE, partType);
+        }
+
+        CustomData.update(net.minecraft.core.component.DataComponents.CUSTOM_DATA, itemStack, tag -> tag.remove(LEGACY_NBT_KEY));
     }
 
     @Override
