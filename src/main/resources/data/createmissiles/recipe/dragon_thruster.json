@@ -4,26 +4,26 @@
   "key": {
     "@": {
       "type": "neoforge:components",
-      "items": "createmissiles:thruster_assembly",
+      "items": "createmissiles:chassis_assembly",
       "components": {
-        "createmissiles:part_type": "createmissiles:dragon_thruster"
+        "createmissiles:part_type": "createmissiles:dragon_chassis"
       },
       "strict": false
     },
     "S": {
-      "item": "minecraft:iron_ingot"
+      "item": "minecraft:obsidian"
     }
   },
   "pattern": [
     "S S",
     "S@S",
-    "S S"
+    " S "
   ],
   "result": {
-    "id": "createmissiles:chassis_assembly",
+    "id": "createmissiles:thruster_assembly",
     "count": 1,
     "components": {
-      "createmissiles:part_type": "createmissiles:dragon_chassis"
+      "createmissiles:part_type": "createmissiles:dragon_thruster"
     }
   }
 }
