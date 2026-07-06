@@ -12,6 +12,7 @@ import net.minecraft.world.phys.Vec3;
 public abstract class BallEntity extends AbstractHurtingProjectile implements ItemSupplier {
     public BallEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level level) {
         super(entityType, level);
+        this.accelerationPower = 0;
     }
 
     @Override
@@ -44,9 +45,9 @@ public abstract class BallEntity extends AbstractHurtingProjectile implements It
             }
 
             ProjectileUtil.rotateTowardsMovement(this, 0.2F);
-            float g = this.getInertia();
-            this.setDeltaMovement(vec3.add(this.accelerationPower, this.accelerationPower, this.accelerationPower).scale((double)g));
-            this.level().addParticle(this.getTrailParticle(), d, e + (double)0.5F, f, (double)0.0F, (double)0.0F, (double)0.0F);
+            float inertia = this.getInertia();
+            this.setDeltaMovement(vec3.add(vec3.normalize().scale(this.accelerationPower)).scale((double)inertia));
+            this.level().addParticle(this.getTrailParticle(), d, e + (double)0.5F, f, 0, 0, 0);
             this.setPos(d, e, f);
         } else {
             this.discard();
