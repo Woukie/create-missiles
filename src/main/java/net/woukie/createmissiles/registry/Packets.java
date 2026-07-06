@@ -21,10 +21,10 @@ public class Packets {
         registrar.playToServer(ClickMapMessage.TYPE, ClickMapMessage.STREAM_CODEC, ClickMapMessage::apply);
         registrar.playToServer(ClickFuelMessage.TYPE, ClickFuelMessage.STREAM_CODEC, ClickFuelMessage::apply);
         registrar.playToServer(ClickLaunchMessage.TYPE, ClickLaunchMessage.STREAM_CODEC, ClickLaunchMessage::apply);
-        registrar.playToServer(ExplodeFireworkMessage.TYPE, ExplodeFireworkMessage.STREAM_CODEC, ExplodeFireworkMessage::apply);
-        registrar.playToServer(UpdateMapDataMessage.TYPE, UpdateMapDataMessage.STREAM_CODEC, UpdateMapDataMessage::apply);
         registrar.playToServer(SendDroneMessage.TYPE, SendDroneMessage.STREAM_CODEC, SendDroneMessage::apply);
-        registrar.playToServer(TriggerBuildParticles.TYPE, TriggerBuildParticles.STREAM_CODEC, TriggerBuildParticles::apply);
-        registrar.playToServer(CreateFlashMessage.TYPE, CreateFlashMessage.STREAM_CODEC, CreateFlashMessage::apply);
+        registrar.playToClient(ExplodeFireworkMessage.TYPE, ExplodeFireworkMessage.STREAM_CODEC, ExplodeFireworkMessage::apply);
+        registrar.playToClient(UpdateMapDataMessage.TYPE, UpdateMapDataMessage.STREAM_CODEC, UpdateMapDataMessage::apply);
+        registrar.playToClient(TriggerBuildParticles.TYPE, TriggerBuildParticles.STREAM_CODEC, TriggerBuildParticles::apply);
+        registrar.playToClient(CreateFlashMessage.TYPE, CreateFlashMessage.STREAM_CODEC, CreateFlashMessage::apply);
     }
 }

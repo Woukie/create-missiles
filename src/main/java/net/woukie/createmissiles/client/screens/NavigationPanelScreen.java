@@ -92,7 +92,7 @@ public class NavigationPanelScreen extends AbstractContainerScreen<NavigationPan
     @Override
     protected void renderBg(GuiGraphics gui, float f, int i, int j) {
         gui.pose().pushPose();
-        gui.pose().translate(leftPos, topPos, -1);
+        gui.pose().translate(leftPos, topPos, 0);
 
         gui.blit(BACKGROUND, 0, 0, 0, 0, this.imageWidth, this.imageHeight);
 
