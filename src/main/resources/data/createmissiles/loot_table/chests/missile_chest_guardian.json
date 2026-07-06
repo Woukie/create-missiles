@@ -6,13 +6,15 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "createmissiles:warhead_assembly"
-        }
-      ],
-      "functions": [
-        {
-          "function": "minecraft:set_nbt",
-          "tag": "{PartType:\"createmissiles:guardian_warhead\"}"
+          "name": "createmissiles:warhead_assembly",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "createmissiles:part_type": "createmissiles:guardian_warhead"
+              }
+            }
+          ]
         }
       ]
     },
@@ -21,7 +23,7 @@
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "name": "createmissiles:chests/bunker_chest_rare"
+          "value": "createmissiles:chests/bunker_chest_rare"
         }
       ]
     }

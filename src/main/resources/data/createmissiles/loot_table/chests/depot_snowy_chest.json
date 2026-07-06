@@ -12,13 +12,15 @@
               "condition": "minecraft:random_chance",
               "chance": 0.25
             }
+          ],
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "createmissiles:part_type": "createmissiles:frost_warhead"
+              }
+            }
           ]
-        }
-      ],
-      "functions": [
-        {
-          "function": "minecraft:set_nbt",
-          "tag": "{PartType:\"createmissiles:frost_warhead\"}"
         }
       ]
     },
@@ -27,7 +29,7 @@
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "name": "createmissiles:chests/cobwebs_loot"
+          "value": "createmissiles:chests/cobwebs_loot"
         }
       ]
     }
