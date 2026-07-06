@@ -11,6 +11,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.woukie.createmissiles.registry.Items;
@@ -45,14 +46,12 @@ public class BiomeVialItem extends Item {
         var biomeKeyOptional = level.getBiome(position).unwrapKey();
         if (biomeKeyOptional.isEmpty()) return InteractionResultHolder.pass(itemStack);
 
-        itemStack.shrink(1);
         var newItem = new ItemStack(Items.BIOME_VIAL.get(), 1);
         CompoundTag tag = new CompoundTag();
         tag.putString("biome", biomeKeyOptional.get().location().toString());
         newItem.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
-        player.addItem(newItem);
         level.playSound(null, player.position().x, player.position().y, player.position().z, SoundEvents.BOTTLE_FILL, SoundSource.PLAYERS, 1, 1);
 
-        return InteractionResultHolder.success(itemStack);
+        return InteractionResultHolder.success(newItem);
     }
 }
