@@ -25,7 +25,6 @@
   "item.createmissiles.excavator_upgrade_core": "Excavator Upgrade Core",
   "item.createmissiles.bound_ender_pearl": "Bound Ender Pearl",
   "item.createmissiles.bound_ender_pearl_player": "%1$s's Bound Ender Pearl",
-  "item.createmissiles.bound_ender_pearl_not_online": "Player offline",
   "item.createmissiles.assembly_invalid": "Invalid Part Type",
   "item.createmissiles.warhead_assembly": "Warhead Assembly",
   "item.createmissiles.chassis_assembly": "Chassis Assembly",

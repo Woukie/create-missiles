@@ -46,12 +46,6 @@ public class BoundEnderPearlItem extends Item {
 
         Level level = Minecraft.getInstance().level;
         if (level == null) return;
-
-        UUID playerUUID = tag.getUUID("PlayerUUID");
-        Player targetPlayer = level.getPlayerByUUID(playerUUID);
-        if (targetPlayer == null) {
-            tooltipComponents.add(Component.translatable("item.createmissiles.bound_ender_pearl_not_online"));
-        }
     }
 
     @Override
