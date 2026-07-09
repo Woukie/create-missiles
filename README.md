@@ -9,6 +9,8 @@
 
 <p>This is a Minecraft mod for Forge and Fabric that adds missiles to the game, built as an addon for the Create mod.</p>
 
+<p>Create Missiles only support NeoForge going forwards!</p>
+
 <h1>Contributors</h1>
 <ul>
     <li>Woukie</li>
@@ -22,6 +24,7 @@
     <li>Easings.net (some UI animations)</li>
     <li>Blender (icon)</li>
     <li>ezgif.com</li>
+    <li>github.com/NeoForged/MDK</li>
 </ul>
 
 <p>Implementation details</p>

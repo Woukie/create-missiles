@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "@": {
+      "type": "neoforge:components",
+      "items": "createmissiles:warhead_assembly",
+      "components": {
+        "createmissiles:part_type": "createmissiles:flaming_warhead"
+      },
+      "strict": false
+    },
+    "R": {
+      "item": "minecraft:blaze_rod"
+    },
+    "#": {
+      "item": "createmissiles:flaming_upgrade_core"
+    }
+  },
+  "pattern": [
+    "R@R",
+    "@#@",
+    "R@R"
+  ],
+  "result": {
+    "id": "createmissiles:warhead_assembly",
+    "count": 1,
+    "components": {
+      "createmissiles:part_type": "createmissiles:blazing_warhead"
+    }
+  }
+}

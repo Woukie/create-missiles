@@ -1,0 +1,65 @@
+{
+	"fallback": "createmissiles:missile",
+	"elements": [
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_trident",
+				"processors": "minecraft:empty",
+				"projection":"rigid",
+				"element_type": "minecraft:single_pool_element",
+				"override_liquid_settings": "ignore_waterlogging"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_firework",
+				"processors": "minecraft:empty",
+				"projection":"rigid",
+				"element_type": "minecraft:single_pool_element",
+				"override_liquid_settings": "ignore_waterlogging"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_drill",
+				"processors": "minecraft:empty",
+				"projection":"rigid",
+				"element_type": "minecraft:single_pool_element",
+				"override_liquid_settings": "ignore_waterlogging"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_flame",
+				"processors": "minecraft:empty",
+				"projection":"rigid",
+				"element_type": "minecraft:single_pool_element",
+				"override_liquid_settings": "ignore_waterlogging"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_guardian",
+				"processors": "minecraft:empty",
+				"projection":"rigid",
+				"element_type": "minecraft:single_pool_element",
+				"override_liquid_settings": "ignore_waterlogging"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "createmissiles:missiles_frozen",
+				"processors": "minecraft:empty",
+				"projection":"rigid",
+				"element_type": "minecraft:single_pool_element",
+				"override_liquid_settings": "ignore_waterlogging"
+			}
+		}
+	]
+}

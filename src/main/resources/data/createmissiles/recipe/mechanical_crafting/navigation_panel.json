@@ -1,0 +1,33 @@
+{
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": false,
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "create:brass_sheet"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
+    },
+    "C": {
+      "item": "minecraft:compass"
+    },
+    "T": {
+      "item": "minecraft:tinted_glass"
+    },
+    "F": {
+      "item": "create:brass_casing"
+    }
+  },
+  "pattern": [
+    "BTB",
+    "BCB",
+    " F ",
+    "BPB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "createmissiles:navigation_panel"
+  },
+  "show_notification": false
+}

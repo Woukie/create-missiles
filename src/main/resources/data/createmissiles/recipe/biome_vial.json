@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "@": {
+      "item": "minecraft:short_grass"
+    },
+    "#": {
+      "item": "minecraft:glass"
+    }
+  },
+  "pattern": [
+    "@",
+    "#",
+    "#"
+  ],
+  "result": {
+    "count": 2,
+    "id": "createmissiles:biome_vial"
+  },
+  "show_notification": true
+}

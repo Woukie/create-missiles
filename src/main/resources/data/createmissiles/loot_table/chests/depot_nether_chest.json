@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "createmissiles:warhead_assembly",
+          "conditions": [
+            {
+              "condition": "minecraft:random_chance",
+              "chance": 0.25
+            }
+          ],
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "createmissiles:part_type": "createmissiles:flaming_warhead"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "createmissiles:chests/cobwebs_loot"
+        }
+      ]
+    }
+  ]
+}

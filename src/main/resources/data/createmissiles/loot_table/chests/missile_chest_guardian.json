@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "createmissiles:warhead_assembly",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "createmissiles:part_type": "createmissiles:guardian_warhead"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "createmissiles:chests/bunker_chest_rare"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+    "item": "createmissiles:basic_drone_box"
+  },
+  "loops": 2,
+  "results": [
+    {
+      "id": "createmissiles:reinforced_drone_box"
+    }
+  ],
+  "sequence": [
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "createmissiles:incomplete_reinforced_drone_box"
+        },
+        {
+          "item": "minecraft:magma_cream"
+        }
+      ],
+      "results": [
+        {
+          "id": "createmissiles:incomplete_reinforced_drone_box"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "createmissiles:incomplete_reinforced_drone_box"
+        },
+        {
+          "item": "minecraft:snowball"
+        }
+      ],
+      "results": [
+        {
+          "id": "createmissiles:incomplete_reinforced_drone_box"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "createmissiles:incomplete_reinforced_drone_box"
+        },
+        {
+          "item": "minecraft:iron_ingot"
+        }
+      ],
+      "results": [
+        {
+          "id": "createmissiles:incomplete_reinforced_drone_box"
+        }
+      ]
+    }
+  ],
+  "transitional_item": {
+    "id": "createmissiles:incomplete_reinforced_drone_box"
+  }
+}

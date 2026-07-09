@@ -1,19 +1,40 @@
+### Gradle ###
+.gradle
 build/
-*.ipr
-run/
-*.iws
-out/
-*.iml
-.gradle/
-output/
-bin/
-libs/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/**/build/
 
-.classpath
-.project
+### IntelliJ IDEA ###
 .idea/
-classes/
-.metadata
-.vscode
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/**/out/
+
+.run/
+
+### Eclipse ###
+.apt_generated
+.classpath
+.eclipse/
+.factorypath
+.project
 .settings
-*.launch
+.springBeans
+.sts4-cache
+bin/
+!**/src/**/bin/
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store
+
+### Minecraft Modding ###
+run/
+!**/src/**/run/
+**/src/generated/**/.cache/
+repo/
+!**/src/**/repo/

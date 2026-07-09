@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "@": {
+      "type": "neoforge:components",
+      "items": "createmissiles:warhead_assembly",
+      "components": {
+        "createmissiles:part_type": "createmissiles:frozen_warhead"
+      },
+      "strict": false
+    },
+    "S": {
+      "item": "minecraft:blue_ice"
+    }
+  },
+  "pattern": [
+    "S S",
+    "S@S",
+    "S S"
+  ],
+  "result": {
+    "id": "createmissiles:chassis_assembly",
+    "count": 1,
+    "components": {
+      "createmissiles:part_type": "createmissiles:frozen_chassis"
+    }
+  }
+}

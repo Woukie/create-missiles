@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "@": {
+      "type": "neoforge:components",
+      "items": "createmissiles:warhead_assembly",
+      "components": {
+        "createmissiles:part_type": "createmissiles:firework_warhead"
+      },
+      "strict": false
+    },
+    "#": {
+      "item": "minecraft:disc_fragment_5"
+    },
+    "F": {
+      "item": "createmissiles:firework_upgrade_core"
+    }
+  },
+  "pattern": [
+    "#@#",
+    "@F@",
+    "#@#"
+  ],
+  "result": {
+    "id": "createmissiles:warhead_assembly",
+    "count": 1,
+    "components": {
+      "createmissiles:part_type": "createmissiles:ancient_warhead"
+    }
+  }
+}

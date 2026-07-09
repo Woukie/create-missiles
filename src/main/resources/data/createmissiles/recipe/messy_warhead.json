@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "@": {
+      "type": "neoforge:components",
+      "items": "createmissiles:warhead_assembly",
+      "components": {
+        "createmissiles:part_type": "createmissiles:teleportation_warhead"
+      },
+      "strict": false
+    },
+    "#": {
+      "item": "minecraft:chorus_fruit"
+    }
+  },
+  "pattern": [
+    "#@#",
+    "@#@",
+    "#@#"
+  ],
+  "result": {
+    "id": "createmissiles:warhead_assembly",
+    "count": 1,
+    "components": {
+      "createmissiles:part_type": "createmissiles:messy_warhead"
+    }
+  }
+}

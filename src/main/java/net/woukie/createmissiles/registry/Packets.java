@@ -1,0 +1,30 @@
+package net.woukie.createmissiles.registry;
+
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.woukie.createmissiles.CreateMissiles;
+import net.woukie.createmissiles.block.controlpanel.messages.ClickLaunchMessage;
+import net.woukie.createmissiles.block.controlpanel.messages.TriggerBuildParticles;
+import net.woukie.createmissiles.block.navigationpanel.messages.ClickFuelMessage;
+import net.woukie.createmissiles.block.navigationpanel.messages.ClickMapMessage;
+import net.woukie.createmissiles.block.navigationpanel.messages.UpdateMapDataMessage;
+import net.woukie.createmissiles.client.CreateFlashMessage;
+import net.woukie.createmissiles.entity.drone.SendDroneMessage;
+import net.woukie.createmissiles.missiles.parts.warheads.messages.ExplodeFireworkMessage;
+
+public class Packets {
+    public static void onRegisterPayloadHandlers(RegisterPayloadHandlersEvent event) {
+        CreateMissiles.LOGGER.info("Registering payload handlers for " + CreateMissiles.NAME);
+
+        final PayloadRegistrar registrar = event.registrar("1");
+
+        registrar.playToServer(ClickMapMessage.TYPE, ClickMapMessage.STREAM_CODEC, ClickMapMessage::apply);
+        registrar.playToServer(ClickFuelMessage.TYPE, ClickFuelMessage.STREAM_CODEC, ClickFuelMessage::apply);
+        registrar.playToServer(ClickLaunchMessage.TYPE, ClickLaunchMessage.STREAM_CODEC, ClickLaunchMessage::apply);
+        registrar.playToServer(SendDroneMessage.TYPE, SendDroneMessage.STREAM_CODEC, SendDroneMessage::apply);
+        registrar.playToClient(ExplodeFireworkMessage.TYPE, ExplodeFireworkMessage.STREAM_CODEC, ExplodeFireworkMessage::apply);
+        registrar.playToClient(UpdateMapDataMessage.TYPE, UpdateMapDataMessage.STREAM_CODEC, UpdateMapDataMessage::apply);
+        registrar.playToClient(TriggerBuildParticles.TYPE, TriggerBuildParticles.STREAM_CODEC, TriggerBuildParticles::apply);
+        registrar.playToClient(CreateFlashMessage.TYPE, CreateFlashMessage.STREAM_CODEC, CreateFlashMessage::apply);
+    }
+}

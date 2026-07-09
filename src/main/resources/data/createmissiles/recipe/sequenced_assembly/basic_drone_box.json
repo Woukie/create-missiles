@@ -1,0 +1,65 @@
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+    "item": "minecraft:phantom_membrane"
+  },
+  "loops": 2,
+  "results": [
+    {
+      "id": "createmissiles:basic_drone_box"
+    }
+  ],
+  "sequence": [
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "createmissiles:incomplete_basic_drone_box"
+        },
+        {
+          "item": "minecraft:iron_ingot"
+        }
+      ],
+      "results": [
+        {
+          "id": "createmissiles:incomplete_basic_drone_box"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "createmissiles:incomplete_basic_drone_box"
+        },
+        {
+          "item": "minecraft:stick"
+        }
+      ],
+      "results": [
+        {
+          "id": "createmissiles:incomplete_basic_drone_box"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "createmissiles:incomplete_basic_drone_box"
+        },
+        {
+          "item": "minecraft:phantom_membrane"
+        }
+      ],
+      "results": [
+        {
+          "id": "createmissiles:incomplete_basic_drone_box"
+        }
+      ]
+    }
+  ],
+  "transitional_item": {
+    "id": "createmissiles:incomplete_basic_drone_box"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "@": {
+      "type": "neoforge:components",
+      "items": "createmissiles:warhead_assembly",
+      "components": {
+        "createmissiles:part_type": "createmissiles:excavator_warhead"
+      },
+      "strict": false
+    },
+    "S": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "S S",
+    "S@S",
+    " S "
+  ],
+  "result": {
+    "id": "createmissiles:thruster_assembly",
+    "count": 1,
+    "components": {
+      "createmissiles:part_type": "createmissiles:excavator_thruster"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": false,
+  "category": "misc",
+  "key": {
+    "S": {
+      "item": "create:iron_sheet"
+    },
+    "C": {
+      "item": "create:cogwheel"
+    },
+    "E": {
+      "item": "create:electron_tube"
+    },
+    "I": {
+      "item": "create:brass_casing"
+    }
+  },
+  "pattern": [
+    "S",
+    "I",
+    "C",
+    "E",
+    "I"
+  ],
+  "result": {
+    "count": 3,
+    "id": "createmissiles:launch_pad"
+  },
+  "show_notification": false
+}
