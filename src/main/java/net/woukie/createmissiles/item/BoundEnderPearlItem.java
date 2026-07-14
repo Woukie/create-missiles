@@ -1,6 +1,5 @@
 package net.woukie.createmissiles.item;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -14,12 +13,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownEnderpearl;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.UUID;
 
 public class BoundEnderPearlItem extends Item {
@@ -35,17 +32,6 @@ public class BoundEnderPearlItem extends Item {
     @Override
     public boolean isFoil(@NotNull ItemStack itemStack) {
         return getTagOrEmpty(itemStack).hasUUID("PlayerUUID");
-    }
-
-    @Override
-    public void appendHoverText(@NotNull ItemStack itemStack, TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
-        super.appendHoverText(itemStack, context, tooltipComponents, tooltipFlag);
-
-        CompoundTag tag = getTagOrEmpty(itemStack);
-        if (!tag.hasUUID("PlayerUUID")) return;
-
-        Level level = Minecraft.getInstance().level;
-        if (level == null) return;
     }
 
     @Override

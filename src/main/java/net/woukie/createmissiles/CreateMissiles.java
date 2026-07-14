@@ -71,17 +71,9 @@ public class CreateMissiles {
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onServerTick);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::addWanderingTrades);
         NeoForge.EVENT_BUS.addListener(CreateMissiles::onLootTableLoad);
-        NeoForge.EVENT_BUS.addListener(CreateMissiles::onClientTickPost);
-        NeoForge.EVENT_BUS.addListener(CreateMissiles::onRenderGuiEvent);
 
         modBus.addListener(CreateMissiles::createDefaultAttributes);
         modBus.addListener(CreateMissiles::onBuildCreativeModeTabContents);
-        modBus.addListener(EntityRenderers::registerEntityRenderers);
-        modBus.addListener(EntityRenderers::registerLayerDefinitions);
-        modBus.addListener(CreateMissiles::registerScreens);
-        modBus.addListener(CreateMissiles::clientSetup);
-        modBus.addListener(CreateMissiles::onRegisterClientExtensions);
-        modBus.addListener(CreateMissiles::registerParticles);
         modBus.addListener(CreateMissiles::onRegister);
         modBus.addListener(Packets::onRegisterPayloadHandlers);
 

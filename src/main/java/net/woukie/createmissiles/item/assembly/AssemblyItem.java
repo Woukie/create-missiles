@@ -1,7 +1,6 @@
 package net.woukie.createmissiles.item.assembly;
 
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -57,7 +56,7 @@ public class AssemblyItem extends Item {
         String partType = itemStack.get(DataComponents.PART_TYPE);
         if (partType == null) return;
 
-        Level level = Minecraft.getInstance().level;
+        Level level = context.level();
         if (level == null) return;
 
         Optional<MissilePartRecipe> recipe = MissilePartRecipe.fromResourceLocation(level, ResourceLocation.parse(partType));
